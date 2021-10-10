@@ -61,4 +61,21 @@
 
 (map! :leader :n "ry" #'yank-from-kill-ring)
 
+
+;;;;;;;;;;;;
+;; editor ;;
+;;;;;;;;;;;;
+
+(map! :leader :n "v" #'er/expand-region)
+
 (map! :leader :n ";" #'evilnc-comment-or-uncomment-lines)
+
+;;;;;;;;;;;;;
+;; buffers ;;
+;;;;;;;;;;;;;
+
+(map! "s-b" #'consult-buffer)
+
+
+(map! :leader :prefix "b"
+      "s-d" #'spacemacs/kill-matching-buffers-rudely)

@@ -57,7 +57,7 @@
 ;; they are implemented.
 
 (setq-default
- line-spacing 4
+ line-spacing 5
  garbage-collection-messages nil)
 
 (setq
@@ -76,5 +76,3 @@
       "C-y" #'vertico-scroll-down)
 
 (map! :map company-active-map "C-/" #'completion-at-point)
-
-
