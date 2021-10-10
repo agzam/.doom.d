@@ -1,4 +1,4 @@
-;;; custom/general/autoload/windows.el -*- lexical-binding: t; -*-
+;;; custom/spacemacsy/autoload/windows.el -*- lexical-binding: t; -*-
 
 (require 'hydra)
 
@@ -13,7 +13,6 @@
       (set-frame-position nil (car (frame-position)) 0)
       (set-frame-height nil (- (x-display-pixel-height) 29) nil :pixelwise)))
   (redraw-display))
-
 
 (defun center-frame-horizontally (&optional prompt percentage)
   "Positions the current frame in the middle of the screen,
@@ -32,13 +31,30 @@ With universal argument prompts for the percentage - the horizontal screen estat
       (toggle-frame-full-height))
     (redraw-display)))
 
-;;;###autoload (autoload '+hydra/text-zoom/body "custom/general/autoload/windows" nil t)
+(defun alternate-buffer ()
+  (interactive)
+  (persp-add-buffer (current-buffer))
+  (when-let ((b (evil-alternate-buffer (get-buffer-window))))
+    (switch-to-buffer (car b))))
+
+(defun toggle-maximize-buffer ()
+  "Maximize buffer"
+  (interactive)
+  (save-excursion
+    (if (and (= 1 (length (window-list)))
+             (assoc ?_ register-alist))
+        (jump-to-register ?_)
+      (progn
+        (window-configuration-to-register ?_)
+        (delete-other-windows)))))
+
+;;;###autoload (autoload '+hydra/text-zoom/body "custom/spacemacsy/autoload/windows" nil t)
 (defhydra +hydra/text-zoom (:hint nil :color red)
-   "
+  "
       Text zoom: _j_:zoom in, _k_:zoom out, _0_:reset
 "
-   ("j" doom/increase-font-size "in")
-   ("k" doom/decrease-font-size "out")
-   ("0" doom/reset-font-size "reset")
-   ("h" toggle-frame-full-height "stretch vertically" :exit t)
-   ("c" center-frame-horizontally "center frame horizontally" :exit t))
+  ("j" doom/increase-font-size "in")
+  ("k" doom/decrease-font-size "out")
+  ("0" doom/reset-font-size "reset")
+  ("h" toggle-frame-full-height "stretch vertically" :exit t)
+  ("c" center-frame-horizontally "center frame horizontally" :exit t))

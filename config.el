@@ -26,8 +26,8 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 (setq
- doom-font (font-spec :family "JetBrains Mono" :size 15.5)
- doom-variable-pitch-font (font-spec :family "Open Sans" :size 15)
+ doom-font (font-spec :family "JetBrains Mono" :size 14)
+ doom-variable-pitch-font (font-spec :family "Open Sans" :size 14)
  doom-theme 'doom-one)
 
 ;; If you use `org' and don't want your org files in the default location below,
@@ -61,7 +61,9 @@
  garbage-collection-messages nil)
 
 (setq
- doom-localleader-key ",")
+ doom-localleader-key ","
+ which-key-use-C-h-commands t
+ chemacs-current-emacs-profile "doom")
 
 (map! :leader
       (:when (featurep! :completion vertico)
@@ -69,4 +71,10 @@
 
 (map! :leader :n "fj" #'dired-jump)
 
-(map! :leader :n "bs" #'doom/open-scratch-buffer)
+(map! :map vertico-map
+      "C-e" #'vertico-scroll-up
+      "C-y" #'vertico-scroll-down)
+
+(map! :map company-active-map "C-/" #'completion-at-point)
+
+

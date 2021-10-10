@@ -25,14 +25,5 @@
      (window . root)
      (window-width . 0.3))))
 
-(use-package! hydra
- :config
- (map! :leader :n "zf" #'+hydra/text-zoom/body))
-
-(use-package! winum
-  :config
-  (dolist (wn (seq-map 'number-to-string (number-sequence 0 9)))
-    (let ((f (intern (concat "winum-select-window-" wn))))
-      (map! :n (concat "s-" wn) f)
-      (map! :leader :n wn f)))
-  (winum-mode))
+(use-package! prescient
+  :config)
