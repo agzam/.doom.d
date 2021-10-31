@@ -25,5 +25,13 @@
      (window . root)
      (window-width . 0.3))))
 
+(use-package! embark-consult
+  :config)
+
 (use-package! prescient
   :config)
+
+(use-package! fasd
+  :config
+  (map! :leader "fad" #'fasd-find-file)
+  (global-fasd-mode +1))

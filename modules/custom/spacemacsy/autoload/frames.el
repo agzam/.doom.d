@@ -1,0 +1,23 @@
+;;; custom/spacemacsy/autoload/frames.el -*- lexical-binding: t; -*-
+
+;;;###autoload (autoload 'toggle-frame-maximized-undecorated "custom/spacemacsy/autoload/frames" nil t)
+(defun toggle-frame-maximized-undecorated ()
+  (interactive)
+  (let* ((frame (selected-frame))
+         (on? (and (frame-parameter frame 'undecorated)
+                   (eq (frame-parameter frame 'fullscreen) 'maximized)))
+         (geom (frame-monitor-attribute 'geometry))
+         (x (nth 0 geom))
+         (y (nth 1 geom))
+         (display-height (nth 3 geom))
+         (display-width (nth 2 geom))
+         (cut (if on?
+                  (if ns-auto-hide-menu-bar 26 50)
+                (if ns-auto-hide-menu-bar 4 26))))
+    (set-frame-position frame x y)
+    (set-frame-parameter frame 'fullscreen-restore 'maximized)
+    (set-frame-parameter nil 'fullscreen 'maximized)
+    (set-frame-parameter frame 'undecorated (not on?))
+    (set-frame-height frame (- display-height cut) nil t)
+    (set-frame-width frame (- display-width 20) nil t)
+    (set-frame-position frame x y)))

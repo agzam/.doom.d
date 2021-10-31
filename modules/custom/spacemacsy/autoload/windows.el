@@ -48,6 +48,16 @@ With universal argument prompts for the percentage - the horizontal screen estat
         (window-configuration-to-register ?_)
         (delete-other-windows)))))
 
+(defun delete-other-windows-horizontally ()
+  "Delete all windows to the left and right of the current window."
+  (interactive)
+  (require 'windmove)
+  (save-excursion
+    (while (condition-case nil (windmove-left) (error nil))
+      (delete-window))
+    (while (condition-case nil (windmove-right) (error nil))
+      (delete-window))))
+
 ;;;###autoload (autoload '+hydra/text-zoom/body "custom/spacemacsy/autoload/windows" nil t)
 (defhydra +hydra/text-zoom (:hint nil :color red)
   "
@@ -57,4 +67,5 @@ With universal argument prompts for the percentage - the horizontal screen estat
   ("k" doom/decrease-font-size "out")
   ("0" doom/reset-font-size "reset")
   ("h" toggle-frame-full-height "stretch vertically" :exit t)
-  ("c" center-frame-horizontally "center frame horizontally" :exit t))
+  ("c" center-frame-horizontally "center frame horizontally" :exit t)
+  ("m" toggle-frame-maximized-undecorated "maximize frame" :exit t))

@@ -26,9 +26,10 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 (setq
- doom-font (font-spec :family "JetBrains Mono" :size 14)
- doom-variable-pitch-font (font-spec :family "Open Sans" :size 14)
- doom-theme 'doom-one)
+ doom-font (font-spec :family "JetBrains Mono" :size 15)
+ doom-variable-pitch-font (font-spec :family "Open Sans" :size 15)
+ ;; doom-theme 'spacemacs-light
+ )
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -63,6 +64,8 @@
 (setq
  doom-localleader-key ","
  which-key-use-C-h-commands t
+ which-key-idle-delay 0.3
+ which-key-idle-secondary-delay 0.2
  chemacs-current-emacs-profile "doom")
 
 (map! :leader
@@ -76,3 +79,7 @@
       "C-y" #'vertico-scroll-down)
 
 (map! :map company-active-map "C-/" #'completion-at-point)
+
+;; vertico module screws up the backspace
+(after! vertico
+ (map! :map vertico-map [backspace] nil))

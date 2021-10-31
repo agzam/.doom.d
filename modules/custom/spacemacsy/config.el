@@ -16,7 +16,11 @@
       (map! :leader :n wn f)))
   (winum-mode))
 
-(map! :leader :n "wm" #'toggle-maximize-buffer)
+(map! :leader
+      :prefix "w"
+      :n "m" #'toggle-maximize-buffer
+      :n "|" #'delete-other-windows-vertically
+      :n "_" #'delete-other-windows-horizontally)
 
 ;;;;;;;;;;;
 ;; sexps ;;
@@ -66,9 +70,11 @@
 ;; editor ;;
 ;;;;;;;;;;;;
 
-(map! :leader :n "v" #'er/expand-region)
+(map! :leader
+      :n "v" #'er/expand-region
+      :n ";" #'evilnc-comment-or-uncomment-lines
+      :n "jj" #'avy-goto-char-timer)
 
-(map! :leader :n ";" #'evilnc-comment-or-uncomment-lines)
 
 ;;;;;;;;;;;;;
 ;; buffers ;;
@@ -79,3 +85,16 @@
 
 (map! :leader :prefix "b"
       "s-d" #'spacemacs/kill-matching-buffers-rudely)
+
+;;;;;;;;;;;
+;; files ;;
+;;;;;;;;;;;
+
+(map! :leader "fe" nil)
+
+(map! :leader
+      :prefix "fe"
+      "d" #'doom/goto-private-config-file
+      "i" (lambda ()
+            (interactive)
+            (dired doom-emacs-dir)))
