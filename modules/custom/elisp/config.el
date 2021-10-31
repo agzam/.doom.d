@@ -5,8 +5,4 @@
   (map! :leader
         (:prefix-map ("a" . "apps")
          :desc "List Packages" "k" #'paradox-list-packages))
-
-  (map! :localleader
-        :map paradox-menu-mode-map
-        "r" #'paradox-filter-regexp
-        "f" #'hydra-paradox-filter/body))
+  :hook (paradox-menu-mode . #'paradox-menu-mode--set-keys))

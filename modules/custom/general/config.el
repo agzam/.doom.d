@@ -20,7 +20,8 @@
   (add-to-list
    'display-buffer-alist
    `(,(rx bos (or "*helpful" "*info"))
-     (display-buffer-in-direction)
+     (display-buffer-reuse-window
+      display-buffer-in-direction)
      (direction . right)
      (window . root)
      (window-width . 0.3))))
@@ -35,3 +36,6 @@
   :config
   (map! :leader "fad" #'fasd-find-file)
   (global-fasd-mode +1))
+
+(use-package! consult-company
+  (map! :map company [remap completion-at-point] #'consult-company))

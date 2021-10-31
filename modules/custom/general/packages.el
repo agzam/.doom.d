@@ -3,8 +3,12 @@
 (package! helpful)
 (package! prescient)
 (package! fasd :recipe (:repo "https://framagit.org/dalanicolai/emacs-fasd.git"))
+
 (package! vertico
   :recipe (:host github :repo "minad/vertico"))
+(package! vertico-posframe)
+(unpin! vertico)
 (package! embark-consult)
 
-(unpin! vertico)
+(package! consult-projectile)
+(package! consult-company)
