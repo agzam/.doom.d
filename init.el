@@ -196,4 +196,5 @@
        colors
        dired
        vc
+       modeline
        )
