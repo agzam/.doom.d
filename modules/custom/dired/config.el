@@ -10,6 +10,8 @@
 
 (use-package! treemacs
   :config
+  (require 'treemacs-all-the-icons)
+  (treemacs-load-theme "all-the-icons")
   (treemacs-resize-icons 16))
 
 (use-package! direx

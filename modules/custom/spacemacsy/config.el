@@ -82,6 +82,8 @@
 
 (map! "s-b" #'consult-buffer)
 
+(map! :leader "bm" #'switch-to-messages-buffer)
+
 
 (map! :leader :prefix "b"
       "s-d" #'spacemacs/kill-matching-buffers-rudely)
@@ -98,3 +100,7 @@
       "i" (lambda ()
             (interactive)
             (dired doom-emacs-dir)))
+
+;;;;;;;;;;
+;; misc ;;
+;;;;;;;;;;

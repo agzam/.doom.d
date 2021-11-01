@@ -46,3 +46,16 @@ Returns a message with the count of killed buffers."
       (progn
         (window-configuration-to-register ?_)
         (delete-other-windows)))))
+
+
+;;;###autoload (autoload 'switch-to-messages-buffer "custom/spacemacsy/autoload/buffers" nil t)
+(defun switch-to-messages-buffer (&optional arg)
+  "Switch to the `*Messages*' buffer.
+if prefix argument ARG is given, switch to it in an other, possibly new window."
+  (interactive "P")
+  (with-current-buffer (messages-buffer)
+    (goto-char (point-max))
+    (if arg
+        (switch-to-buffer-other-window (current-buffer))
+      (switch-to-buffer (current-buffer)))
+    (evil-normal-state)))
