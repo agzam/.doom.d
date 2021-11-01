@@ -66,8 +66,7 @@
  which-key-use-C-h-commands t
  which-key-idle-delay 0.3
  which-key-idle-secondary-delay 0.2
- chemacs-current-emacs-profile "doom"
- )
+ chemacs-current-emacs-profile "doom")
 
 (map! :leader
       (:when (featurep! :completion vertico)
@@ -83,7 +82,7 @@
 
 ;; vertico module screws up the backspace
 (after! vertico
- (map! :map vertico-map [backspace] nil))
+  (map! :map vertico-map [backspace] nil))
 
 (map! :v "s" #'evil-surround-region)
 

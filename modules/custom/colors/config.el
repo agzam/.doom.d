@@ -18,7 +18,17 @@
   ;;                          ("23:00" . base16-ocean)))
   )
 
+(defun colors/cycle-themes-down ()
+  (interactive)
+  (colors/load-next-theme)
+  (colors/cycle-themes/body))
 
-;; (map! :leader :n "Tn" #'colors/cycle-theme)
+(defun colors/cycle-themes-up ()
+  (interactive)
+  (colors/load-prev-theme)
+  (colors/cycle-themes/body))
 
-;; (require 'spacemacs-theme)
+(map! :leader
+      :n "Tn" #'colors/cycle-themes-down
+      :n "Tp" #'colors/cycle-themes-up)
+

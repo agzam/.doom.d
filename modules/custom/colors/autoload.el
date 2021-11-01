@@ -1,40 +1,33 @@
-;;; custom/colors/autoloads.el -*- lexical-binding: t; -*-
+;;; custom/colors/autoload.el -*- lexical-binding: t; -*-
 
-(defun colors/get-current-period ()
-  (let ((cur-hr (nth 2 (decode-time))))
-    (caddr (cl-loop for (period . hour) in colors--time-periods
-                    when (<= hour cur-hr)
-                    collect period))))
+(defvar colors--themes-ring nil)
 
-(defun colors/load-theme ()
-  "Loads theme based on time of day using `colors--themes'"
+(defun colors/init-themes-ring ()
+  (when (null colors--themes-ring)
+    (setq colors--themes-ring
+          (ring-convert-sequence-to-ring
+           (seq-map 'cdr circadian-themes))))
+  colors--themes-ring)
+
+;;;###autoload (autoload 'colors/load-next-theme "custom/colors/autoload" nil t)
+(defun colors/load-next-theme ()
   (interactive)
-  (let ((theme (alist-get (colors/get-current-period) colors--themes)))
-    (funcall 'load-theme theme :no-ask)))
+  (let ((theme (ring-next (colors/init-themes-ring) doom-theme)))
+    (load-theme theme :no-confirm)
+    theme))
 
-(defvar colors/next-theme-iterator nil)
+;;;###autoload (autoload 'colors/load-prev-theme "custom/colors/autoload" nil t)
+(defun colors/load-prev-theme ()
+  (interactive)
+  (let ((theme (ring-previous (colors/init-themes-ring) doom-theme)))
+    (load-theme theme :no-confirm)
+    theme))
 
-(iter-yield-from colors/next-theme-iterator)
-
-;;;###autoload (autoload 'colors/cycle-theme "custom/colors/autoload" nil t)
-;; (defun colors/cycle-theme (&optional prev)
-;;   (interactive)
-;;   (when (null colors/next-theme-iterator)
-;;     (let* ((nxt (iter-lambda (themes)
-;;                   (let ((tmp-lst themes))
-;;                     (while tmp-lst
-;;                       (iter-yield (pop tmp-lst))
-;;                       (when (null tmp-lst)
-;;                         (setq tmp-lst themes)))))))
-;;       (setq colors/next-theme-iterator
-;;             (funcall nxt (seq-map 'cdr colors--themes)))))
-;;   (if prev
-
-;;       )
-;;   (load-theme (iter-next colors/next-theme-iterator)))
-
-;; (defhydra +hydra/cycle-theme (:hint nil :color red)
-;;   "Change theme: _n_:next, _p_:previous, _c_:
-;; "
-;;   ("n" )
-;;   )
+;;;###autoload (autoload 'colors/cycle-themes/body "custom/colors/autoload" nil t)
+(defhydra colors/cycle-themes (:hint nil :color red)
+  "
+     Load theme _n_:next, _p_:previous, _l_:list themes
+"
+  ("n" colors/load-next-theme "next")
+  ("p" colors/load-prev-theme "previous")
+  ("l" consult-theme "list themes" :exit t))
