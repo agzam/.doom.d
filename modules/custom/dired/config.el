@@ -1,7 +1,5 @@
 ;;; custom/dired/config.el -*- lexical-binding: t; -*-
 
-(add-hook 'dired-mode-hook #'dired-hide-details-mode)
-
 (use-package! treemacs-all-the-icons
   :hook '((treemacs-mode dired-mode) . (lambda () (treemacs-load-theme 'all-the-icons))))
 
@@ -44,9 +42,34 @@
         "^" #'direx:expand-root-to-parent
         ;; "o" #'spacemacs/dired-open-item-other-window-transient-state/body
 
-        )
+        ))
 
-  )
+(use-package! dired-imenu
+  :after (dired))
+
+(use-package! dired-subtree
+  :config
+  (map! :map dired-mode-map
+        :n "M-l" #'dired-subtree-cycle
+        :n "M-h" #'dired-subtree-remove*
+        :n "M-k" #'dired-subtree-remove*
+        :n "M-j" #'dired-subtree-down-n-open
+        :n "M-n" #'dired-subtree-next-sibling
+        :n "M-p" #'dired-subtree-previous-sibling))
 
 (after! projectile
- (map! :leader "pd" #'projectile-find-dir))
+  (map! :leader "pd" #'projectile-find-dir))
+
+(after! dired
+  (setq dired-use-ls-dired t
+        dired-dwim-target t)
+
+  (put 'dired-find-alternate-file 'disabled nil)
+
+  (when (eq system-type 'darwin)
+    (let ((gls (executable-find "gls")))
+      (when gls
+        (setq insert-directory-program gls
+              dired-listing-switches "-aBhl --group-directories-first"))))
+
+  (add-hook 'dired-mode-hook #'dired-hide-details-mode))

@@ -31,7 +31,6 @@ Returns a message with the count of killed buffers."
 ;;;###autoload (autoload 'alternate-buffer "custom/spacemacsy/autoload/buffers" nil t)
 (defun alternate-buffer ()
   (interactive)
-  (persp-add-buffer (current-buffer))
   (when-let ((b (evil-alternate-buffer (get-buffer-window))))
     (switch-to-buffer (car b))))
 
@@ -59,3 +58,14 @@ if prefix argument ARG is given, switch to it in an other, possibly new window."
         (switch-to-buffer-other-window (current-buffer))
       (switch-to-buffer (current-buffer)))
     (evil-normal-state)))
+
+;;;###autoload (autoload 'kill-this-buffer "custom/spacemacsy/autoload/buffers" nil t)
+(defun kill-this-buffer (&optional arg)
+  "Kill the current buffer.
+If the universal prefix argument is used then kill also the window."
+  (interactive "P")
+  (if (window-minibuffer-p)
+      (abort-recursive-edit)
+    (if (equal '(4) arg)
+        (kill-buffer-and-window)
+      (kill-buffer))))

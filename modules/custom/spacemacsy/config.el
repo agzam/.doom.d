@@ -58,10 +58,12 @@
 ;; workspaces ;;
 ;;;;;;;;;;;;;;;;
 
-(map! :leader
-      "TAB" #'alternate-buffer
-      "l" doom-leader-workspace-map
-      "ll" #'+workspace/switch-to)
+(map! :leader "TAB" #'alternate-buffer)
+
+;; (map! :leader
+;;       "TAB" #'alternate-buffer
+;;       "l" doom-leader-workspace-map
+;;       "ll" #'+workspace/switch-to)
 
 (map! :leader :n "ry" #'yank-from-kill-ring)
 
@@ -82,7 +84,10 @@
 
 (map! "s-b" #'consult-buffer)
 
-(map! :leader "bm" #'switch-to-messages-buffer)
+(map! :leader
+      :prefix "b"
+      "m" #'switch-to-messages-buffer
+      "d" #'kill-this-buffer)
 
 
 (map! :leader :prefix "b"
@@ -101,6 +106,26 @@
             (interactive)
             (dired doom-emacs-dir)))
 
+(map! :leader
+      :prefix "w"
+      "D" #'ace-delete-window)
+
 ;;;;;;;;;;
 ;; misc ;;
 ;;;;;;;;;;
+
+(map! :leader
+      "gj" #'evil-show-jumps
+      "sj" #'imenu)
+
+
+;; fix for smartparens. Doom's default module does things like skipping pairs if
+;; one typed at the beginning of the word.
+(dolist (brace '("(" "{" "["))
+      (sp-pair brace nil
+               :post-handlers '(("||\n[i]" "RET") ("| " "SPC"))
+               :unless '(sp-point-before-same-p)))
+
+(sp-local-pair sp-lisp-modes "(" ")"
+               :wrap ")"
+               :unless '(:rem sp-point-before-same-p))

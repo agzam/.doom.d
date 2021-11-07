@@ -9,3 +9,4 @@
 
 (package! direx :recipe (:host github :repo "agzam/direx-el"))
 (package! dired-imenu)
+(package! dired-subtree)

@@ -58,8 +58,13 @@
 ;; they are implemented.
 
 (setq-default
- line-spacing 5
- garbage-collection-messages nil)
+ line-spacing 6
+ garbage-collection-messages nil
+ left-fringe-width 6
+ right-fringe-width 0
+ evil-escape-key-sequence "kj"
+ evil-esc-delay 0.3
+ messages-buffer-max-lines 10000)
 
 (setq
  doom-localleader-key ","
@@ -87,3 +92,8 @@
 (map! :v "s" #'evil-surround-region)
 
 (center-frame-horizontally)
+(fringe-mode '(6 . 0))
+
+;; disable global-hl-line
+;; oddly that's the way: github.com/hlissner/doom-emacs/issues/4206
+(remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)

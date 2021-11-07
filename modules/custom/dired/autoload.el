@@ -11,3 +11,21 @@
           (direx:maybe-goto-current-buffer-item buf)
           (switch-to-buffer buf))
       (direx:find-directory "."))))
+
+;;;###autoload (autoload 'dired-subtree-remove* "custom/dired/autoload" nil t)
+(defun dired-subtree-remove* ()
+  (interactive)
+  (when (dired-subtree--is-expanded-p)
+    (dired-next-line 1))
+  (dired-subtree-remove))
+
+;;;###autoload (autoload 'dired-subtree-remove* "custom/dired/autoload" nil t)
+(defun dired-subtree-down-n-open ()
+  (interactive)
+  (save-excursion (dired-subtree-insert))
+  (when (or (dired-subtree--is-expanded-p)
+            (not (eq
+                  (point)
+                  (save-excursion (dired-subtree-end)
+                                  (point)))))
+      (dired-next-line 1)))

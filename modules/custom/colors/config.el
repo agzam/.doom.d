@@ -1,22 +1,18 @@
 ;;; custom/colors/config.el -*- lexical-binding: t; -*-
+(use-package! ag-themes)
 
 (use-package! circadian
+  :after (ag-themes)
   :config
-
   (setq
    ;; North of TX
    calendar-latitude 33.16
    calendar-longitude -96.93
-   circadian-themes '((:sunrise . spacemacs-light)
-                      (:sunset  . base16-ocean)))
-  (circadian-setup)
+   circadian-themes '(("7:00" . ag-themes-spacemacs-light)
+                      ("18:30"  . ag-themes-base16-ocean)))
+  (add-hook 'window-setup-hook #'circadian-setup))
 
-  ;; (setq circadian-themes '(("6:00"  . spacemacs-light)
-  ;;                          ("11.59" . tango)
-  ;;                          ("16:00" . modus-vivendi)
-  ;;                          ("19:00" . deeper-blue)
-  ;;                          ("23:00" . base16-ocean)))
-  )
+(use-package! rainbow-mode)
 
 (defun colors/cycle-themes-down ()
   (interactive)
@@ -31,4 +27,3 @@
 (map! :leader
       :n "Tn" #'colors/cycle-themes-down
       :n "Tp" #'colors/cycle-themes-up)
-

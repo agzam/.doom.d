@@ -1,6 +1,5 @@
 ;; -*- no-byte-compile: t; -*-
 
-(package! helpful)
 (package! prescient)
 (package! fasd :recipe (:repo "https://framagit.org/dalanicolai/emacs-fasd.git"))
 
@@ -12,3 +11,4 @@
 
 (package! consult-projectile)
 (package! consult-company)
+

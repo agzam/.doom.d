@@ -1,8 +1,10 @@
 ;;; custom/elisp/config.el -*- lexical-binding: t; -*-
 
 (use-package! paradox
-  :init
-  (map! :leader
-        (:prefix-map ("a" . "apps")
-         :desc "List Packages" "k" #'paradox-list-packages))
-  :hook (paradox-menu-mode . #'paradox-menu-mode--set-keys))
+  :hook (paradox-menu-mode . paradox-menu-mode--set-keys))
+
+(after! elisp-mode
+ (map! :localleader
+       :map emacs-lisp-mode-map
+       :prefix "e"
+       "c" #'eval-current-form-sp))

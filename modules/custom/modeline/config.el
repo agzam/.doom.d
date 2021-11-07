@@ -1,7 +1,7 @@
 ;;; custom/modeline/config.el -*- lexical-binding: t; -*-
 
 (use-package! doom-modeline
-  :init
+  :config
   (require 'doom-modeline)
   (doom-modeline-def-modeline
    'agcustom
@@ -21,9 +21,10 @@
   (defun setup-custom-doom-modeline ()
     (doom-modeline-set-modeline 'agcustom))
 
-  (add-hook 'doom-mode~ine-mode-hook 'setup-custom-doom-modeline 90)
+  (add-hook 'doom-modeline-mode-hook 'setup-custom-doom-modeline 90)
   (add-hook 'window-state-change-hook 'setup-custom-doom-modeline)
-  :config
+
+  (doom-modeline-mode +1)
   (setq doom-modeline-buffer-encoding nil
         doom-modeline-buffer-file-name-style 'relative-from-project
         doom-modeline-buffer-modification-icon t
@@ -37,8 +38,4 @@
         doom-modeline-display-default-persp-name t
         inhibit-compacting-font-caches t
         doom-modeline-height 15
-        doom-modeline-bar-width 2)
-
-  (doom-modeline-mode +1)
-  ;; (defun doom-modeline--font-height () 5)
-  )
+        doom-modeline-bar-width left-fringe-width))
