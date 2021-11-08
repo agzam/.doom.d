@@ -39,3 +39,8 @@
         [backspace] nil)
 
   (remove-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy))
+
+(after! embark
+  (map! :leader
+        "a" nil ; liberate the top level binding for other things
+        "aa" #'embark-act))
