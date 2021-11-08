@@ -198,4 +198,5 @@
        dired
        vc
        modeline
+       writing
        )
