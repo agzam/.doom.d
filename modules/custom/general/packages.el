@@ -1,10 +1,9 @@
 ;; -*- no-byte-compile: t; -*-
 
-(package! prescient)
+;; (package! prescient)
 (package! fasd :recipe (:repo "https://framagit.org/dalanicolai/emacs-fasd.git"))
+(package! vertico :recipe (:host github :repo "minad/vertico" :files ("*.el" "extensions")))
 
-(package! vertico
-  :recipe (:host github :repo "minad/vertico"))
 (package! vertico-posframe)
 (unpin! vertico)
 (package! embark-consult)

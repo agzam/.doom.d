@@ -1,16 +1,45 @@
 ;;; custom/dired/config.el -*- lexical-binding: t; -*-
 
-(use-package! treemacs-all-the-icons
-  :hook '((treemacs-mode dired-mode) . (lambda () (treemacs-load-theme 'all-the-icons))))
-
 (use-package! treemacs-icons-dired
-  :hook '(dired-mode . treemacs-icons-dired-mode))
+  :hook (dired-mode . treemacs-icons-dired-mode))
 
 (use-package! treemacs
+  :defer t
+  :init
+  (setq treemacs-follow-after-init t
+        ;; treemacs-is-never-other-window t
+        treemacs-sorting 'alphabetic-case-insensitive-asc
+        treemacs-persist-file (concat doom-cache-dir "treemacs-persist")
+        treemacs-last-error-persist-file (concat doom-cache-dir "treemacs-last-error-persist"))
   :config
-  (require 'treemacs-all-the-icons)
-  (treemacs-load-theme "all-the-icons")
-  (treemacs-resize-icons 16))
+  (map! :leader "ft" #'treemacs)
+  (treemacs-resize-icons 16)
+  (treemacs-follow-mode 1)
+
+  (after! winum
+    (map! :map winum-keymap
+     [remap winum-select-window-0] #'treemacs-select-window)))
+
+(use-package! treemacs-evil
+  :defer t
+  :init
+  (after! treemacs (require 'treemacs-evil))
+  (add-to-list 'doom-evil-state-alist '(?T . treemacs))
+  :config
+  (define-key! evil-treemacs-state-map
+    [return] #'treemacs-RET-action
+    [tab]    #'treemacs-TAB-action
+    "TAB"    #'treemacs-TAB-action
+    ;; REVIEW Fix #1875 to be consistent with C-w {v,s}, but this should really
+    ;;        be considered upstream.
+    "o v"    #'treemacs-visit-node-horizontal-split
+    "o s"    #'treemacs-visit-node-vertical-split))
+
+(use-package! treemacs-projectile
+  :after treemacs)
+
+(use-package! lsp-treemacs
+  :after (treemacs lsp))
 
 (use-package! direx
   :init
@@ -48,7 +77,7 @@
   :after (dired))
 
 (use-package! dired-subtree
-  :config
+  :init
   (map! :map dired-mode-map
         :n "M-l" #'dired-subtree-cycle
         :n "M-h" #'dired-subtree-remove*
@@ -61,6 +90,8 @@
   (map! :leader "pd" #'projectile-find-dir))
 
 (after! dired
+  (map! :leader :n "fj" #'dired-jump)
+
   (setq dired-use-ls-dired t
         dired-dwim-target t)
 

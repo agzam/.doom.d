@@ -10,13 +10,14 @@
      ;; grip
      ;; irc mu4e debug
      ;; repl
-     lsp
      major-mode
+     lsp
      misc-info
      process
      ;; checker
-     ;; buffer-position
-     matches selection-info))
+
+     matches selection-info
+     buffer-position))
 
   (defun setup-custom-doom-modeline ()
     (doom-modeline-set-modeline 'agcustom))

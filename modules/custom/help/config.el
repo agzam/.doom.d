@@ -3,9 +3,12 @@
 (use-package! helpful
   :config
   (map! :leader
-        :n "hh" #'helpful-symbol
-        :n "hdd" #'helpful-symbol
-        :n "ha" #'helpful-at-point)
+        "hh" #'helpful-symbol
+        "hf" #'helpful-function
+        "hv" #'helpful-variable
+        "ha" #'helpful-at-point
+        "hdd" nil ; muscle memory is still strong
+        )
 
   (after! elisp-mode
     (map! :localleader

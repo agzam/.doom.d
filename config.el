@@ -77,17 +77,7 @@
       (:when (featurep! :completion vertico)
        :desc "M-x" :n "SPC" #'execute-extended-command))
 
-(map! :leader :n "fj" #'dired-jump)
-
-(map! :map vertico-map
-      "C-e" #'vertico-scroll-up
-      "C-y" #'vertico-scroll-down)
-
 (map! :map company-active-map "C-/" #'completion-at-point)
-
-;; vertico module screws up the backspace
-(after! vertico
-  (map! :map vertico-map [backspace] nil))
 
 (map! :v "s" #'evil-surround-region)
 
