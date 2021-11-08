@@ -64,14 +64,36 @@
  right-fringe-width 0
  evil-escape-key-sequence "kj"
  evil-esc-delay 0.3
- messages-buffer-max-lines 10000)
+ messages-buffer-max-lines 10000
+ fill-column 90)
 
 (setq
  doom-localleader-key ","
  which-key-use-C-h-commands t
  which-key-idle-delay 0.3
  which-key-idle-secondary-delay 0.2
- chemacs-current-emacs-profile "doom")
+ chemacs-current-emacs-profile "doom"
+ evil-want-C-u-scroll nil
+ auto-hscroll-mode 'current-line
+ aw-keys '(?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9) ; ace-windows instead of characters shows number
+ default-input-method 'russian-computer
+ tab-width 4
+ apropos-sort-by-scores t)
+
+(after! dumb-jump
+  ;; https://github.com/jacktasia/dumb-jump#emacs-options
+  (setq dumb-jump-force-searcher 'rg))
+
+(after! which-key
+  (setq
+   which-key-show-early-on-C-h t
+   which-key-idle-delay 1.0
+   which-key-idle-secondary-delay 0.2)
+  (which-key-mode))
+
+;; disable nonsensical keys
+(dolist (key '("s-n" "s-p" "s-q" "s-m" "C-x C-c"))
+  (unbind-key (kbd key)))
 
 (map! :leader
       (:when (featurep! :completion vertico)
@@ -90,7 +112,7 @@
       "nR" #'narrow-to-region-indirect-buffer
       "nF" #'narrow-to-defun-indirect-buffer)
 
-(center-frame-horizontally)
+(center-frame-horizontally nil 85)
 (fringe-mode '(6 . 0))
 
 ;; disable global-hl-line

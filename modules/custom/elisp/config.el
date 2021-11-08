@@ -4,6 +4,7 @@
   :hook (paradox-menu-mode . paradox-menu-mode--set-keys)
   :init
   (paradox-enable)
+  (setq paradox-column-width-package 30)
   (map! :leader "hdpl" #'list-packages))
 
 (after! elisp-mode
