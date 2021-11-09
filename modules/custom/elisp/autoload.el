@@ -22,3 +22,15 @@ Requires smartparens because all movement is done using `sp-up-sexp'."
        (plist-get (or (sp-get-enclosing-sexp)
                       (sp-get-expression)) :end))
       (call-interactively 'eros-eval-last-sexp))))
+
+;;;###autoload
+(defun pp-eval-current (&optional arg)
+  "Like pp-eval-last-sexp, but for current"
+  (interactive "p")
+  (let ((evil-move-beyond-eol t))
+    ;; evil-move-beyond-eol disables the evil advices around eval-last-sexp
+    (save-excursion
+      (goto-char
+       (plist-get (or (sp-get-enclosing-sexp)
+                      (sp-get-expression)) :end))
+      (call-interactively 'pp-eval-last-sexp))))

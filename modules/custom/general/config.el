@@ -40,11 +40,6 @@
 
   (remove-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy))
 
-(after! embark
-  (map! :leader
-        "a" nil ; liberate the top level binding for other things
-        "aa" #'embark-act))
-
 (after! ibuf-ext
   (setq
    ibuffer-old-time 8 ; buffer considered old after that many hours

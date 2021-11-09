@@ -10,11 +10,10 @@
         "hdd" nil ; muscle memory is still strong
         )
 
-  (after! elisp-mode
+  (after! emacs-lisp-mode
     (map! :localleader
           :map emacs-lisp-mode-map
-          :prefix "h"
-          "h" #'helpful-at-point))
+          "hh" #'helpful-at-point))
 
   (global-set-key (kbd "C-h k") #'helpful-key)
 

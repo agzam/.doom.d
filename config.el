@@ -74,7 +74,7 @@
  which-key-idle-secondary-delay 0.2
  chemacs-current-emacs-profile "doom"
  evil-want-C-u-scroll nil
- auto-hscroll-mode 'current-line
+ ;; auto-hscroll-mode 'current-line
  aw-keys '(?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9) ; ace-windows instead of characters shows number
  default-input-method 'russian-computer
  tab-width 4

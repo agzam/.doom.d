@@ -28,10 +28,15 @@
            "e" #'eval-last-sexp
            "r" #'eval-region
            "l" #'load-library
-           "c" #'eval-current-form-sp)
+           "c" #'eval-current-form-sp
+           "p" #'pp-eval-current)
           (:prefix ("g" . "goto")
            "f" #'find-function
            "v" #'find-variable
            "l" #'find-library
            "d" #'xref-find-definitions
            "D" #'xref-find-definitions-other-window))))
+
+(after! debug
+  (map! :map debugger-mode-map
+        :n "e" #'debugger-eval-expression))

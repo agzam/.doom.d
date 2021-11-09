@@ -1,7 +1,6 @@
 ;;; custom/version-control/config.el -*- lexical-binding: t; -*-
 
 (use-package! magit
-  :commands magit-file-delete
   :defer-incrementally (dash f s with-editor git-commit package eieio transient)
   :init
   ;; Must be set early to prevent ~/.emacs.d/transient from being created
@@ -67,9 +66,7 @@
 
   ;; who cares if tags not displayed in magit-refs buffer?
   (remove-hook 'magit-refs-sections-hook 'magit-insert-tags)
-  (add-hook 'magit-process-mode-hook #'goto-address-mode)
-
-  (map! :leader "gs" #'magit-status))
+  (add-hook 'magit-process-mode-hook #'goto-address-mode))
 
 (use-package! evil-collection-magit
   :defer t
@@ -86,18 +83,18 @@
 
   ;; Some extra vim-isms I thought were missing from upstream
   (map! :map magit-mode-map
-    "%"  #'magit-gitflow-popup
-    "zt" #'evil-scroll-line-to-top
-    "zz" #'evil-scroll-line-to-center
-    "zb" #'evil-scroll-line-to-bottom
-    "g=" #'magit-diff-default-context
-    "gi" #'forge-jump-to-issues
-    "gm" #'forge-jump-to-pullreqs
-    "l" #'evil-forward-char
-    "M-l" #'magit-log
-    "h" #'evil-backward-char
-    "M-h" #'magit-dispatch
-    "q" #'+magit/quit)
+        "%"  #'magit-gitflow-popup
+        "zt" #'evil-scroll-line-to-top
+        "zz" #'evil-scroll-line-to-center
+        "zb" #'evil-scroll-line-to-bottom
+        "g=" #'magit-diff-default-context
+        "gi" #'forge-jump-to-issues
+        "gm" #'forge-jump-to-pullreqs
+        "l" #'evil-forward-char
+        "M-l" #'magit-log
+        "h" #'evil-backward-char
+        "M-h" #'magit-dispatch
+        "q" #'+magit/quit)
 
   (map! :map transient-map "q" #'transient-quit-one
         :map transient-edit-map "q" #'transient-quit-one
@@ -229,7 +226,7 @@ ensure it is built when we actually use Forge."
     (let-alist pr-alist
       (with-current-buffer
           (format "%s___%s___%s___%s.diff" .owner .repo .num .sha)
-        (goto-line 1))))
+        (forward-line 1))))
 
   (advice-add 'github-review-save-diff :after 'github-review--after-save-diff)
 
@@ -245,14 +242,11 @@ ensure it is built when we actually use Forge."
   (map! :leader "glm" #'git-link-master-branch))
 
 (use-package! gh-notify
+  :commands (gh-notify)
   :defer t
-  :after magit
-  :init (require 'gh-notify)
   :config
+  (require 'gh-notify)
   (setq gh-notify-redraw-on-visit t)
-
-  (map! :leader "agh" #'gh-notify)
-
   (map! :map gh-notify-mode-map
         :n "RET" #'gh-notify-visit-notification
         :n "q" #'kill-buffer-and-window)

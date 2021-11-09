@@ -191,6 +191,7 @@
        :custom
        general
        spacemacsy
+       version-control
        help
        search-engine
        elisp
@@ -198,7 +199,6 @@
        dired
        modeline
        writing
-       version-control
        lsp
 
        clojure)

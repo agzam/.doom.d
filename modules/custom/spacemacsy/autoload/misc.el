@@ -35,3 +35,16 @@ narrowed to."
 (defun narrow-to-region-indirect-buffer ()
   (interactive)
   (narrow-to-indirect-buffer 'narrow-to-region "Region"))
+
+(defun init-visual-line-keys ()
+  (evil-define-minor-mode-key 'motion 'visual-line-mode "j" #'evil-next-visual-line)
+  (evil-define-minor-mode-key 'motion 'visual-line-mode "k" #'evil-previous-visual-line)
+  (evil-define-minor-mode-key 'motion 'visual-line-mode (kbd "<down>") #'evil-next-visual-line)
+  (evil-define-minor-mode-key 'motion 'visual-line-mode (kbd "<up>") #'evil-previous-visual-line))
+
+;;;###autoload
+(defun toggle-visual-line-navigation ()
+  (interactive)
+  (visual-line-mode 'toggle)
+  (init-visual-line-keys)
+  (evil-normalize-keymaps))

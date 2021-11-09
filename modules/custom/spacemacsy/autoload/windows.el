@@ -12,3 +12,8 @@
     (while (condition-case nil (windmove-right) (error nil))
       (delete-window))))
 
+(defun toggle-window-divider ()
+  (interactive)
+  (setf right-divider-width (if window-divider-mode 1 6))
+  (setf left-divider-width (if window-divider-mode 1 6))
+  (window-divider-mode 'toggle))

@@ -74,7 +74,8 @@ remains shown or hidden - whatever the previous value was."
 ;;;###autoload (autoload '+hydra/text-zoom/body "custom/spacemacsy/autoload/frames" nil t)
 (defhydra +hydra/text-zoom (:color amarath
                             :hint nil
-                            :before-exit (reset-frame-full-height))
+                            ;; :before-exit (reset-frame-full-height)
+                            )
   "
 ^Zoom^             ^Resize^
 ---------------------------------
