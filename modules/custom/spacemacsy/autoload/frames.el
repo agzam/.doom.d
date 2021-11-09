@@ -41,32 +41,52 @@ With universal argument prompts for the percentage - the horizontal screen estat
       (toggle-frame-full-height))
     (redraw-display)))
 
+(defun reset-ns-autohide-menu-bar ()
+  "In OSX frame resizing could affects ns-menu. This makes sure it
+remains shown or hidden - whatever the previous value was."
+  (when (eq system-type 'darwin)
+   (let ((val ns-auto-hide-menu-bar))
+     (setf ns-auto-hide-menu-bar (not val))
+     (setf ns-auto-hide-menu-bar val))))
+
 ;;;###autoload (autoload 'toggle-frame-full-height "custom/spacemacsy/autoload/frames" nil t)
 (defun toggle-frame-full-height ()
   "Removes the title of the current frame and stretches it out to
   the display height. To be used on a Mac."
   (interactive)
   (let ((tbh (tab-bar-height nil t)))
-    (if (frame-parameter nil 'undecorated)
-        (set-frame-parameter nil 'undecorated nil)
-      ;; reset menu
-      (setf ns-auto-hide-menu-bar (not ns-auto-hide-menu-bar))
-      (setf ns-auto-hide-menu-bar (not ns-auto-hide-menu-bar))
+    (if (frame-parameter nil 'undecorated-fullheight)
+        (progn
+          (set-frame-parameter nil 'undecorated-fullheight nil)
+          (set-frame-parameter nil 'undecorated nil))
+      (reset-ns-autohide-menu-bar)
       (progn
         (set-frame-parameter nil 'undecorated t)
+        (set-frame-parameter nil 'undecorated-fullheight t)
         (set-frame-position nil (car (frame-position)) (+ 1 tbh))
         (set-frame-height nil (- (x-display-pixel-height) (+ tbh 29)) nil :pixelwise)))
     (redraw-display)))
 
+(defun reset-frame-full-height ()
+  (toggle-frame-full-height)
+  (toggle-frame-full-height))
+
 ;;;###autoload (autoload '+hydra/text-zoom/body "custom/spacemacsy/autoload/frames" nil t)
-(defhydra +hydra/text-zoom (:hint nil :color red)
+(defhydra +hydra/text-zoom (:color amarath
+                            :hint nil
+                            :before-exit (reset-frame-full-height))
   "
-      Text zoom: _j_:zoom in, _k_:zoom out, _0_:reset
+^Zoom^             ^Resize^
+---------------------------------
+_j_: in            _h_: full-height
+_k_: out           _c_: center
+_0_: reset         _m_: maximize
+^^                 _f_: fullscreen
 "
-  ("j" doom/increase-font-size "in")
-  ("k" doom/decrease-font-size "out")
-  ("0" doom/reset-font-size "reset")
-  ("h" toggle-frame-full-height "stretch vertically" :exit t)
-  ("c" center-frame-horizontally "center frame horizontally" :exit t)
-  ("m" toggle-frame-maximized-undecorated "maximize frame" :exit t)
-  ("f" toggle-frame-fullscreen "fullscreen" :exit t))
+  ("j" doom/increase-font-size)
+  ("k" doom/decrease-font-size)
+  ("0" doom/reset-font-size)
+  ("h" toggle-frame-full-height :exit t)
+  ("c" center-frame-horizontally :exit t)
+  ("m" toggle-frame-maximized-undecorated :exit t)
+  ("f" toggle-frame-fullscreen :exit t))
