@@ -154,7 +154,8 @@
            "q" #'cider-quit
            "r" #'cider-ns-refresh
            "R" #'cider-restart
-           "B" #'+clojure/cider-switch-to-repl-buffer-and-switch-ns)
+           "B" #'+clojure/cider-switch-to-repl-buffer-and-switch-ns
+           "k" #'cider-hide-repl-buffers)
           (:prefix ("t" . "test")
            "a" #'cider-test-rerun-test
            "l" #'cider-test-run-loaded-tests
@@ -175,7 +176,8 @@
           (:prefix "s"
            "s" #'cider-switch-to-last-clojure-buffer
            "S" #'cider-switch-to-nrepl-buffer
-           "l" #'cider-clear-repl-buffers))
+           "l" #'cider-clear-repl-buffers
+           "k" #'cider-hide-repl-buffers))
          :map cider-repl-history-mode-map
          :i [return]  #'cider-repl-history-insert-and-quit
          :i "q"  #'cider-repl-history-quit

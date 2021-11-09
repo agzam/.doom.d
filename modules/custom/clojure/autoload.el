@@ -163,3 +163,14 @@ convert from JSON."
              :display
              params)
       (sp-reindent))))
+
+;;;###autoload
+(defun cider-hide-repl-buffers ()
+  (interactive)
+  (when-let (repl-buffer-win (get-buffer-window (cider-current-repl)))
+    (quit-window nil repl-buffer-win))
+  (when-let ((nrepl-buf-win (get-buffer-window
+                             (nrepl-make-buffer-name
+                              (nrepl--make-hidden-name nrepl-server-buffer-name-template)
+                              nil :no-dup))))
+    (quit-window nil nrepl-buf-win)))
