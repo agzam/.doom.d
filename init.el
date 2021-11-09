@@ -93,7 +93,7 @@
        (eval +overlay)     ; run code, run (also, repls)
        ;;gist              ; interacting with github gists
        lookup              ; navigate your code and its documentation
-       ;;lsp               ; M-x vscode
+       (lsp +peek)         ; M-x vscode
        ;; magit             ; a git porcelain for Emacs
        ;;make              ; run make tasks from Emacs
        ;;pass              ; password manager for nerds
@@ -196,8 +196,9 @@
        elisp
        colors
        dired
-       vc
        modeline
        writing
        version-control
-       )
+       lsp
+
+       clojure)

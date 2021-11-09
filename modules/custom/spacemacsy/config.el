@@ -1,8 +1,7 @@
 ;;; custom/spacemacsy/config.el -*- lexical-binding: t; -*-
 
-(use-package! hydra
-  :config
-  (map! :leader :n "zf" #'+hydra/text-zoom/body))
+(after! hydra
+ (map! :leader :n "zf" #'+hydra/text-zoom/body))
 
 ;;;;;;;;;;;;;
 ;; windows ;;

@@ -13,7 +13,7 @@
         treemacs-last-error-persist-file (concat doom-cache-dir "treemacs-last-error-persist"))
   :config
   (map! :leader "ft" #'treemacs)
-  (treemacs-resize-icons 16)
+  (after! dired (treemacs-resize-icons 16))
   (treemacs-follow-mode 1)
 
   (after! winum

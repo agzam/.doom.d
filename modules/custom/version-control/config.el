@@ -67,7 +67,9 @@
 
   ;; who cares if tags not displayed in magit-refs buffer?
   (remove-hook 'magit-refs-sections-hook 'magit-insert-tags)
-  (add-hook 'magit-process-mode-hook #'goto-address-mode))
+  (add-hook 'magit-process-mode-hook #'goto-address-mode)
+
+  (map! :leader "gs" #'magit-status))
 
 (use-package! evil-collection-magit
   :defer t
@@ -291,8 +293,10 @@ ensure it is built when we actually use Forge."
 
 (use-package! code-review
   :after (magit gh-notify)
+  :init
+  (setq code-review-db-database-file
+        (concat doom-etc-dir "code-review-db-file.sqlite"))
   :config
-
   (after! (magit forge gh-notify)
     (map! :map (magit-status-mode-map
                 forge-topic-mode-map

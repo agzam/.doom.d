@@ -44,3 +44,27 @@
   (map! :leader
         "a" nil ; liberate the top level binding for other things
         "aa" #'embark-act))
+
+(after! ibuf-ext
+  (setq
+   ibuffer-old-time 8 ; buffer considered old after that many hours
+   ibuffer-group-buffers-by 'projects
+   ibuffer-expert t
+   ibuffer-show-empty-filter-groups nil)
+
+  (define-ibuffer-filter unsaved-file-buffers
+      "Toggle current view to buffers whose file is unsaved."
+    (:description "file is unsaved")
+    (ignore qualifier)
+    (and (buffer-local-value 'buffer-file-name buf)
+         (buffer-modified-p buf)))
+
+  (define-ibuffer-filter file-buffers
+      "Only show buffers backed by a file."
+    (:description "file buffers")
+    (ignore qualifier)
+    (buffer-local-value 'buffer-file-name buf))
+
+  (map! :map ibuffer-mode-map
+        :n "su" #'ibuffer-filter-by-unsaved-file-buffers
+        :n "sF" #'ibuffer-filter-by-file-buffers))

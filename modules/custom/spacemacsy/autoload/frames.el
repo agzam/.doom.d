@@ -13,12 +13,13 @@
          (display-width (nth 2 geom))
          (cut (if on?
                   (if ns-auto-hide-menu-bar 26 50)
-                (if ns-auto-hide-menu-bar 4 26))))
+                (if ns-auto-hide-menu-bar 4 26)))
+         (header-h (+ (tab-bar-height nil t) cut)))
     (set-frame-position frame x y)
     (set-frame-parameter frame 'fullscreen-restore 'maximized)
     (set-frame-parameter nil 'fullscreen 'maximized)
     (set-frame-parameter frame 'undecorated (not on?))
-    (set-frame-height frame (- display-height cut) nil t)
+    (set-frame-height frame (- display-height header-h) nil t)
     (set-frame-width frame (- display-width 20) nil t)
     (set-frame-position frame x y)))
 
@@ -45,10 +46,27 @@ With universal argument prompts for the percentage - the horizontal screen estat
   "Removes the title of the current frame and stretches it out to
   the display height. To be used on a Mac."
   (interactive)
-  (if (frame-parameter nil 'undecorated)
-      (set-frame-parameter nil 'undecorated nil)
-    (progn
-      (set-frame-parameter nil 'undecorated t)
-      (set-frame-position nil (car (frame-position)) 0)
-      (set-frame-height nil (- (x-display-pixel-height) 29) nil :pixelwise)))
-  (redraw-display))
+  (let ((tbh (tab-bar-height nil t)))
+    (if (frame-parameter nil 'undecorated)
+        (set-frame-parameter nil 'undecorated nil)
+      ;; reset menu
+      (setf ns-auto-hide-menu-bar (not ns-auto-hide-menu-bar))
+      (setf ns-auto-hide-menu-bar (not ns-auto-hide-menu-bar))
+      (progn
+        (set-frame-parameter nil 'undecorated t)
+        (set-frame-position nil (car (frame-position)) (+ 1 tbh))
+        (set-frame-height nil (- (x-display-pixel-height) (+ tbh 29)) nil :pixelwise)))
+    (redraw-display)))
+
+;;;###autoload (autoload '+hydra/text-zoom/body "custom/spacemacsy/autoload/frames" nil t)
+(defhydra +hydra/text-zoom (:hint nil :color red)
+  "
+      Text zoom: _j_:zoom in, _k_:zoom out, _0_:reset
+"
+  ("j" doom/increase-font-size "in")
+  ("k" doom/decrease-font-size "out")
+  ("0" doom/reset-font-size "reset")
+  ("h" toggle-frame-full-height "stretch vertically" :exit t)
+  ("c" center-frame-horizontally "center frame horizontally" :exit t)
+  ("m" toggle-frame-maximized-undecorated "maximize frame" :exit t)
+  ("f" toggle-frame-fullscreen "fullscreen" :exit t))

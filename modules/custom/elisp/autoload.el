@@ -21,4 +21,4 @@ Requires smartparens because all movement is done using `sp-up-sexp'."
       (goto-char
        (plist-get (or (sp-get-enclosing-sexp)
                       (sp-get-expression)) :end))
-      (call-interactively 'eval-last-sexp))))
+      (call-interactively 'eros-eval-last-sexp))))

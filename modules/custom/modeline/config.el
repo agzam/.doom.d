@@ -5,7 +5,7 @@
   (require 'doom-modeline)
   (doom-modeline-def-modeline
    'agcustom
-   '(bar persp-name workspace-name buffer-info)
+   '(bar persp-name window-number buffer-info)
    '(;; battery
      ;; grip
      ;; irc mu4e debug
