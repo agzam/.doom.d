@@ -191,6 +191,7 @@
        :custom
        general
        spacemacsy
+       layouts
        version-control
        help
        search-engine
