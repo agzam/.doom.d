@@ -75,12 +75,14 @@
  chemacs-current-emacs-profile "doom"
  evil-want-C-u-scroll nil
  ;; auto-hscroll-mode 'current-line
- aw-keys '(?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9) ; ace-windows instead of characters shows number
  default-input-method 'russian-computer
  tab-width 4
  apropos-sort-by-scores t
-
  doom-font-increment 1)
+
+(after! ace-window
+  ;; ace-windows instead of characters shows number
+  (setq aw-keys '(?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9)))
 
 (after! dumb-jump
   ;; https://github.com/jacktasia/dumb-jump#emacs-options

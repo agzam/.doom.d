@@ -3,23 +3,8 @@
 (after! projectile
   (pushnew! projectile-project-root-files "project.clj" "build.boot" "deps.edn"))
 
-(defvar clj-modes
-  '(clojure-mode
-    clojurec-mode
-    clojurescript-mode
-    clojurex-mode
-    cider-repl-mode
-    cider-clojure-interaction-mode))
-
 (use-package! clojure-mode
   :config
-  (map! :localleader :map (clojure-mode-map
-                           clojurescript-mode-map)
-        (:prefix "j"
-         "j" #'cider-jack-in
-         "s" #'cider-jack-in-cljs
-         "a" #'cider-jack-in-clj&cljs))
-
   (add-hook! '(clojure-mode-local-vars-hook
                clojurec-mode-local-vars-hook
                clojurescript-mode-local-vars-hook)
@@ -28,10 +13,14 @@
     #'lsp!)
 
   (after! lsp-clojure
-    (dolist (m clj-modes)
+    (dolist (m '(clojure-mode
+                 clojurec-mode
+                 clojurescript-mode
+                 clojurex-mode))
       (add-to-list 'lsp-language-id-configuration (cons m "clojure")))))
 
 (use-package! cider
+  :hook (clojure-mode-local-vars . cider-mode)
   :init
   (after! clojure-mode
     (set-repl-handler! 'clojure-mode #'+clojure/open-repl :persist t)
@@ -111,12 +100,14 @@
   (map! (:localleader
          (:map (clojure-mode-map clojurescript-mode-map)
           ","  #'clj-fully-qualified-symbol-at-point
-          "'"  #'cider-jack-in-clj
-          "\"" #'cider-jack-in-cljs
-          "c"  #'cider-connect-clj
-          "C"  #'cider-connect-cljs
           "m"  #'cider-macroexpand-1
           "M"  #'cider-macroexpand-all
+          (:prefix ("j" . "jack-in")
+           "j" #'cider-jack-in
+           "s" #'cider-jack-in-cljs
+           "a" #'cider-jack-in-clj&cljs
+           "c"  #'cider-connect-clj
+           "C"  #'cider-connect-cljs)
           (:prefix ("d" . "debug")
            "f" #'cider-debug-defun-at-point)
           (:prefix ("e" . "eval")
@@ -143,7 +134,7 @@
            "w" #'cider-clojuredocs-web)
           (:prefix ("i" . "inspect")
            "e" #'cider-enlighten-mode
-           "i" #'cider-inspect
+           "I" #'cider-inspect
            "r" #'cider-inspect-last-result)
           (:prefix ("n" . "namespace")
            "n" #'cider-browse-ns
@@ -203,4 +194,4 @@
         :desc "refactor" "R" #'hydra-cljr-help-menu/body))
 
 (use-package! clojars
-  :after (clojure-mode))
+  :commands (clojure-mode))

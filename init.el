@@ -201,5 +201,4 @@
        modeline
        writing
        lsp
-
        clojure)
