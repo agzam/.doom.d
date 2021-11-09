@@ -3,8 +3,23 @@
 (after! projectile
   (pushnew! projectile-project-root-files "project.clj" "build.boot" "deps.edn"))
 
+(defvar clj-modes
+  '(clojure-mode
+    clojurec-mode
+    clojurescript-mode
+    clojurex-mode
+    cider-repl-mode
+    cider-clojure-interaction-mode))
+
 (use-package! clojure-mode
   :config
+  (map! :localleader :map (clojure-mode-map
+                           clojurescript-mode-map)
+        (:prefix "j"
+         "j" #'cider-jack-in
+         "s" #'cider-jack-in-cljs
+         "a" #'cider-jack-in-clj&cljs))
+
   (add-hook! '(clojure-mode-local-vars-hook
                clojurec-mode-local-vars-hook
                clojurescript-mode-local-vars-hook)
@@ -13,10 +28,7 @@
     #'lsp!)
 
   (after! lsp-clojure
-    (dolist (m '(clojure-mode
-                 clojurec-mode
-                 clojurescript-mode
-                 clojurex-mode))
+    (dolist (m clj-modes)
       (add-to-list 'lsp-language-id-configuration (cons m "clojure")))))
 
 (use-package! cider
@@ -36,7 +48,7 @@
      ("^\\*cider-repl" :quit nil :ttl nil)
      ("^\\*cider-repl-history" :vslot 2 :ttl nil)))
 
-  (setq nrepl-hide-special-buffers t
+  (setq nrepl-hide-special-buffers nil
         nrepl-log-messages nil
         cider-font-lock-dynamically '(macro core function var deprecated)
         cider-overlays-use-font-lock t
@@ -61,6 +73,30 @@
         ;; See https://github.com/clojure-emacs/cider/issues/1872
         cider-repl-pop-to-buffer-on-connect 'display-only)
 
+  (setq
+   clojure-enable-fancify-symbols nil
+   clojure-align-forms-automatically nil
+   cljr-favor-prefix-notation nil
+   cider-repl-display-in-current-window nil
+   cider-comment-prefix  " \n;; => "
+   cider-inject-dependencies-at-jack-in t
+
+   cider-eldoc-display-for-symbol-at-point nil
+   cider-eldoc-display-context-dependent-info nil)
+
+  (add-to-list
+   'display-buffer-alist
+   `(,(rx bos (or "*cider-repl"
+                  "*nrepl-server"
+                  "*cider-test-report*"
+                  "*cider-error"))
+     (display-buffer-reuse-window
+      display-buffer-in-direction)
+     (direction . right)
+     (window . root)
+     (dedicated . nil)
+     (window-width . 0.25)))
+
   ;; When in cider-debug-mode, override evil keys to not interfere with debug keys
   (after! evil
     (add-hook! cider--debug-mode
@@ -74,6 +110,7 @@
 
   (map! (:localleader
          (:map (clojure-mode-map clojurescript-mode-map)
+          ","  #'clj-fully-qualified-symbol-at-point
           "'"  #'cider-jack-in-clj
           "\"" #'cider-jack-in-cljs
           "c"  #'cider-connect-clj
@@ -81,11 +118,13 @@
           "m"  #'cider-macroexpand-1
           "M"  #'cider-macroexpand-all
           (:prefix ("d" . "debug")
-           "d" #'cider-debug-defun-at-point)
+           "f" #'cider-debug-defun-at-point)
           (:prefix ("e" . "eval")
            "b" #'cider-eval-buffer
            "d" #'cider-eval-defun-at-point
            "D" #'cider-insert-defun-in-repl
+           "p" #'cider-pprint-eval-last-sexp
+           ";" #'cider-pprint-eval-last-sexp-to-comment
            "e" #'cider-eval-last-sexp
            "E" #'cider-insert-last-sexp-in-repl
            "r" #'cider-eval-region
@@ -116,16 +155,15 @@
            "d" #'cider-pprint-eval-defun-at-point
            "D" #'cider-pprint-eval-defun-to-comment
            "r" #'cider-pprint-eval-last-sexp-to-repl)
-          (:prefix ("r" . "repl")
+          (:prefix ("s" . "repl")
+           "s" #'cider-switch-to-repl-buffer
+           "S" #'cider-switch-to-nrepl-buffer
+           "l" #'cider-clear-repl-buffers
            "n" #'cider-repl-set-ns
            "q" #'cider-quit
            "r" #'cider-ns-refresh
            "R" #'cider-restart
-           "b" #'cider-switch-to-repl-buffer
-           "B" #'+clojure/cider-switch-to-repl-buffer-and-switch-ns
-           "c" #'cider-find-and-clear-repl-output
-           "l" #'cider-load-buffer
-           "L" #'cider-load-buffer-and-switch-to-repl-buffer)
+           "B" #'+clojure/cider-switch-to-repl-buffer-and-switch-ns)
           (:prefix ("t" . "test")
            "a" #'cider-test-rerun-test
            "l" #'cider-test-run-loaded-tests
@@ -134,9 +172,7 @@
            "r" #'cider-test-rerun-failed-tests
            "s" #'cider-test-run-ns-tests-with-filters
            "t" #'cider-test-run-test)))
-
-        (:when (featurep! :editor evil +everywhere)
-         :map cider-repl-mode-map
+        (:map cider-repl-mode-map
          :i [S-return] #'cider-repl-newline-and-indent
          :i [M-return] #'cider-repl-return
          (:localleader
@@ -144,7 +180,11 @@
           "q" #'cider-quit
           "r" #'cider-ns-refresh
           "R" #'cider-restart
-          "c" #'cider-repl-clear-buffer)
+          "c" #'cider-repl-clear-buffer
+          (:prefix "s"
+           "s" #'cider-switch-to-last-clojure-buffer
+           "S" #'cider-switch-to-nrepl-buffer
+           "l" #'cider-clear-repl-buffers))
          :map cider-repl-history-mode-map
          :i [return]  #'cider-repl-history-insert-and-quit
          :i "q"  #'cider-repl-history-quit
@@ -161,3 +201,6 @@
   (map! :map clojure-mode-map
         :localleader
         :desc "refactor" "R" #'hydra-cljr-help-menu/body))
+
+(use-package! clojars
+  :after (clojure-mode))

@@ -4,5 +4,6 @@
 (package! clojure-mode)
 (package! cider)
 (package! clj-refactor)
+(package! clojars)
 
 ;; (package! flycheck-clojure)

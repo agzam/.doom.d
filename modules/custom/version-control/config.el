@@ -64,6 +64,11 @@
   ;; the window after invoking `magit-status-here'.
   (advice-add #'magit-status-here :after #'doom-recenter-a)
 
+  (dolist (v '((magit-pull "--rebase")
+               (magit-show-refs "--sort=-committerdate")
+               (magit-fetch "--prune")))
+    (add-to-list 'transient-values v))
+
   ;; who cares if tags not displayed in magit-refs buffer?
   (remove-hook 'magit-refs-sections-hook 'magit-insert-tags)
   (add-hook 'magit-process-mode-hook #'goto-address-mode))
@@ -84,9 +89,6 @@
   ;; Some extra vim-isms I thought were missing from upstream
   (map! :map magit-mode-map
         "%"  #'magit-gitflow-popup
-        "zt" #'evil-scroll-line-to-top
-        "zz" #'evil-scroll-line-to-center
-        "zb" #'evil-scroll-line-to-bottom
         "g=" #'magit-diff-default-context
         "gi" #'forge-jump-to-issues
         "gm" #'forge-jump-to-pullreqs
@@ -103,10 +105,8 @@
   (evil-define-key* 'normal magit-revision-mode-map
     "q" #'magit-log-bury-buffer)
 
-  ;; Fix these keybinds because they are blacklisted
-  ;; REVIEW There must be a better way to exclude particular evil-collection
-  ;;        modules from the blacklist.
   (map! (:map magit-mode-map
+         :nv "z" #'magit-stash
          :nv "q" #'+magit/quit
          :nv "Q" #'+magit/quit-all
          :nv "]" #'magit-section-forward-sibling

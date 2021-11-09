@@ -53,7 +53,8 @@
 
       (:prefix "g"
        "j" #'evil-show-jumps
-       "s" #'magit-status)
+       "s" #'magit-status
+       "f" #'magit-file-dispatch)
 
       (:prefix "s"
        "j" #'imenu)
