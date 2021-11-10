@@ -21,24 +21,44 @@
   (vertico-posframe-mode +1)
   (setq marginalia-margin-threshold 300))
 
-;; (setq-local vertico-extensions-path (concat straight-base-dir "straight/" straight-build-dir "/vertico/extensions"))
+;; Add vertico extensions load path
+(add-to-list 'load-path (format "%sstraight/build-%s/vertico/extensions/" (file-truename doom-local-dir) emacs-version))
 
 (use-package! vertico-repeat
   :after vertico
-  :load-path "~/.emacs-profiles/.emacs-doom.d/.local/straight/build-28.0.60/vertico/extensions/"
-  ;; (format "%s" straight-base-dir "straight/" straight-build-dir "/vertico/extensions")
   :config
-  (map! :leader "rl" #'vertico-repeat))
+  (map! :leader "rl" #'vertico-repeat)
+  (add-hook! minibuffer-setup #'vertico-repeat-save))
+
+(use-package! vertico-quick
+  :after vertico
+  :config
+  (map! :map vertico-map "C-'" #'vertico-quick-insert))
+
+(use-package! vertico-directory
+  :after vertico
+  :config
+  (map! :map vertico-map "C-h" #'vertico-directory-delete-word))
+
+(use-package! vertico-grid
+  :after vertico
+  :config
+  (map! :map vertico-map
+        "C-c g" #'vertico-grid-mode
+        "M-h" #'vertico-grid-left
+        "M-l" #'vertico-grid-right)
+  (add-hook! minibuffer-exit
+    (defun vertico-grid-mode-off ()
+      (vertico-grid-mode -1))))
+
+(use-package! vertico-buffer :after vertico)
 
 (after! vertico
   (map! :map vertico-map
         "C-e" #'vertico-scroll-up
         "C-y" #'vertico-scroll-down
-
-        ;; Doom's vertico module screws up the backspace
-        [backspace] nil)
-
-  (remove-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy))
+        ;; unbind universal argument
+        "C-u" nil))
 
 (after! ibuf-ext
   (setq

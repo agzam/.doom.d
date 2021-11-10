@@ -100,5 +100,7 @@
     (put 'cursor 'evil-emacs-color "SkyBlue2")
     (put 'cursor 'evil-normal-color "DarkGoldenrod2")))
 
-;; often conflicts with doom-local-leader
-(after! evil-maps (unbind-key (kbd ",") evil-motion-state-map))
+(after! evil-maps
+  ;; often conflicts with doom-local-leader
+  (unbind-key (kbd ",") evil-motion-state-map)
+  (unbind-key (kbd "C-u") evil-motion-state-map))
