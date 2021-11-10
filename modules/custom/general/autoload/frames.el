@@ -79,13 +79,13 @@ remains shown or hidden - whatever the previous value was."
   "
 ^Zoom^             ^Resize^
 ---------------------------------
-_j_: in            _h_: full-height
-_k_: out           _c_: center
+_j_: decrease       _h_: full-height
+_k_: increase      _c_: center
 _0_: reset         _m_: maximize
 ^^                 _f_: fullscreen
 "
-  ("j" doom/increase-font-size)
-  ("k" doom/decrease-font-size)
+  ("j" doom/decrease-font-size)
+  ("k" doom/increase-font-size)
   ("0" doom/reset-font-size)
   ("h" toggle-frame-full-height :exit t)
   ("c" center-frame-horizontally :exit t)

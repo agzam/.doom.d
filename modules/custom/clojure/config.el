@@ -88,7 +88,7 @@
 
   ;; When in cider-debug-mode, override evil keys to not interfere with debug keys
   (after! evil
-    (add-hook! cider--debug-mode
+    (add-hook! 'cider--debug-mode-hook
       (defun +clojure--cider-setup-debug ()
         "Setup cider debug to override evil keys cleanly"
         (evil-make-overriding-map cider--debug-mode-map 'normal)

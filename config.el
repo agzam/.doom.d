@@ -107,15 +107,6 @@
 
 (map! :v "s" #'evil-surround-region)
 
-;; narrowing
-(put 'narrow-to-region 'disabled nil)
-(map! :leader
-      "nr" #'narrow-to-region
-      "nf" #'narrow-to-defun
-      "nw" #'widen
-      "nR" #'narrow-to-region-indirect-buffer
-      "nF" #'narrow-to-defun-indirect-buffer)
-
 (center-frame-horizontally nil 85)
 (fringe-mode '(6 . 0))
 
