@@ -1,6 +1,6 @@
-;;; custom/spacemacsy/autoload/frames.el -*- lexical-binding: t; -*-
+;;; custom/general/autoload/frames.el -*- lexical-binding: t; -*-
 
-;;;###autoload (autoload 'toggle-frame-maximized-undecorated "custom/spacemacsy/autoload/frames" nil t)
+;;;###autoload
 (defun toggle-frame-maximized-undecorated ()
   (interactive)
   (let* ((frame (selected-frame))
@@ -23,11 +23,12 @@
     (set-frame-width frame (- display-width 20) nil t)
     (set-frame-position frame x y)))
 
-;;;###autoload (autoload 'center-frame-horizontally "custom/spacemacsy/autoload/frames" nil t)
+;;;###autoload
 (defun center-frame-horizontally (&optional prompt percentage)
   "Positions the current frame in the middle of the screen,
-vertically stretching it from top to bottom. Useful on ultra-wide monitor.
-With universal argument prompts for the percentage - the horizontal screen estate the frame should occupy."
+vertically stretching it from top to bottom. Useful on ultra-wide
+monitor.  With universal argument prompts for the percentage -
+the horizontal screen estate the frame should occupy."
   (interactive "P")
   (let* ((stretch-ratio (string-to-number
                          (if prompt
@@ -42,14 +43,14 @@ With universal argument prompts for the percentage - the horizontal screen estat
     (redraw-display)))
 
 (defun reset-ns-autohide-menu-bar ()
-  "In OSX frame resizing could affects ns-menu. This makes sure it
-remains shown or hidden - whatever the previous value was."
+  "In OSX frame resizing could affects ns-menu. This makes sure
+it remains shown or hidden - whatever the previous value was."
   (when (eq system-type 'darwin)
    (let ((val ns-auto-hide-menu-bar))
      (setf ns-auto-hide-menu-bar (not val))
      (setf ns-auto-hide-menu-bar val))))
 
-;;;###autoload (autoload 'toggle-frame-full-height "custom/spacemacsy/autoload/frames" nil t)
+;;;###autoload
 (defun toggle-frame-full-height ()
   "Removes the title of the current frame and stretches it out to
   the display height. To be used on a Mac."
@@ -71,7 +72,7 @@ remains shown or hidden - whatever the previous value was."
   (toggle-frame-full-height)
   (toggle-frame-full-height))
 
-;;;###autoload (autoload '+hydra/text-zoom/body "custom/spacemacsy/autoload/frames" nil t)
+;;;###autoload
 (defhydra +hydra/text-zoom (:color amarath
                             :hint nil
                             ;; :before-exit (reset-frame-full-height)

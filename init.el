@@ -193,7 +193,6 @@
        colors
        layouts
        version-control
-       help
        elisp
        search-engine
        dired

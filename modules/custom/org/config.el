@@ -64,6 +64,7 @@
   (add-hook! 'org-mode-hook #'org-indent-mode))
 
 (use-package! org-roam
+  :after org
   :init
   (setq
    org-roam-v2-ack t
@@ -131,7 +132,27 @@
         "rf" #'org-roam-node-find
         "rl" #'org-roam-buffer-toggle)))))
 
+(use-package! org-roam-ui
+  :after org-roam
+  :init
+  (setq org-roam-ui-port 8081
+        org-roam-ui-sync-theme t
+        org-roam-ui-follow t
+        org-roam-ui-update-on-save t
+        org-roam-ui-open-on-start nil)
+
+  :config
+  (add-to-list
+   'display-buffer-alist
+   '("\\*org-roam-ui\\*"
+     (display-buffer-reuse-window
+      display-buffer-in-direction)
+     (direction . right)
+     (window . root)
+     (window-width . 0.4))))
+
 (use-package! evil-org
+  :after org
   :hook (org-mode . evil-org-mode)
   :hook (org-capture-mode . evil-insert-state)
   :init
@@ -211,6 +232,7 @@
             CSdown   (cmd! (org-eval-in-calendar '(calendar-forward-year 1)))))))
 
 (use-package! org-appear
+  :after org
   :hook (org-mode . org-appear-mode)
   :config
   (setq org-appear-delay 0.5
@@ -219,6 +241,7 @@
         org-appear-autosubmarkers t))
 
 (use-package! org-superstar
+  :after org
   :hook (org-mode . org-superstar-mode)
   :config
   (setq org-superstar-leading-bullet ?\s
@@ -231,24 +254,3 @@
         org-superstar-item-bullet-alist '((?* . ?⋆)
                                           (?+ . ?◦)
                                           (?- . ?•))))
-
-
-
-(use-package! org-roam-ui
-  :after org-roam
-  :init
-  (setq org-roam-ui-port 8081
-        org-roam-ui-sync-theme t
-        org-roam-ui-follow t
-        org-roam-ui-update-on-save t
-        org-roam-ui-open-on-start nil)
-
-  :config
-  (add-to-list
-   'display-buffer-alist
-   '("\\*org-roam-ui\\*"
-     (display-buffer-reuse-window
-      display-buffer-in-direction)
-     (direction . right)
-     (window . root)
-     (window-width . 0.4))))

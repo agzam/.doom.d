@@ -27,8 +27,21 @@
 
   (map! :localleader
         :map lsp-mode-map
-        "ge" #'lsp-ui-flycheck-list+)
+        "ge" #'lsp-ui-flycheck-list+
+        (:prefix ("a" . "code actions")
+         "a" #'lsp-execute-code-action)
+        (:prefix ("f" . "format")
+         "b" #'lsp-format-buffer
+         "r" #'lsp-format-region
+         "i" #'lsp-organize-imports)
+        (:prefix ("h" . "help")
+         "h" #'lsp-describe-thing-at-point)
+        (:prefix ("t". "toggle")
+         "h" #'lsp--document-highlight
+         "l" #'lsp-lens-mode)
+        (:prefix ("x" . "text/code")
+         "l" #'lsp-lens-show
+         "L" #'lsp-lens-hide))
 
   (map! :map lsp-ui-flycheck-list-mode-map
-        :nv "q" #'kill-buffer-and-window)
-  )
+        :nv "q" #'kill-buffer-and-window))

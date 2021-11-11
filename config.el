@@ -110,6 +110,12 @@
 (center-frame-horizontally nil 85)
 (fringe-mode '(6 . 0))
 
+(global-visual-line-mode +1)
+(init-visual-line-keys)
+
+(advice-remove 'evil-open-above #'+evil--insert-newline-above-and-respect-comments-a)
+(advice-remove 'newline-and-indent #'+default--newline-indent-and-continue-comments-a)
+
 ;; disable global-hl-line
 ;; oddly that's the way: github.com/hlissner/doom-emacs/issues/4206
 (remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)

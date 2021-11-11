@@ -1,6 +1,7 @@
 ;;; custom/version-control/config.el -*- lexical-binding: t; -*-
 
 (use-package! magit
+  :commands magit-file-delete
   :defer-incrementally (dash f s with-editor git-commit package eieio transient)
   :init
   ;; Must be set early to prevent ~/.emacs.d/transient from being created
@@ -8,8 +9,13 @@
         transient-values-file  (concat doom-etc-dir "transient/values")
         transient-history-file (concat doom-etc-dir "transient/history"))
   :config
-  (add-to-list 'doom-debug-variables 'magit-refresh-verbose)
+  ;; otherwise starts magit in evil-emacs-state
+  (dolist (m '(magit-status-mode
+               magit-refs-mode
+               magit-revision-mode))
+    (evil-set-initial-state m nil))
 
+  (add-to-list 'doom-debug-variables 'magit-refresh-verbose)
 
   ;; The default location for git-credential-cache is in
   ;; ~/.cache/git/credential. However, if ~/.git-credential-cache/ exists, then
@@ -33,7 +39,6 @@
    magit-delete-by-moving-to-trash nil
    magit-branch-rename-push-target nil ; do not push renamed/deleted branch to remote automatically
    magit-diff-refine-hunk 'all
-   ;; transient-values-file "~/.spacemacs.d/magit_transient_values.el"
 
    ;; https://github.com/magit/ghub/issues/81
    ;; gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"
@@ -71,9 +76,11 @@
 
   ;; who cares if tags not displayed in magit-refs buffer?
   (remove-hook 'magit-refs-sections-hook 'magit-insert-tags)
-  (add-hook 'magit-process-mode-hook #'goto-address-mode))
+  ;; (remove-hook 'magit-process-mode-hook #'goto-address-mode)
+  )
 
 (use-package! evil-collection-magit
+  :when (featurep! :editor evil +everywhere)
   :defer t
   :init (defvar evil-collection-magit-use-z-for-folds t)
   :config
@@ -85,18 +92,6 @@
   ;; q is enough; ESC is way too easy for a vimmer to accidentally press,
   ;; especially when traversing modes in magit buffers.
   (evil-define-key* 'normal magit-status-mode-map [escape] nil)
-
-  ;; Some extra vim-isms I thought were missing from upstream
-  (map! :map magit-mode-map
-        "%"  #'magit-gitflow-popup
-        "g=" #'magit-diff-default-context
-        "gi" #'forge-jump-to-issues
-        "gm" #'forge-jump-to-pullreqs
-        "l" #'evil-forward-char
-        "M-l" #'magit-log
-        "h" #'evil-backward-char
-        "M-h" #'magit-dispatch
-        "q" #'+magit/quit)
 
   (map! :map transient-map "q" #'transient-quit-one
         :map transient-edit-map "q" #'transient-quit-one
@@ -112,7 +107,9 @@
          :nv "]" #'magit-section-forward-sibling
          :nv "[" #'magit-section-backward-sibling
          :nv "gr" #'magit-refresh
-         :nv "gR" #'magit-refresh-all)
+         :nv "gR" #'magit-refresh-all
+         :nv "l" #'evil-forward-char
+         "M-l" #'magit-log)
         (:map magit-status-mode-map
          :nv "gz" #'magit-refresh)
         (:map magit-diff-mode-map
@@ -193,6 +190,7 @@ ensure it is built when we actually use Forge."
             (add-hook hook #'forge-bug-reference-setup)))))))
 
 (use-package! gist
+  :defer t
   :config
   (setq
    gist-view-gist t ; view your Gist using `browse-url` after it is created
@@ -238,6 +236,7 @@ ensure it is built when we actually use Forge."
         github-review-view-comments-in-code-lines-outdated t))
 
 (use-package! git-link
+  :after magit
   :config
   (map! :leader "glm" #'git-link-master-branch))
 

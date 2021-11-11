@@ -1,6 +1,7 @@
 ;;; custom/search-engine/config.el -*- lexical-binding: t; -*-
 
 (use-package! engine-mode
+  :defer t
   :init
   (progn
     (defvar search-engine-config-list nil

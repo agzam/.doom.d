@@ -4,6 +4,7 @@
   (pushnew! projectile-project-root-files "project.clj" "build.boot" "deps.edn"))
 
 (use-package! clojure-mode
+  :defer t
   :config
   (add-hook! '(clojure-mode-local-vars-hook
                clojurec-mode-local-vars-hook
@@ -20,6 +21,7 @@
       (add-to-list 'lsp-language-id-configuration (cons m "clojure")))))
 
 (use-package! cider
+  :after clojure-mode
   :hook (clojure-mode-local-vars . cider-mode)
   :init
   (after! clojure-mode
@@ -102,12 +104,6 @@
           ","  #'clj-fully-qualified-symbol-at-point
           "m"  #'cider-macroexpand-1
           "M"  #'cider-macroexpand-all
-          (:prefix ("j" . "jack-in")
-           "j" #'cider-jack-in
-           "s" #'cider-jack-in-cljs
-           "a" #'cider-jack-in-clj&cljs
-           "c"  #'cider-connect-clj
-           "C"  #'cider-connect-cljs)
           (:prefix ("d" . "debug")
            "f" #'cider-debug-defun-at-point)
           (:prefix ("e" . "eval")
@@ -136,6 +132,12 @@
            "e" #'cider-enlighten-mode
            "I" #'cider-inspect
            "r" #'cider-inspect-last-result)
+          (:prefix ("j" . "jack-in")
+           "j" #'cider-jack-in
+           "s" #'cider-jack-in-cljs
+           "a" #'cider-jack-in-clj&cljs
+           "c"  #'cider-connect-clj
+           "C"  #'cider-connect-cljs)
           (:prefix ("n" . "namespace")
            "n" #'cider-browse-ns
            "N" #'cider-browse-ns-all
@@ -164,6 +166,7 @@
            "r" #'cider-test-rerun-failed-tests
            "s" #'cider-test-run-ns-tests-with-filters
            "t" #'cider-test-run-test)))
+
         (:map cider-repl-mode-map
          :i [S-return] #'cider-repl-newline-and-indent
          :i [M-return] #'cider-repl-return
@@ -187,6 +190,7 @@
          :i "U"  #'cider-repl-history-undo-other-window)))
 
 (use-package! clj-refactor
+  :after clojure-mode
   :hook (clojure-mode . clj-refactor-mode)
   :config
   (set-lookup-handlers! 'clj-refactor-mode
@@ -196,4 +200,4 @@
         :desc "refactor" "R" #'hydra-cljr-help-menu/body))
 
 (use-package! clojars
-  :commands (clojure-mode))
+  :after clojure-mode)

@@ -1,9 +1,10 @@
-;;; custom/spacemacsy/autoload/buffers.el -*- lexical-binding: t; -*-
+;;; custom/general/autoload/buffers.el -*- lexical-binding: t; -*-
 
 (defun spacemacs/rudekill-matching-buffers (regexp &optional internal-too)
-  "Kill - WITHOUT ASKING - buffers whose name matches the specified REGEXP. See
-the `kill-matching-buffers` for grateful killing. The optional 2nd argument
-indicates whether to kill internal buffers too.
+  "Kill - WITHOUT ASKING - buffers whose name matches the
+specified REGEXP. See the `kill-matching-buffers` for grateful
+killing. The optional 2nd argument indicates whether to kill
+internal buffers too.
 
 Returns the count of killed buffers."
   (let* ((buffers (cl-remove-if-not
@@ -16,11 +17,12 @@ Returns the count of killed buffers."
     (mapc 'kill-buffer buffers)
     (length buffers)))
 
-;;;###autoload (autoload 'spacemacs/kill-matching-buffers-rudely "custom/spacemacsy/autoload/buffers" nil t)
+;;;###autoload
 (defun spacemacs/kill-matching-buffers-rudely (regexp &optional internal-too)
-  "Kill - WITHOUT ASKING - buffers whose name matches the specified REGEXP. See
-the `kill-matching-buffers` for grateful killing. The optional 2nd argument
-indicates whether to kill internal buffers too.
+  "Kill - WITHOUT ASKING - buffers whose name matches the
+specified REGEXP. See the `kill-matching-buffers` for grateful
+killing. The optional 2nd argument indicates whether to kill
+internal buffers too.
 
 Returns a message with the count of killed buffers."
   (interactive "sKill buffers matching this regular expression: \nP")
@@ -28,13 +30,13 @@ Returns a message with the count of killed buffers."
    (format "%d buffer(s) killed."
            (spacemacs/rudekill-matching-buffers regexp internal-too))))
 
-;;;###autoload (autoload 'alternate-buffer "custom/spacemacsy/autoload/buffers" nil t)
+;;;###autoload
 (defun alternate-buffer ()
   (interactive)
   (when-let ((b (evil-alternate-buffer (get-buffer-window))))
     (switch-to-buffer (car b))))
 
-;;;###autoload (autoload 'toggle-maximize-buffer "custom/spacemacsy/autoload/buffers" nil t)
+;;;###autoload
 (defun toggle-maximize-buffer ()
   "Maximize buffer"
   (interactive)
@@ -47,10 +49,11 @@ Returns a message with the count of killed buffers."
         (delete-other-windows)))))
 
 
-;;;###autoload (autoload 'switch-to-messages-buffer "custom/spacemacsy/autoload/buffers" nil t)
+;;;###autoload
 (defun switch-to-messages-buffer (&optional arg)
   "Switch to the `*Messages*' buffer.
-if prefix argument ARG is given, switch to it in an other, possibly new window."
+if prefix argument ARG is given, switch to it in an other,
+possibly new window."
   (interactive "P")
   (with-current-buffer (messages-buffer)
     (goto-char (point-max))
@@ -59,10 +62,11 @@ if prefix argument ARG is given, switch to it in an other, possibly new window."
       (switch-to-buffer (current-buffer)))
     (evil-normal-state)))
 
-;;;###autoload (autoload 'kill-this-buffer "custom/spacemacsy/autoload/buffers" nil t)
+;;;###autoload
 (defun kill-this-buffer (&optional arg)
   "Kill the current buffer.
-If the universal prefix argument is used then kill also the window."
+If the universal prefix argument is used then kill also the
+window."
   (interactive "P")
   (if (window-minibuffer-p)
       (abort-recursive-edit)

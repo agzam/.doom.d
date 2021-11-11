@@ -1,6 +1,13 @@
 ;;; custom/modeline/config.el -*- lexical-binding: t; -*-
 
 (use-package! doom-modeline
+  :unless (featurep! :ui modeline)
+  :hook (after-init . doom-modeline-mode)
+  :hook (doom-modeline-mode . column-number-mode)
+  :init
+  (unless after-init-time
+    ;; prevent flash of unstyled modeline at startup
+    (setq-default mode-line-format nil))
   :config
   (require 'doom-modeline)
   (doom-modeline-def-modeline

@@ -1,11 +1,11 @@
 ;;; custom/writing/config.el -*- lexical-binding: t; -*-
 (use-package! keytar
+  :defer 5
   :config
   (require 'keytar))
 
-(map! :leader "x" nil)
-
 (use-package! lsp-grammarly
+  :after lsp text-mode markdown-mode
   :hook ((text-mode . lsp)
          (markdown-mode . lsp))
   :init
@@ -19,8 +19,8 @@
   ;;(setq lsp-grammarly-active-modes (remove 'org-mode lsp-grammarly-active-modes))
   )
 
-
 (use-package! mw-thesaurus
+  :defer t
   :config
   (map! :map mw-thesaurus-mode-map [remap evil-record-macro] #'mw-thesaurus--quit)
   (add-hook 'mw-thesaurus-mode-hook 'variable-pitch-mode)
@@ -36,6 +36,7 @@
      (window-width . 0.3))))
 
 (use-package! sdcv-mode
+  :defer t
   :config
   (add-hook 'sdcv-mode-hook #'visual-line-mode)
 
@@ -58,6 +59,7 @@
      (window-width . 0.25))))
 
 (use-package! google-translate
+  :defer t
   :init
   (require 'google-translate)
   :functions (my-google-translate-at-point google-translate--search-tkk)
@@ -107,6 +109,7 @@
      (window-width . 0.25))))
 
 (use-package! define-it
+  :defer t
   :config
   (setq
    define-it-show-google-translate nil
@@ -129,15 +132,12 @@
      (window . root)
      (window-width . 0.25))))
 
-(map! :leader
-      "xx" #'flyspell-correct-at-point
-      "xb" #'flyspell-correct-previous)
-
 (after! ispell
   (setq flyspell-issue-message-flag nil)    ; printing a message for every word has a negative performance impact
   (setq ispell-program-name "aspell")
   ;; aspell suggestion mode
   (add-to-list 'ispell-extra-args "--sug-mode=bad-spellers")
+  (require 'flyspell)
 
   ;; Change dictionary with the input-method
   (defun change-dict-after-toggle-input (_ _)

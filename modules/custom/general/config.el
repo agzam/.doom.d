@@ -1,17 +1,5 @@
 ;;; common/general/config.el -*- lexical-binding: t; -*-
 
-(defun sp-wrap-sexp ()
-  (interactive)
-  (sp-wrap-with-pair "("))
-
-(defun sp-reindent ()
-  (interactive)
-  (save-excursion
-    (er/expand-region 2)
-    (evil-indent
-     (region-beginning)
-     (region-end))))
-
 (map! :i "M-l" #'sp-forward-slurp-sexp
       :i "M-h" #'sp-forward-barf-sexp
       "s-b" #'consult-buffer
@@ -24,83 +12,79 @@
       "TAB" #'alternate-buffer
       "v" #'er/expand-region
       ";" #'evilnc-comment-or-uncomment-lines
-      "a" nil ; liberate the top level binding for other things
+      "C-h k" #'helpful-key
 
-      "nr" #'narrow-to-region
-      "nf" #'narrow-to-defun
-      "nw" #'widen
-      "nR" #'narrow-to-region-indirect-buffer
+      ;; liberate the top level bindings for other things
+      "a" nil "x" nil
+
       "nF" #'narrow-to-defun-indirect-buffer
-
-      (:prefix "z"
+      "nR" #'narrow-to-region-indirect-buffer
+      "nf" #'narrow-to-defun
+      "nr" #'narrow-to-region
+      "nw" #'widen
+      (:prefix ("z" . "zoom")
        "f" #'+hydra/text-zoom/body)
-
-      (:prefix "w"
-       "m" #'toggle-maximize-buffer
+      (:prefix ("w" . "windows")
+       "D" #'ace-delete-window
        "M" #'ace-swap-window
        "W" #'ace-window
-       "|" #'delete-other-windows-vertically
        "_" #'delete-other-windows-horizontally
-       "D" #'ace-delete-window)
-
-      (:prefix "k"
-       "w" #'sp-wrap-sexp
+       "m" #'toggle-maximize-buffer
+       "|" #'delete-other-windows-vertically)
+      (:prefix ("k" .  "lispy")
+       "=" #'sp-reindent
        "W" #'sp-unwrap-sexp
-       "r" #'sp-raise-sexp
-       "y" #'sp-copy-sexp
-       "dx" #'sp-kill-sexp
-       "s" #'sp-forward-slurp-sexp
        "b" #'sp-forward-barf-sexp
-       "=" #'sp-reindent)
-
-      (:prefix "b"
+       "dx" #'sp-kill-sexp
+       "r" #'sp-raise-sexp
+       "s" #'sp-forward-slurp-sexp
+       "t" #'sp-transpose-sexp
+       "w" #'sp-wrap-sexp
+       "y" #'sp-copy-sexp)
+      (:prefix ("a" . "apps/actions")
+       "a" #'embark-act
+       (:prefix "g"
+        "h" #'gh-notify))
+      (:prefix ("b" . "buffers")
        :desc "scratch" "s" #'doom/switch-to-scratch-buffer
        :desc "Messages" "m" #'switch-to-messages-buffer
        "d" #'kill-this-buffer
        "s-d" #'spacemacs/kill-matching-buffers-rudely)
-
-      (:prefix "r"
-       "y" #'yank-from-kill-ring)
-
-      (:prefix "j"
+      (:prefix ("e" . "emacs/doom")
+       "d" #'doom/goto-private-config-file
+       "i" (lambda () (interactive) (dired doom-emacs-dir)))
+      (:prefix ("f" . "files")
+        "ad" #'fasd-find-file
+        "e" nil ;; release it, or it complains
+        (:prefix ("e" . "doom/emacs")
+         "d" #'doom/goto-private-config-file
+         :desc "doom init dir" "i" (lambda () (interactive) (dired doom-emacs-dir))))
+      (:prefix ("g" . "goto")
+       "f" #'magit-file-dispatch
+       "j" #'evil-show-jumps
+       "s" #'magit-status)
+      (:prefix ("h" . "help")
+       "a" #'helpful-at-point
+       "f" #'helpful-function
+       "h" #'helpful-symbol
+       "v" #'helpful-variable
+       ;; muscle memory is still strong
+       "dd" nil)
+      (:prefix ("j" . "jump")
        "j" #'avy-goto-char-timer
        "x" #'xwidget-webkit-url-get-create)
-
-      (:prefix "g"
-       "j" #'evil-show-jumps
-       "s" #'magit-status
-       "f" #'magit-file-dispatch)
-
-      (:prefix "s"
+      (:prefix ("r" . "resume/ring")
+       "y" #'yank-from-kill-ring)
+      (:prefix ("s". "search/symbol")
        "j" #'imenu)
-
-      (:prefix "t"
+      (:prefix ("t" . "toggle")
        "w" #'toggle-visual-line-navigation)
-
-      (:prefix "f"
-        "e" nil
-       (:prefix "e"
-        "d" #'doom/goto-private-config-file
-        "i" (lambda () (interactive) (dired doom-emacs-dir))))
-
-      (:prefix "a"
-       "a" #'embark-act
-       (:prefix "g"
-        "h" #'gh-notify)))
+      (:prefix ("x" ."text")
+       "b" #'flyspell-correct-previous
+       "x" #'flyspell-correct-at-point))
 
 (map! :localleader :map xwidget-webkit-mode-map "x" #'kill-current-buffer)
 
-(after! smartparens
- ;; fix for smartparens. Doom's default module does things like skipping pairs if
- ;; one typed at the beginning of the word.
- (dolist (brace '("(" "{" "["))
-   (sp-pair brace nil
-            :post-handlers '(("||\n[i]" "RET") ("| " "SPC"))
-            :unless '(sp-point-before-same-p)))
-
- (sp-local-pair sp-lisp-modes "(" ")"
-                :wrap ")"
-                :unless '(:rem sp-point-before-same-p)))
 
 ;; Change the cursor color in emacs state. We do it this roundabout way
 ;; to ensure changes in theme doesn't break these colors.
@@ -114,34 +98,39 @@
   ;; (unbind-key (kbd ",") evil-motion-state-map)
   (unbind-key (kbd "C-u") evil-motion-state-map))
 
-(use-package! winum
+(use-package winum
+  :after-call doom-switch-window-hook
   :config
   (dolist (wn (seq-map 'number-to-string (number-sequence 0 9)))
     (let ((f (intern (concat "winum-select-window-" wn))))
       (map! :n (concat "s-" wn) f)
       (map! :leader :n wn f)))
-  (winum-mode))
-
-(use-package! embark-consult
-  :config)
+  (winum-mode +1))
 
 (use-package! fasd
+  :commands fasd-find-file
+  :defer t
   :config
-  (map! :leader "fad" #'fasd-find-file)
   (global-fasd-mode +1))
 
 (use-package! consult-company
+  :after company consult
   :config
   (map! :map company [remap completion-at-point] #'consult-company))
 
+;;;;;;;;;;;;;;;;;;;
+;; vertico stuff ;;
+;;;;;;;;;;;;;;;;;;;
+
+;; Add vertico extensions load path
+(add-to-list 'load-path (format "%sstraight/build-%s/vertico/extensions/" (file-truename doom-local-dir) emacs-version))
+
 (use-package! vertico-posframe
+  :after vertico
   :config
   (setq vertico-posframe-poshandler 'posframe-poshandler-frame-bottom-center)
   (vertico-posframe-mode +1)
   (setq marginalia-margin-threshold 300))
-
-;; Add vertico extensions load path
-(add-to-list 'load-path (format "%sstraight/build-%s/vertico/extensions/" (file-truename doom-local-dir) emacs-version))
 
 (use-package! vertico-repeat
   :after vertico
@@ -179,10 +168,61 @@
         ;; unbind universal argument
         "C-u" nil))
 
+
+(use-package! info+
+  :after info
+  :config
+  (map! :leader "hj" #'info-display-manual)
+  (setq Info-fontify-angle-bracketed-flag nil)
+  (add-hook 'Info-mode-hook (lambda () (require 'info+))))
+
 (use-package! spacehammer
+  :defer t
   :config
   (add-hook! spacehammer/edit-with-emacs #'on-spacehammer-edit-with-emacs)
   (add-hook! spacehammer/before-finish-edit-with-emacs #'spacehammer-before-finish-edit-with-emacs))
+
+(use-package! company-posframe
+  :after company
+  :hook (company-mode . company-posframe-mode)
+  :init
+  (setq company-posframe-quickhelp-delay 1
+        company-posframe-show-indicator nil
+        company-quickhelp-delay nil)
+  :bind (:map company-active-map
+         ("C-h" . (lambda () (interactive) (company-posframe-quickhelp-show)))
+         ("C-c C-d". company-show-doc-buffer)
+         ("C-n" . company-select-next)
+         ("C-p" . company-select-previous)
+         ("C-c C-l". company-show-location)
+         :map company-posframe-active-map
+         ("C-c h" . company-posframe-quickhelp-toggle)
+         ("C-n" . company-select-next)
+         ("C-p" . company-select-previous)
+         :map company-search-map
+         ("C-n" . company-select-next)
+         ("C-p" . company-select-previous))
+  :config
+  (company-posframe-mode 1)
+  ;; doom-modeline keeps re-rendendering through company completion changes
+  (add-hook! 'company-completion-started-hook
+    (defun doom-modeline-off (_)
+      (doom-modeline-mode -1)))
+  (add-hook! ('company-completion-finished-hook
+              'company-completion-cancelled-hook)
+             #'doom-modeline-mode))
+
+(after! smartparens
+  ;; fix for smartparens. Doom's default module does things like skipping pairs if
+  ;; one typed at the beginning of the word.
+  (dolist (brace '("(" "{" "["))
+    (sp-pair brace nil
+             :post-handlers '(("||\n[i]" "RET") ("| " "SPC"))
+             :unless '(sp-point-before-same-p)))
+
+  (sp-local-pair sp-lisp-modes "(" ")"
+                 :wrap ")"
+                 :unless '(:rem sp-point-before-same-p)))
 
 (after! ibuf-ext
   (setq
@@ -207,3 +247,13 @@
   (map! :map ibuffer-mode-map
         :n "su" #'ibuffer-filter-by-unsaved-file-buffers
         :n "sF" #'ibuffer-filter-by-file-buffers))
+
+;; ensure that browsing in Helpful and Info modes doesn't create additional window splits
+(add-to-list
+ 'display-buffer-alist
+ `(,(rx bos (or "*helpful" "*info"))
+   (display-buffer-reuse-window
+    display-buffer-in-direction)
+   (direction . right)
+   (window . root)
+   (window-width . 0.3)))

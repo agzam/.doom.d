@@ -1,6 +1,7 @@
 ;;; custom/dired/config.el -*- lexical-binding: t; -*-
 
 (use-package! treemacs-icons-dired
+  :defer t
   :hook (dired-mode . treemacs-icons-dired-mode))
 
 (use-package! treemacs
@@ -42,6 +43,7 @@
   :after (treemacs lsp))
 
 (use-package! direx
+  :after dired
   :init
   (require 'direx-project)
   :config
@@ -70,13 +72,13 @@
         "<C-return>" #'direx:set-root
         "^" #'direx:expand-root-to-parent
         ;; "o" #'spacemacs/dired-open-item-other-window-transient-state/body
-
         ))
 
 (use-package! dired-imenu
-  :after (dired))
+  :after dired)
 
 (use-package! dired-subtree
+  :after dired
   :init
   (map! :map dired-mode-map
         :n "M-l" #'dired-subtree-cycle
@@ -90,7 +92,7 @@
   (map! :leader "pd" #'projectile-find-dir))
 
 (after! dired
-  (map! :leader :n "fj" #'dired-jump)
+  (map! :leader "fj" #'dired-jump)
 
   (setq dired-use-ls-dired t
         dired-dwim-target t)

@@ -31,3 +31,15 @@
   ("n" colors/load-next-theme "next")
   ("p" colors/load-prev-theme "previous")
   ("l" consult-theme "list themes" :exit t))
+
+;;;###autoload
+(defun colors/cycle-themes-up ()
+  (interactive)
+  (colors/load-prev-theme)
+  (colors/cycle-themes/body))
+
+;;;###autoload
+(defun colors/cycle-themes-down ()
+  (interactive)
+  (colors/load-next-theme)
+  (colors/cycle-themes/body))

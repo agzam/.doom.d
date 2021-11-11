@@ -130,6 +130,7 @@ kill all magit buffers for this repo."
   (mapc #'+magit--kill-buffer (magit-mode-get-buffers))
   (+magit-mark-stale-buffers-h))
 
+;;;###autoload
 (defun +magit--kill-buffer (buf)
   "TODO"
   (when (and (bufferp buf) (buffer-live-p buf))
