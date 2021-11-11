@@ -1,6 +1,22 @@
 ;;; custom/writing/config.el -*- lexical-binding: t; -*-
+(map! :leader
+      :prefix "x"
+      (:prefix ("l" . "language")
+       "d" #'define-it-at-point
+       "g" #'lsp-grammarly-check-grammar
+       "l" #'sdcv-search-at-point
+       "m" #'mw-thesaurus-lookup-dwim)
+      (:prefix ("t" . "translate")
+        "L" #'set-google-translate-languages
+        "l" #'set-google-translate-target-language
+        "Q" #'google-translate-query-translate-reverse
+        "q" #'google-translate-query-translate
+        "T" #'google-translate-at-point-reverse
+        "t" #'google-translate-at-point))
+
 (use-package! keytar
   :defer 5
+  :after lsp-grammarly
   :config
   (require 'keytar))
 
@@ -12,8 +28,8 @@
   (add-hook! spacehammer/before-finish-edit-with-emacs #'spacehammer-before-finish-edit-with-emacs))
 
 (use-package! lsp-grammarly
-  :after lsp text-mode markdown-mode
-  :commands on-spacehammer-edit-with-emacs
+  :defer t
+  :commands spacehammer/edit-with-emacs lsp-grammarly-check-grammar
   :hook ((text-mode . lsp)
          (markdown-mode . lsp))
   :init
@@ -21,19 +37,16 @@
   :config
   (setq lsp-grammarly-domain "technical"
         lsp-grammarly-audience "expert")
-  (map! :leader "xlg" #'lsp-grammarly-check-grammar)
-
   ;; TODO
   ;;(setq lsp-grammarly-active-modes (remove 'org-mode lsp-grammarly-active-modes))
   )
 
 (use-package! mw-thesaurus
   :defer t
+  :commands mw-thesaurus-lookup-dwim
+  :hook (mw-thesaurus-mode . variable-pitch-mode)
   :config
   (map! :map mw-thesaurus-mode-map [remap evil-record-macro] #'mw-thesaurus--quit)
-  (add-hook 'mw-thesaurus-mode-hook 'variable-pitch-mode)
-  (map! :leader "xlm" #'mw-thesaurus-lookup-dwim)
-
   (add-to-list
    'display-buffer-alist
    `(,mw-thesaurus-buffer-name
@@ -45,18 +58,15 @@
 
 (use-package! sdcv-mode
   :defer t
+  :commands sdcv-search sdcv-search-at-point
+  :hook (sdcv-mode . visual-line-mode)
   :config
-  (add-hook 'sdcv-mode-hook #'visual-line-mode)
-
-  (map! :leader "xll" #'sdcv-search-at-point)
-
   (map! :map sdcv-mode-map
     :n "q" #'sdcv-return-from-sdcv
     :n "n" #'sdcv-next-entry
     :n "p" #'sdcv-previous-entry
     :ni "RET" #'sdcv-search-at-point
     :n "a" #'sdcv-search-at-point)
-
   (add-to-list
    'display-buffer-alist
    `(,sdcv-buffer-name
@@ -70,20 +80,11 @@
   :defer t
   :init
   (require 'google-translate)
-  :functions (my-google-translate-at-point google-translate--search-tkk)
+  :functions (google-translate--search-tkk)
   :custom
   (google-translate-backend-method 'curl)
   :config
   (defun google-translate--search-tkk () "Search TKK." (list 430675 2721866130))
-
-  (map! :leader
-        "xtL" #'set-google-translate-languages
-        "xtl" #'set-google-translate-target-language
-        "xtQ" #'google-translate-query-translate-reverse
-        "xtq" #'google-translate-query-translate
-        "xtT" #'google-translate-at-point-reverse
-        "xtt" #'google-translate-at-point)
-
   (setq google-translate-pop-up-buffer-set-focus t
         google-translate-default-source-language "ru"
         google-translate-default-target-language "en")
@@ -95,7 +96,6 @@
         (if (eq system-type 'darwin)
             "/usr/local/bin/mplayer"
           "/usr/bin/mplayer"))
-
   (setq google-translate-input-method-auto-toggling t
         google-translate-preferable-input-methods-alist
         '((nil . ("en"))
@@ -118,12 +118,11 @@
 
 (use-package! define-it
   :defer t
+  :commands define-it-at-point
   :config
   (setq
    define-it-show-google-translate nil
    define-it-show-header nil)
-
-  (map! :leader "xld" #'define-it-at-point)
 
   ;; it doesn't pop to the buffer automatically, when definition is fetched
   (defun define-it--find-buffer (x)

@@ -8,6 +8,7 @@
   ("p" tab-bar-switch-to-prev-tab)
   ("n" tab-bar-switch-to-next-tab)
   ("N" +tab-bar-add-new-tab)
+  ("t" +tab-bar-add-new-tab)
   ("d" +tab-bar-kill-tab)
   ("r" +tab-bar-rename-tab))
 

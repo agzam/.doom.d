@@ -54,11 +54,11 @@
        "d" #'doom/goto-private-config-file
        "i" (lambda () (interactive) (dired doom-emacs-dir)))
       (:prefix ("f" . "files")
-        "ad" #'fasd-find-file
-        "e" nil ;; release it, or it complains
-        (:prefix ("e" . "doom/emacs")
-         "d" #'doom/goto-private-config-file
-         :desc "doom init dir" "i" (lambda () (interactive) (dired doom-emacs-dir))))
+       "ad" #'fasd-find-file
+       "e" nil ;; release it, or it complains
+       (:prefix ("e" . "doom/emacs")
+        "d" #'doom/goto-private-config-file
+        :desc "doom init dir" "i" (lambda () (interactive) (dired doom-emacs-dir))))
       (:prefix ("g" . "goto")
        "f" #'magit-file-dispatch
        "j" #'evil-show-jumps
@@ -76,7 +76,9 @@
       (:prefix ("r" . "resume/ring")
        "y" #'yank-from-kill-ring)
       (:prefix ("s". "search/symbol")
-       "j" #'imenu)
+       "j" #'imenu
+       "/" #'engine/search-google
+       "g" #'engine/search-github-with-lang)
       (:prefix ("t" . "toggle")
        "w" #'toggle-visual-line-navigation)
       (:prefix ("x" ."text")
@@ -217,6 +219,10 @@
   (sp-local-pair sp-lisp-modes "(" ")"
                  :wrap ")"
                  :unless '(:rem sp-point-before-same-p)))
+
+(after! expand-region
+  (setq expand-region-contract-fast-key "V"
+        expand-region-reset-fast-key "r"))
 
 (after! ibuf-ext
   (setq

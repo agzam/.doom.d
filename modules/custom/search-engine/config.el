@@ -2,6 +2,7 @@
 
 (use-package! engine-mode
   :defer t
+  :commands engine/execute-search
   :init
   (progn
     (defvar search-engine-config-list nil
@@ -59,8 +60,4 @@
     (let* ((cur-engine (car engine))
            (engine-url (plist-get (cdr engine) :url))
            (engine-keywords (plist-get (cdr engine) :keywords)))
-      (eval `(defengine ,cur-engine ,engine-url ,@engine-keywords))))
-
-  (map! :leader
-        "s/" #'engine/search-google
-        "g/" #'engine/search-github-with-lang))
+      (eval `(defengine ,cur-engine ,engine-url ,@engine-keywords)))))
