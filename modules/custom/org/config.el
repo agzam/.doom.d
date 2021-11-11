@@ -5,8 +5,8 @@
 
 (defvar org-default-folder "~/Dropbox/org/")
 
-(map! "C-c C-f" #'org-roam-node-find
-      "C-c r" #'org-roam-dailies-capture-date)
+(global-set-key (kbd "C-c C-f") #'org-roam-node-find)
+(global-set-key (kbd "C-c r") #'org-roam-dailies-capture-date)
 
 (use-package! org
   :defer-incrementally

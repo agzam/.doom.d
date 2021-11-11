@@ -75,6 +75,13 @@
    cider-eldoc-display-for-symbol-at-point nil
    cider-eldoc-display-context-dependent-info nil)
 
+  (map! (:map cider-eval-commands-map
+         "C-c C-f" nil
+         "C-c r" nil)
+        (:map cider-mode-map
+         "C-c C-f" nil
+         "C-c r" nil))
+
   (add-to-list
    'display-buffer-alist
    `(,(rx bos (or "*cider-repl"
