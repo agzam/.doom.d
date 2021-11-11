@@ -176,12 +176,6 @@
   (setq Info-fontify-angle-bracketed-flag nil)
   (add-hook 'Info-mode-hook (lambda () (require 'info+))))
 
-(use-package! spacehammer
-  :defer t
-  :config
-  (add-hook! spacehammer/edit-with-emacs #'on-spacehammer-edit-with-emacs)
-  (add-hook! spacehammer/before-finish-edit-with-emacs #'spacehammer-before-finish-edit-with-emacs))
-
 (use-package! company-posframe
   :after company
   :hook (company-mode . company-posframe-mode)

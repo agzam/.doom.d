@@ -6,3 +6,7 @@
 (package! keytar :recipe (:host github :repo "emacs-grammarly/keytar"))
 (package! lsp-grammarly :recipe (:host github :repo "emacs-grammarly/lsp-grammarly"))
 (package! define-it)
+
+(when (eq system-type 'darwin)
+  ;; ln -s ~/.hammerspoon/ ~/.doom.d/modules/custom/general/spacehammer
+  (package! spacehammer :recipe (:local-repo "spacehammer" :files ("*.el"))))

@@ -4,8 +4,16 @@
   :config
   (require 'keytar))
 
+(use-package! spacehammer
+  :defer t
+  :commands spacehammer/edit-with-emacs
+  :config
+  (add-hook! spacehammer/edit-with-emacs #'on-spacehammer-edit-with-emacs)
+  (add-hook! spacehammer/before-finish-edit-with-emacs #'spacehammer-before-finish-edit-with-emacs))
+
 (use-package! lsp-grammarly
   :after lsp text-mode markdown-mode
+  :commands on-spacehammer-edit-with-emacs
   :hook ((text-mode . lsp)
          (markdown-mode . lsp))
   :init
