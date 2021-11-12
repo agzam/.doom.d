@@ -9,7 +9,7 @@
   :config)
 
 (use-package! circadian
-  :after ag-themes
+  :defer t
   :hook (doom-init-ui . circadian-setup)
   :config
   (setq

@@ -69,9 +69,6 @@
 
 (setq
  doom-localleader-key ","
- which-key-use-C-h-commands t
- which-key-idle-delay 0.3
- which-key-idle-secondary-delay 0.2
  chemacs-current-emacs-profile "doom"
  evil-want-C-u-scroll nil
  ;; auto-hscroll-mode 'current-line
@@ -90,32 +87,42 @@
 
 (after! which-key
   (setq
+   which-key-use-C-h-commands t
    which-key-show-early-on-C-h t
    which-key-idle-delay 1.0
    which-key-idle-secondary-delay 0.2)
   (which-key-mode))
 
-;; disable nonsensical keys
-(dolist (key '("s-n" "s-p" "s-q" "s-m" "C-x C-c"))
-  (unbind-key (kbd key)))
+(after! company
+ (setq company-show-numbers t
+       company-tooltip-limit 10)
+ (map! :map company-active-map "C-/" #'completion-at-point))
 
+;; most keys set in ':custom general' module,
+;; yet the most important one I want to set early
 (map! :leader
       (:when (featurep! :completion vertico)
        :desc "M-x" :n "SPC" #'execute-extended-command))
 
-(map! :map company-active-map "C-/" #'completion-at-point)
+(when (featurep! :custom general)
+  (center-frame-horizontally nil 85)
+  (init-visual-line-keys))
 
-(map! :v "s" #'evil-surround-region)
-
-(center-frame-horizontally nil 85)
 (fringe-mode '(6 . 0))
-
 (global-visual-line-mode +1)
-(init-visual-line-keys)
 
 (advice-remove 'evil-open-above #'+evil--insert-newline-above-and-respect-comments-a)
 (advice-remove 'newline-and-indent #'+default--newline-indent-and-continue-comments-a)
 
+;; Emacs keeps asking for gpg pass every time I want to pull from GitHub, I don't like
+;; that. Settting this to what I used to have before Doom
+(setq epg-pinentry-mode nil)
+
 ;; disable global-hl-line
 ;; oddly that's the way: github.com/hlissner/doom-emacs/issues/4206
 (remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
+
+;; fix for :ui unicode module
+(when (featurep! :ui unicode)
+  (remove-hook! 'doom-init-ui-hook '+unicode-init-fonts-h)
+  (add-hook 'after-make-frame-functions #'+unicode-setup-fonts-h))

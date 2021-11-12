@@ -2,37 +2,16 @@
 
 (use-package! doom-modeline
   :unless (featurep! :ui modeline)
-  :hook (after-init . doom-modeline-mode)
-  :hook (doom-modeline-mode . column-number-mode)
+  :hook ((doom-modeline-mode . column-number-mode)
+         (doom-modeline-mode . setup-custom-doom-modeline)
+         (window-state-change . setup-custom-doom-modeline)
+         (doom-init-ui . doom-modeline-mode))
+  :after-call doom-first-input-hook doom-first-file-hook
   :init
   (unless after-init-time
     ;; prevent flash of unstyled modeline at startup
     (setq-default mode-line-format nil))
   :config
-  (require 'doom-modeline)
-  (doom-modeline-def-modeline
-   'agcustom
-   '(bar persp-name window-number buffer-info)
-   '(;; battery
-     ;; grip
-     ;; irc mu4e debug
-     ;; repl
-     major-mode
-     lsp
-     misc-info
-     process
-     ;; checker
-
-     matches selection-info
-     buffer-position))
-
-  (defun setup-custom-doom-modeline ()
-    (doom-modeline-set-modeline 'agcustom))
-
-  (add-hook 'doom-modeline-mode-hook 'setup-custom-doom-modeline 90)
-  (add-hook 'window-state-change-hook 'setup-custom-doom-modeline)
-
-  (doom-modeline-mode +1)
   (setq doom-modeline-buffer-encoding nil
         doom-modeline-buffer-file-name-style 'relative-from-project
         doom-modeline-buffer-modification-icon t
@@ -42,8 +21,11 @@
         doom-modeline-major-mode-icon nil
         doom-modeline-modal-icon nil
         doom-modeline-mu4e nil
-        doom-modeline-persp-icon t
-        doom-modeline-display-default-persp-name t
         inhibit-compacting-font-caches t
-        doom-modeline-height 15
-        doom-modeline-bar-width left-fringe-width))
+        doom-modeline-height 1)
+  (setf doom-modeline-bar-width (or left-fringe-width 6))
+
+  ;; keep modeline short
+  (defadvice! doom-modeline--font-height-a ()
+    :override #'doom-modeline--font-height
+    1))

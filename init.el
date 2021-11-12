@@ -191,13 +191,14 @@
        :custom
        general
        colors
+       modeline
        layouts
        version-control
        elisp
        search-engine
        dired
-       modeline
        writing
        lsp
        clojure
-       org)
+       org
+       )

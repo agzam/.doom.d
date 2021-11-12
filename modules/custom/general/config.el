@@ -1,7 +1,12 @@
 ;;; common/general/config.el -*- lexical-binding: t; -*-
 
+;; disable nonsensical keys
+(dolist (key '("s-n" "s-p" "s-q" "s-m" "C-x C-c"))
+  (unbind-key (kbd key)))
+
 (map! :i "M-l" #'sp-forward-slurp-sexp
       :i "M-h" #'sp-forward-barf-sexp
+      :v "s" #'evil-surround-region
       "s-b" #'consult-buffer
       "s-=" #'text-scale-increase
       "s--" #'text-scale-decrease)
@@ -30,7 +35,8 @@
        "W" #'ace-window
        "_" #'delete-other-windows-horizontally
        "m" #'toggle-maximize-buffer
-       "|" #'delete-other-windows-vertically)
+       "|" #'delete-other-windows-vertically
+       "=" #'balance-windows-area)
       (:prefix ("k" .  "lispy")
        "=" #'sp-reindent
        "W" #'sp-unwrap-sexp
@@ -90,10 +96,10 @@
 
 ;; Change the cursor color in emacs state. We do it this roundabout way
 ;; to ensure changes in theme doesn't break these colors.
-(add-hook! '(doom-load-theme-hook doom-init-modules-hook)
-  (defun +evil-update-cursor-color-h ()
-    (put 'cursor 'evil-emacs-color "SkyBlue2")
-    (put 'cursor 'evil-normal-color "DarkGoldenrod2")))
+;; (add-hook! '(doom-load-theme-hook doom-init-modules-hook)
+;;   (defun +evil-update-cursor-color-h ()
+;;     (put 'cursor 'evil-emacs-color "SkyBlue2")
+;;     (put 'cursor 'evil-normal-color "DarkGoldenrod2")))
 
 (after! evil-maps
   ;; often conflicts with doom-local-leader
@@ -103,11 +109,13 @@
 (use-package winum
   :after-call doom-switch-window-hook
   :config
+  (winum-mode +1)
   (dolist (wn (seq-map 'number-to-string (number-sequence 0 9)))
-    (let ((f (intern (concat "winum-select-window-" wn))))
-      (map! :n (concat "s-" wn) f)
-      (map! :leader :n wn f)))
-  (winum-mode +1))
+    (let ((f (intern (concat "winum-select-window-" wn)))
+          (k (concat "s-" wn)))
+      (map! :n k f)
+      (map! :leader :n wn f)
+      (global-set-key (kbd k) f))))
 
 (use-package! fasd
   :commands fasd-find-file
@@ -132,7 +140,11 @@
   :config
   (setq vertico-posframe-poshandler 'posframe-poshandler-frame-bottom-center)
   (vertico-posframe-mode +1)
-  (setq marginalia-margin-threshold 300))
+  (setq vertico-posframe-global t)
+  (setq marginalia-margin-threshold 300)
+
+  (add-hook! 'minibuffer-exit-hook #'restore-vertico-posframe-state-h)
+  (map! :map vertico-map "C-c C-p"  #'vertico-posframe-temporarily-off))
 
 (use-package! vertico-repeat
   :after vertico
@@ -154,9 +166,11 @@
   :after vertico
   :config
   (map! :map vertico-map
-        "C-c g" #'vertico-grid-mode
+        "C-c C-g" #'vertico-grid-mode
         "M-h" #'vertico-grid-left
-        "M-l" #'vertico-grid-right)
+        "M-l" #'vertico-grid-right
+        "M-j" #'vertico-next
+        "M-k" #'vertico-previous)
   (add-hook! 'minibuffer-exit-hook
     (defun vertico-grid-mode-off ()
       (vertico-grid-mode -1))))
@@ -164,12 +178,10 @@
 (use-package! vertico-buffer :after vertico)
 
 (after! vertico
-  (map! :map vertico-map
-        "C-e" #'vertico-scroll-up
-        "C-y" #'vertico-scroll-down
-        ;; unbind universal argument
-        "C-u" nil))
-
+ (map! :map vertico-map
+       "C-u" nil  ; unbind universal argument
+       "C-e"      #'vertico-scroll-up
+       "C-y"      #'vertico-scroll-down))
 
 (use-package! info+
   :after info
@@ -199,14 +211,15 @@
          ("C-n" . company-select-next)
          ("C-p" . company-select-previous))
   :config
-  (company-posframe-mode 1)
+  (company-posframe-mode +1)
   ;; doom-modeline keeps re-rendendering through company completion changes
-  (add-hook! 'company-completion-started-hook
-    (defun doom-modeline-off (_)
-      (doom-modeline-mode -1)))
-  (add-hook! ('company-completion-finished-hook
-              'company-completion-cancelled-hook)
-             #'doom-modeline-mode))
+  ;; (add-hook! 'company-completion-started-hook
+  ;;   (defun doom-modeline-off (_)
+  ;;     (doom-modeline-mode -1)))
+  ;; (add-hook! ('company-completion-finished-hook
+  ;;             'company-completion-cancelled-hook)
+  ;;            #'doom-modeline-mode)
+  )
 
 (after! smartparens
   ;; fix for smartparens. Doom's default module does things like skipping pairs if

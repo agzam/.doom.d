@@ -12,3 +12,4 @@
 
 (package! winum)
 (package! info+)
+(package! hydra)
