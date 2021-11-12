@@ -19,7 +19,12 @@
 
   (after! winum
     (map! :map winum-keymap
-     [remap winum-select-window-0] #'treemacs-select-window)))
+     [remap winum-select-window-0] #'treemacs-select-window)
+
+    (dolist (wn (seq-map 'number-to-string (number-sequence 0 9)))
+      (let ((f (intern (concat "winum-select-window-" wn)))
+            (k (concat "s-" wn)))
+        (map! :map treemacs-mode-map k f)))))
 
 (use-package! treemacs-evil
   :defer t
@@ -34,7 +39,8 @@
     ;; REVIEW Fix #1875 to be consistent with C-w {v,s}, but this should really
     ;;        be considered upstream.
     "o v"    #'treemacs-visit-node-horizontal-split
-    "o s"    #'treemacs-visit-node-vertical-split))
+    "o s"    #'treemacs-visit-node-vertical-split
+    "L"     (cmd! (treemacs-toggle-node :recursive))))
 
 (use-package! treemacs-projectile
   :after treemacs)
