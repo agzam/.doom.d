@@ -23,13 +23,18 @@
    lsp-modeline-code-actions-enable nil
 
    lsp-semantic-tokens-enable nil
-   lsp-lens-enable nil)
+   lsp-lens-enable nil
+   lsp-enable-indentation t)
 
   (map! :localleader
         :map lsp-mode-map
         "ge" #'lsp-ui-flycheck-list+
         (:prefix ("a" . "code actions")
          "a" #'lsp-execute-code-action)
+        (:prefix ("g" . "goto")
+         "d" #'xref-find-definitions
+         "D" #'xref-find-definitions-other-window
+         "r" #'xref-find-references)
         (:prefix ("f" . "format")
          "b" #'lsp-format-buffer
          "r" #'lsp-format-region
@@ -44,4 +49,6 @@
          "L" #'lsp-lens-hide))
 
   (map! :map lsp-ui-flycheck-list-mode-map
-        :nv "q" #'kill-buffer-and-window))
+        :nv "q" #'kill-buffer-and-window)
+
+  (remove-hook! 'lsp-mode-hook #'lsp-ui-mode))

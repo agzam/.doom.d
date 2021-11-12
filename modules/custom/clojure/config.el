@@ -41,8 +41,10 @@
 
   (setq nrepl-hide-special-buffers nil
         nrepl-log-messages nil
-        cider-font-lock-dynamically '(macro core function var deprecated)
-        cider-overlays-use-font-lock t
+        ;; cider-font-lock-dynamically '(macro core function var deprecated)
+        cider-font-lock-dynamically nil
+        cider-dynamic-indentation nil
+        cider-overlays-use-font-lock nil
         cider-prompt-for-symbol nil
         cider-repl-history-display-duplicates nil
         cider-repl-history-display-style 'one-line
@@ -53,7 +55,7 @@
         cider-repl-history-size 1000
         cider-repl-result-prefix ";; => "
         cider-repl-print-length 100
-        cider-repl-use-clojure-font-lock t
+        cider-repl-use-clojure-font-lock nil
         cider-repl-use-pretty-printing t
         cider-repl-wrap-history nil
         cider-stacktrace-default-filters '(tooling dup)
@@ -115,9 +117,10 @@
            "f" #'cider-debug-defun-at-point)
           (:prefix ("e" . "eval")
            "b" #'cider-eval-buffer
+           "c" #'cider-eval-sexp-at-point
            "d" #'cider-eval-defun-at-point
            "D" #'cider-insert-defun-in-repl
-           "p" #'cider-pprint-eval-last-sexp
+           "p" #'cider-pprint-eval-sexp-at-point
            ";" #'cider-pprint-eval-last-sexp-to-comment
            "e" #'cider-eval-last-sexp
            "E" #'cider-insert-last-sexp-in-repl
@@ -137,6 +140,7 @@
            "w" #'cider-clojuredocs-web)
           (:prefix ("i" . "inspect")
            "e" #'cider-enlighten-mode
+           "i" #'clj-fully-qualified-symbol-at-point
            "I" #'cider-inspect
            "r" #'cider-inspect-last-result)
           (:prefix ("j" . "jack-in")
@@ -150,7 +154,7 @@
            "N" #'cider-browse-ns-all
            "r" #'cider-ns-refresh)
           (:prefix ("p" . "print")
-           "p" #'cider-pprint-eval-last-sexp
+           "p" #'cider-pprint-eval-sexp-at-point
            "P" #'cider-pprint-eval-last-sexp-to-comment
            "d" #'cider-pprint-eval-defun-at-point
            "D" #'cider-pprint-eval-defun-to-comment
@@ -172,7 +176,7 @@
            "p" #'cider-test-run-project-tests
            "r" #'cider-test-rerun-failed-tests
            "s" #'cider-test-run-ns-tests-with-filters
-           "t" #'cider-test-run-test)))
+           "t" #'cider-test-run-focused-test)))
 
         (:map cider-repl-mode-map
          :i [S-return] #'cider-repl-newline-and-indent

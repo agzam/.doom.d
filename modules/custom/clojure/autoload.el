@@ -174,3 +174,20 @@ convert from JSON."
                               (nrepl--make-hidden-name nrepl-server-buffer-name-template)
                               nil :no-dup))))
     (quit-window nil nrepl-buf-win)))
+
+;;;###autoload
+(defun cider-test-run-focused-test ()
+  "Run test around point."
+  (interactive)
+  (cider-load-buffer)
+  (cider-test-run-test))
+
+;;;###autoload
+(defun cider-pprint-eval-sexp-at-point ()
+  (interactive)
+  (let ((evil-move-beyond-eol t))
+    (save-excursion
+      (when (looking-at "(\\|\\[\\|{")
+        (forward-char))
+      (goto-char (plist-get (sp-get-enclosing-sexp) :end))
+      (call-interactively 'cider-pprint-eval-last-sexp))))
