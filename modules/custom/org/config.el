@@ -15,16 +15,12 @@
   org-capture
 
   :config
-
   (setf org-directory org-default-folder)
   (setq
-
    org-ctrl-k-protect-subtree t
    org-ellipsis " ⤳"
    org-catch-invisible-edits 'smart
-
    org-hide-emphasis-markers t
-
    org-pretty-entities t
    org-pretty-entities-include-sub-superscripts nil)
 
@@ -34,33 +30,36 @@
    org-enforce-todo-dependencies t
    org-enforce-todo-checkbox-dependencies t)
 
-  (add-hook! 'org-mode-hook
-    (defun set-org-mode-keys ()
-      (map!
-       (:map org-mode-map
-        "C-c C-f" #'org-roam-node-find
-        "C-c C-i" #'org-roam-node-insert+
-        (:localleader
-         "n" #'org-next-link
-         "p" #'org-previous-link
-         (:prefix ("s" . "tree/subtree")
-          "a" #'org-toggle-archive-tag
-          "A" #'org-archive-subtree
-          "N" #'widen
-          "x" #'org-cut-subtree)
-         (:prefix ("g" . "goto")
-          "L" #'org-goto-last-heading
-          "d" #'org-goto-datetree-date)
-         (:prefix ("r" . "roam")
-          "i" #'org-roam-node-insert+
-          "l" #'org-roam-buffer-toggle
-          "w" #'org-roam-toggle-ui-xwidget
-          "f" #'org-roam-node-find
-          "d" #'org-roam-dailies-find-date)
-         (:prefix ("t" . "toggle")
-          "l" #'org-toggle-link-display)
-         (:prefix ("b" . "babel")
-          "k" #'org-babel-remove-result))))))
+  (setq org-link-make-description-function #'+org-link-make-description-function)
+
+  (map! (:map org-mode-map
+         "C-c C-f" #'org-roam-node-find
+         "C-c C-i" #'org-roam-node-insert+
+         (:localleader
+          "n" #'org-next-link
+          "p" #'org-previous-link
+          (:prefix ("b" . "babel")
+           "k" #'org-babel-remove-result)
+          (:prefix ("g" . "goto")
+           "L" #'org-goto-last-heading
+           "d" #'org-goto-datetree-date)
+          (:prefix ("i" . "insert")
+           "l" #'org-insert-link
+           "L" #'org-cliplink)
+          (:prefix ("r" . "roam")
+           "i" #'org-roam-node-insert+
+           "l" #'org-roam-buffer-toggle
+           "w" #'org-roam-toggle-ui-xwidget
+           "f" #'org-roam-node-find
+           "d" #'org-roam-dailies-find-date)
+          (:prefix ("s" . "tree/subtree")
+           "a" #'org-toggle-archive-tag
+           "A" #'org-archive-subtree
+           "N" #'widen
+           "x" #'org-cut-subtree)
+          (:prefix ("t" . "toggle")
+           "l" #'org-toggle-link-display))))
+
   (add-hook! 'org-mode-hook #'org-indent-mode))
 
 (use-package! org-roam
