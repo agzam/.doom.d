@@ -140,8 +140,11 @@
   :config
   (setq vertico-posframe-poshandler 'posframe-poshandler-frame-bottom-center)
   (vertico-posframe-mode +1)
-  (setq vertico-posframe-global t)
-  (setq marginalia-margin-threshold 300)
+  (setq vertico-posframe-global t
+        vertico-posframe-height 22
+        vertico-posframe-width 200
+        ;; marginalia-margin-threshold 300
+        )
 
   (add-hook! 'minibuffer-exit-hook #'restore-vertico-posframe-state-h)
   (map! :map vertico-map "C-c C-p"  #'vertico-posframe-temporarily-off))
@@ -220,6 +223,15 @@
   ;;             'company-completion-cancelled-hook)
   ;;            #'doom-modeline-mode)
   )
+
+;; (use-package! unicode-fonts
+;;   :after-call doom-init-ui-h
+;;   :init
+;;   (when (and unicode-fonts-force-multi-color-on-mac
+;;              (eq window-system 'ns))
+;;     (setq unicode-fonts-skip-font-groups '(decorative low-quality-glyphs)))
+;;   (unicode-fonts-setup))
+
 
 (after! smartparens
   ;; fix for smartparens. Doom's default module does things like skipping pairs if

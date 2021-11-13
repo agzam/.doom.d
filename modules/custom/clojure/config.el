@@ -115,6 +115,9 @@
           "M"  #'cider-macroexpand-all
           (:prefix ("d" . "debug")
            "f" #'cider-debug-defun-at-point)
+          (:prefix ("f" . "format")
+           "l" #'clojure-align
+           "L" #'clojure-unalign)
           (:prefix ("e" . "eval")
            "b" #'cider-eval-buffer
            "c" #'cider-eval-sexp-at-point

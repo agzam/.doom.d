@@ -30,11 +30,11 @@ NODE-LINK  - which is title or id or a node."
   (when-let* ((buf (org-capture-get :buffer)))
     (with-current-buffer buf
       (save-excursion
-        (forward-line 1)
+        (goto-char (point-min))
         (unless (org-entry-get (point) "ID")
           (org-roam-add-property (org-id-new) "ID"))
         (unless (search-forward "#+title:" nil :no-error)
-          (forward-line 1)
+          (goto-char (point-min))
           (search-forward ":END:" nil :no-error)
           (forward-line)
           (insert (format "#+title: %s %s notes\n"
@@ -49,7 +49,7 @@ NODE-LINK  - which is title or id or a node."
                                   (< 0 (1- (length (save-excursion
                                                      (org-map-entries nil nil 'tree)))))))
                      (level (+ (org-current-level) 1)))
-          (unless children?
+          (unless (or (not link) children?)
             (save-excursion
              (org-end-of-meta-data)
              (insert link)

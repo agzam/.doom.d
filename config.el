@@ -121,8 +121,3 @@
 ;; disable global-hl-line
 ;; oddly that's the way: github.com/hlissner/doom-emacs/issues/4206
 (remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
-
-;; fix for :ui unicode module
-(when (featurep! :ui unicode)
-  (remove-hook! 'doom-init-ui-hook '+unicode-init-fonts-h)
-  (add-hook 'after-make-frame-functions #'+unicode-setup-fonts-h))

@@ -18,7 +18,7 @@
   (setf org-directory org-default-folder)
   (setq
    org-ctrl-k-protect-subtree t
-   org-ellipsis " ⤳"
+   org-ellipsis " ↴"
    org-catch-invisible-edits 'smart
    org-hide-emphasis-markers t
    org-pretty-entities t
