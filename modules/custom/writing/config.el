@@ -7,12 +7,12 @@
        "l" #'sdcv-search-at-point
        "m" #'mw-thesaurus-lookup-dwim)
       (:prefix ("t" . "translate")
-        "L" #'set-google-translate-languages
-        "l" #'set-google-translate-target-language
-        "Q" #'google-translate-query-translate-reverse
-        "q" #'google-translate-query-translate
-        "T" #'google-translate-at-point-reverse
-        "t" #'google-translate-at-point))
+       "L" #'set-google-translate-languages
+       "l" #'set-google-translate-target-language
+       "Q" #'google-translate-query-translate-reverse
+       "q" #'google-translate-query-translate
+       "T" #'google-translate-at-point-reverse
+       "t" #'google-translate-at-point))
 
 (use-package! keytar
   :defer 5
@@ -62,11 +62,11 @@
   :hook (sdcv-mode . visual-line-mode)
   :config
   (map! :map sdcv-mode-map
-    :n "q" #'sdcv-return-from-sdcv
-    :n "n" #'sdcv-next-entry
-    :n "p" #'sdcv-previous-entry
-    :ni "RET" #'sdcv-search-at-point
-    :n "a" #'sdcv-search-at-point)
+        :n "q" #'sdcv-return-from-sdcv
+        :n "n" #'sdcv-next-entry
+        :n "p" #'sdcv-previous-entry
+        :ni "RET" #'sdcv-search-at-point
+        :n "a" #'sdcv-search-at-point)
   (add-to-list
    'display-buffer-alist
    `(,sdcv-buffer-name
@@ -139,18 +139,53 @@
      (window . root)
      (window-width . 0.25))))
 
-(after! ispell
-  (setq flyspell-issue-message-flag nil)    ; printing a message for every word has a negative performance impact
-  (setq ispell-program-name "aspell")
-  ;; aspell suggestion mode
-  (add-to-list 'ispell-extra-args "--sug-mode=bad-spellers")
-  (require 'flyspell)
+(use-package! flyspell
+  :defer t
+  :init
+  (add-hook! (TeX-mode
+              org-mode
+              markdown-mode
+              message-mode
+              git-commit-mode) #'flyspell-mode)
+  :config
 
-  ;; Change dictionary with the input-method
-  (defun change-dict-after-toggle-input (_ _)
+  (setq flyspell-issue-welcome-flag nil
+        flyspell-issue-message-flag nil))
+
+(use-package! flyspell-correct
+  :defer t)
+
+(use-package! flyspell-lazy
+  :after flyspell
+  :config
+  (setq flyspell-lazy-idle-seconds 1
+        flyspell-lazy-window-idle-seconds 3)
+  (flyspell-lazy-mode +1))
+
+(after! ispell
+  ;; Don't spellcheck org blocks
+  (pushnew! ispell-skip-region-alist
+            '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:")
+            '("#\\+BEGIN_SRC" . "#\\+END_SRC")
+            '("#\\+BEGIN_EXAMPLE" . "#\\+END_EXAMPLE"))
+  (setq ispell-program-name "enchant-2")
+  ;; (unless ispell-dictionary-alist
+  ;;   (setq ispell-dictionary-alist
+  ;;         '(("american"   ;; English
+  ;;            "[A-Za-z]" "[^A-Za-z]" "[']" nil
+  ;;            ("-B" "-d" "en_US")
+  ;;            nil iso-8859-1)
+  ;;           ("russian" "[\341\342\367\347\344\345\263\366\372\351\352\353\354\355\356\357\360\362\363\364\365\346\350\343\376\373\375\370\371\377\374\340\361\301\302\327\307\304\305\243\326\332\311\312\313\314\315\316\317\320\322\323\324\325\306\310\303\336\333\335\330\331\337\334\300\321]" "[^\341\342\367\347\344\345\263\366\372\351\352\353\354\355\356\357\360\362\363\364\365\346\350\343\376\373\375\370\371\377\374\340\361\301\302\327\307\304\305\243\326\332\311\312\313\314\315\316\317\320\322\323\324\325\306\310\303\336\333\335\330\331\337\334\300\321]" "" nil nil nil koi8-r))))
+
+  ;; (setq
+  ;;  ;; ispell-extra-args '("--sug-mode=ultra" "--run-together")
+  ;;  ispell-aspell-dictionary-alist ispell-dictionary-alist
+  ;;  ispell-dictionary "american"
+  ;;  )
+
+  (defadvice! change-dict-after-toggle-input (a b)
+    :after #'toggle-input-method
     (ispell-change-dictionary
      (if (string= current-input-method "russian-computer")
          "ru"
-       nil)))
-
-  (advice-add 'toggle-input-method :after 'change-dict-after-toggle-input))
+       nil))))
