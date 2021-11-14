@@ -55,6 +55,7 @@
           (:prefix ("s" . "tree/subtree")
            "a" #'org-toggle-archive-tag
            "A" #'org-archive-subtree
+           "j" #'consult-org-heading
            "N" #'widen
            "x" #'org-cut-subtree)
           (:prefix ("t" . "toggle")

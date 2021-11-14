@@ -26,8 +26,9 @@
       "nR" #'narrow-to-region-indirect-buffer
       "nf" #'narrow-to-defun
       "nr" #'narrow-to-region
-      "nw" #'widen
-
+      "nf" #'consult-focus-lines
+      "nw" (cmd! (consult-focus-lines :show)
+                 (widen))
       (:prefix ("a" . "apps/actions")
        "a" #'embark-act
        (:prefix "g"
@@ -58,16 +59,16 @@
 
       (:prefix ("h" . "help")
        "a" #'helpful-at-point
+       "dd" nil ; muscle memory is still strong
        "f" #'helpful-function
        "h" #'helpful-symbol
-       "v" #'helpful-variable
        "p" nil
        (:prefix ("p" . "packages")
         "l" #'list-packages
         "f" #'find-library-other-window
         "d" #'describe-package)
-       ;; muscle memory is still strong
-       "dd" nil)
+       "s" #'find-function-other-window
+       "v" #'helpful-variable)
 
       (:prefix ("j" . "jump")
        "j" #'avy-goto-char-timer
