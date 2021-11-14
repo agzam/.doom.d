@@ -7,9 +7,8 @@
   "When posframe obstructing text in the window, it's useful to
 temporarily toggle it off. Bind in vertico-map."
   (interactive)
-  (when (and (bound-and-true-p vertico-posframe-mode)
-             (fboundp #'vertico-posframe-mode))
-    (setq vertico-posframe-global vertico-posframe-mode)
+  (setq vertico-posframe-global vertico-posframe-mode)
+  (when (fboundp #'vertico-posframe-mode)
     (vertico-posframe-mode -1)))
 
 ;;;###autoload
@@ -17,5 +16,8 @@ temporarily toggle it off. Bind in vertico-map."
   (when (not (eq vertico-posframe-mode
                  vertico-posframe-global))
     (run-at-time
-     "0.01 sec" nil
-     (lambda () (vertico-posframe-mode vertico-posframe-global)))))
+     "0 sec" nil
+     (fn! ()
+       (when vertico-posframe-global
+         (vertico-posframe-mode +1)
+         (setq vertico-posframe-global nil))))))
