@@ -77,8 +77,7 @@
         "|" #'direx:fit-window
         "<C-return>" #'direx:set-root
         "^" #'direx:expand-root-to-parent
-        ;; "o" #'spacemacs/dired-open-item-other-window-transient-state/body
-        ))
+        "o" #'visit-file-ace-window))
 
 (use-package! dired-imenu
   :after dired)
@@ -99,6 +98,8 @@
 
 (after! dired
   (map! :leader "fj" #'dired-jump)
+  (map! :map dired-mode-map
+        :n "o" #'visit-file-ace-window)
 
   (setq dired-use-ls-dired t
         dired-dwim-target t)
