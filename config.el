@@ -105,8 +105,10 @@
        :desc "M-x" :n "SPC" #'execute-extended-command))
 
 (when (featurep! :custom general)
-  (center-frame-horizontally nil 85)
-  (init-visual-line-keys))
+  (add-hook! 'window-setup-hook
+    (defun center-frame-on-load-h ()
+      (center-frame-horizontally nil 85)
+      (init-visual-line-keys))))
 
 (fringe-mode '(6 . 0))
 (global-visual-line-mode +1)

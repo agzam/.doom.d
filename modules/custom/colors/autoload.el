@@ -12,14 +12,24 @@
 ;;;###autoload (autoload 'colors/load-next-theme "custom/colors/autoload" nil t)
 (defun colors/load-next-theme ()
   (interactive)
-  (let ((theme (ring-next (colors/init-themes-ring) doom-theme)))
+  (let* ((ring (colors/init-themes-ring))
+         (theme (progn
+                  (unless (ring-member ring doom-theme)
+                    (ring-extend ring 1)
+                    (ring-insert ring doom-theme))
+                  (ring-next ring doom-theme))))
     (load-theme theme :no-confirm)
     theme))
 
 ;;;###autoload (autoload 'colors/load-prev-theme "custom/colors/autoload" nil t)
 (defun colors/load-prev-theme ()
   (interactive)
-  (let ((theme (ring-previous (colors/init-themes-ring) doom-theme)))
+  (let* ((ring (colors/init-themes-ring))
+         (theme (progn
+                  (unless (ring-member ring doom-theme)
+                    (ring-extend ring 1)
+                    (ring-insert ring doom-theme))
+                  (ring-previous ring doom-theme))))
     (load-theme theme :no-confirm)
     theme))
 

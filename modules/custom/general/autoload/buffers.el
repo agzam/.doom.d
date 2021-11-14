@@ -73,3 +73,14 @@ window."
     (if (equal '(4) arg)
         (kill-buffer-and-window)
       (kill-buffer))))
+
+;;;###autoload
+(defun diff-current-buffer-with-file ()
+  (interactive)
+  (let ((buf (current-buffer)))
+    (with-current-buffer buf
+     (if buffer-file-name
+         (progn
+          (diff-buffer-with-file buf)
+          (select-window (get-buffer-window "*Diff*")))
+       (message "Buffer has no file!")))))

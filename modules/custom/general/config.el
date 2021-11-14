@@ -27,16 +27,52 @@
       "nf" #'narrow-to-defun
       "nr" #'narrow-to-region
       "nw" #'widen
-      (:prefix ("z" . "zoom")
-       "f" #'+hydra/text-zoom/body)
-      (:prefix ("w" . "windows")
-       "D" #'ace-delete-window
-       "M" #'ace-swap-window
-       "W" #'ace-window
-       "_" #'delete-other-windows-horizontally
-       "m" #'toggle-maximize-buffer
-       "|" #'delete-other-windows-vertically
-       "=" #'balance-windows-area)
+
+      (:prefix ("a" . "apps/actions")
+       "a" #'embark-act
+       (:prefix "g"
+        "h" #'gh-notify))
+
+      (:prefix ("b" . "buffers")
+       :desc "scratch" "s" #'doom/switch-to-scratch-buffer
+       :desc "Messages" "m" #'switch-to-messages-buffer
+       "d" #'kill-this-buffer
+       "D" #'diff-current-buffer-with-file
+       "s-d" #'spacemacs/kill-matching-buffers-rudely)
+
+      (:prefix ("e" . "emacs/doom")
+       "d" #'doom/goto-private-config-file
+       "i" (lambda () (interactive) (dired doom-emacs-dir)))
+
+      (:prefix ("f" . "files")
+       "ad" #'fasd-find-file
+       "e" nil ;; release it, or it complains
+       (:prefix ("e" . "doom/emacs")
+        "d" #'doom/goto-private-config-file
+        :desc "doom init dir" "i" (lambda () (interactive) (dired doom-emacs-dir))))
+
+      (:prefix ("g" . "goto")
+       "f" #'magit-file-dispatch
+       "j" #'evil-show-jumps
+       "s" #'magit-status)
+
+      (:prefix ("h" . "help")
+       "a" #'helpful-at-point
+       "f" #'helpful-function
+       "h" #'helpful-symbol
+       "v" #'helpful-variable
+       "p" nil
+       (:prefix ("p" . "packages")
+        "l" #'list-packages
+        "f" #'find-library-other-window
+        "d" #'describe-package)
+       ;; muscle memory is still strong
+       "dd" nil)
+
+      (:prefix ("j" . "jump")
+       "j" #'avy-goto-char-timer
+       "x" #'xwidget-webkit-url-get-create)
+
       (:prefix ("k" .  "lispy")
        "=" #'sp-reindent
        "W" #'sp-unwrap-sexp
@@ -47,49 +83,33 @@
        "t" #'sp-transpose-sexp
        "w" #'sp-wrap-sexp
        "y" #'sp-copy-sexp)
-      (:prefix ("a" . "apps/actions")
-       "a" #'embark-act
-       (:prefix "g"
-        "h" #'gh-notify))
-      (:prefix ("b" . "buffers")
-       :desc "scratch" "s" #'doom/switch-to-scratch-buffer
-       :desc "Messages" "m" #'switch-to-messages-buffer
-       "d" #'kill-this-buffer
-       "s-d" #'spacemacs/kill-matching-buffers-rudely)
-      (:prefix ("e" . "emacs/doom")
-       "d" #'doom/goto-private-config-file
-       "i" (lambda () (interactive) (dired doom-emacs-dir)))
-      (:prefix ("f" . "files")
-       "ad" #'fasd-find-file
-       "e" nil ;; release it, or it complains
-       (:prefix ("e" . "doom/emacs")
-        "d" #'doom/goto-private-config-file
-        :desc "doom init dir" "i" (lambda () (interactive) (dired doom-emacs-dir))))
-      (:prefix ("g" . "goto")
-       "f" #'magit-file-dispatch
-       "j" #'evil-show-jumps
-       "s" #'magit-status)
-      (:prefix ("h" . "help")
-       "a" #'helpful-at-point
-       "f" #'helpful-function
-       "h" #'helpful-symbol
-       "v" #'helpful-variable
-       ;; muscle memory is still strong
-       "dd" nil)
-      (:prefix ("j" . "jump")
-       "j" #'avy-goto-char-timer
-       "x" #'xwidget-webkit-url-get-create)
+
       (:prefix ("r" . "resume/ring")
        "y" #'yank-from-kill-ring)
+
       (:prefix ("s". "search/symbol")
        "j" #'imenu
        "/" #'engine/search-google
        "g" #'engine/search-github-with-lang)
+
       (:prefix ("t" . "toggle")
        "w" #'toggle-visual-line-navigation)
+
+      (:prefix ("w" . "windows")
+       "D" #'ace-delete-window
+       "M" #'ace-swap-window
+       "W" #'ace-window
+       "_" #'delete-other-windows-horizontally
+       "m" #'toggle-maximize-buffer
+       "|" #'delete-other-windows-vertically
+       "=" #'balance-windows-area)
+
       (:prefix ("x" ."text")
        "b" #'flyspell-correct-previous
-       "x" #'flyspell-correct-at-point))
+       "x" #'flyspell-correct-at-point)
+
+      (:prefix ("z" . "zoom")
+       "f" #'+hydra/text-zoom/body))
 
 (map! :localleader :map xwidget-webkit-mode-map "x" #'kill-current-buffer)
 
@@ -143,8 +163,7 @@
   (setq vertico-posframe-global t
         vertico-posframe-height 22
         vertico-posframe-width 200
-        ;; marginalia-margin-threshold 300
-        )
+        marginalia-margin-threshold 300)
 
   (add-hook! 'minibuffer-exit-hook #'restore-vertico-posframe-state-h)
   (map! :map vertico-map "C-c C-p"  #'vertico-posframe-temporarily-off))
@@ -272,6 +291,12 @@
   (map! :map ibuffer-mode-map
         :n "su" #'ibuffer-filter-by-unsaved-file-buffers
         :n "sF" #'ibuffer-filter-by-file-buffers))
+
+(after! shell
+  (map! :map shell-mode-map
+        "C-c C-l" #'comint-clear-buffer
+        :localleader
+        "c" #'comint-clear-buffer))
 
 ;; ensure that browsing in Helpful and Info modes doesn't create additional window splits
 (add-to-list
