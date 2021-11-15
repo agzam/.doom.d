@@ -141,16 +141,16 @@
 
 (use-package! flyspell
   :defer t
-  :init
-  (add-hook! (TeX-mode
-              org-mode
-              markdown-mode
-              message-mode
-              git-commit-mode) #'flyspell-mode)
   :config
-
+  (add-hook! (text-mode org-mode markdown-mode message-mode git-commit-mode)
+             (defun flyspell-toggle-on () (flyspell-mode +1)))
   (setq flyspell-issue-welcome-flag nil
-        flyspell-issue-message-flag nil))
+        flyspell-issue-message-flag nil)
+  ;; release the key for embark-act
+  (unbind-key (kbd "C-;") flyspell-mode-map)
+  (map!
+      :i "s-." #'flyspell-auto-correct-previous-word
+      :i "s-," #'flyspell-auto-correct-word))
 
 (use-package! flyspell-correct
   :defer t)
@@ -158,9 +158,10 @@
 (use-package! flyspell-lazy
   :after flyspell
   :config
-  (setq flyspell-lazy-idle-seconds 1
+  (setq flyspell-lazy-idle-seconds 0.5
         flyspell-lazy-window-idle-seconds 3)
-  (flyspell-lazy-mode +1))
+  ;; (flyspell-lazy-mode +1)
+  )
 
 (after! ispell
   ;; Don't spellcheck org blocks

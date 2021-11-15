@@ -75,6 +75,7 @@ Split window
 (defun visit-file-ace-window ()
   (interactive)
   (let* ((dired-item-buf (buffer-with-dired-item))
+         (aw-dispatch-always t)
          (win (aw-select "Select window")))
     (setq split-ace-window--current
           (plist-put split-ace-window--current :window win))

@@ -9,11 +9,7 @@
 (global-set-key (kbd "C-c r") #'org-roam-dailies-capture-date)
 
 (use-package! org
-  :defer-incrementally
-  calendar find-func format-spec org-macs org-compat org-faces org-entities
-  org-list org-pcomplete org-src org-footnote org-macro ob org org-agenda
-  org-capture
-
+  :defer t
   :config
   (setf org-directory org-default-folder)
   (setq
@@ -32,38 +28,46 @@
 
   (setq org-link-make-description-function #'+org-link-make-description-function)
 
-  (map! (:map org-mode-map
-         "C-c C-f" #'org-roam-node-find
-         "C-c C-i" #'org-roam-node-insert+
-         (:localleader
-          "n" #'org-next-link
-          "p" #'org-previous-link
-          (:prefix ("b" . "babel")
-           "k" #'org-babel-remove-result)
-          (:prefix ("g" . "goto")
-           "L" #'org-goto-last-heading
-           "d" #'org-goto-datetree-date)
-          (:prefix ("i" . "insert")
-           "l" #'org-insert-link
-           "L" #'org-cliplink)
-          (:prefix ("r" . "roam")
-           "i" #'org-roam-node-insert+
-           "l" #'org-roam-buffer-toggle
-           "w" #'org-roam-toggle-ui-xwidget
-           "f" #'org-roam-node-find
-           "d" #'org-roam-dailies-find-date)
-          (:prefix ("s" . "tree/subtree")
-           "a" #'org-toggle-archive-tag
-           "A" #'org-archive-subtree
-           "j" #'consult-org-heading
-           "N" #'widen
-           "x" #'org-cut-subtree)
-          (:prefix ("t" . "toggle")
-           "l" #'org-toggle-link-display))))
+  (map! :map org-mode-map
+        "C-c C-f" #'org-roam-node-find
+        "C-c C-i" #'org-roam-node-insert+
+        (:localleader
+         "n" #'org-next-link
+         "p" #'org-previous-link
+         (:prefix ("b" . "babel")
+          "k" #'org-babel-remove-result)
+         (:prefix ("g" . "goto")
+          "L" #'org-goto-last-heading
+          "d" #'org-goto-datetree-date)
+         (:prefix ("i" . "insert")
+          "l" #'org-insert-link
+          "L" #'org-cliplink)
+         (:prefix ("r" . "roam")
+          "i" #'org-roam-node-insert+
+          "l" #'org-roam-buffer-toggle
+          "w" #'org-roam-toggle-ui-xwidget
+          "f" #'org-roam-node-find
+          "d" #'org-roam-dailies-find-date)
+         (:prefix ("s" . "tree/subtree")
+          "a" #'org-toggle-archive-tag
+          "A" #'org-archive-subtree
+          "j" #'consult-org-heading
+          "N" #'widen
+          "S" #'org-sort
+          "x" #'org-cut-subtree)
+         (:prefix ("t" . "toggle")
+          "l" #'org-toggle-link-display)))
 
-  (add-hook! 'org-mode-hook #'org-indent-mode))
+  (add-hook! 'org-mode-hook #'org-indent-mode)
+  (setq org-capture-bookmark nil))
+
+(use-package! org-tempo
+  :after org
+  :config
+  (add-to-list 'org-modules 'org-tempo t))
 
 (use-package! org-roam
+  :commands org-roam-node-find org-roam-dailies-capture-date
   :after org
   :init
   (setq
@@ -71,8 +75,14 @@
    org-roam-directory org-default-folder
    org-roam-db-location (concat org-default-folder "org-roam.db")
    org-roam-dailies-directory "daily/")
-
   :config
+  (map! :map org-mode-map :i "[[" #'org-roam-node-insert)
+  (map! :map org-roam-mode-map
+        "C-c i" #'org-roam-node-insert+
+        (:localleader
+         "rf" #'org-roam-node-find
+         "rl" #'org-roam-buffer-toggle))
+
   (setq
    org-roam-completion-everywhere t
    org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
@@ -114,6 +124,8 @@
            :jump-to-captured t
            :unnarrowed t)))
 
+  (org-roam-db-autosync-mode +1)
+
   (add-to-list
    'display-buffer-alist
    '("\\*org-roam\\*"
@@ -121,16 +133,13 @@
       display-buffer-in-direction)
      (direction . right)
      (window . root)
-     (window-width . 0.2)))
+     (window-width . 0.2))))
 
-  (add-hook! 'org-roam-mode-hook
-    (defun set-org-roam-mode-keys ()
-      (map!
-       :map org-roam-mode-map
-       "C-c i" #'org-roam-node-insert+
-       (:localleader
-        "rf" #'org-roam-node-find
-        "rl" #'org-roam-buffer-toggle)))))
+(use-package! org-roam-protocol
+  :after org-roam)
+
+(use-package! org-roam-dailies
+  :after org-roam)
 
 (use-package! org-roam-ui
   :after org-roam
@@ -140,7 +149,6 @@
         org-roam-ui-follow t
         org-roam-ui-update-on-save t
         org-roam-ui-open-on-start nil)
-
   :config
   (add-to-list
    'display-buffer-alist

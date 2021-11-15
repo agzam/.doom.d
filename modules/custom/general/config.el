@@ -14,21 +14,14 @@
 (put 'narrow-to-region 'disabled nil)
 
 (map! :leader
-      "TAB" #'alternate-buffer
-      "v" #'er/expand-region
-      ";" #'evilnc-comment-or-uncomment-lines
+      "TAB"   #'alternate-buffer
+      "v"     #'er/expand-region
+      ";"     #'evilnc-comment-or-uncomment-lines
       "C-h k" #'helpful-key
 
       ;; liberate the top level bindings for other things
       "a" nil "x" nil
 
-      "nF" #'narrow-to-defun-indirect-buffer
-      "nR" #'narrow-to-region-indirect-buffer
-      "nf" #'narrow-to-defun
-      "nr" #'narrow-to-region
-      "nf" #'consult-focus-lines
-      "nw" (cmd! (consult-focus-lines :show)
-                 (widen))
       (:prefix ("a" . "apps/actions")
        "a" #'embark-act
        (:prefix "g"
@@ -37,13 +30,9 @@
       (:prefix ("b" . "buffers")
        :desc "scratch" "s" #'doom/switch-to-scratch-buffer
        :desc "Messages" "m" #'switch-to-messages-buffer
-       "d" #'kill-this-buffer
-       "D" #'diff-current-buffer-with-file
+       "d"   #'kill-this-buffer
+       "D"   #'diff-current-buffer-with-file
        "s-d" #'spacemacs/kill-matching-buffers-rudely)
-
-      (:prefix ("e" . "emacs/doom")
-       "d" #'doom/goto-private-config-file
-       "i" (lambda () (interactive) (dired doom-emacs-dir)))
 
       (:prefix ("f" . "files")
        "ad" #'fasd-find-file
@@ -62,11 +51,10 @@
        "dd" nil ; muscle memory is still strong
        "f" #'helpful-function
        "h" #'helpful-symbol
-       "p" nil
-       (:prefix ("p" . "packages")
-        "l" #'list-packages
-        "f" #'find-library-other-window
-        "d" #'describe-package)
+       "p" nil (:prefix ("p" . "packages")
+                "l" #'list-packages
+                "f" #'find-library-other-window
+                "d" #'describe-package)
        "s" #'find-function-other-window
        "v" #'helpful-variable)
 
@@ -84,6 +72,14 @@
        "t" #'sp-transpose-sexp
        "w" #'sp-wrap-sexp
        "y" #'sp-copy-sexp)
+
+      (:prefix ("n" . "narrow")
+        "F" #'narrow-to-defun-indirect-buffer
+        "R" #'narrow-to-region-indirect-buffer
+        "f" #'narrow-to-defun
+        "r" #'narrow-to-region
+        "f" #'consult-focus-lines
+        "w" (cmd! (consult-focus-lines :show) (widen)))
 
       (:prefix ("r" . "resume/ring")
        "y" #'yank-from-kill-ring)
@@ -114,13 +110,12 @@
 
 (map! :localleader :map xwidget-webkit-mode-map "x" #'kill-current-buffer)
 
-
 ;; Change the cursor color in emacs state. We do it this roundabout way
 ;; to ensure changes in theme doesn't break these colors.
-;; (add-hook! '(doom-load-theme-hook doom-init-modules-hook)
-;;   (defun +evil-update-cursor-color-h ()
-;;     (put 'cursor 'evil-emacs-color "SkyBlue2")
-;;     (put 'cursor 'evil-normal-color "DarkGoldenrod2")))
+(add-hook! '(doom-load-theme-hook doom-init-modules-hook)
+  (defun +evil-update-cursor-color-h ()
+    (put 'cursor 'evil-emacs-color "SkyBlue2")
+    (put 'cursor 'evil-normal-color "DarkGoldenrod2")))
 
 (after! evil-maps
   ;; often conflicts with doom-local-leader
@@ -206,6 +201,11 @@
        "C-e"      #'vertico-scroll-up
        "C-y"      #'vertico-scroll-down))
 
+(after! embark
+  (map!
+   (:map embark-file-map
+    "o" #'visit-file-ace-window)))
+
 (use-package! info+
   :after info
   :config
@@ -217,7 +217,7 @@
   :after company
   :hook (company-mode . company-posframe-mode)
   :init
-  (setq company-posframe-quickhelp-delay 1
+  (setq company-posframe-quickhelp-delay nil
         company-posframe-show-indicator nil
         company-quickhelp-delay nil)
   :bind (:map company-active-map

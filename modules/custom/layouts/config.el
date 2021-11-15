@@ -2,6 +2,7 @@
 
 (after! tab-bar
   (setq tab-bar-show t
+        tab-bar-new-tab-group nil
         tab-bar-close-button-show nil
         tab-bar-format '(tab-bar-format-history tab-bar-format-tabs tab-bar-separator)
         tab-bar-tab-name-function #'+tab-bar-name-fn)
