@@ -293,12 +293,6 @@
         :n "su" #'ibuffer-filter-by-unsaved-file-buffers
         :n "sF" #'ibuffer-filter-by-file-buffers))
 
-(after! shell
-  (map! :map shell-mode-map
-        "C-c C-l" #'comint-clear-buffer
-        :localleader
-        "c" #'comint-clear-buffer))
-
 ;; ensure that browsing in Helpful and Info modes doesn't create additional window splits
 (add-to-list
  'display-buffer-alist

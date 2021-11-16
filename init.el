@@ -201,4 +201,4 @@
        lsp
        clojure
        org
-       )
+       shell)
