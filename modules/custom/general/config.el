@@ -2,7 +2,7 @@
 
 ;; disable nonsensical keys
 (dolist (key '("s-n" "s-p" "s-q" "s-m" "C-x C-c"))
-  (unbind-key (kbd key)))
+  (global-set-key (kbd key) nil))
 
 (map! :i "M-l" #'sp-forward-slurp-sexp
       :i "M-h" #'sp-forward-barf-sexp
@@ -20,12 +20,8 @@
       "C-h k" #'helpful-key
 
       ;; liberate the top level bindings for other things
-      "a" nil "x" nil
-
-      (:prefix ("a" . "apps/actions")
-       "a" #'embark-act
-       (:prefix "g"
-        "h" #'gh-notify))
+      ;; "a" nil
+      "x" nil
 
       (:prefix ("b" . "buffers")
        :desc "scratch" "s" #'doom/switch-to-scratch-buffer
@@ -81,8 +77,12 @@
         "f" #'consult-focus-lines
         "w" (cmd! (consult-focus-lines :show) (widen)))
 
+      (:prefix ("o" . "open")
+       (:prefix "g"
+        "h" #'gh-notify))
+
       (:prefix ("r" . "resume/ring")
-       "y" #'yank-from-kill-ring)
+       "y" #'consult-yank-from-kill-ring)
 
       (:prefix ("s". "search/symbol")
        "j" #'imenu
@@ -120,7 +120,7 @@
 (after! evil-maps
   ;; often conflicts with doom-local-leader
   ;; (unbind-key (kbd ",") evil-motion-state-map)
-  (unbind-key (kbd "C-u") evil-motion-state-map))
+  (define-key evil-motion-state-map (kbd "C-u") nil))
 
 (use-package winum
   :after-call doom-switch-window-hook

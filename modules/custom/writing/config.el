@@ -146,8 +146,7 @@
              (defun flyspell-toggle-on () (flyspell-mode +1)))
   (setq flyspell-issue-welcome-flag nil
         flyspell-issue-message-flag nil)
-  ;; release the key for embark-act
-  (unbind-key (kbd "C-;") flyspell-mode-map)
+  (map! :map flyspell-mode-map "C-;" nil) ; release the key for embark-act
   (map!
       :i "s-." #'flyspell-auto-correct-previous-word
       :i "s-," #'flyspell-auto-correct-word))
