@@ -21,3 +21,12 @@
 
 (use-package! rainbow-mode
   :defer t)
+
+(use-package! beacon
+  :defer t
+  :config
+  (setq beacon-blink-delay 0.1
+        beacon-blink-duration 0.5
+        beacon-size 60
+        beacon-color "DarkGoldenrod2")
+  (beacon-mode +1))

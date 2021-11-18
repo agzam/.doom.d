@@ -18,7 +18,13 @@
    org-catch-invisible-edits 'smart
    org-hide-emphasis-markers t
    org-pretty-entities t
-   org-pretty-entities-include-sub-superscripts nil)
+   org-pretty-entities-include-sub-superscripts nil
+   org-log-into-drawer t
+   org-log-states-order-reversed nil)
+
+  (add-to-list
+   'auto-mode-alist
+   `(,(format "\\%s.*\.txt\\'" (replace-regexp-in-string "~" "" org-default-folder)) . org-mode))
 
   (setq
    org-confirm-babel-evaluate nil
@@ -58,8 +64,18 @@
          (:prefix ("t" . "toggle")
           "l" #'org-toggle-link-display)))
 
-  (add-hook! 'org-mode-hook #'org-indent-mode)
-  (setq org-capture-bookmark nil))
+  (add-hook! 'org-mode-hook
+             #'org-indent-mode
+             (defun flycheck-mode-off ()
+               (flycheck-mode -1)))
+  (add-hook! 'org-capture-mode-hook #'recenter)
+  (setq org-capture-bookmark nil)
+
+  (after! org-attach
+    (add-hook! 'org-attach-after-change-hook
+      (defun org-attach-save-file-list-to-property (dir)
+        (when-let ((files (org-attach-file-list dir)))
+          (org-set-property "ORG_ATTACH_FILES" (mapconcat #'identity files ", ")))))))
 
 (use-package! org-tempo
   :after org
@@ -76,9 +92,16 @@
    org-roam-db-location (concat org-default-folder "org-roam.db")
    org-roam-dailies-directory "daily/")
   :config
-  (map! :map org-mode-map :i "[[" #'org-roam-node-insert)
+  (map! :map org-mode-map
+        :i "[[" #'org-roam-node-insert
+        :i "[ SPC" (cmd! (insert "[]")
+                         (backward-char)))
   (map! :map org-roam-mode-map
         "C-c i" #'org-roam-node-insert+
+        "RET" (cmd! (org-roam-node-visit (org-roam-node-at-point) :other-window))
+        (:prefix ("g" . "goto")
+         "k" #'org-backward-element
+         "j" #'org-forward-element)
         (:localleader
          "rf" #'org-roam-node-find
          "rl" #'org-roam-buffer-toggle))
@@ -157,7 +180,12 @@
       display-buffer-in-direction)
      (direction . right)
      (window . root)
-     (window-width . 0.4))))
+     (window-width . 0.4)))
+
+  (add-hook! 'org-mode-hook
+    (defun org-roam-ui-on ()
+      (unless org-roam-ui-mode
+        (org-roam-ui-mode +1)))))
 
 (use-package! evil-org
   :after org
@@ -189,9 +217,8 @@
             :ni [C-S-return] #'+org/insert-item-above
             ;; navigate table cells (from insert-mode)
             :i Cright (cmds! (org-at-table-p) #'org-table-next-field
-                             #'org-end-of-line)
-            :i Cleft  (cmds! (org-at-table-p) #'org-table-previous-field
-                             #'org-beginning-of-line)
+                             #'recenter-top-bottom)
+            :i Cleft  (cmds! (org-at-table-p) #'org-table-previous-field)
             :i Cup    (cmds! (org-at-table-p) #'+org/table-previous-row
                              #'org-up-element)
             :i Cdown  (cmds! (org-at-table-p) #'org-table-next-row
@@ -262,3 +289,6 @@
         org-superstar-item-bullet-alist '((?* . ?⋆)
                                           (?+ . ?◦)
                                           (?- . ?•))))
+
+(use-package! org-edit-indirect
+  :after org)

@@ -31,7 +31,7 @@
        "s-d" #'spacemacs/kill-matching-buffers-rudely)
 
       (:prefix ("f" . "files")
-       "ad" #'fasd-find-file
+       "ad" (cmd! (fasd-find-file 1))
        "e" nil ;; release it, or it complains
        (:prefix ("e" . "doom/emacs")
         "d" #'doom/goto-private-config-file
@@ -70,12 +70,12 @@
        "y" #'sp-copy-sexp)
 
       (:prefix ("n" . "narrow")
-        "F" #'narrow-to-defun-indirect-buffer
-        "R" #'narrow-to-region-indirect-buffer
-        "f" #'narrow-to-defun
-        "r" #'narrow-to-region
-        "f" #'consult-focus-lines
-        "w" (cmd! (consult-focus-lines :show) (widen)))
+       "F" #'narrow-to-defun-indirect-buffer
+       "R" #'narrow-to-region-indirect-buffer
+       "f" #'narrow-to-defun
+       "r" #'narrow-to-region
+       "f" #'consult-focus-lines
+       "w" (cmd! (consult-focus-lines :show) (widen)))
 
       (:prefix ("o" . "open")
        (:prefix "g"
@@ -109,6 +109,9 @@
        "f" #'+hydra/text-zoom/body))
 
 (map! :localleader :map xwidget-webkit-mode-map "x" #'kill-current-buffer)
+(map! :map special-mode-map
+      "SPC" nil
+      "h" #'evil-backward-char)
 
 ;; Change the cursor color in emacs state. We do it this roundabout way
 ;; to ensure changes in theme doesn't break these colors.
@@ -120,7 +123,8 @@
 (after! evil-maps
   ;; often conflicts with doom-local-leader
   ;; (unbind-key (kbd ",") evil-motion-state-map)
-  (define-key evil-motion-state-map (kbd "C-u") nil))
+  (map! (:map evil-motion-state-map "C-u" nil)
+        (:map evil-insert-state-map "C-u" nil)))
 
 (use-package winum
   :after-call doom-switch-window-hook
@@ -196,10 +200,13 @@
 (use-package! vertico-buffer :after vertico)
 
 (after! vertico
- (map! :map vertico-map
-       "C-u" nil  ; unbind universal argument
-       "C-e"      #'vertico-scroll-up
-       "C-y"      #'vertico-scroll-down))
+  (map! :map vertico-map
+        "C-u" nil  ; unbind universal argument
+        "C-e"      #'vertico-scroll-up
+        "C-y"      #'vertico-scroll-down)
+
+  (map! :map minibuffer-mode-map
+        "~" #'vertico-jump-to-home-dir-on~))
 
 (after! embark
   (map!

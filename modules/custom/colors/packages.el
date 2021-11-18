@@ -7,3 +7,4 @@
 
 (package! ag-themes :recipe (:local-repo "ag-themes" :files ("*.el")))
 (package! rainbow-mode)
+(package! beacon)

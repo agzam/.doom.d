@@ -27,7 +27,7 @@
 ;; `load-theme' function. This is the default:
 (setq
  doom-font (font-spec :family "JetBrains Mono" :size 15)
- doom-variable-pitch-font (font-spec :family "Open Sans" :size 15)
+ doom-variable-pitch-font (font-spec :family "Open Sans" :size 18)
  ;; doom-theme 'spacemacs-light
  )
 
@@ -75,11 +75,11 @@
  default-input-method 'russian-computer
  tab-width 4
  apropos-sort-by-scores t
- doom-font-increment 1)
-
-(after! ace-window
-  ;; ace-windows instead of characters shows number
-  (setq aw-keys '(?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9)))
+ doom-font-increment 1
+ split-height-threshold 80
+ epa-pinentry-mode nil
+ ;; epa-file-cache-passphrase-for-symmetric-encryption t
+ )
 
 (after! dumb-jump
   ;; https://github.com/jacktasia/dumb-jump#emacs-options

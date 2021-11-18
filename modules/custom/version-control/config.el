@@ -104,16 +104,19 @@
          :nv "z" #'magit-stash
          :nv "q" #'+magit/quit
          :nv "Q" #'+magit/quit-all
-         :nv "]" #'magit-section-forward-sibling
-         :nv "[" #'magit-section-backward-sibling
          :nv "gr" #'magit-refresh
          :nv "gR" #'magit-refresh-all
          :nv "l" #'evil-forward-char
+         :nv "h" #'evil-backward-char
          "M-l" #'magit-log)
         (:map magit-status-mode-map
          :nv "gz" #'magit-refresh)
         (:map magit-diff-mode-map
-         :nv "gd" #'magit-jump-to-diffstat-or-diff))
+         :nv "gd" #'magit-jump-to-diffstat-or-diff)
+        (:map magit-section-mode-map
+         :nv "]" #'magit-section-forward-sibling
+         :nv "[" #'magit-section-backward-sibling))
+
 
   ;; A more intuitive behavior for TAB in magit buffers:
   (define-key! 'normal
@@ -187,7 +190,13 @@ ensure it is built when we actually use Forge."
         (magit-add-section-hook 'magit-status-sections-hook 'forge-insert-issues   nil t)
         (after! forge-topic
           (dolist (hook forge-bug-reference-hooks)
-            (add-hook hook #'forge-bug-reference-setup)))))))
+            (add-hook hook #'forge-bug-reference-setup))))))
+
+  (after! forge-topic
+    (map!
+     :map forge-topic-mode-map
+     :localleader
+     "l" #'forge-copy-url-at-point-as-kill)))
 
 (use-package! gist
   :defer t

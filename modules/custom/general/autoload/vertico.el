@@ -21,3 +21,12 @@ temporarily toggle it off. Bind in vertico-map."
        (when vertico-posframe-global
          (vertico-posframe-mode +1)
          (setq vertico-posframe-global nil))))))
+
+;;;###autoload
+(defun vertico-jump-to-home-dir-on~  ()
+  (interactive)
+  (if (and (vertico-directory--completing-file-p)
+           (string-match-p "^~\\/" (minibuffer-contents)))
+      (while (not (string-equal (minibuffer-contents) "~/"))
+        (vertico-directory-delete-word))
+    (insert "~")))

@@ -2,7 +2,8 @@
 
 (map! :leader
         "'" #'shell-pop
-        "\"" #'shell-pop-choose)
+        "\"" #'shell-pop-choose
+        "p '" #'shell-pop-in-project-root)
 
 (after! shell
   (map! :map shell-mode-map
