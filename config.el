@@ -57,6 +57,10 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
+(use-package! fennel-mode
+  :mode "\\.fnl$"
+  :defer t)
+
 (setq-default
  line-spacing 6
  garbage-collection-messages nil

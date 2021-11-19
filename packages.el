@@ -50,3 +50,4 @@
 ;(unpin! t)
 
 (package! evil-snipe :disable t)
+(package! fennel-mode)
