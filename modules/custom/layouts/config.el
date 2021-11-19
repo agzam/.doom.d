@@ -16,5 +16,5 @@
 
   (map! :leader "l" #'+hydra/layouts/body)
 
-  (add-hook! (tab-bar-tab-added tab-bar-tab-removed) #'reset-frame-full-height)
+  ;; (add-hook! (tab-bar-tab-added tab-bar-tab-removed) #'reset-frame-full-height)
   )

@@ -76,10 +76,10 @@
  tab-width 4
  apropos-sort-by-scores t
  doom-font-increment 1
- split-height-threshold 80
- epa-pinentry-mode nil
- ;; epa-file-cache-passphrase-for-symmetric-encryption t
- )
+ split-height-threshold 80)
+
+(after! epa
+  (setq epg-pinentry-mode nil))
 
 (after! dumb-jump
   ;; https://github.com/jacktasia/dumb-jump#emacs-options
@@ -115,10 +115,6 @@
 
 (advice-remove 'evil-open-above #'+evil--insert-newline-above-and-respect-comments-a)
 (advice-remove 'newline-and-indent #'+default--newline-indent-and-continue-comments-a)
-
-;; Emacs keeps asking for gpg pass every time I want to pull from GitHub, I don't like
-;; that. Settting this to what I used to have before Doom
-(setq epg-pinentry-mode nil)
 
 ;; disable global-hl-line
 ;; oddly that's the way: github.com/hlissner/doom-emacs/issues/4206

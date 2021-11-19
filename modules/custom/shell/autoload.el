@@ -15,6 +15,13 @@
        (lambda () (,shell-fn))))
     (shell-pop arg)))
 
+
+;;;###autoload
+(defun shell-pop-in-project-root (&optional arg)
+  (interactive)
+  (projectile-with-default-dir (projectile-project-root)
+    (shell-pop arg)))
+
 ;;;###autoload
 (defun eshell-clear+ ()
   (interactive)

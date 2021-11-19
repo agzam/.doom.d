@@ -20,7 +20,9 @@
    org-pretty-entities t
    org-pretty-entities-include-sub-superscripts nil
    org-log-into-drawer t
-   org-log-states-order-reversed nil)
+   org-log-states-order-reversed nil
+
+   org-edit-src-content-indentation 0)
 
   (add-to-list
    'auto-mode-alist
@@ -93,7 +95,7 @@
    org-roam-dailies-directory "daily/")
   :config
   (map! :map org-mode-map
-        :i "[[" #'org-roam-node-insert
+        :i "[[" #'org-roam-node-insert+
         :i "[ SPC" (cmd! (insert "[]")
                          (backward-char)))
   (map! :map org-roam-mode-map

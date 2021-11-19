@@ -133,7 +133,8 @@
           (:prefix ("g" . "goto")
            "b" #'cider-pop-back
            "g" #'cider-find-var
-           "n" #'cider-find-ns)
+           "n" #'cider-find-ns
+           "s" #'cider-scratch)
           (:prefix ("h" . "help")
            "n" #'cider-find-ns
            "a" #'cider-apropos
