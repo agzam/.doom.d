@@ -247,7 +247,12 @@ ensure it is built when we actually use Forge."
 (use-package! git-link
   :after magit
   :config
-  (map! :leader "glm" #'git-link-master-branch))
+  (setq browse-at-remote-add-line-number-if-no-region-selected t)
+  (map! :leader
+        (:prefix ("gl" . "git link")
+         "b" #'git-link-blame
+         "l" #'git-link-kill
+         "m" #'git-link-master-branch)))
 
 (use-package! gh-notify
   :commands (gh-notify)
