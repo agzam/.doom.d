@@ -147,7 +147,9 @@
   (setq flyspell-issue-welcome-flag nil
         flyspell-issue-message-flag nil)
   (map! :map flyspell-mode-map "C-;" nil) ; release the key for embark-act
-  (map!
+  (map! :map flyspell-mode-map
+      :i ",," #'flyspell-correct-previous
+      :i ", SPC" (cmd! (insert ", "))
       :i "s-." #'flyspell-auto-correct-previous-word
       :i "s-," #'flyspell-auto-correct-word))
 
