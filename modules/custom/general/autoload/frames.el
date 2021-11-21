@@ -11,9 +11,10 @@
          (y (nth 1 geom))
          (display-height (nth 3 geom))
          (display-width (nth 2 geom))
+         (ns-menu-autohide (bound-and-true-p ns-auto-hide-menu-bar))
          (cut (if on?
-                  (if ns-auto-hide-menu-bar 26 50)
-                (if ns-auto-hide-menu-bar 4 26)))
+                  (if ns-menu-autohide 26 50)
+                (if ns-menu-autohide 4 26)))
          (header-h (+ (tab-bar-height nil t) cut)))
     (set-frame-position frame x y)
     (set-frame-parameter frame 'fullscreen-restore 'maximized)
@@ -45,7 +46,8 @@ the horizontal screen estate the frame should occupy."
 (defun reset-ns-autohide-menu-bar ()
   "In OSX frame resizing could affects ns-menu. This makes sure
 it remains shown or hidden - whatever the previous value was."
-  (when (eq system-type 'darwin)
+  (when (and (eq system-type 'darwin)
+             (boundp 'ns-auto-hide-menu-bar))
    (let ((val ns-auto-hide-menu-bar))
      (setf ns-auto-hide-menu-bar (not val))
      (setf ns-auto-hide-menu-bar val))))
@@ -55,17 +57,25 @@ it remains shown or hidden - whatever the previous value was."
   "Removes the title of the current frame and stretches it out to
   the display height. To be used on a Mac."
   (interactive)
-  (let ((tbh (tab-bar-height nil t)))
-    (if (frame-parameter nil 'undecorated-fullheight)
+  ;; hide posframe buffers
+  (when (boundp 'company-abort) (company-abort))
+  (let* ((restore-vertico-posframe? (when (bound-and-true-p vertico-posframe-mode)
+                                      (vertico-posframe-mode -1) t))
+         (fr (selected-frame))
+         (tbh (tab-bar-height fr t)))
+    (if (frame-parameter fr 'undecorated-fullheight)
         (progn
-          (set-frame-parameter nil 'undecorated-fullheight nil)
-          (set-frame-parameter nil 'undecorated nil))
+          (set-frame-parameter fr 'undecorated-fullheight nil)
+          (set-frame-parameter fr 'undecorated nil)
+          (set-frame-parameter fr 'fullscreen nil))
       (reset-ns-autohide-menu-bar)
       (progn
-        (set-frame-parameter nil 'undecorated t)
-        (set-frame-parameter nil 'undecorated-fullheight t)
-        (set-frame-position nil (car (frame-position)) (+ 1 tbh))
-        (set-frame-height nil (- (x-display-pixel-height) (+ tbh 29)) nil :pixelwise)))
+        (set-frame-parameter fr 'undecorated t)
+        (set-frame-parameter fr 'undecorated-fullheight t)
+        (set-frame-position fr (car (frame-position)) (+ 1 tbh))
+        (set-frame-height fr (- (x-display-pixel-height) (+ tbh 26)) nil :pixelwise)))
+    (when restore-vertico-posframe?
+      (vertico-posframe-mode +1))
     (redraw-display)))
 
 (defun reset-frame-full-height ()
@@ -80,7 +90,7 @@ it remains shown or hidden - whatever the previous value was."
   "
 ^Zoom^             ^Resize^
 ---------------------------------
-_j_: decrease       _h_: full-height
+_j_: decrease      _h_: full-height
 _k_: increase      _c_: center
 _0_: reset         _m_: maximize
 ^^                 _f_: fullscreen
