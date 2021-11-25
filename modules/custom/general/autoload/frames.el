@@ -78,9 +78,11 @@ it remains shown or hidden - whatever the previous value was."
       (vertico-posframe-mode +1))
     (redraw-display)))
 
+;;;###autoload
 (defun reset-frame-full-height ()
-  (toggle-frame-full-height)
-  (toggle-frame-full-height))
+  (unless (eq 'fullboth (frame-parameter nil 'fullscreen))
+    (toggle-frame-full-height)
+    (toggle-frame-full-height)))
 
 ;;;###autoload
 (defhydra +hydra/text-zoom (:color amarath

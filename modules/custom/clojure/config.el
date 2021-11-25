@@ -73,7 +73,7 @@
    cider-repl-display-in-current-window nil
    cider-comment-prefix  " \n;; => "
    cider-inject-dependencies-at-jack-in t
-
+   cider-repl-display-in-current-window nil
    cider-eldoc-display-for-symbol-at-point nil
    cider-eldoc-display-context-dependent-info nil)
 
@@ -89,7 +89,8 @@
    `(,(rx bos (or "*cider-repl"
                   "*nrepl-server"
                   "*cider-test-report*"
-                  "*cider-error"))
+                  "*cider-error"
+                  "*cider-result"))
      (display-buffer-reuse-window
       display-buffer-in-direction)
      (direction . right)

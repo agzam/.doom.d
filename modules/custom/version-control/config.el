@@ -75,7 +75,7 @@
     (add-to-list 'transient-values v))
 
   ;; who cares if tags not displayed in magit-refs buffer?
-  (remove-hook 'magit-refs-sections-hook 'magit-insert-tags)
+  (remove-hook 'magit-refs-sections-hook #'magit-insert-tags)
   ;; (remove-hook 'magit-process-mode-hook #'goto-address-mode)
   )
 

@@ -31,9 +31,6 @@
  ;; doom-theme 'spacemacs-light
  )
 
-;; If you use `org' and don't want your org files in the default location below,
-;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/org/")
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -111,14 +108,17 @@
 (when (featurep! :custom general)
   (add-hook! 'window-setup-hook
     (defun center-frame-on-load-h ()
-      (center-frame-horizontally nil 85)
-      (init-visual-line-keys))))
-
-(fringe-mode '(6 . 0))
-(global-visual-line-mode +1)
+      (init-visual-line-keys)
+      (global-visual-line-mode +1)
+      (fringe-mode '(6 . 0))
+      ;; (center-frame-horizontally nil 85)
+      )))
 
 (advice-remove 'evil-open-above #'+evil--insert-newline-above-and-respect-comments-a)
 (advice-remove 'newline-and-indent #'+default--newline-indent-and-continue-comments-a)
+
+(define-key! :keymaps +default-minibuffer-maps
+    "C-u" #'universal-argument)
 
 ;; disable global-hl-line
 ;; oddly that's the way: github.com/hlissner/doom-emacs/issues/4206

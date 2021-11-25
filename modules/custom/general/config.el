@@ -163,7 +163,7 @@
   (setq vertico-posframe-global t
         vertico-posframe-height 22
         vertico-posframe-width 200
-        marginalia-margin-threshold 300)
+        marginalia-margin-threshold 500)
 
   (add-hook! 'minibuffer-exit-hook #'restore-vertico-posframe-state-h)
   (map! :map vertico-map "C-c C-p"  #'vertico-posframe-temporarily-off))
@@ -209,6 +209,7 @@
         "~" #'vertico-jump-to-home-dir-on~))
 
 (after! embark
+  (setq embark-cycle-key (kbd "C-;"))
   (map!
    (:map embark-file-map
     "o" #'visit-file-ace-window)))
