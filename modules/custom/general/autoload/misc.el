@@ -79,3 +79,25 @@ or creates new session. Optionally, BUFFER-NAME can be set"
        (lambda (session _)
          (with-current-buffer (xwidget-buffer session)
            (rename-buffer (or buffer-name (concat "*xwidget " url "*")))))))))
+
+;;;###autoload
+(eval-when-compile
+ (defmacro embark-ace-action (fn)
+   `(defun ,(intern (concat "embark-ace-" (symbol-name fn))) ()
+      (interactive)
+      (with-demoted-errors "%s"
+        (require 'ace-window)
+        (let ((aw-dispatch-always t))
+          (aw-switch-to-window (aw-select nil))
+          (call-interactively (symbol-function ',fn)))))))
+
+;;;###autoload
+(eval-when-compile
+ (defmacro embark-split-action (fn split-type)
+   `(defun ,(intern (concat "embark-"
+                            (symbol-name fn)
+                            "-"
+                            (symbol-name split-type))) ()
+      (interactive)
+      (funcall #',split-type)
+      (call-interactively #',fn))))

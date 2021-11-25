@@ -201,7 +201,6 @@
 
 (after! vertico
   (map! :map vertico-map
-        "C-u" nil  ; unbind universal argument
         "C-e"      #'vertico-scroll-up
         "C-y"      #'vertico-scroll-down)
 
@@ -212,7 +211,23 @@
   (setq embark-cycle-key (kbd "C-;"))
   (map!
    (:map embark-file-map
-    "o" #'visit-file-ace-window)))
+    (:prefix ("o" . "open")
+     "j" (embark-split-action find-file +evil/window-split-and-follow)
+     "l" (embark-split-action find-file +evil/window-vsplit-and-follow)
+     "h" (embark-split-action find-file split-window-horizontally)
+     "k" (embark-split-action find-file split-window-vertically)
+     "a" (embark-ace-action find-file)))
+   (:map embark-buffer-map
+    (:prefix ("o" . "open")
+     "j" (embark-split-action switch-to-buffer +evil/window-split-and-follow)
+     "a" (embark-ace-action switch-to-buffer)))
+   (:map embark-function-map
+    (:prefix ("d" . "definition")
+     "j" (embark-split-action xref-find-definitions +evil/window-split-and-follow)
+     "l" (embark-split-action xref-find-definitions +evil/window-vsplit-and-follow)
+     "h" (embark-split-action xref-find-definitions split-window-horizontally)
+     "k" (embark-split-action xref-find-definitions split-window-vertically)
+     "a" (embark-ace-action xref-find-definitions)))))
 
 (use-package! info+
   :after info

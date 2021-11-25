@@ -30,6 +30,7 @@
                                   (point)))))
     (dired-next-line 1)))
 
+;;;###autoload
 (defun buffer-with-dired-item ()
   "Creates buffer with current item of dired or direx buffer"
   (cond ((eq major-mode 'direx:direx-mode) (-> (direx:item-at-point!)
@@ -38,47 +39,20 @@
                                                find-file-noselect))
         ((eq major-mode 'dired-mode) (find-file-noselect (dired-get-file-for-visit)))))
 
-(setq split-ace-window--current nil)
-
-(defun ace-window-set-side (side)
-  (interactive)
-  (setq split-ace-window--current
-        (plist-put
-         split-ace-window--current
-         :side side)))
-
-(defhydra +hydra/split-ace-window
-  (:color amarath
-   :hint nil
-   :before-exit ((lambda ()
-                   (let* ((win (plist-get split-ace-window--current :window))
-                          (side (plist-get split-ace-window--current :side)))
-                     (select-window (split-window win nil side t))
-                     (switch-to-buffer
-                      (plist-get split-ace-window--current :buffer))
-                     (setq split-ace-window--current nil)))))
-  "
-Split window
-
-     ↑
-     _k_
-← _h_  ·  _l_ →
-     _j_
-     ↓
-"
-  ("h" (ace-window-set-side 'left) :exit t)
-  ("l" (ace-window-set-side 'right) :exit t)
-  ("j" (ace-window-set-side 'below) :exit t)
-  ("k" (ace-window-set-side 'above) :exit t))
+;;;###autoload
+(defmacro dired-split-action (split-type)
+  `(defun ,(intern (concat "dired--" (symbol-name split-type))) ()
+     (interactive)
+     (let ((buf (buffer-with-dired-item)))
+       (funcall #',split-type)
+       (switch-to-buffer buf))))
 
 ;;;###autoload
-(defun visit-file-ace-window ()
+(defun dired-ace-action ()
   (interactive)
-  (let* ((dired-item-buf (buffer-with-dired-item))
-         (aw-dispatch-always t)
-         (win (aw-select "Select window")))
-    (setq split-ace-window--current
-          (plist-put split-ace-window--current :window win))
-    (setq split-ace-window--current
-          (plist-put split-ace-window--current :buffer dired-item-buf))
-    (+hydra/split-ace-window/body)))
+  (with-demoted-errors "%s"
+    (require 'ace-window)
+    (let ((buf (buffer-with-dired-item))
+          (aw-dispatch-always t))
+      (aw-switch-to-window (aw-select nil))
+      (switch-to-buffer buf))))

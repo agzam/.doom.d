@@ -76,8 +76,7 @@
         "O" #'direx:find-item-other-window
         "|" #'direx:fit-window
         "<C-return>" #'direx:set-root
-        "^" #'direx:expand-root-to-parent
-        "o" #'visit-file-ace-window))
+        "^" #'direx:expand-root-to-parent))
 
 (use-package! dired-imenu
   :after dired)
@@ -98,8 +97,6 @@
 
 (after! dired
   (map! :leader "fj" #'dired-jump)
-  (map! :map dired-mode-map
-        :n "o" #'visit-file-ace-window)
 
   (setq dired-use-ls-dired t
         dired-dwim-target t)
@@ -113,3 +110,13 @@
               dired-listing-switches "-aBhl --group-directories-first"))))
 
   (add-hook 'dired-mode-hook #'dired-hide-details-mode))
+
+(after! embark
+  (when (featurep! :custom general)
+    (map!
+     :map (dired-mode-map direx:direx-mode-map)
+     :n "oj" (dired-split-action +evil/window-split-and-follow)
+     :n "ol" (dired-split-action +evil/window-vsplit-and-follow)
+     :n "oh" (dired-split-action split-window-horizontally)
+     :n "ok" (dired-split-action split-window-vertically)
+     :n "oa" #'dired-ace-action)))
