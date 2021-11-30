@@ -96,7 +96,9 @@
   (map! :leader "pd" #'projectile-find-dir))
 
 (after! dired
-  (map! :leader "fj" #'dired-jump)
+  (map! :leader
+        "fj" #'dired-jump
+        "fO" #'+macos-open-with)
 
   (setq dired-use-ls-dired t
         dired-dwim-target t)

@@ -34,3 +34,15 @@ Requires smartparens because all movement is done using `sp-up-sexp'."
        (plist-get (or (sp-get-enclosing-sexp)
                       (sp-get-expression)) :end))
       (call-interactively 'pp-eval-last-sexp))))
+
+;;; borrowed from: http://endlessparentheses.com/get-in-the-habit-of-using-sharp-quote.html
+;;;###autoload
+(defun sharp-quote ()
+  "Insert #' unless in a string or comment."
+  (interactive)
+  (call-interactively #'self-insert-command)
+  (let ((ppss (syntax-ppss)))
+    (unless (or (elt ppss 3)
+                (elt ppss 4)
+                (eq (char-after) ?'))
+      (insert "'"))))

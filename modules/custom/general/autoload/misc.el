@@ -101,3 +101,9 @@ or creates new session. Optionally, BUFFER-NAME can be set"
       (interactive)
       (funcall #',split-type)
       (call-interactively #',fn))))
+
+(defun shruggie (&optional do-not-escape?)
+  (interactive "P")
+  (if do-not-escape?
+      (insert "¯\\_(ツ)_/¯")
+    (insert "¯\\\\\\_(ツ)_/¯")))

@@ -37,7 +37,9 @@
          "d" #'xref-find-definitions
          "D" #'xref-find-definitions-other-window)
         (:prefix  ("h" . "help")
-         "h" #'helpful-at-point)))
+         "h" #'helpful-at-point))
+  (map! :map emacs-lisp-mode-map
+        :i "#" #'sharp-quote))
 
 (after! debug
   (map! :map debugger-mode-map

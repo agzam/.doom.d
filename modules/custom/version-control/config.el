@@ -252,7 +252,7 @@ ensure it is built when we actually use Forge."
         (:prefix ("gl" . "git link")
          "b" #'git-link-blame
          "l" #'git-link-kill
-         "m" #'git-link-master-branch)))
+         "m" #'git-link-main-branch)))
 
 (use-package! gh-notify
   :commands (gh-notify)

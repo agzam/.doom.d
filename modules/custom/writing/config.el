@@ -149,7 +149,7 @@
   (map! :map flyspell-mode-map "C-;" nil) ; release the key for embark-act
   (map! :map flyspell-mode-map
       :i ",," #'flyspell-correct-previous
-      :i ", SPC" (cmd! (insert ", "))
+      :i ", SPC" #'comma-smart-insert
       :i "s-." #'flyspell-auto-correct-previous-word
       :i "s-," #'flyspell-auto-correct-word))
 
