@@ -107,3 +107,24 @@ or creates new session. Optionally, BUFFER-NAME can be set"
   (if do-not-escape?
       (insert "¯\\_(ツ)_/¯")
     (insert "¯\\\\\\_(ツ)_/¯")))
+
+(defun diff-last-two-kills (&optional ediff?)
+  "Diff last couple of things in the kill-ring. With prefix open ediff."
+  (interactive "P")
+  (let* ((old "/tmp/old-kill")
+         (new "/tmp/new-kill")
+         (prev-ediff-quit-hook ediff-quit-hook))
+    (cl-flet ((kill-temps
+               ()
+               (dolist (f (list old new))
+                 (kill-buffer (find-buffer-visiting f)))
+               (setq ediff-quit-hook prev-ediff-quit-hook)))
+      (with-temp-file new
+        (insert (current-kill 0 t)))
+      (with-temp-file old
+        (insert (current-kill 1 t)))
+      (if ediff?
+          (progn
+            (add-hook 'ediff-quit-hook #'kill-temps)
+            (ediff old new))
+        (diff old new "-u" t)))))

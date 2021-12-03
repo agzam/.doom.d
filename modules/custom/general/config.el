@@ -74,7 +74,7 @@
        "R" #'narrow-to-region-indirect-buffer
        "f" #'narrow-to-defun
        "r" #'narrow-to-region
-       "f" #'consult-focus-lines
+       "l" #'consult-focus-lines
        "w" (cmd! (consult-focus-lines :show) (widen)))
 
       (:prefix ("o" . "open")

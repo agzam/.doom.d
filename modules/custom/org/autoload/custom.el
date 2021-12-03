@@ -190,9 +190,8 @@ in that prop."
 
 (defun org-link->markdown ()
   (interactive)
-  (let* ((ctx (org-element-context))
-         (beg (org-element-property :begin ctx))
-         (end (org-element-property :end ctx))
+  (let* ((ctx (org-in-regexp org-any-link-re))
+         (beg (car ctx)) (end (cdr ctx))
          (link-txt (buffer-substring beg end))
          (parsed (unless (string-blank-p link-txt)
                    (seq-map

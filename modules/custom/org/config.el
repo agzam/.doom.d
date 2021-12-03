@@ -22,7 +22,8 @@
    org-log-into-drawer t
    org-log-states-order-reversed nil
 
-   org-edit-src-content-indentation 0)
+   org-edit-src-content-indentation 0
+   org-fontify-quote-and-verse-blocks t)
 
   (add-to-list
    'auto-mode-alist
