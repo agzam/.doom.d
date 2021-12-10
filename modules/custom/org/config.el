@@ -11,6 +11,7 @@
 (use-package! org
   :defer t
   :config
+
   (setf org-directory org-default-folder)
   (setq
    org-ctrl-k-protect-subtree t

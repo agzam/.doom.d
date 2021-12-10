@@ -78,7 +78,8 @@
        "w" (cmd! (consult-focus-lines :show) (widen)))
 
       (:prefix ("o" . "open/Org")
-       "l" #'org-store-link
+       :desc "store link"      "l" #'org-store-link
+       :desc "link without id" "L" #'org-store-link-id-optional
        (:prefix "g"
         "h" #'gh-notify))
 

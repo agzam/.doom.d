@@ -166,8 +166,6 @@
         "h" #'evil-backward-char
         "w" #'evil-forward-word-begin
         "b" #'evil-backward-word-begin)
-  (map! :leader :map forge-topic-mode-map
-        "gll" #'git-link-forge-topic)
 
   (set-popup-rule! "^\\*?[0-9]+:\\(?:new-\\|[0-9]+$\\)" :size 0.45 :modeline t :ttl 0 :quit nil)
   (set-popup-rule! "^\\*\\(?:[^/]+/[^ ]+ #[0-9]+\\*$\\|Issues\\|Pull-Requests\\|forge\\)" :ignore t)
@@ -268,6 +266,7 @@ ensure it is built when we actually use Forge."
   :config
   (require 'gh-notify)
   (setq gh-notify-redraw-on-visit t)
+
   (map! :map gh-notify-mode-map
         :n "RET" #'gh-notify-visit-notification
         :n "q" #'kill-buffer-and-window)

@@ -209,3 +209,12 @@ in that prop."
            (url (nth 3 l)))
       (markdown-kill-thing-at-point)
       (org-insert-link nil url desc))))
+
+;;;###autoload
+(defun org-store-link-id-optional (&optional arg)
+  "Stores a link, reversing the value of `org-id-link-to-org-use-id'.
+If it's globally set to create the ID property, then it wouldn't,
+and if it is set to nil, then it would forcefully create the ID."
+  (interactive "P")
+  (let ((org-id-link-to-org-use-id (not org-id-link-to-org-use-id)))
+    (org-store-link arg :interactive)))

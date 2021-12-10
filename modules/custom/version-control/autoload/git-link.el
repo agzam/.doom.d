@@ -18,17 +18,25 @@
 
 ;;;###autoload
 (defun git-link-kill (&optional browse?)
-  "Copy URL to current file (and line if selection is active)"
+  "Copy URL to current file/revision/forge-topic"
   (interactive "P")
   (require 'git-link)
-  (let* ((git-link-open-in-browser browse?)
-         (l1 (line-number-at-pos
-              (when (region-active-p)
-                (region-beginning))))
-         (l2 (when (region-active-p)
-               (line-number-at-pos
-                (- (region-end) 1)))))
-    (git-link (git-link--remote) l1 l2)))
+  (let ((link (pcase major-mode
+                ((pred (lambda (x) (string-match-p "forge-topic" (symbol-name x))))
+                 (git-link-forge-topic))
+
+                ((pred (lambda (x) (string-match-p "magit" (symbol-name x))))
+                 (message (browse-at-remote-kill)))
+
+                (_ (let* ((git-link-open-in-browser nil)
+                          (l1 (line-number-at-pos
+                               (when (region-active-p)
+                                 (region-beginning))))
+                          (l2 (when (region-active-p)
+                                (line-number-at-pos
+                                 (- (region-end) 1)))))
+                     (git-link (git-link--remote) l1 l2))))))
+    (when browse? (browse-url link))))
 
 ;;;###autoload
 (defun git-link-forge-topic ()
