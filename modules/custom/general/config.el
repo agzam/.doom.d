@@ -77,7 +77,8 @@
        "l" #'consult-focus-lines
        "w" (cmd! (consult-focus-lines :show) (widen)))
 
-      (:prefix ("o" . "open")
+      (:prefix ("o" . "open/Org")
+       "l" #'org-store-link
        (:prefix "g"
         "h" #'gh-notify))
 
@@ -315,6 +316,10 @@
   (map! :map ibuffer-mode-map
         :n "su" #'ibuffer-filter-by-unsaved-file-buffers
         :n "sF" #'ibuffer-filter-by-file-buffers))
+
+(after! avy
+  (setq avy-all-windows t)
+  (setf (alist-get ?. avy-dispatch-alist) #'avy-action-embark))
 
 ;; ensure that browsing in Helpful and Info modes doesn't create additional window splits
 (add-to-list

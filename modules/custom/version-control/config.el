@@ -9,6 +9,12 @@
         transient-values-file  (concat doom-etc-dir "transient/values")
         transient-history-file (concat doom-etc-dir "transient/history"))
   :config
+  (map! :leader
+        (:prefix ("g" . "goto/git")
+         :desc "blame" "b" (cmd!
+                            (call-interactively #'magit-blame-addition)
+                            (magit-blame-cycle-style))))
+
   ;; otherwise starts magit in evil-emacs-state
   (dolist (m '(magit-status-mode
                magit-refs-mode
@@ -160,6 +166,8 @@
         "h" #'evil-backward-char
         "w" #'evil-forward-word-begin
         "b" #'evil-backward-word-begin)
+  (map! :leader :map forge-topic-mode-map
+        "gll" #'git-link-forge-topic)
 
   (set-popup-rule! "^\\*?[0-9]+:\\(?:new-\\|[0-9]+$\\)" :size 0.45 :modeline t :ttl 0 :quit nil)
   (set-popup-rule! "^\\*\\(?:[^/]+/[^ ]+ #[0-9]+\\*$\\|Issues\\|Pull-Requests\\|forge\\)" :ignore t)
@@ -263,6 +271,7 @@ ensure it is built when we actually use Forge."
   (map! :map gh-notify-mode-map
         :n "RET" #'gh-notify-visit-notification
         :n "q" #'kill-buffer-and-window)
+
   (map! :localleader :map gh-notify-mode-map
         "C-l" nil
         "l" #'gh-notify-retrieve-notifications
@@ -278,22 +287,24 @@ ensure it is built when we actually use Forge."
         "M" #'gh-notify-mark-all-notifications
         "u" #'gh-notify-unmark-notification
         "U" #'gh-notify-unmark-all-notifications
-        "\\" #'gh-notify-toggle-url-view
-        "/d" #'gh-notify-toggle-global-ts-sort
-        "/u" #'gh-notify-limit-unread
-        "/'" #'gh-notify-limit-repo
-        "/\"" #'gh-notify-limit-repo-none
-        "/p" #'gh-notify-limit-pr
-        "/i" #'gh-notify-limit-issue
-        "/*" #'gh-notify-limit-marked
-        "/a" #'gh-notify-limit-assign
-        "/y" #'gh-notify-limit-author
-        "/m" #'gh-notify-limit-mention
-        "/t" #'gh-notify-limit-team-mention
-        "/s" #'gh-notify-limit-subscribed
-        "/c" #'gh-notify-limit-comment
-        "/r" #'gh-notify-limit-review-requested
-        "//" #'gh-notify-limit-none)
+        ;; "\\" #'gh-notify-toggle-url-view
+        (:prefix ("/" . "limit")
+         "d" #'gh-notify-toggle-global-ts-sort
+         "u" #'gh-notify-limit-unread
+         "U" (cmd! (gh-notify-limit-unread 2))
+         "'" #'gh-notify-limit-repo
+         "\"" #'gh-notify-limit-repo-none
+         "p" #'gh-notify-limit-pr
+         "i" #'gh-notify-limit-issue
+         "*" #'gh-notify-limit-marked
+         "a" #'gh-notify-limit-assign
+         "y" #'gh-notify-limit-author
+         "m" #'gh-notify-limit-mention
+         "t" #'gh-notify-limit-team-mention
+         "s" #'gh-notify-limit-subscribed
+         "c" #'gh-notify-limit-comment
+         "r" #'gh-notify-limit-review-requested
+         "/" #'gh-notify-limit-none))
 
   ;; always recenter when getting back to gh-notify buffer from forge-buffers
   (advice-add 'gh-notify--filter-notifications :after 'recenter))
@@ -324,6 +335,9 @@ ensure it is built when we actually use Forge."
         :nv (kbd "<escape>") nil
         :nv "," nil
         :n "q" #'kill-buffer-and-window)
+
+  (map! :map code-review-feedback-section-map
+        "k" nil)
 
   (map! :localleader
         :map code-review-mode-map

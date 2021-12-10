@@ -38,22 +38,19 @@ NODE-LINK  - which is title or id or a node."
           (search-forward ":END:" nil :no-error)
           (forward-line)
           (insert (format "#+title: %s %s notes\n"
-                          (format-time-string "%B %Y")
-                          (org-capture-get :description)))))
+                          (format-time-string
+                           "%B %Y"
+                           (org-capture-get :default-time))
+                          (org-capture-get :description)))
+          (insert (org-roam--link-to node-link))))
       (save-excursion
         (pcase-let* ((`(,sec ,min ,hr ,day ,month ,year) (decode-time (org-capture-get :default-time)))
                      (date (list month day year))
-                     (link (org-roam--link-to node-link))
                      (_ (org-datetree-find-date-create date :keep-restriction))
                      (children? (unless (org-capture-get :new-buffer)
                                   (< 0 (1- (length (save-excursion
                                                      (org-map-entries nil nil 'tree)))))))
                      (level (+ (org-current-level) 1)))
-          (unless (or (not link) children?)
-            (save-excursion
-             (org-end-of-meta-data)
-             (insert link)
-             (insert "\n")))
           (let ((tree-limit (save-excursion (org-end-of-subtree) (point))))
             (plist-put org-capture-plist :exact-position tree-limit)
             (concat (make-string level ?*) " ")))))))

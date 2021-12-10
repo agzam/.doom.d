@@ -95,9 +95,12 @@
   (which-key-mode))
 
 (after! company
- (setq company-show-numbers t
-       company-tooltip-limit 10)
- (map! :map company-active-map "C-/" #'completion-at-point))
+  (setq company-show-numbers t
+        company-tooltip-limit 10)
+  (map! :map company-active-map "C-/" #'completion-at-point))
+
+(after! evil-markdown
+  (setq markdown-enable-math nil))
 
 ;; most keys set in ':custom general' module,
 ;; yet the most important one I want to set early
@@ -111,14 +114,21 @@
       (init-visual-line-keys)
       (global-visual-line-mode +1)
       (fringe-mode '(6 . 0))
-      ;; (center-frame-horizontally nil 85)
-      )))
+      (run-with-timer
+       "1 sec" nil
+       #'center-frame-horizontally nil 85))))
+
+(after! custom
+  ;; in customize dialogs keep the elisp names
+  (setq custom-unlispify-tag-names nil))
 
 (advice-remove 'evil-open-above #'+evil--insert-newline-above-and-respect-comments-a)
 (advice-remove 'newline-and-indent #'+default--newline-indent-and-continue-comments-a)
 
 (define-key! :keymaps +default-minibuffer-maps
-    "C-u" #'universal-argument)
+  "C-u" #'universal-argument)
+
+(defalias 'elisp-mode 'emacs-lisp-mode)
 
 ;; disable global-hl-line
 ;; oddly that's the way: github.com/hlissner/doom-emacs/issues/4206

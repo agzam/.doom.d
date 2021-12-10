@@ -48,3 +48,5 @@
 
 (package! ob-async)
 (package! org-edit-indirect :recipe (:host github :repo "agzam/org-edit-indirect.el"))
+
+(package! ob-restclient)

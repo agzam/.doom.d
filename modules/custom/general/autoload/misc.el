@@ -56,7 +56,7 @@ narrowed to."
   "Returns xwidget buffer that points to URL, nil if none."
   (interactive)
   (when-let* ((r (lambda (x)
-                   (replace-regexp-in-string "http\\(s\\|\\)://" "" x)))
+                   (when x (replace-regexp-in-string "http\\(s\\|\\)://" "" x))))
               (fnd (seq-find
                     (lambda (x)
                       (string= (concat (funcall r url) "/")
@@ -128,3 +128,16 @@ or creates new session. Optionally, BUFFER-NAME can be set"
             (add-hook 'ediff-quit-hook #'kill-temps)
             (ediff old new))
         (diff old new "-u" t)))))
+
+
+
+;;; borrowed it from https://karthinks.com/software/avy-can-do-anything/#avy-plus-embark-any-action-anywhere
+;;;###autoload
+(defun avy-action-embark (pt)
+  (unwind-protect
+      (save-excursion
+        (goto-char pt)
+        (embark-act))
+    (select-window
+     (cdr (ring-ref avy-ring 0))))
+  t)

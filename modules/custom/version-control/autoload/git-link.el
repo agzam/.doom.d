@@ -29,3 +29,10 @@
                (line-number-at-pos
                 (- (region-end) 1)))))
     (git-link (git-link--remote) l1 l2)))
+
+;;;###autoload
+(defun git-link-forge-topic ()
+  (interactive)
+  (let ((url (forge-get-url (forge-current-topic))))
+    (message url)
+    (kill-new url)))
