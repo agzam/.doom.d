@@ -342,3 +342,6 @@ ensure it is built when we actually use Forge."
   (map! :localleader
         :map code-review-mode-map
         "," #'code-review-transient-api))
+
+(after! bug-reference
+  (add-hook! 'bug-reference-mode-hook #'init-bug-reference-mode-settings))
