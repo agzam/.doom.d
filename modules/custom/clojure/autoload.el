@@ -60,8 +60,8 @@ set so that it clears the whole REPL buffer, not just the output."
   (let ((current-prefix-arg '(4)))
     (call-interactively 'cider-find-and-clear-repl-output)
     (when-let ((nrepl-buf (nrepl-make-buffer-name
-                      (nrepl--make-hidden-name nrepl-server-buffer-name-template)
-                      nil :no-dup)))
+                           (nrepl--make-hidden-name nrepl-server-buffer-name-template)
+                           nil :no-dup)))
       (set-buffer nrepl-buf)
       (comint-clear-buffer))))
 
@@ -128,7 +128,7 @@ gets the name suitable for :require of ns declaration."
       (while (re-search-forward "\\s-+" nil t)
         (replace-match " "))
       (let ((clojure-align-forms-automatically nil))
-       (indent-region beg end)))))
+        (indent-region beg end)))))
 
 (defun clojure-edn-json-transform (&optional from-json)
   "Transforms EDN to JSON and vice-versa using jet cli.
@@ -191,3 +191,12 @@ convert from JSON."
         (forward-char))
       (goto-char (plist-get (sp-get-enclosing-sexp) :end))
       (call-interactively 'cider-pprint-eval-last-sexp))))
+
+;;;###autoload
+(defun kill-cider-buffers ()
+  "Kill all CIDER buffers without asking any questions. Useful to execute when Emacs gets stuck."
+  (interactive)
+  (cl-letf (((symbol-function 'kill-buffer-ask) #'kill-buffer))
+    (let ((kill-buffer-query-functions
+           (delq 'process-kill-buffer-query-function kill-buffer-query-functions)))
+      (kill-matching-buffers "cider"))))

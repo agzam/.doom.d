@@ -44,3 +44,9 @@
 (after! debug
   (map! :map debugger-mode-map
         :n "e" #'debugger-eval-expression))
+
+
+(after! info
+  (map! :map Info-mode-map
+       :n "C-j" #'Info-goto-node
+       :n "^" #'Info-up))

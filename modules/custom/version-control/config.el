@@ -309,7 +309,7 @@ ensure it is built when we actually use Forge."
   (advice-add 'gh-notify--filter-notifications :after 'recenter))
 
 (use-package! code-review
-  :after (magit gh-notify)
+  :after (magit)
   :init
   (setq code-review-db-database-file
         (concat doom-etc-dir "code-review-db-file.sqlite"))

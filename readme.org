@@ -1,0 +1,5 @@
+#+TITLE:  My Doom Emacs config
+#+STARTUP: inlineimages nofold
+
+Doom Emacs config and custom modules
+

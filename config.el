@@ -77,6 +77,7 @@
  tab-width 4
  apropos-sort-by-scores t
  doom-font-increment 1
+ split-width-threshold 160
  split-height-threshold 80)
 
 (after! epa
@@ -121,6 +122,8 @@
 (after! custom
   ;; in customize dialogs keep the elisp names
   (setq custom-unlispify-tag-names nil))
+
+(add-hook! 'next-error-hook #'recenter)
 
 (advice-remove 'evil-open-above #'+evil--insert-newline-above-and-respect-comments-a)
 (advice-remove 'newline-and-indent #'+default--newline-indent-and-continue-comments-a)

@@ -62,6 +62,7 @@
           "a" #'org-toggle-archive-tag
           "A" #'org-archive-subtree
           "j" #'consult-org-heading
+          "n" #'org-narrow-to-subtree
           "N" #'widen
           "S" #'org-sort
           "x" #'org-cut-subtree)

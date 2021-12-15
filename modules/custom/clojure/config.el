@@ -75,7 +75,8 @@
    cider-inject-dependencies-at-jack-in t
    cider-repl-display-in-current-window nil
    cider-eldoc-display-for-symbol-at-point nil
-   cider-eldoc-display-context-dependent-info nil)
+   cider-eldoc-display-context-dependent-info nil
+   cider-scratch-buffer-name "*clj-scratch*")
 
   (map! (:map cider-eval-commands-map
          "C-c C-f" nil
@@ -154,6 +155,8 @@
            "a" #'cider-jack-in-clj&cljs
            "c"  #'cider-connect-clj
            "C"  #'cider-connect-cljs)
+          (:prefix ("k" . "kill")
+           "s" #'kill-cider-buffers)
           (:prefix ("n" . "namespace")
            "n" #'cider-browse-ns
            "N" #'cider-browse-ns-all
@@ -192,6 +195,8 @@
           "r" #'cider-ns-refresh
           "R" #'cider-restart
           "c" #'cider-repl-clear-buffer
+          (:prefix ("k" . "kill")
+           "s" #'kill-cider-buffers)
           (:prefix "s"
            "s" #'cider-switch-to-last-clojure-buffer
            "S" #'cider-switch-to-nrepl-buffer
