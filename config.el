@@ -100,8 +100,7 @@
         company-tooltip-limit 10)
   (map! :map company-active-map "C-/" #'completion-at-point))
 
-(after! evil-markdown
-  (setq markdown-enable-math nil))
+(setq markdown-enable-math nil)
 
 ;; most keys set in ':custom general' module,
 ;; yet the most important one I want to set early
@@ -112,11 +111,15 @@
 (when (featurep! :custom general)
   (add-hook! 'window-setup-hook
     (defun center-frame-on-load-h ()
+      ;; Emacs 29 changed font for the modeline
+      ;; https://github.com/hlissner/doom-emacs/issues/5891#issuecomment-992758572
+      (custom-set-faces! '(mode-line-active :inherit mode-line))
+
       (init-visual-line-keys)
       (global-visual-line-mode +1)
       (fringe-mode '(6 . 0))
       (run-with-timer
-       "1 sec" nil
+       "1.5 sec" nil
        #'center-frame-horizontally nil 85))))
 
 (after! custom

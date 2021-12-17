@@ -52,3 +52,4 @@
 (package! evil-snipe :disable t)
 (package! fennel-mode)
 (package! golden-ratio)
+(package! lorem-ipsum)

@@ -167,6 +167,9 @@
         "w" #'evil-forward-word-begin
         "b" #'evil-backward-word-begin)
 
+  ;; forge-topic uses markdown to display images, sometimes they get too big on the screen
+  (setq markdown-max-image-size '(700 . nil))
+
   (set-popup-rule! "^\\*?[0-9]+:\\(?:new-\\|[0-9]+$\\)" :size 0.45 :modeline t :ttl 0 :quit nil)
   (set-popup-rule! "^\\*\\(?:[^/]+/[^ ]+ #[0-9]+\\*$\\|Issues\\|Pull-Requests\\|forge\\)" :ignore t)
 

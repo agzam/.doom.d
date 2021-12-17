@@ -75,8 +75,10 @@
    cider-inject-dependencies-at-jack-in t
    cider-repl-display-in-current-window nil
    cider-eldoc-display-for-symbol-at-point nil
-   cider-eldoc-display-context-dependent-info nil
-   cider-scratch-buffer-name "*clj-scratch*")
+   cider-eldoc-display-context-dependent-info nil)
+
+  (after! cider-scratch
+    (setq cider-scratch-buffer-name "*clj-scratch*"))
 
   (map! (:map cider-eval-commands-map
          "C-c C-f" nil
