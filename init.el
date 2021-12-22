@@ -192,7 +192,7 @@
        general
        colors
        modeline
-       layouts
+       tab-bar
        version-control
        elisp
        search-engine

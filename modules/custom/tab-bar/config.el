@@ -1,4 +1,4 @@
-;;; custom/layouts/config.el -*- lexical-binding: t; -*-
+;;; custom/tab-bar/config.el -*- lexical-binding: t; -*-
 
 (after! tab-bar
   (setq tab-bar-show t
@@ -13,6 +13,9 @@
    "s-j" #'tab-bar-switch-to-prev-tab
    "s-k" #'tab-bar-switch-to-next-tab)
 
-  (map! :leader "l" #'+hydra/layouts/body)
+  (map! :leader "l" #'+hydra/tab-bar/body)
 
   (add-hook! 'tab-bar-mode-hook #'reset-frame-full-height))
+
+
+(add-hook! 'tab-bar-tab-added-hook #'tab-bar-created-h)
