@@ -322,6 +322,9 @@
   (setq avy-all-windows t)
   (setf (alist-get ?. avy-dispatch-alist) #'avy-action-embark))
 
+(map! :map occur-mode-map
+      :n "f" #'occur-mode-display-occurrence)
+
 ;; ensure that browsing in Helpful and Info modes doesn't create additional window splits
 (add-to-list
  'display-buffer-alist

@@ -67,7 +67,7 @@
 
        :emacs
        ;; (dired +icons)      ; making dired pretty [functional]
-       ;; electric         ; smarter, keyword-based electric-indent
+       electric         ; smarter, keyword-based electric-indent
        ibuffer           ; interactive buffer management
        undo              ; persistent, smarter undo for your inevitable mistakes
        vc                ; version-control and Emacs, sitting in a tree
@@ -81,7 +81,7 @@
        :checkers
        (syntax +childframe) ; tasing you for every semicolon you forget
        ;; (spell +flyspell)   ; tasing you for misspelling mispelling
-       ;;grammar           ; tasing grammar mistake every you make
+       grammar           ; tasing grammar mistake every you make
 
        :tools
        ;;ansible

@@ -191,3 +191,20 @@
      (if (string= current-input-method "russian-computer")
          "ru"
        nil))))
+
+
+(after! quail
+  (quail-define-package
+   "Emoji" "UTF-8" "😎" t
+   "Emoji input mode for people that really, really like Emoji"
+   '(("\t" . quail-completion))
+   t t nil nil nil nil nil nil nil t)
+  (quail-define-rules
+
+   (":)" ?😀)
+   (":(" ?😕)
+   (":P" ?😋)
+   (":D" ?😂)
+   (":party:" ?🎉)
+   (":spock:" ?🖖)
+   (":thumb:" ?👍)))

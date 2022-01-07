@@ -1,5 +1,7 @@
 ;;; custom/tab-bar/autoload.el -*- lexical-binding: t; -*-
 
+(require 'projectile)
+
 ;;;###autoload
 (defhydra +hydra/tab-bar (:hint nil :color red)
   "
@@ -33,9 +35,12 @@ _f_: find tab with buffer
   ("7" (+tab-bar-switch-to-tab-number 7))
   ("8" (+tab-bar-switch-to-tab-number 8))
   ("9" (+tab-bar-switch-to-tab-number 9))
-  ("0" (+tab-bar-switch-to-tab-number 'last))
+  ("0" (+tab-bar-switch-to-tab-number 'last)))
 
+;;;###autoload
 (defvar tab-bar-tab-added-hook nil)
+
+;;;###autoload
 (defvar tab-bar-tab-removed-hook nil)
 
 ;;;###autoload

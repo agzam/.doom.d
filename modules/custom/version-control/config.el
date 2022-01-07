@@ -15,6 +15,13 @@
                             (call-interactively #'magit-blame-addition)
                             (magit-blame-cycle-style))))
 
+  (map! :map magit-blame-read-only-mode-map
+        :n "RET" #'magit-show-commit)
+
+  (add-hook! 'magit-blame-mode-hook
+    (defun turn-off-evil-org-mode ()
+      (evil-org-mode -1)))
+
   ;; otherwise starts magit in evil-emacs-state
   (dolist (m '(magit-status-mode
                magit-refs-mode
