@@ -21,22 +21,22 @@
   "Copy URL to current file/revision/forge-topic"
   (interactive "P")
   (require 'git-link)
-  (let ((link (pcase major-mode
-                ((pred (lambda (x) (string-match-p "forge-topic" (symbol-name x))))
-                 (git-link-forge-topic))
+  (cl-letf (((symbol-function #'git-link--new) (lambda (link) link)))
+    (let ((link (pcase major-mode
+                  ((pred (lambda (x) (string-match-p "forge-topic" (symbol-name x))))
+                   (git-link-forge-topic))
 
-                ((pred (lambda (x) (string-match-p "magit" (symbol-name x))))
-                 (message (browse-at-remote-kill)))
+                  ((pred (lambda (x) (string-match-p "magit" (symbol-name x))))
+                   (message (browse-at-remote-kill)))
 
-                (_ (let* ((git-link-open-in-browser nil)
-                          (l1 (line-number-at-pos
-                               (when (region-active-p)
-                                 (region-beginning))))
-                          (l2 (when (region-active-p)
-                                (line-number-at-pos
-                                 (- (region-end) 1)))))
-                     (git-link (git-link--remote) l1 l2))))))
-    (when browse? (browse-url link))))
+                  ;; #'git-link fn detestably has been made to be exclusively called
+                  ;; interactively, so I had to temporarily redefine #'git-link--new
+                  ;; (above), ignore prefix arg and other parameters, in order to retrieve
+                  ;; the link
+                  (_ (let ((current-prefix-arg nil)
+                           (git-link-open-in-browser browse?))
+                       (message (call-interactively #'git-link)))))))
+      (when browse? (browse-url link)))))
 
 ;;;###autoload
 (defun git-link-forge-topic ()
