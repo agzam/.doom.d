@@ -3,6 +3,7 @@
 ;;;###autoload
 (defun toggle-frame-maximized-undecorated ()
   (interactive)
+  (posframe-delete-all)
   (let* ((frame (selected-frame))
          (on? (and (frame-parameter frame 'undecorated)
                    (eq (frame-parameter frame 'fullscreen) 'maximized)))
@@ -31,6 +32,7 @@ vertically stretching it from top to bottom. Useful on ultra-wide
 monitor.  With universal argument prompts for the percentage -
 the horizontal screen estate the frame should occupy."
   (interactive "P")
+  (posframe-delete-all)
   (let* ((stretch-ratio (string-to-number
                          (if prompt
                              (completing-read "Choose: " '("50%" "70%" "80%" "90%") nil t)
@@ -57,11 +59,8 @@ it remains shown or hidden - whatever the previous value was."
   "Removes the title of the current frame and stretches it out to
   the display height. To be used on a Mac."
   (interactive)
-  ;; hide posframe buffers
-  (when (boundp 'company-abort) (company-abort))
-  (let* ((restore-vertico-posframe? (when (bound-and-true-p vertico-posframe-mode)
-                                      (vertico-posframe-mode -1) t))
-         (fr (selected-frame))
+  (posframe-delete-all)
+  (let* ((fr (selected-frame))
          (tbh (tab-bar-height fr t)))
     (if (frame-parameter fr 'undecorated-fullheight)
         (progn
@@ -74,12 +73,11 @@ it remains shown or hidden - whatever the previous value was."
         (set-frame-parameter fr 'undecorated-fullheight t)
         (set-frame-position fr (car (frame-position)) (+ 1 tbh))
         (set-frame-height fr (- (x-display-pixel-height) (+ tbh 26)) nil :pixelwise)))
-    (when restore-vertico-posframe?
-      (vertico-posframe-mode +1))
     (redraw-display)))
 
 ;;;###autoload
 (defun reset-frame-full-height ()
+  (posframe-delete-all)
   (unless (eq 'fullboth (frame-parameter nil 'fullscreen))
     (toggle-frame-full-height)
     (toggle-frame-full-height)))

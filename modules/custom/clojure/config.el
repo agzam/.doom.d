@@ -18,7 +18,14 @@
                  clojurec-mode
                  clojurescript-mode
                  clojurex-mode))
-      (add-to-list 'lsp-language-id-configuration (cons m "clojure")))))
+      (add-to-list 'lsp-language-id-configuration (cons m "clojure"))))
+
+  (add-hook! 'clojurescript-mode-hook
+    (defun add-reframe-regs-to-imenu ()
+      (add-to-list
+       'imenu-generic-expression
+       '("re-frame" "^(*reg-\\(event-db\\|sub\\|sub-raw\\|fx\\|event-fx\\|event-ctx\\|cofx\\)[ \n]+\\([^\t \n]+\\)" 2)
+       t))))
 
 (use-package! cider
   :after clojure-mode

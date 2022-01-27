@@ -100,6 +100,9 @@
         "fj" #'dired-jump
         "fO" #'+macos-open-with)
 
+  (map! :map dired-mode-map
+        :n "o" #'dired-find-file-other-window)
+
   (setq dired-use-ls-dired t
         dired-dwim-target t)
 
