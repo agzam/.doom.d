@@ -164,6 +164,22 @@
   ;; (flyspell-lazy-mode +1)
   )
 
+(use-package! separedit
+  :defer t
+  :commands separedit separedit-dwim
+  :init
+  (map! :map prog-mode-map :inv "C-c '"
+        (cmd! () (cond
+                  ((bound-and-true-p org-src-mode) (org-edit-src-exit))
+                  ((eq major-mode 'separedit-double-quote-string-mode) (separedit-commit))
+                  (t (separedit-dwim)))))
+  (map! :map (separedit-double-quote-string-mode-map
+              separedit-single-quote-string-mode-map)
+        :inv "C-c '" #'separedit-commit)
+  (map! :map minibuffer-local-map "C-c '" #'separedit)
+  :config
+  (setq separedit-default-mode 'markdown-mode))
+
 (after! ispell
   ;; Don't spellcheck org blocks
   (pushnew! ispell-skip-region-alist

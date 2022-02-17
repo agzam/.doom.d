@@ -13,3 +13,5 @@
 (when (eq system-type 'darwin)
   ;; ln -s ~/.hammerspoon/ ~/.doom.d/modules/custom/general/spacehammer
   (package! spacehammer :recipe (:local-repo "spacehammer" :files ("*.el"))))
+
+(package! separedit :recipe (:host github :repo "twlz0ne/separedit.el"))
