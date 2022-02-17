@@ -196,7 +196,13 @@ convert from JSON."
 (defun kill-cider-buffers ()
   "Kill all CIDER buffers without asking any questions. Useful to execute when Emacs gets stuck."
   (interactive)
-  (cl-letf (((symbol-function 'kill-buffer-ask) #'kill-buffer))
-    (let ((kill-buffer-query-functions
-           (delq 'process-kill-buffer-query-function kill-buffer-query-functions)))
-      (kill-matching-buffers "cider"))))
+  (let ((blist (seq-filter
+                (fn! (e) (string-match "\\*cider\\|\\*nrepl" (buffer-name e)))
+                (buffer-list)))
+        (kill-buffer-query-functions nil))
+   (thread-last
+     blist
+     (seq-map #'get-buffer-window)
+     (seq-remove #'null)
+     (seq-do (fn! (w) (quit-window :kill w))))
+   (seq-do #'kill-buffer blist)))

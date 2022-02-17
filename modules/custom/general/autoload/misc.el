@@ -111,6 +111,7 @@ or creates new session. Optionally, BUFFER-NAME can be set"
 (defun diff-last-two-kills (&optional ediff?)
   "Diff last couple of things in the kill-ring. With prefix open ediff."
   (interactive "P")
+  (require 'ediff)
   (let* ((old "/tmp/old-kill")
          (new "/tmp/new-kill")
          (prev-ediff-quit-hook ediff-quit-hook))

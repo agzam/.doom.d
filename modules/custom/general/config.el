@@ -27,6 +27,7 @@
        :desc "scratch" "s" #'doom/switch-to-scratch-buffer
        :desc "Messages" "m" #'switch-to-messages-buffer
        "d"   #'kill-this-buffer
+       "k"   #'kill-buffer-and-window
        "D"   #'diff-current-buffer-with-file
        "s-d" #'spacemacs/kill-matching-buffers-rudely)
 
@@ -131,6 +132,7 @@
 (use-package winum
   :after-call doom-switch-window-hook
   :config
+  (setq winum-scope 'frame-local)
   (winum-mode +1)
   (dolist (wn (seq-map 'number-to-string (number-sequence 0 9)))
     (let ((f (intern (concat "winum-select-window-" wn)))
@@ -161,14 +163,15 @@
   :after vertico
   :config
   (setq vertico-posframe-poshandler 'posframe-poshandler-frame-bottom-center)
+  (setq
+   vertico-posframe-global t
+   vertico-posframe-height 22
+   vertico-posframe-width 200
+   marginalia-margin-threshold 500)
   (vertico-posframe-mode +1)
-  (setq vertico-posframe-global t
-        vertico-posframe-height 22
-        vertico-posframe-width 200
-        marginalia-margin-threshold 500)
-
-  (add-hook! 'minibuffer-exit-hook #'restore-vertico-posframe-state-h)
-  (map! :map vertico-map "C-c C-p"  #'vertico-posframe-temporarily-off))
+  (map! :map vertico-map "C-c C-p"  #'vertico-posframe-briefly-off)
+  ;; (add-hook! 'vertico-posframe-mode-hook (fn! () (evil-mode -1)))
+  )
 
 (use-package! vertico-repeat
   :after vertico

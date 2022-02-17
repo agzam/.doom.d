@@ -83,6 +83,12 @@ it remains shown or hidden - whatever the previous value was."
     (toggle-frame-full-height)))
 
 ;;;###autoload
+(defun toggle-frame-fullscreen+ ()
+  (interactive)
+  (toggle-frame-fullscreen)
+  (posframe-delete-all))
+
+;;;###autoload
 (defhydra +hydra/text-zoom (:color amarath
                             :hint nil
                             ;; :before-exit (reset-frame-full-height)
@@ -101,4 +107,4 @@ _0_: reset         _m_: maximize
   ("h" toggle-frame-full-height :exit t)
   ("c" center-frame-horizontally :exit t)
   ("m" toggle-frame-maximized-undecorated :exit t)
-  ("f" toggle-frame-fullscreen :exit t))
+  ("f" toggle-frame-fullscreen+ :exit t))
