@@ -6,6 +6,14 @@
         "p '" #'shell-pop-in-project-root)
 
 (after! shell
+  ;; Something messes up blue color in terminal. Usual way of setting it up in the theme,
+  ;; not working for some reason. This is a hacky workaround
+  (add-hook! 'shell-mode-hook
+    (defun set-shell-colors ()
+      ;; I don't know how to find out if the current theme is dark or light
+      (when (custom-theme-enabled-p 'ag-themes-base16-ocean)
+        (set-face-attribute 'ansi-color-blue nil :foreground "#00bfff"))))
+
   (map! :map shell-mode-map
         "C-c C-l" #'comint-clear-buffer
         :localleader
