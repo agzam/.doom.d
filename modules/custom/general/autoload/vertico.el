@@ -38,5 +38,5 @@ temporarily toggle it off. Bind in vertico-map."
   (if (and (vertico-directory--completing-file-p)
            (string-match-p "^~\\/" (minibuffer-contents)))
       (while (not (string-equal (minibuffer-contents) "~/"))
-        (vertico-directory-delete-word))
+        (vertico-directory-up 1))
     (insert "~")))
