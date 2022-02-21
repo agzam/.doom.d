@@ -116,6 +116,9 @@
         (evil-make-overriding-map cider--debug-mode-map 'normal)
         (evil-normalize-keymaps))))
 
+  (after! evil-collection
+    (advice-add 'cider-eval-sexp-at-point :around 'evil-collection-cider-last-sexp))
+
   (after! ob-clojure
     (setq! org-babel-clojure-backend 'cider))
 
