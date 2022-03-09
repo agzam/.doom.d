@@ -92,7 +92,8 @@
          "C-c r" nil)
         (:map cider-mode-map
          "C-c C-f" nil
-         "C-c r" nil))
+         "C-c r" nil
+         "C-c C-n" #'clj-edit-ns-header))
 
   (add-to-list
    'display-buffer-alist
@@ -121,6 +122,18 @@
 
   (after! ob-clojure
     (setq! org-babel-clojure-backend 'cider))
+
+  (after! edit-indirect
+    (add-hook! 'edit-indirect-before-commit-hook
+      (defun clj-sort-ns-after-edit-ns-header ()
+        (clojure-sort-ns)))
+    (add-hook! 'edit-indirect-after-commit-functions
+      ;; for whatever reason, edit-indirect leaves an empty line after editing ns header,
+      ;; let's remove it
+      (defun clj-after-commit-edit-ns-header (beg end)
+        (save-mark-and-excursion
+         (goto-char end)
+         (delete-region (line-beginning-position) (+ 1 (line-end-position)))))))
 
   (map! (:localleader
          (:map (clojure-mode-map clojurescript-mode-map)
@@ -170,6 +183,7 @@
           (:prefix ("k" . "kill")
            "s" #'kill-cider-buffers)
           (:prefix ("n" . "namespace")
+           "e" #'clj-edit-ns-header
            "n" #'cider-browse-ns
            "N" #'cider-browse-ns-all
            "r" #'cider-ns-refresh)

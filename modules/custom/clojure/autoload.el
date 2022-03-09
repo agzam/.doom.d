@@ -206,3 +206,18 @@ convert from JSON."
      (seq-remove #'null)
      (seq-do (fn! (w) (quit-window :kill w))))
    (seq-do #'kill-buffer blist)))
+
+
+;;;###autoload
+(defun clj-edit-ns-header ()
+  (interactive)
+  (save-mark-and-excursion
+   (let ((edit-indirect-guess-mode-function (lambda (buf b_ e_)
+                                              (funcall (buffer-local-value 'major-mode buf)))))
+     (cljr--goto-ns)
+     (sp-select-next-thing)
+     (let ((buf (edit-indirect-region (region-beginning) (region-end) :display-buffer)))
+       (with-current-buffer buf
+         (use-local-map cider-mode-map)
+         (keymap-local-set "C-c C-k" #'edit-indirect-abort)
+         (keymap-local-set "C-c C-c" #'edit-indirect-commit))))))
