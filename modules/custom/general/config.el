@@ -122,7 +122,8 @@
 (add-hook! '(doom-load-theme-hook doom-init-modules-hook)
   (defun +evil-update-cursor-color-h ()
     (put 'cursor 'evil-emacs-color "SkyBlue2")
-    (put 'cursor 'evil-normal-color "DarkGoldenrod2")))
+    (put 'cursor 'evil-normal-color "DarkGoldenrod2")
+    (posframe-delete-all)))
 
 (after! evil-maps
   ;; often conflicts with doom-local-leader
@@ -171,13 +172,20 @@
    marginalia-margin-threshold 500)
   (vertico-posframe-mode +1)
   (map! :map vertico-map "C-c C-p"  #'vertico-posframe-briefly-off)
-  ;; (add-hook! 'vertico-posframe-mode-hook (fn! () (evil-mode -1)))
-  )
+
+  ;; fixing "Doesn't properly respond to C-n"
+  ;; https://github.com/tumashu/vertico-posframe/issues/11
+  (defadvice! vertico-posframe--display-no-evil (fn _lines)
+    :around #'vertico-posframe--display
+    (evil-mode -1)
+    (funcall-interactively fn _lines))
+
+  (add-hook! 'minibuffer-exit-hook #'evil-mode))
 
 (use-package! vertico-repeat
   :after vertico
   :config
-  (map! :leader "rl" #'vertico-repeat)
+  (map! :leader "rl" #'vertico-repeat-last)
   (add-hook! 'minibuffer-setup-hook #'vertico-repeat-save))
 
 (use-package! vertico-quick
@@ -330,6 +338,10 @@
 
 (map! :map occur-mode-map
       :n "f" #'occur-mode-display-occurrence)
+
+(after! consult
+  (setq consult-preview-key (kbd "C-<return>"))
+  (map! :map isearch-mode-map "M-s l" #'consult-line))
 
 ;; ensure that browsing in Helpful and Info modes doesn't create additional window splits
 (add-to-list

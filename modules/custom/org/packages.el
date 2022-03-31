@@ -50,3 +50,7 @@
 (package! org-edit-indirect :recipe (:host github :repo "agzam/org-edit-indirect.el"))
 
 (package! ob-restclient)
+
+(package! consult-org-roam
+  :recipe (:host github
+           :repo "jgru/consult-org-roam"))

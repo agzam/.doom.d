@@ -126,14 +126,16 @@
   (after! edit-indirect
     (add-hook! 'edit-indirect-before-commit-hook
       (defun clj-sort-ns-after-edit-ns-header ()
-        (clojure-sort-ns)))
+        (when (string-match-p "clojure" (format "%s" major-mode))
+          (clojure-sort-ns))))
     (add-hook! 'edit-indirect-after-commit-functions
       ;; for whatever reason, edit-indirect leaves an empty line after editing ns header,
       ;; let's remove it
       (defun clj-after-commit-edit-ns-header (beg end)
-        (save-mark-and-excursion
-         (goto-char end)
-         (delete-region (line-beginning-position) (+ 1 (line-end-position)))))))
+        (when (string-match-p "clojure" (format "%s" major-mode))
+         (save-mark-and-excursion
+           (goto-char end)
+           (delete-region (line-beginning-position) (+ 1 (line-end-position))))))))
 
   (map! (:localleader
          (:map (clojure-mode-map clojurescript-mode-map)

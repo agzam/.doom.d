@@ -89,7 +89,7 @@
 
 (use-package! org-roam
   :commands org-roam-node-find org-roam-dailies-capture-date
-  :after org
+  :after org org-capture
   :init
   (setq
    org-roam-v2-ack t
@@ -116,7 +116,7 @@
    org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
 
   (setq org-roam-capture-templates
-        '(("d" "default" plain
+        `(("d" "default" plain
            "%?"
            :if-new
            (file+head
@@ -124,6 +124,12 @@
             "\n#+title: ${title}\n")
            :unnarrowed t
            :jump-to-captured nil)))
+
+  (setq org-capture-templates
+        `(("Q" "quote" entry
+           (file ,(concat org-directory "quotes.org"))
+           "* %c %?\n:PROPERTIES:\n:ID: %(org-id-new) \n:END:"
+           :jump-to-captured t)))
 
   (setq org-roam-capture-ref-templates
         '(("r" "ref" plain "%?" :if-new
@@ -161,7 +167,10 @@
       display-buffer-in-direction)
      (direction . right)
      (window . root)
-     (window-width . 0.2))))
+     (window-width . 0.2)))
+
+  (add-to-list 'org-default-properties "roam_aliases")
+  (add-to-list 'org-default-properties "roam_refs"))
 
 (use-package! org-roam-protocol
   :after org-roam)
@@ -297,3 +306,9 @@
 
 (use-package! org-edit-indirect
   :after org)
+
+
+(use-package! consult-org-roam
+  :after org-roam
+  :config
+  (setq consult-org-oram-grep-func #'consult-ripgrep))

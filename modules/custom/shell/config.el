@@ -8,7 +8,7 @@
 (after! shell
   ;; Something messes up blue color in terminal. Usual way of setting it up in the theme,
   ;; not working for some reason. This is a hacky workaround
-  (add-hook! 'shell-mode-hook
+  (add-hook! '(shell-mode-hook doom-load-theme-hook)
     (defun set-shell-colors ()
       ;; I don't know how to find out if the current theme is dark or light
       (when (custom-theme-enabled-p 'ag-themes-base16-ocean)
