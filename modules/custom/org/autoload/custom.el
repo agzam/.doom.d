@@ -130,13 +130,13 @@ in that prop."
 ;;;###autoload
 (defun org-roam-toggle-ui-xwidget ()
   (interactive)
-  (let ((url (concat "http://localhost:" (number-to-string org-roam-ui-port))))
-    (if-let ((buf (xwidget-webkit-get-url-buffer
-                   (concat "localhost:" (number-to-string org-roam-ui-port)))))
-        (if-let ((win (get-buffer-window buf)))
-            (delete-window win)
-          (switch-to-buffer-other-window buf))
-      (xwidget-webkit-url-get-create url "*org-roam-ui*"))))
+  (let* ((url (concat "http://localhost:" (number-to-string org-roam-ui-port)))
+         (buf (or (xwidget-webkit-get-url-buffer
+                   (concat "localhost:" (number-to-string org-roam-ui-port)))
+                  (xwidget-webkit-url-get-create url "*org-roam-ui*"))))
+    (if-let ((win (get-buffer-window buf)))
+        (delete-window win)
+      (switch-to-buffer-other-window buf))))
 
 (defun get-gh-item-title (uri)
   "Based on given GitHub URI for pull-request or issue,

@@ -207,7 +207,6 @@ convert from JSON."
      (seq-do (fn! (w) (quit-window :kill w))))
    (seq-do #'kill-buffer blist)))
 
-
 ;;;###autoload
 (defun clj-edit-ns-header ()
   (interactive)

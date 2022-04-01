@@ -312,3 +312,8 @@
   :after org-roam
   :config
   (setq consult-org-oram-grep-func #'consult-ripgrep))
+
+(after! xwidget
+  (map! :localleader :map xwidget-webkit-mode-map
+        (:prefix ("r" . "roam")
+         "w" #'org-roam-toggle-ui-xwidget)))

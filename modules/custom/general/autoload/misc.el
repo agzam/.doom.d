@@ -71,14 +71,29 @@ or creates new session. Optionally, BUFFER-NAME can be set"
   (interactive (list (or (thing-at-point 'url)
                          (car (browse-url-interactive-arg "xwidget url: ")))))
   (require 'xwidget)
-  (let ((lexical-binding t))
-    (if-let ((buf (xwidget-webkit-get-url-buffer url)))
-        (switch-to-buffer buf)
-      (xwidget-webkit-new-session
-       url
-       (lambda (session _)
-         (with-current-buffer (xwidget-buffer session)
-           (rename-buffer (or buffer-name (concat "*xwidget " url "*")))))))))
+  (or (xwidget-webkit-get-url-buffer url)
+      (progn (xwidget-webkit-browse-url url :new-session)
+             (let ((buf xwidget-webkit-last-session-buffer))
+               (run-with-timer
+                1 nil
+                (lambda (buf buffer-name)
+                  (with-current-buffer buf
+                    (rename-buffer (or buffer-name (concat "*xwidget " url "*")))))
+                buf buffer-name)
+               buf))))
+
+;;;###autoload
+(defun kill-all-xwidget-buffers ()
+  "Kill all xwidget buffers without asking any questions. Useful to execute when Emacs gets stuck."
+  (interactive)
+  (let ((blist (seq-map 'xwidget-buffer xwidget-list))
+        (kill-buffer-query-functions nil))
+   (thread-last
+     blist
+     (seq-map #'get-buffer-window)
+     (seq-remove #'null)
+     (seq-do (fn! (w) (quit-window :kill w))))
+   (seq-do #'kill-buffer blist)))
 
 ;;;###autoload
 (eval-when-compile
@@ -129,9 +144,10 @@ or creates new session. Optionally, BUFFER-NAME can be set"
             (ediff old new))
         (diff old new "-u" t)))))
 
-;;; borrowed it from https://karthinks.com/software/avy-can-do-anything/#avy-plus-embark-any-action-anywhere
 ;;;###autoload
 (defun avy-action-embark (pt)
+  ;; borrowed from
+  ;; https://karthinks.com/software/avy-can-do-anything/#avy-plus-embark-any-action-anywhere
   (unwind-protect
       (save-excursion
         (goto-char pt)
