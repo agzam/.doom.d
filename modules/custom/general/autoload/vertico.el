@@ -19,7 +19,7 @@ temporarily toggle it off. Bind in vertico-map."
          (defun remove-vertico-on-minibuffer-exit ()
            (remove-hook! 'minibuffer-exit-hook #'vertico-posframe-mode)))
        (add-hook 'minibuffer-exit-hook #'vertico-posframe-mode)
-       (vertico-repeat-last)))))
+       (vertico-repeat)))))
 
 ;;;###autoload
 (defun restore-vertico-posframe-state-h ()
