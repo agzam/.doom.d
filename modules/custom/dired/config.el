@@ -93,7 +93,10 @@
         :n "M-p" #'dired-subtree-previous-sibling))
 
 (after! projectile
-  (map! :leader "pd" #'projectile-find-dir))
+  (map! :leader
+        (:prefix ("p" . "project")
+         "d" #'projectile-find-dir
+         "D" #'projectile-dired)))
 
 (after! dired
   (map! :leader

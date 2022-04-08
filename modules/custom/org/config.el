@@ -52,12 +52,16 @@
          (:prefix ("i" . "insert")
           "l" #'org-insert-link
           "L" #'org-cliplink)
+         (:prefix ("l" . "links")
+          "i" #'org-id-store-link)
          (:prefix ("r" . "roam")
           "i" #'org-roam-node-insert+
           "l" #'org-roam-buffer-toggle
           "w" #'org-roam-toggle-ui-xwidget
           "f" #'org-roam-node-find
-          "d" #'org-roam-dailies-find-date)
+          "d" #'org-roam-dailies-find-date
+          (:prefix ("r" . "refile")
+           "n" #'org-roam-refile-to-node))
          (:prefix ("s" . "tree/subtree")
           "a" #'org-toggle-archive-tag
           "A" #'org-archive-subtree
@@ -88,7 +92,7 @@
   (add-to-list 'org-modules 'org-tempo t))
 
 (use-package! org-roam
-  :commands org-roam-node-find org-roam-dailies-capture-date
+  :commands org-roam-node-find
   :after org org-capture
   :init
   (setq
@@ -108,8 +112,14 @@
          "k" #'org-backward-element
          "j" #'org-forward-element)
         (:localleader
-         "rf" #'org-roam-node-find
-         "rl" #'org-roam-buffer-toggle))
+         (:prefix ("r" . "roam")
+          "f" #'org-roam-node-find
+          "l" #'org-roam-buffer-toggle)))
+
+  (after! xwidget
+    (map! :localleader :map xwidget-webkit-mode-map
+          (:prefix ("r" . "roam")
+           "w" #'org-roam-toggle-ui-xwidget)))
 
   (setq
    org-roam-completion-everywhere t
@@ -133,7 +143,7 @@
 
   (setq org-roam-capture-ref-templates
         '(("r" "ref" plain "%?" :if-new
-           (file+head "${slug}.org" "#+title: ${title}\n%(org-roam--link-to \"unread\")")
+           (file+head "${slug}.org" "#+title: ${title}\n%(org-roam--link-to \"unread\")\n%(org--insert-selection-dwim \"${body}\")")
            :unnarrowed t
            :jump-to-captured t)
           ("n" "non-browser" plain "%?" :if-new
@@ -176,7 +186,7 @@
   :after org-roam)
 
 (use-package! org-roam-dailies
-  :after org-roam)
+  :commands org-roam-dailies-capture-date)
 
 (use-package! org-roam-ui
   :after org-roam
@@ -312,8 +322,3 @@
   :after org-roam
   :config
   (setq consult-org-oram-grep-func #'consult-ripgrep))
-
-(after! xwidget
-  (map! :localleader :map xwidget-webkit-mode-map
-        (:prefix ("r" . "roam")
-         "w" #'org-roam-toggle-ui-xwidget)))

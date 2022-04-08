@@ -89,9 +89,10 @@
        "y" #'consult-yank-from-kill-ring)
 
       (:prefix ("s". "search/symbol")
-       "j" #'imenu
        "/" #'engine/search-google
-       "g" #'engine/search-github-with-lang)
+       "f" #'find-name-dired
+       "g" #'engine/search-github-with-lang
+       "j" #'imenu)
 
       (:prefix ("t" . "toggle")
        "w" #'toggle-visual-line-navigation)
@@ -215,8 +216,10 @@
 
 (after! vertico
   (map! :map vertico-map
-        "C-e"      #'vertico-scroll-up
-        "C-y"      #'vertico-scroll-down)
+        "C-e" #'vertico-scroll-up
+        "C-y" #'vertico-scroll-down)
+
+  (map! :map minibuffer-local-map "C-c C-s" #'embark-collect)
 
   (map! :map minibuffer-mode-map
         "~" #'vertico-jump-to-home-dir-on~))
