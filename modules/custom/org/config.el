@@ -107,7 +107,6 @@
                          (backward-char)))
   (map! :map org-roam-mode-map
         "C-c i" #'org-roam-node-insert+
-        "RET" (cmd! (org-roam-node-visit (org-roam-node-at-point) :other-window))
         (:prefix ("g" . "goto")
          "k" #'org-backward-element
          "j" #'org-forward-element)
@@ -115,6 +114,14 @@
          (:prefix ("r" . "roam")
           "f" #'org-roam-node-find
           "l" #'org-roam-buffer-toggle)))
+
+  ;; always open Backlinks in other-window; or in the same window with universal arg
+  (map! :map org-roam-preview-map
+        "RET" (cmd! (let ((current-prefix-arg (if current-prefix-arg nil 2)))
+                (call-interactively #'org-roam-preview-visit))))
+  (map! :map org-roam-mode-map
+        "RET" (cmd! (let ((current-prefix-arg (if current-prefix-arg nil 2)))
+                      (call-interactively #'org-roam-node-visit))))
 
   (after! xwidget
     (map! :localleader :map xwidget-webkit-mode-map
