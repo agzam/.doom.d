@@ -106,10 +106,6 @@
   ;; especially when traversing modes in magit buffers.
   (evil-define-key* 'normal magit-status-mode-map [escape] nil)
 
-  (map! :map transient-map "q" #'transient-quit-one
-        :map transient-edit-map "q" #'transient-quit-one
-        :map transient-sticky-map "q" #'transient-quit-seq)
-
   (evil-define-key* 'normal magit-revision-mode-map
     "q" #'magit-log-bury-buffer)
 

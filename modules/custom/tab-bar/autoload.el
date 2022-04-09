@@ -2,34 +2,46 @@
 
 (require 'projectile)
 
+
 ;;;###autoload
 (defvar tab-bar-tab-added-hook nil)
-;;;###autoload
 (defvar tab-bar-tab-removed-hook nil)
 
 ;;;###autoload
-(defcustom tab-bar-templates
+(defvar tab-bar--templates
   '(("o" "Org" (progn
                  (require 'org)
                  (find-file (concat (file-name-directory org-directory) "planning.org"))))
-    ("fe" "doom.d" (doom/goto-private-config-file))
-    ("fi" "emacs.d" (dired doom-emacs-dir)))
-  "List of templates for new tabs")
+    ("ed" "doom.d" (doom/goto-private-config-file))
+    ("ei" "emacs.d" (dired doom-emacs-dir))
+    ("p" "projects" (switch-to-buffer
+                     (find-file-noselect
+                      (completing-read "choose project:" projectile-known-projects))))
+    ("fh" "fasd history"
+     (switch-to-buffer
+      (find-file-noselect
+       (completing-read "choose dir:" (split-string (shell-command-to-string "fasd -lRd")))))))
+  "List of built-in templates for new tabs
+ For user-customizable templates use `tab-bar-custom-templates'")
+
+;;;###autoload
+(defun tab-bar--update-templates ()
+  (require 'transient)
+  (transient-define-prefix new-tab-transient ()
+    "New Tab"
+    ["Choose a template\n"
+     [,@(seq-map
+         (lambda (x)
+           (pcase-let ((`(,key ,desc ,form) x))
+             `(,key ,desc (lambda ()
+                            (interactive)
+                            ,form
+                            (run-hooks 'tab-bar-tab-added-hook)))))
+         tab-bar--templates)]
+     [("d" "kill tab" +tab-bar-kill-tab)]]))
 
 ;;;###autoload
 (require 'transient)
-(transient-define-prefix new-tab-transient ()
-  "New Tab"
-  ["Choose a template\n"
-   ,@(seq-map
-      (lambda (x)
-        (pcase-let ((`(,key ,desc ,form) x))
-          `(,key ,desc (lambda ()
-                         (interactive)
-                         ,form
-                         (run-hooks 'tab-bar-tab-added-hook)))))
-      tab-bar-templates)])
-
 ;;;###autoload
 (transient-define-prefix tab-bar-transient ()
   "Layouts"
@@ -47,18 +59,17 @@
     ("r" "rename" +tab-bar-rename-tab)
     ("l" "select" tab-bar-select-tab-by-name)]
    [,@(seq-map
-        (lambda (n)
-          (let ((snum (number-to-string n)))
-            `(,snum ,(format "Goto: %s" n) (lambda () (interactive) (+tab-bar-switch-to-tab-number ,n)))))
-        (number-sequence 1 9))]
-   [("<escape>" "close" transient-quit-one)]])
+       (lambda (n)
+         (let ((snum (number-to-string n)))
+           `(,snum ,(format "Goto: %s" n) (lambda () (interactive) (+tab-bar-switch-to-tab-number ,n)))))
+       (number-sequence 1 9))]])
 
 ;;;###autoload
 (defun +tab-bar-switch-to-tab-number (num)
   (interactive)
   (if (eq 'last num)
       (tab-bar-select-tab (length (tab-bar-tabs)))
-      (tab-bar-select-tab num)))
+    (tab-bar-select-tab num)))
 
 (defun +tab-bar-rename-dups (&optional tabs)
   "Renames tabs with identical names by attaching a numerical suffix."
@@ -68,25 +79,25 @@
                     (when-let ((tname (alist-get 'name tab)))
                       (replace-regexp-in-string
                        " [[:digit:]]*$" "" tname))))
-   (-separate (lambda (x) (< 1 (length (cdr x)))))
-   (-map
-    (lambda (group)
-      (pcase-let ((`((,name . ,tabs)) group))
-        (when (< 1 (length tabs))
-          (->>
-           tabs
-           ;; (-drop 1)
-           (seq-do-indexed
-            (lambda (tab i)
-              (let ((name (replace-regexp-in-string
-                           " [[:digit:]]*$" ""
-                           (alist-get 'name tab))))
-                (setf (alist-get 'name tab)
-                      (concat
-                       name
-                       (when (< 0 i)
-                         (concat " " (number-to-string (+ 1 i))))))
-                (setf (alist-get 'explicit-name tab) t)))))))))))
+       (-separate (lambda (x) (< 1 (length (cdr x)))))
+       (-map
+        (lambda (group)
+          (pcase-let ((`((,name . ,tabs)) group))
+            (when (< 1 (length tabs))
+              (->>
+               tabs
+               ;; (-drop 1)
+               (seq-do-indexed
+                (lambda (tab i)
+                  (let ((name (replace-regexp-in-string
+                               " [[:digit:]]*$" ""
+                               (alist-get 'name tab))))
+                    (setf (alist-get 'name tab)
+                          (concat
+                           name
+                           (when (< 0 i)
+                             (concat " " (number-to-string (+ 1 i))))))
+                    (setf (alist-get 'explicit-name tab) t)))))))))))
 
 ;;;###autoload
 (defun +tab-bar-tab-move-left ()
@@ -106,6 +117,7 @@
 ;;;###autoload
 (defun +tab-bar-add-new-tab ()
   (interactive)
+  (tab-bar--update-templates)
   (tab-bar-new-tab)
   (doom/switch-to-scratch-buffer)
   (new-tab-transient))
@@ -138,23 +150,6 @@
 
      ((not (string-match-p "\\*Minibuf" (buffer-name)))
       (buffer-name)))))
-
-;;;###autoload
-(defun tab-bar-created-h ()
-  (doom/switch-to-scratch-buffer)
-  (let* ((completion-fn (lambda (prompt lst)
-                          (condition-case _ (completing-read prompt lst)
-                            (quit nil))))
-         (proj-dir (funcall completion-fn "choose project:" projectile-known-projects)))
-    (if-let* (proj-dir (dir-buf (find-file-noselect proj-dir)))
-        (switch-to-buffer dir-buf)
-      (switch-to-buffer
-       (find-file-noselect
-        (funcall
-         completion-fn "choose dir:"
-         (split-string (shell-command-to-string "fasd -lRd")))))))
-  (tab-bar-rename-tab nil)
-  (+tab-bar-rename-dups))
 
 ;;;###autoload
 (defun +tab-bar-move-buffer-to-tab ()

@@ -346,6 +346,12 @@
   (setq consult-preview-key (kbd "C-<return>"))
   (map! :map isearch-mode-map "M-s l" #'consult-line))
 
+(after! transient
+  (map! :map transient-map "q" #'transient-quit-one
+        :map transient-map "<escape>" #'transient-quit-one
+        :map transient-edit-map "q" #'transient-quit-one
+        :map transient-sticky-map "q" #'transient-quit-seq))
+
 ;; ensure that browsing in Helpful and Info modes doesn't create additional window splits
 (add-to-list
  'display-buffer-alist
