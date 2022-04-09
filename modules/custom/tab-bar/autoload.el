@@ -3,46 +3,55 @@
 (require 'projectile)
 
 ;;;###autoload
-(defhydra +hydra/tab-bar (:hint nil :color red)
-  "
-Layouts
----------------------------------
-_p_: prev                 _t_: new tab
-_n_: next                 _d_: kill tab
-_<_: move left            _r_: rename
-_>_: move right           _l_: select
-_b_: move buffer to tab   _w_: separate window into new tab
-_f_: find tab with buffer
-"
-  ("p" tab-bar-switch-to-prev-tab)
-  ("n" tab-bar-switch-to-next-tab)
-  ("N" +tab-bar-add-new-tab :exit t)
-  ("t" +tab-bar-add-new-tab :exit t)
-  ("d" +tab-bar-kill-tab :exit t)
-  ("r" +tab-bar-rename-tab :exit t)
-  ("<" +tab-bar-tab-move-left)
-  (">" +tab-bar-tab-move-right)
-  ("l" tab-bar-select-tab-by-name :exit t)
-  ("b" +tab-bar-move-buffer-to-tab :exit t)
-  ("f" +tab-bar-find-buffer-in-tabs :exit t)
-  ("w" tab-bar-move-window-to-tab :exit t)
-  ("-" (tab-bar-mode +1) :exit t)
-  ("1" (+tab-bar-switch-to-tab-number 1) :exit t)
-  ("2" (+tab-bar-switch-to-tab-number 2) :exit t)
-  ("3" (+tab-bar-switch-to-tab-number 3) :exit t)
-  ("4" (+tab-bar-switch-to-tab-number 4) :exit t)
-  ("5" (+tab-bar-switch-to-tab-number 5) :exit t)
-  ("6" (+tab-bar-switch-to-tab-number 6) :exit t)
-  ("7" (+tab-bar-switch-to-tab-number 7) :exit t)
-  ("8" (+tab-bar-switch-to-tab-number 8) :exit t)
-  ("9" (+tab-bar-switch-to-tab-number 9) :exit t)
-  ("0" (+tab-bar-switch-to-tab-number 'last) :exit t))
-
-;;;###autoload
 (defvar tab-bar-tab-added-hook nil)
-
 ;;;###autoload
 (defvar tab-bar-tab-removed-hook nil)
+
+;;;###autoload
+(defcustom tab-bar-templates
+  '(("o" "Org" (progn
+                 (require 'org)
+                 (find-file (concat (file-name-directory org-directory) "planning.org"))))
+    ("fe" "doom.d" (doom/goto-private-config-file))
+    ("fi" "emacs.d" (dired doom-emacs-dir)))
+  "List of templates for new tabs")
+
+;;;###autoload
+(require 'transient)
+(transient-define-prefix new-tab-transient ()
+  "New Tab"
+  ["Choose a template\n"
+   ,@(seq-map
+      (lambda (x)
+        (pcase-let ((`(,key ,desc ,form) x))
+          `(,key ,desc (lambda ()
+                         (interactive)
+                         ,form
+                         (run-hooks 'tab-bar-tab-added-hook)))))
+      tab-bar-templates)])
+
+;;;###autoload
+(transient-define-prefix tab-bar-transient ()
+  "Layouts"
+  ["Layouts\n"
+   [("k" "prev" tab-bar-switch-to-prev-tab)
+    ("j" "next" tab-bar-switch-to-next-tab)
+    ("<" "move left" +tab-bar-tab-move-left :transient t)
+    (">" "move right" +tab-bar-tab-move-right :transient t)
+    ("b" "move buffer to tab" +tab-bar-move-buffer-to-tab)
+    ("f" "find tab with current buffer" +tab-bar-find-buffer-in-tabs)
+    ("w" "move window to new tab" tab-bar-move-window-to-tab)]
+   [("t" "new tab" +tab-bar-add-new-tab)
+    ("n" "new tab" +tab-bar-add-new-tab)
+    ("d" "kill tab" +tab-bar-kill-tab)
+    ("r" "rename" +tab-bar-rename-tab)
+    ("l" "select" tab-bar-select-tab-by-name)]
+   [,@(seq-map
+        (lambda (n)
+          (let ((snum (number-to-string n)))
+            `(,snum ,(format "Goto: %s" n) (lambda () (interactive) (+tab-bar-switch-to-tab-number ,n)))))
+        (number-sequence 1 9))]
+   [("<escape>" "close" transient-quit-one)]])
 
 ;;;###autoload
 (defun +tab-bar-switch-to-tab-number (num)
@@ -89,12 +98,17 @@ _f_: find tab with buffer
   (interactive)
   (tab-bar-move-tab 1))
 
+(add-hook! 'tab-bar-tab-added-hook
+  (defun tab-bar-template-run-hook-h ()
+    (tab-bar-rename-tab nil)
+    (+tab-bar-rename-dups)))
+
 ;;;###autoload
 (defun +tab-bar-add-new-tab ()
   (interactive)
   (tab-bar-new-tab)
-  (+tab-bar-rename-dups)
-  (run-hooks 'tab-bar-tab-added-hook))
+  (doom/switch-to-scratch-buffer)
+  (new-tab-transient))
 
 ;;;###autoload
 (defun +tab-bar-kill-tab ()
