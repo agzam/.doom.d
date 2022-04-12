@@ -37,9 +37,16 @@
          "d" #'xref-find-definitions
          "D" #'xref-find-definitions-other-window)
         (:prefix  ("h" . "help")
-         "h" #'helpful-at-point))
+         "h" #'helpful-at-point)
+        (:prefix ("k" . "kill")
+         "m" #'erase-messages-buffer))
   (map! :map emacs-lisp-mode-map
-        :i "#" #'sharp-quote))
+        :i "#" #'sharp-quote)
+
+  (map! :localleader
+        :map messages-buffer-mode-map
+        (:prefix ("k" . "kill")
+         "m" #'erase-messages-buffer)))
 
 (after! debug
   (map! :map debugger-mode-map

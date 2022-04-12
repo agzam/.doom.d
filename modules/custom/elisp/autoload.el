@@ -46,3 +46,11 @@ Requires smartparens because all movement is done using `sp-up-sexp'."
                 (elt ppss 4)
                 (eq (char-after) ?'))
       (insert "'"))))
+
+;;;###autoload
+(defun erase-messages-buffer ()
+  (interactive)
+  (with-current-buffer "*Messages*"
+    (read-only-mode -1)
+    (erase-buffer)
+    (read-only-mode 1)))
