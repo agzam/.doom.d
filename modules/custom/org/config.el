@@ -78,6 +78,12 @@
              (defun flycheck-mode-off ()
                (flycheck-mode -1)))
   (add-hook! 'org-capture-mode-hook #'recenter)
+
+  (setq org-export-with-smart-quotes t
+        org-html-validation-link nil
+        org-latex-prefer-user-labels t)
+  (add-to-list 'org-export-backends 'md)
+
   (setq org-capture-bookmark nil)
 
   (after! org-attach
