@@ -277,6 +277,11 @@ ensure it is built when we actually use Forge."
         :n "RET" #'gh-notify-visit-notification
         :n "q" #'kill-buffer-and-window)
 
+  (map! :map gh-notify-mode-map
+        :ni "r" (cmd! (gh-notify-mark-notification-read
+                       (gh-notify-current-notification))
+                      (evil-next-visual-line)))
+
   (map! :localleader :map gh-notify-mode-map
         "C-l" nil
         "l" #'gh-notify-retrieve-notifications
@@ -339,7 +344,8 @@ ensure it is built when we actually use Forge."
   (map! :map code-review-mode-map
         :nv (kbd "<escape>") nil
         :nv "," nil
-        :n "q" #'kill-buffer-and-window)
+        :n "q" #'kill-buffer-and-window
+        "C-c C-o" #'code-review-browse-pr+)
 
   (map! :map code-review-feedback-section-map
         "k" nil)
