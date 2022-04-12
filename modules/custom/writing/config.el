@@ -6,13 +6,10 @@
        "g" #'lsp-grammarly-check-grammar
        "l" #'sdcv-search-at-point
        "m" #'mw-thesaurus-lookup-dwim)
-      (:prefix ("t" . "translate")
-       "L" #'set-google-translate-languages
-       "l" #'set-google-translate-target-language
-       "Q" #'google-translate-query-translate-reverse
-       "q" #'google-translate-query-translate
-       "T" #'google-translate-at-point-reverse
-       "t" #'google-translate-at-point))
+      (:prefix ("g" . "translate")
+       "e" #'google-translate-query-translate-reverse
+       "r" #'google-translate-query-translate
+       "g" #'google-translate-at-point))
 
 (use-package! keytar
   :defer 5
@@ -89,6 +86,17 @@
         google-translate-default-source-language "ru"
         google-translate-default-target-language "en")
 
+  (defadvice! google-translate-at-point--set-lang-auto (fn &optional override-p)
+    :around #'google-translate-at-point
+    (pcase-let ((`(,src ,tgt)
+                 (alist-get current-input-method
+                            '((nil . (en ru))
+                              ("russian-computer" . (ru en)))
+                            nil nil #'string-equal)))
+      (let ((google-translate-default-source-language (symbol-name src))
+            (google-translate-default-target-language (symbol-name tgt)))
+        (funcall-interactively fn override-p))))
+
   ;; to use 'listen' feature of google-translate, on Mac:
   ;; brew install mplayer-osx-extended
   ;; ln -s '/Applications/MPlayer OSX Extended.app/Contents/Resources/Binaries/mpextended.mpBinaries/Contents/MacOS/mplayer' /usr/local/bin/mplayer
@@ -148,10 +156,9 @@
         flyspell-issue-message-flag nil)
   (map! :map flyspell-mode-map "C-;" nil) ; release the key for embark-act
   (map! :map flyspell-mode-map
-      :i ",," #'flyspell-correct-previous
+      :i ",," #'flyspell-auto-correct-previous-word
       :i ", SPC" #'comma-smart-insert
-      :i "s-." #'flyspell-auto-correct-previous-word
-      :i "s-," #'flyspell-auto-correct-word))
+      :i "s-." #'flyspell-correct-previous))
 
 (use-package! flyspell-correct
   :defer t)
