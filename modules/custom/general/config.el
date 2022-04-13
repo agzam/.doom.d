@@ -98,6 +98,8 @@
        "w" #'toggle-visual-line-navigation)
 
       (:prefix ("w" . "windows")
+       "." #'window-transient
+       "g" #'golden-ratio
        "D" #'ace-delete-window
        "M" #'ace-swap-window
        "W" #'ace-window
