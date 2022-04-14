@@ -57,12 +57,12 @@
     ("n" "new tab" +tab-bar-add-new-tab)
     ("d" "kill tab" +tab-bar-kill-tab)
     ("r" "rename" +tab-bar-rename-tab)
-    ("l" "select" tab-bar-select-tab-by-name)]
-   [,@(seq-map
-       (lambda (n)
-         (let ((snum (number-to-string n)))
-           `(,snum ,(format "Goto: %s" n) (lambda () (interactive) (+tab-bar-switch-to-tab-number ,n)))))
-       (number-sequence 1 9))]])
+    ("l" "select" tab-bar-select-tab-by-name)]]
+  [:hide always ,@(seq-map
+                   (lambda (n)
+                     (let ((snum (number-to-string n)))
+                       `(,snum ,(format "Goto: %s" n) (lambda () (interactive) (+tab-bar-switch-to-tab-number ,n)))))
+                   (number-sequence 1 9))])
 
 ;;;###autoload
 (defun +tab-bar-switch-to-tab-number (num)
@@ -137,9 +137,17 @@
 
 ;;;###autoload
 (defun +tab-bar-name-fn ()
-  (let* ((buf-fname (buffer-file-name))
+  (let* ((project-name (projectile-project-name))
+         (buf-fname (buffer-file-name))
+         (buf-name (buffer-name))
          (buf-dir (when buf-fname (file-name-directory buf-fname))))
     (cond
+     ((member major-mode '(gh-notify-mode)) buf-name)
+
+     ((and project-name
+           (not (string-equal "-" project-name)))
+      project-name)
+
      ((eq 'dired-mode major-mode)
       (projectile-project-name (projectile-project-root default-directory)))
 
@@ -148,8 +156,8 @@
 
      (buf-dir buf-dir)
 
-     ((not (string-match-p "\\*Minibuf" (buffer-name)))
-      (buffer-name)))))
+     ((not (string-match-p "\\*Minibuf" buf-name))
+      buf-name))))
 
 ;;;###autoload
 (defun +tab-bar-move-buffer-to-tab ()

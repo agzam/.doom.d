@@ -1,0 +1,5 @@
+;; -*- no-byte-compile: t; -*-
+;;; custom/yaml/packages.el
+
+(package! yaml-mode)
+(package! yaml-imenu)

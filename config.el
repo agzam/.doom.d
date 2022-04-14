@@ -110,7 +110,7 @@
 
 (when (featurep! :custom general)
   (add-hook! 'window-setup-hook
-    (defun center-frame-on-load-h ()
+    (defun position-frame-on-load-h ()
       ;; Emacs 29 changed font for the modeline
       ;; https://github.com/hlissner/doom-emacs/issues/5891#issuecomment-992758572
       (custom-set-faces! '(mode-line-active :inherit mode-line))
@@ -118,9 +118,10 @@
       (init-visual-line-keys)
       (global-visual-line-mode +1)
       (fringe-mode '(6 . 0))
-      (run-with-timer
-       "1.5 sec" nil
-       #'center-frame-horizontally nil 85))))
+      ;; (run-with-timer
+      ;;  "1.5 sec" nil
+      ;;  #'center-frame-horizontally nil 85)
+       )))
 
 (after! custom
   ;; in customize dialogs keep the elisp names

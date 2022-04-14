@@ -201,4 +201,6 @@
        lsp
        clojure
        org
-       shell)
+       shell
+       yaml
+       )

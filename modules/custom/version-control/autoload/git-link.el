@@ -33,9 +33,11 @@
                   ;; interactively, so I had to temporarily redefine #'git-link--new
                   ;; (above), ignore prefix arg and other parameters, in order to retrieve
                   ;; the link
-                  (_ (let ((current-prefix-arg nil)
-                           (git-link-open-in-browser browse?))
-                       (message (call-interactively #'git-link)))))))
+                  (_ (let* ((current-prefix-arg nil)
+                           (git-link-open-in-browser browse?)
+                           (lnk (call-interactively #'git-link)))
+                       (kill-new lnk)
+                       (message lnk))))))
       (when browse? (browse-url link)))))
 
 ;;;###autoload
