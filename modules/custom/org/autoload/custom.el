@@ -160,8 +160,8 @@ in that prop."
                                   (-non-nil)))
                       (`(_ _ ,owner ,repo ,type ,branch ,dir ,file) uri*)
                       (branch (if (or (string= type "commit") (string= type "tree"))
-                                (substring branch 0 7)        ; trim to short sha
-                              branch)))
+                                  (substring branch 0 7)  ; trim to short sha
+                                branch)))
            (mapconcat
             'identity (->> (list owner repo type branch dir file) (-non-nil))
             "/")))
@@ -185,6 +185,7 @@ in that prop."
             (match-string 2 link))
     (error "Cannot parse %s as Org link" link)))
 
+;;;###autoload
 (defun org-link->markdown ()
   (interactive)
   (let* ((ctx (org-in-regexp org-any-link-re))
@@ -201,6 +202,7 @@ in that prop."
       (delete-region beg end)
       (insert (apply 'format "[%s](%s)" (reverse parsed))))))
 
+;;;###autoload
 (defun markdown-link->org ()
   (interactive)
   (when (markdown-link-p)
@@ -218,3 +220,23 @@ and if it is set to nil, then it would forcefully create the ID."
   (interactive "P")
   (let ((org-id-link-to-org-use-id (not org-id-link-to-org-use-id)))
     (org-store-link arg :interactive)))
+
+;;;###autoload
+(defun edit-indirect-guess-mode-fn+ (parent-buffer beg _end)
+  "Guess the major mode for an edit-indirect buffer."
+  (let* ((type (with-current-buffer parent-buffer
+                 (cond
+                  ;; set markdown-mode for quote & verse blocks
+                  ((and (eq major-mode 'org-mode)
+                        (string-match-p
+                         "+begin_quote\\|+begin_verse"
+                         (save-mark-and-excursion
+                           (goto-char (- beg 1))
+                           (thing-at-point 'symbol))))
+                   :quote)
+
+                  ((eq major-mode 'org-mode) :org-mode)))))
+    (cl-case type
+      (:quote (markdown-mode))
+      (:org-mode (org-mode))
+      (t (normal-mode)))))

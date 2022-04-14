@@ -53,7 +53,8 @@
           "l" #'org-insert-link
           "L" #'org-cliplink)
          (:prefix ("l" . "links")
-          "i" #'org-id-store-link)
+          "i" #'org-id-store-link
+          "c" #'markdown-link->org)
          (:prefix ("r" . "roam")
           "i" #'org-roam-node-insert+
           "l" #'org-roam-buffer-toggle
@@ -328,8 +329,9 @@
                                           (?- . ?•))))
 
 (use-package! org-edit-indirect
-  :after org)
-
+  :after org
+  :config
+  (setq edit-indirect-guess-mode-function #'edit-indirect-guess-mode-fn+))
 
 (use-package! consult-org-roam
   :after org-roam

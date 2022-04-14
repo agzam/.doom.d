@@ -1,7 +1,7 @@
 ;;; custom/writing/autoload.el -*- lexical-binding: t; -*-
 
 ;;;###autoload
-(defun on-spacehammer-edit-with-emacs (buffer-name pid title)
+(defun spacehammer-edit-with-emacs-h (buffer-name pid title)
   (select-frame-by-name "edit")
   (with-current-buffer (get-buffer buffer-name)
     (set-frame-parameter nil 'fullscreen nil)

@@ -21,7 +21,7 @@
   :defer t
   :commands spacehammer/edit-with-emacs
   :config
-  (add-hook! spacehammer/edit-with-emacs #'on-spacehammer-edit-with-emacs)
+  (add-hook! spacehammer/edit-with-emacs #'spacehammer-edit-with-emacs-h)
   (add-hook! spacehammer/before-finish-edit-with-emacs #'spacehammer-before-finish-edit-with-emacs))
 
 (use-package! lsp-grammarly
@@ -36,7 +36,14 @@
         lsp-grammarly-audience "expert")
   ;; TODO
   ;;(setq lsp-grammarly-active-modes (remove 'org-mode lsp-grammarly-active-modes))
-  )
+
+  (defadvice! lsp-grammarly-check-grammar-a ()
+    "Set a temp file for the buffer, if there's no buffer-file, e.g., source blocks."
+    :before #'lsp-grammarly-check-grammar
+    (unless (buffer-file-name)
+      (set-visited-file-name (format "/tmp/%s" (uuidgen-4)))
+      (set-buffer-modified-p nil)
+      (lsp))))
 
 (use-package! mw-thesaurus
   :defer t
@@ -215,6 +222,10 @@
          "ru"
        nil))))
 
+(after! markdown-mode
+  (map! :localleader :map markdown-mode-map
+        (:prefix ("l" . "links")
+         "c" #'org-link->markdown)))
 
 (after! quail
   (quail-define-package
