@@ -50,9 +50,9 @@ the horizontal screen estate the frame should occupy."
 it remains shown or hidden - whatever the previous value was."
   (when (and (eq system-type 'darwin)
              (boundp 'ns-auto-hide-menu-bar))
-   (let ((val ns-auto-hide-menu-bar))
-     (setf ns-auto-hide-menu-bar (not val))
-     (setf ns-auto-hide-menu-bar val))))
+    (let ((val ns-auto-hide-menu-bar))
+      (setf ns-auto-hide-menu-bar (not val))
+      (setf ns-auto-hide-menu-bar val))))
 
 ;;;###autoload
 (defun toggle-frame-full-height ()
@@ -89,22 +89,88 @@ it remains shown or hidden - whatever the previous value was."
   (posframe-delete-all))
 
 ;;;###autoload
-(defhydra +hydra/text-zoom (:color amarath
-                            :hint nil
-                            ;; :before-exit (reset-frame-full-height)
-                            )
-  "
-^Zoom^             ^Resize^
----------------------------------
-_j_: decrease      _h_: full-height
-_k_: increase      _c_: center
-_0_: reset         _m_: maximize
-^^                 _f_: fullscreen
-"
-  ("j" doom/decrease-font-size)
-  ("k" doom/increase-font-size)
-  ("0" doom/reset-font-size)
-  ("h" toggle-frame-full-height :exit t)
-  ("c" center-frame-horizontally :exit t)
-  ("m" toggle-frame-maximized-undecorated :exit t)
-  ("f" toggle-frame-fullscreen+ :exit t))
+(defun shrink-frame-width (&optional delta)
+  (interactive)
+  (when transient--window
+    (quit-restore-window transient--window))
+  (set-frame-width nil (- (frame-width) (or delta 5))))
+
+;;;###autoload
+(defun widen-frame-width (&optional delta)
+  (interactive)
+  (when transient--window
+    (quit-restore-window transient--window))
+  (set-frame-width nil (+ (frame-width) (or delta 5))))
+
+
+;;;###autoload
+(defvar frame-position-display-spots
+  `((0 0 0.332 1.0)
+    (0 0 0.498 1.0)
+    (0.166 0 0.664 1.0)
+    (0.332 0 0.8 1.0)
+    (0.5 0 0.5 1.0)
+    (0.664 0 0.35 1.0))
+  "Pre-sets for different positions of Emacs frame on the screen.
+Each pre-set is a list of X, Y, WIDTH, and HEIGHT.
+
+When a value is a decimal - it represents the
+discrete pixel position on the display. Also, the numbers can be
+floats, in that case - it represent the proportional value, e.g.,
+width of 0.25 means quarter of `(display-pixel-width)'.")
+
+;;;###autoload
+(defun place-frame-at-display-spot (specs &optional frame)
+  "Position and resize the FRAME according SPECS.
+SPECS is a list of x, y, width & height.
+See: `frame-position-display-spots' for details."
+  (interactive)
+  (pcase-let* ((pw (display-pixel-width))
+               (ph (display-pixel-height))
+               (`(,x ,y ,w ,h) (seq-mapn
+                                (lambda (val kind)
+                                  (if (eq 'float (type-of val))
+                                      (cl-case kind
+                                        ((or :x :w) (floor (* pw val)))
+                                        (:y (floor (* ph val)))
+                                        (:h (let* ((tabs-h (tab-bar-height frame t)))
+                                              (if (eq val 1.0)
+                                                  (- ph (+ 26 tabs-h))
+                                                (floor (- (* ph val) (+ 26 tabs-h)))))))
+                                    val))
+                                specs '(:x :y :w :h)))
+               (x (cond ((< x 0) 0) ((< pw x) pw) (t x)))
+               (y (cond ((< y 0) 0) ((< ph y) ph) (t y)))
+               (w (cond ((< pw (+ x w)) (- pw x)) (t w)))
+               (h (cond ((< ph (+ y h)) (- ph y)) (t h))))
+    (when transient--window
+      (quit-restore-window transient--window))
+    (set-frame-position frame x y)
+    (message (format "position: %s, %s; width: %s, height: %s" x y w h))
+    (set-frame-size frame w h t)))
+
+;;;###autoload
+(require 'transient)
+
+;;;###autoload
+(transient-define-prefix frame-zoom-transient ()
+  "Text Zoom"
+  ["Frame Text Zoom"
+   [("j" "decrease font" doom/decrease-font-size :transient t)
+    ("k" "increase font" doom/increase-font-size :transient t)
+    ("0" "reset font size" doom/reset-font-size :transient t)]
+   [("h" "full height" toggle-frame-full-height)
+    ("c" "center frame horizontally" center-frame-horizontally)
+    ("m" "maximize frame" toggle-frame-maximized-undecorated)
+    ("f" "full-screen" toggle-frame-fullscreen+)
+    ("H" "shrink frame" shrink-frame-width :transient t)
+    ("L" "widen frame" widen-frame-width :transient t)]]
+  [:hide always ,@(seq-map-indexed
+                   (lambda (elt idx)
+                     `(,(number-to-string (+ 1 idx))
+                       ,(format "layout %s" (+ 1 idx))
+                       (lambda ()
+                         (interactive)
+                         (place-frame-at-display-spot (quote ,elt)))
+                       :transient t))
+                   frame-position-display-spots)])

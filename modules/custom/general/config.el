@@ -113,7 +113,7 @@
        "x" #'flyspell-correct-at-point)
 
       (:prefix ("z" . "zoom")
-       "f" #'+hydra/text-zoom/body))
+       "f" #'frame-zoom-transient))
 
 (map! :localleader :map xwidget-webkit-mode-map "x" #'kill-current-buffer)
 (map! :map special-mode-map

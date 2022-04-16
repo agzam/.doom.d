@@ -99,7 +99,7 @@
   (add-to-list 'org-modules 'org-tempo t))
 
 (use-package! org-roam
-  :commands org-roam-node-find
+  :commands org-roam-node-find org-roam-buffer-toggle
   :after org org-capture
   :init
   (setq
