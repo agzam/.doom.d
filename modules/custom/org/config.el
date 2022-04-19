@@ -99,7 +99,11 @@
   (add-to-list 'org-modules 'org-tempo t))
 
 (use-package! org-roam
-  :commands org-roam-node-find org-roam-buffer-toggle
+  :commands (org-roam-buffer-toggle-display
+             org-roam-dailies-find-date
+             org-roam-dailies-find-today
+             org-roam-dailies-find-tomorrow
+             org-roam-dailies-find-yesterday)
   :after org org-capture
   :init
   (setq

@@ -215,8 +215,9 @@
   ;;  ispell-dictionary "american"
   ;;  )
 
-  (defadvice! change-dict-after-toggle-input (a b)
-    :after #'toggle-input-method
+  (defadvice! change-dict-after-toggle-input (fn _arg _interactive)
+    :around #'toggle-input-method
+    (funcall fn)
     (ispell-change-dictionary
      (if (string= current-input-method "russian-computer")
          "ru"

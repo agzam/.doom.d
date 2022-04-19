@@ -140,3 +140,9 @@
 ;; disable global-hl-line
 ;; oddly that's the way: github.com/hlissner/doom-emacs/issues/4206
 (remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
+
+;; needed additional binding, because can't emit backslash from Hammerspoon
+(map! "C-<f12>" #'toggle-input-method)
+
+(after! evil
+  (setq evil-jumps-cross-buffers nil))

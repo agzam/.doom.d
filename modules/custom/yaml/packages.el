@@ -3,3 +3,5 @@
 
 (package! yaml-mode)
 (package! yaml-imenu)
+
+(package! jinja2-mode)

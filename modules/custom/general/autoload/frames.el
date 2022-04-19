@@ -104,26 +104,10 @@ it remains shown or hidden - whatever the previous value was."
 
 
 ;;;###autoload
-(defvar frame-position-display-spots
-  `((0 0 0.332 1.0)
-    (0 0 0.498 1.0)
-    (0.166 0 0.664 1.0)
-    (0.332 0 0.8 1.0)
-    (0.5 0 0.5 1.0)
-    (0.664 0 0.35 1.0))
-  "Pre-sets for different positions of Emacs frame on the screen.
-Each pre-set is a list of X, Y, WIDTH, and HEIGHT.
-
-When a value is a decimal - it represents the
-discrete pixel position on the display. Also, the numbers can be
-floats, in that case - it represent the proportional value, e.g.,
-width of 0.25 means quarter of `(display-pixel-width)'.")
-
-;;;###autoload
 (defun place-frame-at-display-spot (specs &optional frame)
   "Position and resize the FRAME according SPECS.
 SPECS is a list of x, y, width & height.
-See: `frame-position-display-spots' for details."
+See: `(frame-position-display-spots)'  details."
   (interactive)
   (pcase-let* ((pw (display-pixel-width))
                (ph (display-pixel-height))
@@ -173,4 +157,17 @@ See: `frame-position-display-spots' for details."
                          (interactive)
                          (place-frame-at-display-spot (quote ,elt)))
                        :transient t))
-                   frame-position-display-spots)])
+                   ;; list of pre-sets for different positions of Emacs frame on the
+                   ;; screen. Each pre-set is a list of X, Y, WIDTH, and HEIGHT.
+                   ;;
+                   ;; When a value is a decimal - it represents the discrete pixel
+                   ;; position on the display. Also, the numbers can be floats, in that
+                   ;; case - it represent the proportional value, e.g., width of 0.25
+                   ;; means quarter of `(display-pixel-width)'.
+                   '((0 0 0.332 1.0)
+                     (0 0 0.498 1.0)
+                     (0 0 0.664 1.0)
+                     (0.166 0 0.664 1.0)
+                     (0.332 0 0.8 1.0)
+                     (0.5 0 0.5 1.0)
+                     (0.664 0 0.35 1.0)))])
