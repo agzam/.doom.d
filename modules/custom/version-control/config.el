@@ -275,12 +275,12 @@ ensure it is built when we actually use Forge."
 
   (map! :map gh-notify-mode-map
         :n "RET" #'gh-notify-visit-notification
-        :n "q" #'kill-buffer-and-window)
+        :n "q" #'kill-buffer-and-window
+        :after code-review
+        :n "s-r" #'gh-notify-code-review-forge-pr-at-point)
 
   (map! :map gh-notify-mode-map
-        :ni "r" (cmd! (gh-notify-mark-notification-read
-                       (gh-notify-current-notification))
-                      (evil-next-visual-line)))
+        :ni "r" #'gh-notify-mark-read-and-move)
 
   (map! :localleader :map gh-notify-mode-map
         "C-l" nil
@@ -327,8 +327,7 @@ ensure it is built when we actually use Forge."
   :config
   (after! (magit forge gh-notify)
     (map! :map (magit-status-mode-map
-                forge-topic-mode-map
-                gh-notify-mode-map)
+                forge-topic-mode-map)
           :n "s-r" #'code-review-forge-pr-at-point))
 
   (after! 'evil-escape
