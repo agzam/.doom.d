@@ -11,9 +11,14 @@
 (defvar tab-bar--templates
   '(("o" "Org" (progn
                  (require 'org)
-                 (find-file (concat (file-name-directory org-directory) "planning.org"))))
+                 (require 'org-roam)
+                 (let ((default-directory (file-name-directory org-directory)))
+                   (find-file default-directory)
+                   (hack-dir-local-variables-non-file-buffer)
+                   (when-let ((recent (projectile-recentf-files)))
+                     (find-file (car (seq-remove (lambda (x) (equal x "./")) recent)))))))
     ("ed" "doom.d" (doom/goto-private-config-file))
-    ("ei" "emacs.d" (dired doom-emacs-dir))
+    ("ei" "emacs.d" (dired (file-name-directory doom-emacs-dir)))
     ("p" "projects" (switch-to-buffer
                      (find-file-noselect
                       (completing-read "choose project:" projectile-known-projects))))
