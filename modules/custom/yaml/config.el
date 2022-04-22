@@ -6,6 +6,7 @@
   :after yaml-mode)
 
 (use-package! jinja2-mode
+  :mode "\\.jinja$"
   :config
   ;; The default behavior is to reindent the whole buffer on save. This is
   ;; disruptive and imposing. There are indentation commands available; the user

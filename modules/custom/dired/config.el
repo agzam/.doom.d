@@ -13,7 +13,7 @@
         treemacs-persist-file (concat doom-cache-dir "treemacs-persist")
         treemacs-last-error-persist-file (concat doom-cache-dir "treemacs-last-error-persist"))
   :config
-  (map! :leader "ft" #'treemacs)
+  (map! :leader "pt" #'treemacs-project-toggle+)
   (after! dired (treemacs-resize-icons 16))
   (treemacs-follow-mode 1)
 
@@ -53,7 +53,11 @@
   :init
   (require 'direx-project)
   :config
-  (map! :leader "pt" #'direx/jump-to-project-root-or-current-dir)
+
+  ;; Direx completely got broken in Emacs 29.
+  ;; I don't think it's worth trying to fix it and needs to be rewritten
+  ;;
+  ;; (map! :leader "pt" #'direx/jump-to-project-root-or-current-dir)
 
   (map! :map direx:file-keymap
         "q" #'kill-this-buffer
@@ -84,6 +88,7 @@
 (use-package! dired-subtree
   :after dired
   :init
+  (setq dired-subtree-cycle-depth 5)
   (map! :map dired-mode-map
         :n "M-l" #'dired-subtree-cycle
         :n "M-h" #'dired-subtree-remove*

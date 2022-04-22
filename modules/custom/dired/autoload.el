@@ -56,3 +56,17 @@
           (aw-dispatch-always t))
       (aw-switch-to-window (aw-select nil))
       (switch-to-buffer buf))))
+
+;;;###autoload
+(defun treemacs-project-toggle+ ()
+  "Toggle and add the current project to treemacs if not already added."
+  (interactive)
+  (if (eq (treemacs-current-visibility) 'visible)
+      (delete-window (treemacs-get-local-window))
+    (let ((path (projectile-ensure-project (projectile-project-root)))
+          (name (projectile-project-name)))
+      (unless (treemacs-current-workspace)
+        (treemacs--find-workspace))
+      (treemacs-do-add-project-to-workspace path name)
+      (treemacs-display-current-project-exclusively)
+      (treemacs-select-window))))

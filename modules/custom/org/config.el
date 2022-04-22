@@ -41,6 +41,10 @@
   (map! :map org-mode-map
         "C-c C-f" #'org-roam-node-find
         "C-c C-i" #'org-roam-node-insert+
+
+        ;; tilde insead of backtick
+        :iv "`" (cmd! (self-insert-command 1 126))
+
         (:localleader
          "n" #'org-next-link
          "p" #'org-previous-link

@@ -271,7 +271,8 @@ ensure it is built when we actually use Forge."
   :defer t
   :config
   (require 'gh-notify)
-  (setq gh-notify-redraw-on-visit t)
+  (setq gh-notify-redraw-on-visit t
+        gh-notify-show-state t)
 
   (map! :map gh-notify-mode-map
         :n "RET" #'gh-notify-visit-notification
@@ -317,7 +318,14 @@ ensure it is built when we actually use Forge."
          "/" #'gh-notify-limit-none))
 
   ;; always recenter when getting back to gh-notify buffer from forge-buffers
-  (advice-add 'gh-notify--filter-notifications :after 'recenter))
+  (advice-add 'gh-notify--filter-notifications :after 'recenter)
+
+  (defadvice! gh-notify-render-notification-a (fn notification)
+    "Modify gh-notify columns for every row."
+    :around #'gh-notify-render-notification
+    (replace-regexp-in-string
+     "\\[subscribed\\]" ""
+     (funcall fn notification))))
 
 (use-package! code-review
   :after (magit)
