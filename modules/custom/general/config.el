@@ -85,6 +85,10 @@
        (:prefix "g"
         "h" #'gh-notify))
 
+      (:prefix ("p" . "projects")
+       :desc "Invalidate project cache" "I" #'projectile-invalidate-cache
+       :desc "project IBuffer" "i" #'projectile-ibuffer)
+
       (:prefix ("r" . "resume/ring")
        "y" #'consult-yank-from-kill-ring)
 

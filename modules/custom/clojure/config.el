@@ -250,3 +250,8 @@
 
 (use-package! clojars
   :after clojure-mode)
+
+(use-package! neil
+  :commands neil-find-clojure-package
+  :config
+  (setq neil-prompt-for-version-p nil))
