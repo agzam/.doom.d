@@ -223,7 +223,9 @@
 (after! vertico
   (map! :map vertico-map
         "C-e" #'vertico-scroll-up
-        "C-y" #'vertico-scroll-down)
+        "C-y" #'vertico-scroll-down
+        "]" #'vertico-next-group
+        "[" #'vertico-previous-group)
 
   (map! :map minibuffer-local-map "C-c C-s" #'embark-collect)
 
@@ -349,7 +351,7 @@
       :n "f" #'occur-mode-display-occurrence)
 
 (after! consult
-  (setq consult-preview-key (kbd "C-<return>"))
+  (consult-customize +default/search-buffer :preview-key 'any)
   (map! :map isearch-mode-map "M-s l" #'consult-line))
 
 (after! transient

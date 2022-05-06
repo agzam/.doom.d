@@ -59,6 +59,8 @@
          (:prefix ("l" . "links")
           "i" #'org-id-store-link
           "c" #'markdown-link->org)
+         (:prefix ("o" . "open/Org")
+          "l" #'org-id-store-link)
          (:prefix ("r" . "roam")
           "i" #'org-roam-node-insert+
           "l" #'org-roam-buffer-toggle
@@ -345,3 +347,8 @@
   :after org-roam
   :config
   (setq consult-org-oram-grep-func #'consult-ripgrep))
+
+(use-package! ox-gfm
+  :after org
+  :config
+  (setq org-export-with-toc nil))

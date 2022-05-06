@@ -143,6 +143,9 @@ See: `(frame-position-display-spots)'  details."
    [("j" "decrease font" doom/decrease-font-size :transient t)
     ("k" "increase font" doom/increase-font-size :transient t)
     ("0" "reset font size" doom/reset-font-size :transient t)]
+   [("s-j" "text scale down" text-scale-decrease :transient t)
+    ("s-k" "text scale up" text-scale-increase :transient t)
+    ("s-0" "text scale reset" text-scale-set :transient t)]
    [("h" "full height" toggle-frame-full-height)
     ("c" "center frame horizontally" center-frame-horizontally)
     ("m" "maximize frame" toggle-frame-maximized-undecorated)

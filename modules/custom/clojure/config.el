@@ -71,7 +71,9 @@
         ;; to start up, you either wait for a minute doing nothing or be
         ;; prepared for your cursor to suddenly change buffers without warning.
         ;; See https://github.com/clojure-emacs/cider/issues/1872
-        cider-repl-pop-to-buffer-on-connect 'display-only)
+        cider-repl-pop-to-buffer-on-connect 'display-only
+
+        cider-test-show-report-on-success t)
 
   (setq
    clojure-enable-fancify-symbols nil
@@ -94,6 +96,9 @@
          "C-c C-f" nil
          "C-c r" nil
          "C-c C-n" #'clj-edit-ns-header))
+
+  (map! :map cider-popup-buffer-mode-map
+        :n "q" #'cider-popup-buffer-quit-function)
 
   (add-to-list
    'display-buffer-alist
@@ -127,15 +132,7 @@
     (add-hook! 'edit-indirect-before-commit-hook
       (defun clj-sort-ns-after-edit-ns-header ()
         (when (string-match-p "clojure" (format "%s" major-mode))
-          (clojure-sort-ns))))
-    (add-hook! 'edit-indirect-after-commit-functions
-      ;; for whatever reason, edit-indirect leaves an empty line after editing ns header,
-      ;; let's remove it
-      (defun clj-after-commit-edit-ns-header (beg end)
-        (when (string-match-p "clojure" (format "%s" major-mode))
-         (save-mark-and-excursion
-           (goto-char end)
-           (delete-region (line-beginning-position) (+ 1 (line-end-position))))))))
+          (clojure-sort-ns)))))
 
   (map! (:localleader
          (:map (clojure-mode-map clojurescript-mode-map)

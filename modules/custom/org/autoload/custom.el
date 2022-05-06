@@ -62,6 +62,7 @@ duplicating links around the context.  If a node has 'collides_with:' property,
 inserting a link to that node would remove any links to nodes with IDs contained
 in that prop."
   (interactive)
+  (require 'a)
   (unwind-protect
       (atomic-change-group
         (let* (region-text

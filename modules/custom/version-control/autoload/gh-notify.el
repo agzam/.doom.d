@@ -3,7 +3,7 @@
 (defun gh-notify-notification-read-p (&optional notification)
   (when-let ((obj (gh-notify-notification-forge-obj
                    (or notification
-                    (gh-notify-current-notification)))))
+                       (gh-notify-current-notification)))))
     (not (oref obj unread-p))))
 
 ;;;###autoload
@@ -11,12 +11,19 @@
   "Marks notification and moves either up or down, depending on the status of next notification."
   (interactive)
   (let* ((notification (gh-notify-current-notification))
-         (_ (gh-notify-mark-notification-read notification))
-         (next-read-p (progn
-                        (forward-line)
-                        (gh-notify-notification-read-p))))
-    (when next-read-p
-      (forward-line -2))))
+         (gh-notify-redraw-on-visit nil)
+         (_ (gh-notify-mark-notification-read notification)))
+    (setf (cl-struct-slot-value
+           'gh-notify-notification
+           'unread notification) nil)
+    (with-current-buffer (current-buffer)
+      (read-only-mode -1)
+      (delete-line)
+      (insert (funcall 'gh-notify-render-notification notification))
+      (insert "\n")
+      (read-only-mode +1)))
+  (when (gh-notify-notification-read-p)
+    (forward-line -2)))
 
 ;;;###autoload
 (defun gh-notify-code-review-forge-pr-at-point ()

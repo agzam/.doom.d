@@ -5,3 +5,5 @@
 (package! yaml-imenu)
 
 (package! jinja2-mode)
+
+(package! highlight-indent-guides)

@@ -2,7 +2,7 @@
 
 ;;;###autoload
 (defun init-bug-reference-mode-settings ()
-  (setq bug-reference-bug-regexp "\\(\\b\\(PR \\|[Bb]ug \\|[Ii]ssue \\|\\)\\([A-z]+\\)\\/\\([A-z]+\\)#\\([0-9]+\\)\\)")
+  (setq bug-reference-bug-regexp "\\(\\b\\(PR \\|[Bb]ug \\|[Ii]ssue \\|\\)\\([A-z]+\\)\\/\\([A-z -]+\\)#\\([0-9]+\\)\\)")
   (setq bug-reference-url-format #'bug-reference-url-format-fn))
 
 ;;;###autoload

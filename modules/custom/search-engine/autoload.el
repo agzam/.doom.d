@@ -4,11 +4,12 @@
     '(("clojurescript" . "Clojure")
       ("clojure" . "Clojure")
       ("clojurec" . "Clojure")
-      ("emacs-lisp" . "Emacs Lisp"))
+      ("emacs-lisp" . "Emacs Lisp")
+      ("lisp-data" . "Emacs Lisp")
+      ("js" . "JavaScript"))
     "Associates current mode with a language in Github terms"
     :type 'alist
     :group 'engine)
-
 
 ;;;###autoload (autoload 'engine/search-github-with-lang "custom/search-engine/autoload" nil t)
 (defun engine/search-github-with-lang ()

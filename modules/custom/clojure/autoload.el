@@ -218,5 +218,9 @@ convert from JSON."
      (let ((buf (edit-indirect-region (region-beginning) (region-end) :display-buffer)))
        (with-current-buffer buf
          (use-local-map cider-mode-map)
+         (search-backward ":require")
+         (sp-end-of-sexp)
+         (newline-and-indent)
+         (evil-insert)
          (keymap-local-set "C-c C-k" #'edit-indirect-abort)
          (keymap-local-set "C-c C-c" #'edit-indirect-commit))))))
