@@ -63,10 +63,12 @@
        "=" #'sp-reindent
        "W" #'sp-unwrap-sexp
        "b" #'sp-forward-barf-sexp
+       "B" #'sp-backward-barf-sexp
        "c" #'sp-convolute-sexp
        "dx" #'sp-kill-sexp
        "r" #'sp-raise-sexp
        "s" #'sp-forward-slurp-sexp
+       "S" #'sp-backward-slurp-sexp
        "t" #'sp-transpose-sexp
        "w" #'sp-wrap-sexp
        "y" #'sp-copy-sexp)

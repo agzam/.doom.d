@@ -30,7 +30,29 @@
   (pdf-tools-install-noverify)
 
   ;; For consistency with other special modes
-  (map! :map pdf-view-mode-map :gn "q" #'kill-current-buffer)
+  (map! :map pdf-view-mode-map
+        :gn "q" #'kill-current-buffer
+        :n "J" #'pdf-view-next-page
+        :n "K" #'pdf-view-previous-page
+        :n "gg" #'pdf-view-first-page
+        :n "G"  #'pdf-view-last-page
+        :n "[" #'pdf-history-backward
+        :n "]" #'pdf-history-forward
+        :n "o" #'pdf-outline
+        :localleader
+        "n" #'pdf-view-midnight-minor-mode
+        (:prefix ("s" . "slice")
+         "b" #'pdf-view-set-slice-from-bounding-box
+         "m" #'pdf-view-set-slice-using-mouse
+         "r" #'pdf-view-reset-slice)
+        (:prefix ("f" . "fit")
+         "h" #'pdf-view-fit-height-to-window
+         "p" #'pdf-view-fit-page-to-window
+         "w" #'pdf-view-fit-width-to-window)
+        (:prefix ("z" . "zoom")
+         "k" #'pdf-view-enlarge
+         "j" #'pdf-view-shrink
+         "0" #'pdf-view-scale-reset))
 
   (setq-default pdf-view-display-size 'fit-page)
   ;; Enable hiDPI support, but at the cost of memory! See politza/pdf-tools#51

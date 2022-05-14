@@ -47,9 +47,11 @@
 (package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")))
 
 (package! ob-async)
-(package! org-edit-indirect :recipe (:host github :repo "agzam/org-edit-indirect.el"))
+(package! org-edit-indirect)
 
-(package! ob-restclient)
+;; (package! ob-restclient)
+(package! ob-http)
+(package! ox-gfm)
 
 (package! consult-org-roam
   :recipe (:host github

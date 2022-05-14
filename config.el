@@ -138,7 +138,7 @@
 (defalias 'elisp-mode 'emacs-lisp-mode)
 
 ;; disable global-hl-line
-;; oddly that's the way: github.com/hlissner/doom-emacs/issues/4206
+;; oddly, that's the way: https://github.com/hlissner/doom-emacs/issues/4206
 (remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
 
 ;; needed additional binding, because can't emit backslash from Hammerspoon

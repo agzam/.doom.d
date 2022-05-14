@@ -267,8 +267,8 @@
             :i Cright (cmds! (org-at-table-p) #'org-table-next-field
                              #'recenter-top-bottom)
             :i Cleft  (cmds! (org-at-table-p) #'org-table-previous-field)
-            :i Cup    (cmds! (org-at-table-p) #'+org/table-previous-row
-                             #'org-up-element)
+            ;; :i Cup    (cmds! (org-at-table-p) #'+org/table-previous-row
+            ;;                  #'org-up-element)
             :i Cdown  (cmds! (org-at-table-p) #'org-table-next-row
                              #'org-down-element)
             :ni CSright   #'org-shiftright
@@ -339,7 +339,7 @@
                                           (?- . ?•))))
 
 (use-package! org-edit-indirect
-  :after org
+  :hook (org-mode . org-edit-indirect-mode)
   :config
   (setq edit-indirect-guess-mode-function #'edit-indirect-guess-mode-fn+))
 

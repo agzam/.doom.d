@@ -13,6 +13,8 @@
   ;;   "g" nil
   ;;   "G" nil)
 
+  (define-key edebug-mode-map "v" nil)
+
   ;; FIXME: Seems like other minor modes will readily clash with `edebug'.
   ;; `lispyville' and `edebug' 's' key?
   (evil-define-key 'normal edebug-mode-map
