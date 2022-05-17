@@ -37,3 +37,19 @@
          0.3 nil
          #'code-review-forge-pr-at-point))
     (message "Not a Pull-Request")))
+
+;;;###autoload
+(defun gh-notify-forge-browse-topic-at-point ()
+  "Browse topic straight from the notifications list."
+  (interactive)
+  (browse-url
+   ;; notification url usually points to api, e.g.:
+   ;; https://api.github.com/repos/advthreat/tenzin/pulls/2030,
+   ;;
+   ;; we need to make it look like: https://github.com/advthreat/tenzin/pulls/2030
+   (replace-regexp-in-string
+    "\\(pull\\)s" "\\1"
+    (replace-regexp-in-string
+     "api\\.\\|repos/" ""
+     (gh-notify-notification-url
+      (gh-notify-current-notification))))))

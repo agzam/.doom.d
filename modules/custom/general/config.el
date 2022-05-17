@@ -105,6 +105,7 @@
 
       (:prefix ("w" . "windows")
        "." #'window-transient
+       "c" #'window-cleanup+
        "g" #'golden-ratio
        "D" #'ace-delete-window
        "M" #'ace-swap-window
