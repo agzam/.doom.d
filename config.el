@@ -146,3 +146,7 @@
 
 (after! evil
   (setq evil-jumps-cross-buffers nil))
+(after! flycheck
+  (define-key flycheck-mode-map flycheck-keymap-prefix nil)
+  (setq flycheck-keymap-prefix nil)
+  (map! :leader "!" flycheck-command-map))

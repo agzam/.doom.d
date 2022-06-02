@@ -80,10 +80,7 @@
          (:prefix ("t" . "toggle")
           "l" #'org-toggle-link-display)))
 
-  (add-hook! 'org-mode-hook
-             #'org-indent-mode
-             (defun flycheck-mode-off ()
-               (flycheck-mode -1)))
+  (add-hook! 'org-mode-hook #'org-indent-mode)
   (add-hook! 'org-capture-mode-hook #'recenter)
 
   (setq org-export-with-smart-quotes t
