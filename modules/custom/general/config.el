@@ -257,7 +257,25 @@
          "l" (embark-split-action xref-find-definitions +evil/window-vsplit-and-follow)
          "h" (embark-split-action xref-find-definitions split-window-horizontally)
          "k" (embark-split-action xref-find-definitions split-window-vertically)
-         "a" (embark-ace-action xref-find-definitions))))
+         "a" (embark-ace-action xref-find-definitions)))
+
+  ;; for embark-export to grep
+  (map! :map grep-mode-map
+        :n "[" #'compilation-previous-file
+        :n "]" #'compilation-next-file)
+
+  (add-hook! 'embark-collect-mode-hook
+    (defun visual-line-mode-off-h ()
+      (visual-line-mode -1)))
+
+  (map! :map embark-collect-mode-map
+        :n "[" #'embark-previous-symbol
+        :n "]" #'embark-next-symbol)
+
+  (defadvice! embark-prev-next-recenter-a ()
+    :after #'embark-previous-symbol
+    :after #'embark-next-symbol
+    (recenter)))
 
 (use-package! info+
   :after info

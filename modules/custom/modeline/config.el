@@ -21,6 +21,7 @@
         doom-modeline-major-mode-icon nil
         doom-modeline-modal-icon nil
         doom-modeline-mu4e nil
+        mode-line-compact t
         inhibit-compacting-font-caches t
         doom-modeline-height 1)
   (setf doom-modeline-bar-width (or left-fringe-width 6))

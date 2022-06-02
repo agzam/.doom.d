@@ -145,7 +145,21 @@
 (map! "C-<f12>" #'toggle-input-method)
 
 (after! evil
-  (setq evil-jumps-cross-buffers nil))
+  (setq evil-jumps-cross-buffers t))
+
+(after! better-jumper
+  (setq better-jumper-context 'window))
+
+(after! time
+  (setq world-clock-list
+        '(("America/Los_Angeles" "Pacific")
+          ("America/Chicago" "Central")
+          ("America/New_York" "Eastern")
+          ("Europe/Paris" "Paris")
+          ("Europe/Kiev" "Kiev")
+          ("Europe/Moscow" "Moscow")
+          ("Asia/Tashkent" "Tashkent"))))
+
 (after! flycheck
   (define-key flycheck-mode-map flycheck-keymap-prefix nil)
   (setq flycheck-keymap-prefix nil)

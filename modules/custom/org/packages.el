@@ -40,14 +40,14 @@
 (package! orgit)
 (package! orgit-forge)
 (package! org-download)
-(package! org-appear)
+(package! org-appear :recipe (:host github :repo "awth13/org-appear"))
 (package! org-superstar)
 
 (package! org-roam :recipe (:host github :repo "org-roam/org-roam" :files ("*.el" "extensions")))
 (package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")))
 
 (package! ob-async)
-(package! org-edit-indirect)
+(package! org-edit-indirect :recipe (:host github :repo "agzam/org-edit-indirect.el"))
 
 ;; (package! ob-restclient)
 (package! ob-http)
@@ -56,3 +56,5 @@
 (package! consult-org-roam
   :recipe (:host github
            :repo "jgru/consult-org-roam"))
+
+(package! org-pomodoro)

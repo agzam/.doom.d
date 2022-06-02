@@ -43,7 +43,7 @@
          "h" #'lsp-describe-thing-at-point)
         (:prefix ("t". "toggle")
          "h" #'lsp--document-highlight
-         "l" #'lsp-lens-mode)
+         "L" #'lsp-lens-mode)
         (:prefix ("x" . "text/code")
          "l" #'lsp-lens-show
          "L" #'lsp-lens-hide))

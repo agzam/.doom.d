@@ -349,3 +349,10 @@
   :after org
   :config
   (setq org-export-with-toc nil))
+
+(use-package! org-pomodoro
+  :after org
+  :config
+  (map! "C-x p p" #'org-pomodoro)
+  (setq org-pomodoro-start-sound-p t
+        org-pomodoro-killed-sound-p t))

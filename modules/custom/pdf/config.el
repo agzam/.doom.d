@@ -41,10 +41,11 @@
         :n "o" #'pdf-outline
         :localleader
         "n" #'pdf-view-midnight-minor-mode
-        (:prefix ("s" . "slice")
+        (:prefix ("s" . "slice/scroll")
          "b" #'pdf-view-set-slice-from-bounding-box
          "m" #'pdf-view-set-slice-using-mouse
-         "r" #'pdf-view-reset-slice)
+         "r" #'pdf-view-reset-slice
+         "s" #'pdf-view-roll-minor-mode)
         (:prefix ("f" . "fit")
          "h" #'pdf-view-fit-height-to-window
          "p" #'pdf-view-fit-page-to-window
