@@ -113,7 +113,7 @@
 
   (setq dired-use-ls-dired t
         dired-dwim-target t
-        dired-kill-when-opening-new-dired-buffer t
+        dired-kill-when-opening-new-dired-buffer nil
         dired-do-revert-buffer t)
 
   (put 'dired-find-alternate-file 'disabled nil)

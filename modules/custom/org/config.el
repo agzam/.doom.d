@@ -355,4 +355,6 @@
   :config
   (map! "C-x p p" #'org-pomodoro)
   (setq org-pomodoro-start-sound-p t
-        org-pomodoro-killed-sound-p t))
+        org-pomodoro-killed-sound-p t
+        org-pomodoro-start-sound "~/.doom.d/modules/custom/org/pomodoro__race-start.mp3"
+        org-pomodoro-short-break-sound "~/.doom.d/modules/custom/org/pomodoro__break-over.mp3"))

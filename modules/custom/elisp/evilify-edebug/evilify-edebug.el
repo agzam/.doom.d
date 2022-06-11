@@ -19,6 +19,7 @@
   ;; `lispyville' and `edebug' 's' key?
   (evil-define-key 'normal edebug-mode-map
     ;; control
+    "v" nil
     "s" 'edebug-step-mode
     "\C-n" 'edebug-next-mode
     "go" 'edebug-go-mode

@@ -54,10 +54,6 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
-(use-package! fennel-mode
-  :mode "\\.fnl$"
-  :defer t)
-
 (setq-default
  line-spacing 6
  garbage-collection-messages nil
@@ -118,10 +114,10 @@
       (init-visual-line-keys)
       (global-visual-line-mode +1)
       (fringe-mode '(6 . 0))
-      ;; (run-with-timer
-      ;;  "1.5 sec" nil
-      ;;  #'center-frame-horizontally nil 85)
-       )))
+      (toggle-frame-full-height)
+      (run-with-timer
+       1 nil
+       #'place-frame-at-display-spot '(0 0 0.664 1.0)))))
 
 (after! custom
   ;; in customize dialogs keep the elisp names
@@ -164,3 +160,8 @@
   (define-key flycheck-mode-map flycheck-keymap-prefix nil)
   (setq flycheck-keymap-prefix nil)
   (map! :leader "!" flycheck-command-map))
+
+(after! helpful
+  (map! :map helpful-mode-map
+        :n "q" #'kill-buffer-and-window))
+

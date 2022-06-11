@@ -252,3 +252,7 @@
   :commands neil-find-clojure-package
   :config
   (setq neil-prompt-for-version-p nil))
+
+(use-package! fennel-mode
+  :mode "\\.fnl$"
+  :defer t)
