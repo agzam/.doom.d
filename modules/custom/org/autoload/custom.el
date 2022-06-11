@@ -22,12 +22,27 @@ Org-link text to the node."
     (format "#+begin_quote\n%s\n#+end_quote" selection)))
 
 ;;;###autoload
+(defun org-roam-get-current-capture-buffer ()
+  "Finds current capture buffer based on `org-capture-plist'"
+  (let* ((fname (lambda (ptrn-str)
+                  (replace-regexp-in-string
+                   "%<.*>" (lambda (s)
+                             (format-time-string
+                              (replace-regexp-in-string "%<\\|>" "" s)))
+                   ptrn-str)))
+         (buf (or (org-capture-get :buffer)
+                  (find-file-noselect
+                   (funcall fname (cadr (plist-get (org-capture-get :org-roam) :if-new)))
+                   :no-warn))))
+    buf))
+
+;;;###autoload
 (defun org-roam-capture-dailies--set-node-props (node-link)
   "It's to be used with org-roam-capture and specifically for
 dailies. When called from a capture template it inserts title and
 id, then finds the datetree entry and inserts link to a
 NODE-LINK  - which is title or id or a node."
-  (when-let* ((buf (org-capture-get :buffer)))
+  (when-let* ((buf (org-roam-get-current-capture-buffer)))
     (with-current-buffer buf
       (save-excursion
         (goto-char (point-min))

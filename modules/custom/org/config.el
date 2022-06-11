@@ -189,6 +189,18 @@
            :jump-to-captured t
            :unnarrowed t)))
 
+  ;; I like to keep dailies 'a file/per month' with a datetree. Org-roam automatically
+  ;; generates IDs per each day, and I don't need that. A day heading by itself doesn't
+  ;; carry a meaningful context for me. A context to which I have to extend a relation. I
+  ;; skip the automatic ID creation by hijacking #'org-roam-capture--setup-target-location
+  (defadvice! org-capture-set-target-location-a (fn &rest args)
+    :around #'org-capture-set-target-location
+    (cl-letf (((symbol-function 'org-entry-put)
+               (lambda (pom prop  &rest params)
+                 (unless (string= prop "ID")
+                   (apply #'org-entry-put pom prop params)))))
+      (apply fn args)))
+
   (org-roam-db-autosync-mode +1)
 
   (add-to-list
