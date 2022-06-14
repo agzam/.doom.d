@@ -87,8 +87,18 @@
   (setq
    which-key-use-C-h-commands t
    which-key-show-early-on-C-h t
-   which-key-idle-delay 1.0
+   which-key-idle-delay 0.5
    which-key-idle-secondary-delay 0.2)
+
+  ;; replace 'evil-' in which-key HUD with a tiny triangle
+  ;; borrowed from https://tecosaur.github.io/emacs-config/config.html
+  (setq which-key-allow-multiple-replacements t)
+  (after! which-key
+    (pushnew!
+     which-key-replacement-alist
+     '(("" . "\\`+?evil[-:]?\\(?:a-\\)?\\(.*\\)") . (nil . "◂\\1"))
+     '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))))
+
   (which-key-mode))
 
 (after! company
@@ -115,8 +125,9 @@
       (global-visual-line-mode +1)
       (fringe-mode '(6 . 0))
       (toggle-frame-full-height)
+      (pixel-scroll-precision-mode +1)
       (run-with-timer
-       1 nil
+       1.2 nil
        #'place-frame-at-display-spot '(0 0 0.664 1.0)))))
 
 (after! custom
@@ -141,7 +152,8 @@
 (map! "C-<f12>" #'toggle-input-method)
 
 (after! evil
-  (setq evil-jumps-cross-buffers t))
+  (setq evil-jumps-cross-buffers t
+        evil-move-cursor-back nil))
 
 (after! better-jumper
   (setq better-jumper-context 'window))

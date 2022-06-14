@@ -221,7 +221,12 @@
     (defun vertico-grid-mode-off ()
       (vertico-grid-mode -1))))
 
-(use-package! vertico-buffer :after vertico)
+(use-package! vertico-buffer
+  :after vertico
+  :config
+  (add-hook! 'vertico-buffer-mode-hook
+    (defun vertico-buffer-h ()
+      (vertico-posframe-mode (if vertico-buffer-mode -1 +1)))))
 
 (after! vertico
   (map! :map vertico-map
@@ -233,7 +238,20 @@
   (map! :map minibuffer-local-map "C-c C-s" #'embark-collect)
 
   (map! :map minibuffer-mode-map
-        "~" #'vertico-jump-to-home-dir-on~))
+        "~" #'vertico-jump-to-home-dir-on~)
+
+  (setq completion-ignore-case t
+        read-buffer-completion-ignore-case t)
+
+  ;; Prefix current candidate with arrow
+  (advice-add #'vertico--format-candidate :around
+              (lambda (orig cand prefix suffix index _start)
+                (setq cand (funcall orig cand prefix suffix index _start))
+                (concat
+                 (if (= vertico--index index)
+                     (propertize "» " 'face 'vertico-current)
+                   "  ")
+                 cand))))
 
 (after! embark
   (setq embark-cycle-key (kbd "C-;"))
@@ -337,8 +355,10 @@
                  :unless '(:rem sp-point-before-same-p)))
 
 (after! expand-region
+  (global-subword-mode +1)
   (setq expand-region-contract-fast-key "V"
-        expand-region-reset-fast-key "r"))
+        expand-region-reset-fast-key "r"
+        expand-region-subword-enabled t))
 
 (after! ibuf-ext
   (setq

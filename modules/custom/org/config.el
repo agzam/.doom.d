@@ -65,6 +65,7 @@
           "i" #'org-roam-node-insert+
           "l" #'org-roam-buffer-toggle
           "w" #'org-roam-toggle-ui-xwidget
+          "W" (cmd! () (browse-url (concat "http://localhost:" (number-to-string org-roam-ui-port))))
           "f" #'org-roam-node-find
           "d" #'org-roam-dailies-find-date
           (:prefix ("r" . "refile")
