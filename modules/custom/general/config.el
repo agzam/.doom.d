@@ -9,7 +9,9 @@
       :v "s" #'evil-surround-region
       "s-b" #'consult-buffer
       "s-=" #'text-scale-increase
-      "s--" #'text-scale-decrease)
+      "s--" #'text-scale-decrease
+      :n "] p" (cmd! () (evil-forward-paragraph) (recenter))
+      :n "[ p" (cmd! () (evil-backward-paragraph) (recenter)))
 
 (put 'narrow-to-region 'disabled nil)
 
@@ -276,11 +278,6 @@
          "h" (embark-split-action xref-find-definitions split-window-horizontally)
          "k" (embark-split-action xref-find-definitions split-window-vertically)
          "a" (embark-ace-action xref-find-definitions)))
-
-  ;; for embark-export to grep
-  (map! :map grep-mode-map
-        :n "[" #'compilation-previous-file
-        :n "]" #'compilation-next-file)
 
   (add-hook! 'embark-collect-mode-hook
     (defun visual-line-mode-off-h ()

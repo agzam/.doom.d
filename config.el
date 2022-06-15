@@ -177,3 +177,12 @@
   (map! :map helpful-mode-map
         :n "q" #'kill-buffer-and-window))
 
+(after! grep
+  (map! :map grep-mode-map
+        :n "q" #'kill-buffer-and-window
+        :n "[" #'compilation-previous-file
+        :n "]" #'compilation-next-file
+        (:localleader
+         "f" #'next-error-follow-minor-mode))
+
+  (add-hook! 'grep-mode-hook #'next-error-follow-minor-mode))
