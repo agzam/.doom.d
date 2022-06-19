@@ -363,4 +363,9 @@ ensure it is built when we actually use Forge."
         "," #'code-review-transient-api))
 
 (after! bug-reference
-  (add-hook! 'bug-reference-mode-hook #'init-bug-reference-mode-settings))
+  (map! :map bug-reference-map
+        "C-c C-o" #'bug-reference-push-button)
+
+  (add-hook! 'bug-reference-mode-hook #'init-bug-reference-mode-settings)
+
+  (add-hook! 'org-mode-hook #'bug-reference-mode))

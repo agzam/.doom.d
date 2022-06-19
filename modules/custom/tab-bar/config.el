@@ -15,6 +15,14 @@
 
   (map! :leader "l" #'tab-bar-transient)
 
-  (add-hook! 'tab-bar-mode-hook #'reset-frame-full-height))
+  (add-hook! 'tab-bar-mode-hook #'reset-frame-full-height)
+
+  ;; tabs sometimes dissappear from the frame
+  ;; I need to make sure they are on when tab switching
+  (defadvice! tab-bar-switch-a (&optional arg)
+    :before #'tab-bar-switch-to-prev-tab
+    :before #'tab-bar-switch-to-next-tab
+    :before #'tab-bar-transient
+    (set-frame-parameter nil 'tab-bar-lines 1)))
 
 ;; (add-hook! 'tab-bar-tab-added-hook #'tab-bar-created-h)

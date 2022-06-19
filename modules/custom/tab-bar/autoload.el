@@ -59,6 +59,7 @@
    [("t" "new tab" +tab-bar-add-new-tab)
     ("n" "new tab" +tab-bar-add-new-tab)
     ("d" "kill tab" +tab-bar-kill-tab)
+    ("D" "Duplicate" +tab-bar-duplicate-tab)
     ("r" "rename" +tab-bar-rename-tab)
     ("l" "select" tab-bar-select-tab-by-name)]]
   [:hide always ,@(seq-map
@@ -131,6 +132,12 @@
   (tab-bar-close-tab)
   (run-with-timer "0.3 sec" nil #'+tab-bar-rename-dups)
   (run-hooks 'tab-bar-tab-removed-hook))
+
+;;;###autoload
+(defun +tab-bar-duplicate-tab ()
+  (interactive)
+  (tab-bar-duplicate-tab)
+  (+tab-bar-rename-dups))
 
 ;;;###autoload
 (defun +tab-bar-rename-tab ()
