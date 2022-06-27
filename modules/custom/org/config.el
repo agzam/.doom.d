@@ -64,8 +64,8 @@
          (:prefix ("r" . "roam")
           "i" #'org-roam-node-insert+
           "l" #'org-roam-buffer-toggle
-          "w" #'org-roam-toggle-ui-xwidget
-          "W" (cmd! () (browse-url (concat "http://localhost:" (number-to-string org-roam-ui-port))))
+          :desc "org-roam-ui in xwidget" "w" #'org-roam-toggle-ui-xwidget
+          :desc "org-roam-ui in browser" "W" (cmd! () (browse-url (concat "http://localhost:" (number-to-string org-roam-ui-port))))
           "f" #'org-roam-node-find
           "d" #'org-roam-dailies-find-date
           (:prefix ("r" . "refile")
@@ -370,4 +370,13 @@
   (setq org-pomodoro-start-sound-p t
         org-pomodoro-killed-sound-p t
         org-pomodoro-start-sound "~/.doom.d/modules/custom/org/pomodoro__race-start.mp3"
-        org-pomodoro-short-break-sound "~/.doom.d/modules/custom/org/pomodoro__break-over.mp3"))
+        org-pomodoro-short-break-sound "~/.doom.d/modules/custom/org/pomodoro__break-over.mp3")
+
+  (add-hook! '(org-clock-in-hook
+               org-clock-out-hook
+               org-pomodoro-break-finished-hook
+               org-pomodoro-started-hook
+               org-pomodoro-killed-hook
+               org-pomodoro-finished-hook)
+             #'menu-bar-item-set-clock-or-pomodoro))
+

@@ -222,7 +222,7 @@
           "c" #'cider-repl-clear-buffer
           (:prefix ("k" . "kill")
            "s" #'kill-cider-buffers)
-          (:prefix "s"
+          (:prefix ("s" . "repl")
            "s" #'cider-switch-to-last-clojure-buffer
            "S" #'cider-switch-to-nrepl-buffer
            "l" #'cider-clear-repl-buffers

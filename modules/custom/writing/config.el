@@ -1,6 +1,6 @@
 ;;; custom/writing/config.el -*- lexical-binding: t; -*-
 (map! :leader
-      :prefix "x"
+      :prefix ("x" . "text")
       (:prefix ("l" . "language")
        "d" #'define-it-at-point
        "g" #'lsp-grammarly-check-grammar

@@ -10,7 +10,7 @@
 
 (use-package! circadian
   :defer t
-  :hook (doom-init-ui . circadian-setup)
+  :hook (window-setup . circadian-setup)
   :config
   (setq
    ;; North of TX

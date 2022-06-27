@@ -10,8 +10,7 @@
 (use-package! let-plist)
 
 (use-package! evilify-edebug
-  :after edebug
-  :commands (edebug)
+  :defer t
   :config
   (evilify-edebug-setup))
 

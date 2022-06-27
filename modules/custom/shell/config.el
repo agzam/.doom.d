@@ -31,3 +31,6 @@
   :defer t
   :config
   (setq shell-pop-window-position "bottom"))
+
+(use-package! vimrc-mode
+  :mode "\\.vim\\(rc\\)?\\'")

@@ -50,10 +50,11 @@
        "dd" nil ; muscle memory is still strong
        "f" #'helpful-function
        "h" #'helpful-symbol
-       "p" nil (:prefix ("p" . "packages")
-                "l" #'list-packages
-                "f" #'find-library-other-window
-                "d" #'describe-package)
+       "p" nil
+       (:prefix ("p" . "packages")
+        "l" #'list-packages
+        "f" #'find-library-other-window
+        "d" #'describe-package)
        "s" #'find-function-other-window
        "v" #'helpful-variable)
 
@@ -86,7 +87,7 @@
       (:prefix ("o" . "open/Org")
        :desc "store link"      "l" #'org-store-link
        :desc "link without id" "L" #'org-store-link-id-optional
-       (:prefix "g"
+       (:prefix ("g" . "git")
         "h" #'gh-notify))
 
       (:prefix ("p" . "projects")
