@@ -186,6 +186,19 @@
   (vertico-posframe-mode +1)
   (map! :map vertico-map "C-c C-p"  #'vertico-posframe-briefly-off)
 
+  ;; disable and restore posframe when emacslient connects in terminal
+  (add-hook! 'after-make-frame-functions
+    (defun disable-vertico-posframe-in-term-h (frame)
+      (when (and (not (display-graphic-p frame))
+                 (bound-and-true-p vertico-posframe-mode))
+        (vertico-posframe-mode -1)
+        (setq vertico-posframe-restore-after-term-p t))))
+
+  (add-hook! 'delete-frame-functions
+    (defun restore-vertico-posframe-after-term-h (frame)
+      (when (bound-and-true-p vertico-posframe-restore-after-term-p)
+        (vertico-posframe-mode +1))))
+
   ;; fixing "Doesn't properly respond to C-n"
   ;; https://github.com/tumashu/vertico-posframe/issues/11
   (defadvice! vertico-posframe--display-no-evil (fn _lines)
