@@ -13,3 +13,5 @@
 (package! winum)
 (package! info+)
 (package! hydra)
+
+(package! expand-region)

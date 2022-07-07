@@ -37,9 +37,9 @@
     (set-eval-handler! '(clojure-mode clojurescript-mode) #'cider-eval-region))
 
   :config
-  (set-lookup-handlers! '(cider-mode cider-repl-mode)
+  (set-lookup-handlers! '(clojure-mode cider-mode cider-repl-mode)
     :definition #'+clojure-cider-lookup-definition
-    :documentation #'cider-doc)
+    :documentation #'cider-clojuredocs)
 
   (set-popup-rules!
    '(("^\\*cider-error*" :ignore t)

@@ -34,11 +34,12 @@
        "s-d" #'spacemacs/kill-matching-buffers-rudely)
 
       (:prefix ("f" . "files")
-       "ad" (cmd! (fasd-find-file 1))
+       :desc "fasd dir" "ad" (cmd! (fasd-find-file 1))
+       :desc "fasd file" "af" (cmd! (fasd-find-file -1))
        "e" nil ;; release it, or it complains
        (:prefix ("e" . "doom/emacs")
         "d" #'doom/goto-private-config-file
-        :desc "doom init dir" "i" (lambda () (interactive) (dired doom-emacs-dir))))
+        :desc "doom init dir" "i" (cmd! () (dired doom-emacs-dir))))
 
       (:prefix ("g" . "goto")
        "f" #'magit-file-dispatch
@@ -365,7 +366,9 @@
                  :wrap ")"
                  :unless '(:rem sp-point-before-same-p)))
 
-(after! expand-region
+(use-package! expand-region
+  :commands (er/contract-region er/mark-symbol er/mark-word)
+  :config
   (global-subword-mode +1)
   (setq expand-region-contract-fast-key "V"
         expand-region-reset-fast-key "r"

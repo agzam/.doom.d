@@ -2,16 +2,67 @@
 
 ;;;###autoload
 (defun spacehammer-edit-with-emacs-h (buffer-name pid title)
-  (select-frame-by-name "edit")
   (with-current-buffer (get-buffer buffer-name)
-    (set-frame-parameter nil 'fullscreen nil)
     ;; need to set a filename, otherwise lsp in that buffer won't work
     (set-visited-file-name (format "/tmp/%s_%s_%s" buffer-name pid title))
     (set-buffer-modified-p nil)
     (markdown-mode)
+    (setq-local spacehammer--caller-pid pid)
     (evil-insert +1)))
 
 ;;;###autoload
-(defun spacehammer-before-finish-edit-with-emacs (bufname pid)
+(defun spacehammer-before-finish-edit-with-emacs-h (bufname pid)
   (with-current-buffer bufname
     (set-buffer-modified-p nil)))
+
+;;;###autoload
+(defun spacehammer--hs-eval-fennel (fennel-form)
+  "Evaluates given Fennel form in Hammerspoon IPC.
+See https://www.hammerspoon.org/docs/hs.ipc.html for more."
+  (unless (eq system-type 'darwin)
+    (user-error "This function works only in OSX!"))
+  (unless (executable-find "hs")
+    (user-error "Hammerspoon IPC executable - 'hs' cmd util not found."))
+  (let ((fennel-form* (replace-regexp-in-string
+                       "\"" "\\\\\""
+                       (format "%S" fennel-form))))
+    (process-lines
+     (executable-find "hs")
+     "-c"
+     (concat
+      "local fennel = require(\"fennel\");"
+      "print(fennel.eval(\""
+      fennel-form* "\"))"))))
+
+;;;###autoload
+(defun menu-bar-item-set-clock-or-pomodoro ()
+  "Show org-clock-current-task or org-pomodoro state in OSX menubar item."
+  (when (eq system-type 'darwin)
+    (let* ((color (cond ((seq-contains '(:break :long-break :short-break)
+                                       org-pomodoro-state) 'green)
+                        ((or (eq :pomodoro org-pomodoro-state)
+                             org-clock-current-task) 'red)))
+           (icon (if (eq color 'green) "🟢" "🔴"))
+           (text (cond ((< 40 (length org-clock-current-task))
+                        (concat (seq-take org-clock-current-task 40) "..."))
+                       (org-clock-current-task org-clock-current-task)
+                       ((not (eq org-pomodoro-state :none))
+                        (substring (symbol-name org-pomodoro-state) 1))))
+           (full-txt (when text
+                       (substring-no-properties
+                        (concat
+                         icon " "
+                         (replace-regexp-in-string "\"" "'" text)))))
+           (fnl (cond
+                 ((null text)
+                  '(: gl_org_clock_menubar_item :setTitle ""))
+                 ((eq color 'green)
+                  `(: gl_org_clock_menubar_item :setTitle
+                    (hs.styledtext.new ,full-txt '{:color {:green 0.7 :blue 0.1}})))
+                 ((eq color 'red)
+                  `(: gl_org_clock_menubar_item :setTitle
+                    (hs.styledtext.new ,full-txt '{:color {:red 1}}))))))
+      ;; create menubar item object if none
+      (unless (ignore-errors (spacehammer--hs-eval-fennel 'gl_org_clock_menubar_item))
+        (spacehammer--hs-eval-fennel '(global gl_org_clock_menubar_item (hs.menubar.new))))
+      (spacehammer--hs-eval-fennel fnl))))

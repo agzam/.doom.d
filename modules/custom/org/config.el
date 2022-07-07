@@ -122,6 +122,7 @@
                          (backward-char)))
   (map! :map org-roam-mode-map
         "C-c i" #'org-roam-node-insert+
+        :n "q" #'quit-window
         (:prefix ("g" . "goto")
          "k" #'org-backward-element
          "j" #'org-forward-element)

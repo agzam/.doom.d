@@ -19,10 +19,12 @@
 
 (use-package! spacehammer
   :defer t
-  :commands spacehammer/edit-with-emacs
+  :commands spacehammer-edit-with-emacs
   :config
-  (add-hook! spacehammer/edit-with-emacs #'spacehammer-edit-with-emacs-h)
-  (add-hook! spacehammer/before-finish-edit-with-emacs #'spacehammer-before-finish-edit-with-emacs))
+  (add-hook! 'spacehammer-edit-with-emacs-hook
+             #'spacehammer-edit-with-emacs-h)
+  (add-hook! 'spacehammer-before-finish-edit-with-emacs-hook
+             #'spacehammer-before-finish-edit-with-emacs-h))
 
 (use-package! lsp-grammarly
   :defer t

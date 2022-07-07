@@ -17,7 +17,7 @@
 
   ;; FIXME: Seems like other minor modes will readily clash with `edebug'.
   ;; `lispyville' and `edebug' 's' key?
-  (evil-define-key 'normal edebug-mode-map
+  (map! :map edebug-mode-map
     ;; control
     "v" nil
     "s" 'edebug-step-mode
@@ -51,7 +51,7 @@
     ;; evaluation
     "r" 'edebug-previous-result
     "e" 'edebug-eval-expression
-    (kbd "C-x C-e") 'edebug-eval-last-sexp
+    "C-x C-e" 'edebug-eval-last-sexp
     "EL" 'edebug-visit-eval-list
 
     ;; views
@@ -70,14 +70,14 @@
     "=" 'edebug-temp-display-freq-count
 
     ;; GUD bindings
-    (kbd "C-c C-s") 'edebug-step-mode
-    (kbd "C-c C-n") 'edebug-next-mode
-    (kbd "C-c C-c") 'edebug-go-mode
+    "C-c C-s" 'edebug-step-mode
+    "C-c C-n" 'edebug-next-mode
+    "C-c C-c" 'edebug-go-mode
 
-    (kbd "C-x SPC") 'edebug-set-breakpoint
-    (kbd "C-c C-d") 'edebug-unset-breakpoint
-    (kbd "C-c C-t") (lambda () (interactive) (edebug-set-breakpoint t))
-    (kbd "C-c C-l") 'edebug-where))
+    "C-x SPC" 'edebug-set-breakpoint
+    "C-c C-d" 'edebug-unset-breakpoint
+    "C-c C-t" (lambda () (interactive) (edebug-set-breakpoint t))
+    "C-c C-l" 'edebug-where))
 
 (provide 'evilify-edebug)
 

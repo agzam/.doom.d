@@ -49,8 +49,28 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 
-(package! evil-snipe :disable t)
 (package! golden-ratio)
 (package! lorem-ipsum)
 
 (unpin! helpful)
+
+;; :editor evil module
+(package! evil-args :disable t)
+(package! evil-easymotion :disable t)
+(package! evil-exchange :disable t)
+(package! evil-embrace :disable t)
+(package! evil-indent-plus :disable t)
+(package! evil-lion :disable t)
+(package! evil-nerd-commenter :disable t)
+(package! evil-numbers :disable t)
+(package! evil-snipe :disable t)
+(package! evil-textobj-anyblock :disable t)
+(package! evil-visualstar :disable t)
+(package! exato :disable t)
+(package! evil-quick-diff :disable t)
+
+;; :tools eval module
+(package! quickrun :disable t)
+
+;; :config default module
+(package! drag-stuff :disable t)
