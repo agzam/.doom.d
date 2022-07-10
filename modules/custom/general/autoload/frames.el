@@ -96,12 +96,25 @@ it remains shown or hidden - whatever the previous value was."
   (set-frame-width nil (- (frame-width) (or delta 5))))
 
 ;;;###autoload
+(defun reduce-frame-height (&optional delta)
+  (interactive)
+  (when transient--window
+    (quit-restore-window transient--window))
+  (set-frame-height nil (- (frame-height) (or delta 1))))
+
+;;;###autoload
 (defun widen-frame-width (&optional delta)
   (interactive)
   (when transient--window
     (quit-restore-window transient--window))
   (set-frame-width nil (+ (frame-width) (or delta 5))))
 
+;;;###autoload
+(defun increase-frame-height (&optional delta)
+  (interactive)
+  (when transient--window
+    (quit-restore-window transient--window))
+  (set-frame-height nil (+ (frame-height) (or delta 1))))
 
 ;;;###autoload
 (defun place-frame-at-display-spot (specs &optional frame)
@@ -149,9 +162,11 @@ See: `(frame-position-display-spots)'  details."
    [("h" "full height" toggle-frame-full-height)
     ("c" "center frame horizontally" center-frame-horizontally)
     ("m" "maximize frame" toggle-frame-maximized-undecorated)
-    ("f" "full-screen" toggle-frame-fullscreen+)
-    ("H" "shrink frame" shrink-frame-width :transient t)
-    ("L" "widen frame" widen-frame-width :transient t)]]
+    ("f" "full-screen" toggle-frame-fullscreen+)]
+   [("H" "shrink frame" shrink-frame-width :transient t)
+    ("L" "widen frame" widen-frame-width :transient t)
+    ("J" "reduce frame height" reduce-frame-height :transient t)
+    ("K" "increase frame height" increase-frame-height :transient t)]]
   [:hide always ,@(seq-map-indexed
                    (lambda (elt idx)
                      `(,(number-to-string (+ 1 idx))
