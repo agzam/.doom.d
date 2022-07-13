@@ -308,9 +308,10 @@
     (recenter)))
 
 (use-package! info+
-  :after info
-  :config
+  :commands (info info-display-manual)
+  :init
   (map! :leader "hj" #'info-display-manual)
+  :config
   (setq Info-fontify-angle-bracketed-flag nil)
   (add-hook 'Info-mode-hook (lambda () (require 'info+))))
 

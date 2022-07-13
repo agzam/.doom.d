@@ -48,6 +48,7 @@ narrowed to."
 (defun toggle-visual-line-navigation ()
   (interactive)
   (visual-line-mode 'toggle)
+  (toggle-word-wrap)
   (init-visual-line-keys)
   (evil-normalize-keymaps))
 

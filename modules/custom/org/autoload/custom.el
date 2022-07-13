@@ -44,10 +44,15 @@ id, then finds the datetree entry and inserts link to a
 NODE-LINK  - which is title or id or a node."
   (when-let* ((buf (org-roam-get-current-capture-buffer)))
     (with-current-buffer buf
+      ;; insert ID (for new filenodes)
       (save-excursion
         (goto-char (point-min))
         (unless (org-entry-get (point) "ID")
-          (org-roam-add-property (org-id-new) "ID"))
+          (insert (format ":PROPERTIES:\n:ID:  %s\n:END:\n" (org-id-new)))))
+
+      ;; insert the title and link to the `NODE-LINK'
+      (save-excursion
+        (goto-char (point-min))
         (unless (search-forward "#+title:" nil :no-error)
           (goto-char (point-min))
           (search-forward ":END:" nil :no-error)
@@ -58,17 +63,14 @@ NODE-LINK  - which is title or id or a node."
                            (org-capture-get :default-time))
                           (org-capture-get :description)))
           (insert (org-roam--link-to node-link))))
-      (save-excursion
-        (pcase-let* ((`(,sec ,min ,hr ,day ,month ,year) (decode-time (org-capture-get :default-time)))
-                     (date (list month day year))
-                     (_ (org-datetree-find-date-create date :keep-restriction))
-                     (children? (unless (org-capture-get :new-buffer)
-                                  (< 0 (1- (length (save-excursion
-                                                     (org-map-entries nil nil 'tree)))))))
-                     (level (+ (org-current-level) 1)))
-          (let ((tree-limit (save-excursion (org-end-of-subtree) (point))))
-            (plist-put org-capture-plist :exact-position tree-limit)
-            (concat (make-string level ?*) " ")))))))
+
+      ;; always append stuff to the day in the daytree
+      ;; without this, it would create new heading at the top
+      (goto-char (org-element-property :begin (org-element-property :parent (org-element-at-point))))
+      (org-end-of-subtree)
+
+      ;; it needs to return a string
+      "")))
 
 ;;;###autoload
 (cl-defun org-roam-node-insert+ (&optional lines-before lines-after &key templates info)

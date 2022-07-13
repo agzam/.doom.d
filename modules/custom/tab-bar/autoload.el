@@ -1,7 +1,6 @@
 ;;; custom/tab-bar/autoload.el -*- lexical-binding: t; -*-
 
 (require 'projectile)
-(require 'org)
 (require 'org-roam)
 
 ;;;###autoload

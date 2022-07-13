@@ -61,7 +61,6 @@
 (package! evil-embrace :disable t)
 (package! evil-indent-plus :disable t)
 (package! evil-lion :disable t)
-(package! evil-nerd-commenter :disable t)
 (package! evil-numbers :disable t)
 (package! evil-snipe :disable t)
 (package! evil-textobj-anyblock :disable t)

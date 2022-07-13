@@ -24,7 +24,14 @@
    org-log-states-order-reversed nil
 
    org-edit-src-content-indentation 0
-   org-fontify-quote-and-verse-blocks t)
+   org-fontify-quote-and-verse-blocks t
+
+   ;; Org 9.6 breaks things like consult-line
+   ;; Temporarily changing fold style. Track the issue here:
+   ;; https://github.com/minad/consult/issues/563
+   ;; https://github.com/doomemacs/doomemacs/issues/6380
+   org-fold-core-style 'overlays
+   )
 
   (add-to-list
    'auto-mode-alist
@@ -175,7 +182,7 @@
 
   (setq org-roam-dailies-capture-templates
         '(("w" "work" plain
-           "%(org-roam-capture-dailies--set-node-props \"work\")%?"
+           "%(org-roam-capture-dailies--set-node-props \"work\")**** %?"
            :if-new
            (file+datetree
             "%<%Y-%m>-work-notes.org"
@@ -183,7 +190,7 @@
            :jump-to-captured t
            :unnarrowed t)
           ("j" "journal" plain
-           "%(org-roam-capture-dailies--set-node-props \"journal\")%?"
+           "%(org-roam-capture-dailies--set-node-props \"journal\")**** %?"
            :if-new
            (file+datetree
             "%<%Y-%m>-journal.org"
