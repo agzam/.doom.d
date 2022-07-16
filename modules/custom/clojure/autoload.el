@@ -130,6 +130,7 @@ gets the name suitable for :require of ns declaration."
       (let ((clojure-align-forms-automatically nil))
         (indent-region beg end)))))
 
+;;;###autoload
 (defun clojure-edn-json-transform (&optional from-json)
   "Transforms EDN to JSON and vice-versa using jet cli.
 The direction is determined by current major-mode or can be
@@ -140,7 +141,7 @@ convert from JSON."
          (region (if (use-region-p)
                      (list (region-beginning) (region-end))
                    (save-excursion
-                     (when (looking-at "\{")
+                     (when (looking-at "\{\\|\\[")
                        (forward-char))
                      (let ((end (progn (sp-end-of-sexp)
                                        (point))))

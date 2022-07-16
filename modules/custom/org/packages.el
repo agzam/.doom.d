@@ -58,3 +58,4 @@
            :repo "jgru/consult-org-roam"))
 
 (package! org-pomodoro)
+(package! verb)

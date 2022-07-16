@@ -37,9 +37,17 @@
     (set-eval-handler! '(clojure-mode clojurescript-mode) #'cider-eval-region))
 
   :config
-  (set-lookup-handlers! '(clojure-mode cider-mode cider-repl-mode)
+  (set-lookup-handlers! '(cider-mode cider-repl-mode)
     :definition #'+clojure-cider-lookup-definition
     :documentation #'cider-clojuredocs)
+
+  ;; remove lsp's doc lookup handler, so it always uses cider-clojuredocs
+  (add-hook! cider-mode
+    (defun remove-lsp-lookup-handler-h ()
+      (setf +lookup-documentation-functions
+       (seq-remove
+        (lambda (x) (eq x 'lsp-describe-thing-at-point))
+        +lookup-documentation-functions))))
 
   (set-popup-rules!
    '(("^\\*cider-error*" :ignore t)

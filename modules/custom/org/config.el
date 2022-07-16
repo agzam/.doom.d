@@ -388,3 +388,35 @@
                org-pomodoro-finished-hook)
              #'menu-bar-item-set-clock-or-pomodoro))
 
+(use-package! verb
+  :after org
+  :config
+  (setq verb-json-use-mode 'json-mode)
+  (map! :map org-mode-map
+        (:localleader "v" verb-command-map
+         (:prefix ("v" . "verb")
+          "r" #'verb-send-request-on-point-other-window-stay)))
+
+  (map! :map verb-response-body-mode-map
+        :n "q" #'kill-buffer-and-window)
+
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((verb . t)))
+
+  (add-hook! 'verb-post-response-hook
+    (defun verb-post-response-h ()
+      ;; automatically transform json to edn
+      (with-current-buffer (current-buffer)
+        (when (eq major-mode 'json-mode)
+          (goto-char (point-min))
+          (clojure-edn-json-transform)
+          (clojure-mode)
+          (verb-response-body-mode +1)
+          (deactivate-mark))))))
+
+(use-package! ob-http
+  :after org
+  :commands org-babel-execute:http)
+
+
