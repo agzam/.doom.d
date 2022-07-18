@@ -141,7 +141,7 @@
   ;; always open Backlinks in other-window; or in the same window with universal arg
   (map! :map org-roam-preview-map
         "RET" (cmd! (let ((current-prefix-arg (if current-prefix-arg nil 2)))
-                (call-interactively #'org-roam-preview-visit))))
+                      (call-interactively #'org-roam-preview-visit))))
   (map! :map org-roam-mode-map
         "RET" (cmd! (let ((current-prefix-arg (if current-prefix-arg nil 2)))
                       (call-interactively #'org-roam-node-visit))))
@@ -339,7 +339,8 @@
   (setq org-appear-delay 0.5
         org-appear-autolinks t
         org-appear-autoemphasis t
-        org-appear-autosubmarkers t))
+        org-appear-autosubmarkers t
+        org-fold-core-style 'text-properties))
 
 (use-package! org-superstar
   :after org
@@ -420,3 +421,13 @@
   :commands org-babel-execute:http)
 
 
+;; consult-line and consult-org-heading won't reveal the context
+;; consult search commands won't reveal the context
+;; see: minad/consult#563
+(after! consult
+  (defadvice! org-show-entry-consult-a (fn &rest args)
+    :around #'consult-line
+    :around #'consult-org-heading
+    :around #'consult--grep
+    (when-let ((pos (apply fn args)))
+      (org-fold-show-entry))))

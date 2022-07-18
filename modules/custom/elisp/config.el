@@ -40,6 +40,7 @@
         (:prefix ("k" . "kill")
          "m" #'erase-messages-buffer))
   (map! :map emacs-lisp-mode-map
+        :g "C-c C-f" nil ; remove elisp-byte-compile-file binding
         :i "#" #'sharp-quote)
 
   (map! :localleader
