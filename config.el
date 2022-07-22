@@ -66,6 +66,7 @@
 
 (setq
  doom-localleader-key ","
+ doom-localleader-alt-key "C-,"
  chemacs-current-emacs-profile "doom"
  evil-want-C-u-scroll nil
  ;; auto-hscroll-mode 'current-line
