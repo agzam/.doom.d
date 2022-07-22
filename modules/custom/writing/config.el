@@ -24,7 +24,16 @@
   (add-hook! 'spacehammer-edit-with-emacs-hook
              #'spacehammer-edit-with-emacs-h)
   (add-hook! 'spacehammer-before-finish-edit-with-emacs-hook
-             #'spacehammer-before-finish-edit-with-emacs-h))
+             #'spacehammer-before-finish-edit-with-emacs-h)
+
+  (add-to-list
+   'display-buffer-alist
+   '("\\* spacehammer-edit.*"
+     (display-buffer-reuse-window
+      display-buffer-in-direction)
+     (direction . right)
+     (window . root)
+     (window-width . 0.25))))
 
 (use-package! lsp-grammarly
   :defer t

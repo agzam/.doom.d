@@ -181,7 +181,7 @@
   (setq vertico-posframe-poshandler 'posframe-poshandler-frame-bottom-center)
   (setq
    vertico-posframe-global t
-   vertico-posframe-height 22
+   vertico-posframe-height 23
    vertico-posframe-width 200
    marginalia-margin-threshold 500)
   (vertico-posframe-mode +1)
@@ -254,7 +254,7 @@
 
   (map! :map minibuffer-local-map "C-c C-s" #'embark-collect)
 
-  (map! :map minibuffer-mode-map
+  (map! :map vertico-map
         "~" #'vertico-jump-to-home-dir-on~)
 
   (setq completion-ignore-case t

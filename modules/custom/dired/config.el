@@ -129,8 +129,10 @@
   (when (featurep! :custom general)
     (map!
      :map dired-mode-map
-     :n "oj" (dired-split-action +evil/window-split-and-follow)
-     :n "ol" (dired-split-action +evil/window-vsplit-and-follow)
-     :n "oh" (dired-split-action split-window-horizontally)
-     :n "ok" (dired-split-action split-window-vertically)
-     :n "oa" #'dired-ace-action)))
+     :n "o" nil
+     (:prefix ("o" . "open")
+      :desc "below" :n  "j" (dired-split-action +evil/window-split-and-follow)
+      :desc "right" :n "l" (dired-split-action +evil/window-vsplit-and-follow)
+      :desc "left"  :n "h" (dired-split-action split-window-horizontally)
+      :desc "above" :n "k" (dired-split-action split-window-vertically)
+      :desc "ace-action" :n "a" #'dired-ace-action))))

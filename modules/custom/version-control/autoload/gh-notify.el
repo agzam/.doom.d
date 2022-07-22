@@ -22,7 +22,8 @@
       (insert (funcall 'gh-notify-render-notification notification))
       (insert "\n")
       (read-only-mode +1)))
-  (when (gh-notify-notification-read-p)
+  (when (or (null (gh-notify-current-notification))
+            (gh-notify-notification-read-p))
     (forward-line -2)))
 
 ;;;###autoload

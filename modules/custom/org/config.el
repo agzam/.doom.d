@@ -22,6 +22,7 @@
    org-pretty-entities-include-sub-superscripts nil
    org-log-into-drawer t
    org-log-states-order-reversed nil
+   org-cycle-emulate-tab nil
 
    org-edit-src-content-indentation 0
    org-fontify-quote-and-verse-blocks t
@@ -39,7 +40,7 @@
 
   (setq
    org-confirm-babel-evaluate nil
-   org-todo-keywords '((sequence "TODO(t!)" "ONGOING(o!)" "|" "DONE(d)" "CANCELED(c@/!)"))
+   org-todo-keywords '((sequence "TODO(t!)" "ONGOING(o!)" "|" "DONE(d!)" "CANCELED(c@/!)"))
    org-enforce-todo-dependencies t
    org-enforce-todo-checkbox-dependencies t)
 

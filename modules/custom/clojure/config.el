@@ -120,7 +120,7 @@
      (direction . right)
      (window . root)
      (dedicated . nil)
-     (window-width . 0.25)))
+     (window-width . 0.30)))
 
   ;; When in cider-debug-mode, override evil keys to not interfere with debug keys
   (after! evil
@@ -187,8 +187,6 @@
            "a" #'cider-jack-in-clj&cljs
            "c"  #'cider-connect-clj
            "C"  #'cider-connect-cljs)
-          (:prefix ("k" . "kill")
-           "s" #'kill-cider-buffers)
           (:prefix ("n" . "namespace")
            "e" #'clj-edit-ns-header
            "n" #'cider-browse-ns
@@ -209,7 +207,8 @@
            "r" #'cider-ns-refresh
            "R" #'cider-restart
            "B" #'+clojure/cider-switch-to-repl-buffer-and-switch-ns
-           "k" #'cider-hide-repl-buffers)
+           "k" #'cider-hide-repl-buffers
+           "K" #'kill-cider-buffers)
           (:prefix ("t" . "test")
            "a" #'cider-test-rerun-test
            "l" #'cider-test-run-loaded-tests
@@ -228,13 +227,12 @@
           "r" #'cider-ns-refresh
           "R" #'cider-restart
           "c" #'cider-repl-clear-buffer
-          (:prefix ("k" . "kill")
-           "s" #'kill-cider-buffers)
           (:prefix ("s" . "repl")
            "s" #'cider-switch-to-last-clojure-buffer
            "S" #'cider-switch-to-nrepl-buffer
            "l" #'cider-clear-repl-buffers
-           "k" #'cider-hide-repl-buffers))
+           "k" #'cider-hide-repl-buffers
+           "K" #'kill-cider-buffers))
          :map cider-repl-history-mode-map
          :i [return]  #'cider-repl-history-insert-and-quit
          :i "q"  #'cider-repl-history-quit

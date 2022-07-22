@@ -35,7 +35,7 @@ temporarily toggle it off. Bind in vertico-map."
 ;;;###autoload
 (defun vertico-jump-to-home-dir-on~  ()
   (interactive)
-  (if (and (vertico-directory--completing-file-p)
+  (if (and (eq 'file (vertico--metadata-get 'category))
            (string-match-p "^~\\/" (minibuffer-contents)))
       (while (not (string-equal (minibuffer-contents) "~/"))
         (vertico-directory-up 1))
