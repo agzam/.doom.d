@@ -56,11 +56,14 @@
         (:localleader
          "n" #'org-next-link
          "p" #'org-previous-link
+         (:when (featurep! :completion vertico)
+          "." #'consult-org-heading)
          (:prefix ("b" . "babel")
           "k" #'org-babel-remove-result)
+         (:prefix ("d" . "date")
+          "t" #'+org-goto-datetree-date)
          (:prefix ("g" . "goto")
-          "L" #'org-goto-last-heading
-          "d" #'org-goto-datetree-date)
+          :desc "final heading" "L" #'+org-goto-bottommost-heading)
          (:prefix ("i" . "insert")
           "l" #'org-insert-link
           "L" #'org-cliplink)
@@ -431,4 +434,9 @@
     :around #'consult-org-heading
     :around #'consult--grep
     (when-let ((pos (apply fn args)))
+      (org-fold-show-entry)))
+
+  (defadvice! org-show-entry-embark-preview-a (fn)
+    :around #'+vertico/embark-preview
+    (when-let ((pos (funcall fn)))
       (org-fold-show-entry))))

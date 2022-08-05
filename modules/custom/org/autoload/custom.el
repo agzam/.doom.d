@@ -258,3 +258,29 @@ and if it is set to nil, then it would forcefully create the ID."
       (:quote (markdown-mode))
       (:org-mode (org-mode))
       (t (normal-mode)))))
+;;;###autoload
+(defun +org-goto-bottommost-heading (&optional maxlevel)
+  "Go to the last heading in the current subtree."
+  (interactive "P")
+  (if (listp maxlevel)
+      (setq maxlevel 4)
+    (unless maxlevel (setq maxlevel 3)))
+  (setq currlevel 1)
+  (while (<= currlevel maxlevel)
+    (org-next-visible-heading 1)
+    (if (not (org-at-heading-p))
+        (progn
+          (org-previous-visible-heading 1)
+          (org-cycle)
+          (setq currlevel (1+ currlevel))))))
+
+;;;###autoload
+(defun +org-goto-datetree-date (&optional date)
+  "Jump to selected date heading in the datetree."
+  (interactive)
+  (save-restriction
+    (let* ((datetree-date (org-read-date))
+           (dt (org-date-to-gregorian datetree-date)))
+      (org-datetree-find-date-create dt t)
+      (org-show-hidden-entry)
+      (show-subtree))))

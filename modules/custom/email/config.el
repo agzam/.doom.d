@@ -40,9 +40,27 @@
          :desc "mark delete" :n "d" #'+notmuch/tree-delete
          :desc "thread mark delete" :n "D" #'+notmuch-tree-thread-mark-delete
          (:localleader
-          :desc "thread mark delete" "D" #'+notmuch-tree-thread-mark-delete))
+          :desc "thread mark delete" "D" #'+notmuch-tree-thread-mark-delete
+          :desc "thread nav" "T" #'notmuch-thread-navigation-mode
+          (:prefix ("o" . "open")
+           :desc "open in Gmail" "g" #'+notmuch-open-in-gmail)))
         (:map notmuch-show-mode-map
-         :desc "mark delete" :n "d" #'+notmuch/show-delete))
+         :desc "mark delete" :n "d" #'+notmuch/show-delete
+         (:localleader
+          :desc "thread nav" "T" #'notmuch-thread-navigation-mode
+          (:prefix ("o" . "open")
+           :desc "open in Gmail" "g" #'+notmuch-open-in-gmail))))
+
+  (add-hook! 'notmuch-tree-mode-hook #'notmuch-thread-navigation-mode)
+
+  (map! :map notmuch-thread-navigation-map
+        :n "k" #'notmuch-thread-navigation-prev
+        :n "j" #'notmuch-thread-navigation-next
+        :n "C-k" #'evil-previous-visual-line
+        :n "C-j" #'evil-next-visual-line
+        :n "d" (cmd! () (+notmuch-tree-thread-mark-delete)
+                        (notmuch-thread-navigation-next))
+        :n "C-d" #'+notmuch/tree-delete)
 
   ;; in tree-view show the message in vertical split (on the right)
   (defadvice! notmuch-tree-vsplit-a ()

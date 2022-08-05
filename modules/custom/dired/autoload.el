@@ -70,3 +70,20 @@
       (treemacs-do-add-project-to-workspace path name)
       (treemacs-display-current-project-exclusively)
       (treemacs-select-window))))
+
+;;;###autoload
+(defun +dired-jump-find-in-project ()
+  "Buffer file in subtree relative to projects root."
+  (interactive)
+  (let* ((root (projectile-acquire-root))
+         (fname buffer-file-name)
+         (parts (file-name-split (string-replace root "" fname))))
+    (dired root)
+    (goto-char (point-min))
+    ;; find initial dir or file
+    (dired-goto-file (concat root (car parts)))
+    (dolist (part parts)
+      (let* ((ov (caddr dired-subtree-overlays)) ; last overlay
+             (bound (when ov (overlay-end ov)))) ; search within overlay bounds
+        (search-forward part bound :noerror)
+        (dired-subtree-insert)))))

@@ -30,6 +30,9 @@
                                 30 nil nil t)))))
       (with-current-buffer buf
         (goto-char (point-min))
+        ;; find the message selected in notmuch-tree buffer, in the thread inside
+        ;; notmuch-show buffer
+        (notmuch-thread-navigation-mode +1)
         (dolist (_ (notmuch-show-get-messages-ids))
           (let ((msg-id (notmuch-show-get-message-id :bare)))
             (if (string-equal msg-id message-id)
@@ -37,7 +40,8 @@
                   (notmuch-show-message-visible
                    props
                    (not (plist-get props :message-visible))))
-              (notmuch-show-goto-message-next))))))))
+              (notmuch-show-goto-message-next))))
+        (call-interactively #'notmuch-show-open-or-close-all)))))
 
 ;;;###autoload
 (defun +notmuch-tree-thread-mark-delete ()
@@ -54,3 +58,54 @@
              ;; (notmuch-tree-remove-tag '("trash"))
              (notmuch-tree-tag (append orig-tags '("-trash"))))
          (notmuch-tree-tag +notmuch-delete-tags))))))
+
+;;;###autoload
+(defvar notmuch-thread-navigation-map
+  (make-sparse-keymap))
+
+;;;###autoload
+(define-minor-mode notmuch-thread-navigation-mode
+  "Minor mode for easier jumping through email threads."
+  :init-value nil
+  :lighter " notmuch thread"
+  :keymap notmuch-thread-navigation-map
+  :group 'notmuch
+  (evil-normal-state))
+
+;;;###autoload
+(defun notmuch-thread-navigation-prev ()
+  (interactive)
+  (cl-case major-mode
+    (notmuch-tree-mode
+     (notmuch-tree-prev-thread-in-tree))
+
+    (notmuch-show-mode
+     (notmuch-show-previous-message))))
+
+;;;###autoload
+(defun notmuch-thread-navigation-next ()
+  (interactive)
+  (cl-case major-mode
+    (notmuch-tree-mode
+     (notmuch-tree-next-thread-in-tree))
+
+    (notmuch-show-mode
+     (notmuch-show-next-message))))
+
+;;;###autoload
+(defun +notmuch-get-message-id ()
+  "Retrieves message-id."
+  (when-let ((id-fn (cl-case major-mode
+                      (notmuch-tree-mode #'notmuch-tree-get-message-id)
+                      (notmuch-show-mode #'notmuch-show-get-message-id))))
+    (funcall id-fn :bare)))
+
+;;;###autoload
+(defun +notmuch-open-in-gmail ()
+  (interactive)
+  (when-let* ((msg-id (+notmuch-get-message-id))
+              (url (concat
+                    "https://mail.google.com/mail/u/0/#search/rfc822msgid"
+                    (url-hexify-string (concat ":" msg-id)))))
+    (message "opening url:%s" url)
+    (browse-url url)))

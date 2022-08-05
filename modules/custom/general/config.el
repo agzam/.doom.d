@@ -13,6 +13,10 @@
       :n "] p" (cmd! () (evil-forward-paragraph) (recenter))
       :n "[ p" (cmd! () (evil-backward-paragraph) (recenter)))
 
+(map! :map minibuffer-mode-map
+      "M-l" #'sp-forward-slurp-sexp
+      "M-h" #'sp-forward-barf-sexp)
+
 (put 'narrow-to-region 'disabled nil)
 
 (map! :leader
@@ -425,3 +429,9 @@
    (direction . right)
    (window . root)
    (window-width . 0.3)))
+
+(after! eww
+  (setq shr-max-image-proportion 0.5)
+  (map! :map eww-mode-map
+        :localleader
+        "," #'eww-main-transient))

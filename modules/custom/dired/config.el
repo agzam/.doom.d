@@ -13,7 +13,7 @@
         treemacs-persist-file (concat doom-cache-dir "treemacs-persist")
         treemacs-last-error-persist-file (concat doom-cache-dir "treemacs-last-error-persist"))
   :config
-  (map! :leader "pt" #'treemacs-project-toggle+)
+  (map! :leader "pT" #'treemacs-project-toggle+)
   (after! dired (treemacs-resize-icons 16))
   (treemacs-follow-mode 1)
 
@@ -101,7 +101,7 @@
   (map! :leader
         (:prefix ("p" . "project")
          "d" #'projectile-find-dir
-         "D" #'projectile-dired)))
+         "t" #'+dired-jump-find-in-project)))
 
 (after! dired
   (map! :leader

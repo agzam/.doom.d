@@ -16,7 +16,7 @@
 
 (after! elisp-mode
   (map! :localleader
-        :map emacs-lisp-mode-map
+        :map (emacs-lisp-mode-map lisp-data-mode-map)
         :desc "Expand macro" "m" #'macrostep-expand
         (:prefix ("d" . "debug")
          "f" #'+emacs-lisp/edebug-instrument-defun-on
