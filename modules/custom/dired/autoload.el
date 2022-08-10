@@ -77,13 +77,14 @@
   (interactive)
   (let* ((root (projectile-acquire-root))
          (fname buffer-file-name)
-         (parts (file-name-split (string-replace root "" fname))))
+         (parts (when fname (file-name-split (string-replace root "" fname)))))
     (dired root)
-    (goto-char (point-min))
-    ;; find initial dir or file
-    (dired-goto-file (concat root (car parts)))
-    (dolist (part parts)
-      (let* ((ov (caddr dired-subtree-overlays)) ; last overlay
-             (bound (when ov (overlay-end ov)))) ; search within overlay bounds
-        (search-forward part bound :noerror)
-        (dired-subtree-insert)))))
+    (when parts
+      (goto-char (point-min))
+      ;; find initial dir or file
+      (dired-goto-file (concat root (car parts)))
+      (dolist (part parts)
+        (let* ((ov (caddr dired-subtree-overlays)) ; last overlay
+               (bound (when ov (overlay-end ov)))) ; search within overlay bounds
+          (search-forward part bound :noerror)
+          (dired-subtree-insert))))))

@@ -344,7 +344,13 @@
         org-appear-autolinks t
         org-appear-autoemphasis t
         org-appear-autosubmarkers t
-        org-fold-core-style 'text-properties))
+        org-fold-core-style 'text-properties)
+
+  (add-hook! 'org-mode-hook
+    (defun enable-org-appear-in-insert-mode-h ()
+      (setq org-appear-trigger 'manual)
+      (add-hook 'evil-insert-state-entry-hook #'org-appear-manual-start nil t)
+      (add-hook 'evil-insert-state-exit-hook #'org-appear-manual-stop nil t))))
 
 (use-package! org-superstar
   :after org
