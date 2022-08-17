@@ -9,7 +9,6 @@
   :config)
 
 (use-package! circadian
-  :defer t
   :hook (window-setup . circadian-setup)
   :config
   (setq

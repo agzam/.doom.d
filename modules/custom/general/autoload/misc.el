@@ -173,7 +173,7 @@ or creates new session. Optionally, BUFFER-NAME can be set"
 
 (require 'transient)
 ;;;###autoload
-(transient-define-prefix eww-main-transient ()
+(transient-define-prefix eww-zoom-transient ()
   "EWW"
   ["Fonts"
    [("j" "decrease" shr-text-decrease-font-size :transient t)

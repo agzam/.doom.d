@@ -126,7 +126,9 @@
       (global-visual-line-mode +1)
       (fringe-mode '(6 . 0))
       (toggle-frame-full-height)
-      (pixel-scroll-precision-mode +1)
+
+      (when (fboundp 'pixel-scroll-precision-mode)
+        (pixel-scroll-precision-mode +1))
       (run-with-timer
        1.2 nil
        #'place-frame-at-display-spot '(0 0 0.664 1.0)))))

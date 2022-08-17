@@ -30,6 +30,7 @@
 (use-package! cider
   :after clojure-mode
   :hook (clojure-mode-local-vars . cider-mode)
+  :hook (cider-repl-mode . hs-minor-mode)
   :init
   (after! clojure-mode
     (set-repl-handler! 'clojure-mode #'+clojure/open-repl :persist t)
@@ -138,8 +139,16 @@
 
   (after! edit-indirect
     (add-hook! 'edit-indirect-before-commit-hook
-      (defun clj-sort-ns-after-edit-ns-header ()
+      (defun clj-sort-ns-after-edit-ns-header-h ()
         (when (string-match-p "clojure" (format "%s" major-mode))
+          ;; fix dangling paren
+          (goto-char (point-max))
+          (search-backward "]" nil :noerror)
+          (funcall-interactively
+           #'replace-regexp
+           "\n\\| " "" nil (point) (point-max))
+
+          (sp-reindent)
           (clojure-sort-ns)))))
 
   (map! (:localleader

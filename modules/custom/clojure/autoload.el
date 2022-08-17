@@ -75,11 +75,13 @@ gets the name suitable for :require of ns declaration."
                         (kill-new x)
                         x))
          (sym (cond ((lsp--capability :hoverProvider)
-                     (let ((s (-some->> (lsp--text-document-position-params)
-                                (lsp--make-request "textDocument/hover")
+                     (let ((s (-some->
+                                  "textDocument/hover"
+                                (lsp--make-request
+                                 (lsp--text-document-position-params))
                                 (lsp--send-request)
-                                (gethash "contents")
-                                (gethash "value"))))
+                                (lsp:hover-contents)
+                                (plist-get :value))))
                        (string-match "\\(```.*\n\\)\\(\\([[:word:]]\\|[[:graph:]]\\)*\\)" s)
                        (string-trim (match-string 2 s))))
 

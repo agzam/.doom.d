@@ -439,6 +439,7 @@
     :around #'consult-line
     :around #'consult-org-heading
     :around #'consult--grep
+    :around #'compile-goto-error
     (when-let ((pos (apply fn args)))
       (org-fold-show-entry)))
 

@@ -87,4 +87,5 @@
         (let* ((ov (caddr dired-subtree-overlays)) ; last overlay
                (bound (when ov (overlay-end ov)))) ; search within overlay bounds
           (search-forward part bound :noerror)
-          (dired-subtree-insert))))))
+          (dired-subtree-insert))))
+    (recenter)))

@@ -433,5 +433,6 @@
 (after! eww
   (setq shr-max-image-proportion 0.5)
   (map! :map eww-mode-map
-        :localleader
-        "," #'eww-main-transient))
+        :n "yy" #'eww-copy-page-url
+        (:localleader
+         "z" #'eww-zoom-transient)))
