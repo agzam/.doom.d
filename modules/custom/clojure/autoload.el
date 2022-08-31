@@ -218,6 +218,7 @@ convert from JSON."
                                               (funcall (buffer-local-value 'major-mode buf)))))
      (cljr--goto-ns)
      (sp-select-next-thing)
+     (map! :map cider-mode-map "C-c C-k" nil)
      (let ((buf (edit-indirect-region (region-beginning) (region-end) :display-buffer)))
        (with-current-buffer buf
          (use-local-map cider-mode-map)

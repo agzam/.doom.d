@@ -143,11 +143,13 @@
         (when (string-match-p "clojure" (format "%s" major-mode))
           ;; fix dangling paren
           (goto-char (point-max))
-          (search-backward "]" nil :noerror)
-          (funcall-interactively
-           #'replace-regexp
-           "\n\\| " "" nil (point) (point-max))
-
+          (search-backward ":require" nil :noerror)
+          (sp-end-of-sexp)
+          (let ((pos (point)))
+            (search-backward "]" nil :noerror)
+            (funcall-interactively
+             #'replace-regexp
+             "\n\\| " "" nil (point) pos))
           (sp-reindent)
           (clojure-sort-ns)))))
 

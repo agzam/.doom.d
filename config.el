@@ -174,13 +174,15 @@
 (after! flycheck
   (define-key flycheck-mode-map flycheck-keymap-prefix nil)
   (setq flycheck-keymap-prefix nil)
-  (map! :leader "!" flycheck-command-map))
+  ;; (map! :leader "!" flycheck-command-map)
+  )
 
 (after! helpful
   (map! :map helpful-mode-map
         :n "q" #'kill-buffer-and-window))
 
 (after! grep
+  (setq grep-program "rg")
   (map! :map grep-mode-map
         :n "q" #'kill-buffer-and-window
         :n "[" #'compilation-previous-file
@@ -188,4 +190,12 @@
         (:localleader
          "f" #'next-error-follow-minor-mode))
 
+  ;; for whatever strange reason, embark-export started automatically enabling wgrep in
+  ;; grep buffers. A workaround until I figure out what the heck.
+  (add-hook! 'embark-after-export-hook
+    (defun embark-after-export-h ()
+      (run-with-timer 0.1 nil (lambda () (quiet! (wgrep-abort-changes))))))
+
   (add-hook! 'grep-mode-hook #'next-error-follow-minor-mode))
+
+(add-hook! 'prog-mode-hook #'hs-minor-mode)
