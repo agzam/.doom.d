@@ -45,10 +45,12 @@ narrowed to."
   (evil-define-minor-mode-key 'motion 'visual-line-mode (kbd "<up>") #'evil-previous-visual-line))
 
 ;;;###autoload
-(defun toggle-visual-line-navigation ()
+(defun toggle-visual-line-navigation (&optional arg)
   (interactive)
-  (visual-line-mode 'toggle)
-  (toggle-word-wrap)
+  (visual-line-mode (or arg 'toggle))
+  (if visual-line-mode
+      (toggle-truncate-lines -1)
+    (toggle-truncate-lines +1))
   (init-visual-line-keys)
   (evil-normalize-keymaps))
 

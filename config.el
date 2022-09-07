@@ -199,3 +199,8 @@
   (add-hook! 'grep-mode-hook #'next-error-follow-minor-mode))
 
 (add-hook! 'prog-mode-hook #'hs-minor-mode)
+
+;; disable visual-line-navigation in certain modes
+(add-hook! (grep-mode paradox-menu-mode yaml-mode)
+  (defun no-wrap-h ()
+    (toggle-visual-line-navigation -1)))
