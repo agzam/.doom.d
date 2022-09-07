@@ -2,8 +2,6 @@
 ;;; custom/yaml/packages.el
 
 (package! yaml-mode)
-(package! yaml-imenu)
-
 (package! jinja2-mode)
-
 (package! highlight-indent-guides)
+(package! yaml-pro :recipe (:host github :repo "zkry/yaml-pro"))

@@ -2,9 +2,6 @@
 
 (use-package! yaml-mode)
 
-(use-package! yaml-imenu
-  :after yaml-mode)
-
 (use-package! jinja2-mode
   :mode "\\.jinja$"
   :config
@@ -14,7 +11,7 @@
   (setq jinja2-enable-indent-on-save nil))
 
 (use-package! highlight-indent-guides
-  :hook '((yaml-mode) . highlight-indent-guides-mode)
+  :hook (yaml-mode . highlight-indent-guides-mode)
   :init
   (setq highlight-indent-guides-method 'character
         highlight-indent-guides-suppress-auto-error t)
@@ -37,3 +34,17 @@
       (and highlight-indent-guides-mode
            (bound-and-true-p org-indent-mode)
            (highlight-indent-guides-mode -1)))))
+
+(use-package! yaml-pro
+  :after yaml-mode
+  :hook (yaml-mode . yaml-pro-mode)
+  :config
+  (map! :map yaml-pro-mode-map
+        [remap imenu] #'yaml-pro-jump
+        :n "zc" #'yaml-pro-fold-at-point
+        :n "zo" #'yaml-pro-unfold-at-point
+        :n "gk" #'yaml-pro-prev-subtree
+        :n "gj" #'yaml-pro-next-subtree
+        :n "gK" #'yaml-pro-up-level
+        :n "M-k" #'yaml-pro-move-subtree-up
+        :n "M-j" #'yaml-pro-move-subtree-down))
