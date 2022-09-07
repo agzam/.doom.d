@@ -447,3 +447,45 @@
     :around #'+vertico/embark-preview
     (when-let ((pos (funcall fn)))
       (org-fold-show-entry))))
+
+(use-package! anki-editor
+  :commands anki-editor-mode
+  :hook (org-capture-after-finalize . anki-editor-reset-cloze-number) ; Reset cloze-number after each capture.
+  ;; :init
+  :config
+  (setq anki-editor-create-decks t      ; Allow anki-editor to create a new deck if it doesn't exist
+        anki-editor-org-tags-as-anki-tags t)
+
+  (defvar anki-editor-mode-map (make-sparse-keymap))
+
+  (map! :map anki-editor-mode-map
+        :localleader
+        (:prefix ("a" . "anki")
+         "p" #'anki-editor-push-tree))
+
+  (add-to-list 'minor-mode-map-alist '(anki-editor-mode anki-editor-mode-map))
+
+  (after! org-capture
+    (setq org-my-anki-file (concat org-directory "anki_cards.org"))
+    (dolist (template
+             '(("a" "Anki cards")
+               ("ab" "Anki basic"
+                entry
+                (file+headline org-my-anki-file "Dispatch")
+                "* %^{prompt|card %<%Y-%m-%d %H:%M>} %^g%^{ANKI_DECK}p\n:PROPERTIES:\n:ANKI_NOTE_TYPE: Basic\n:END:\n** Front\n%?\n** Back\n%x\n"
+                :jump-to-captured t)
+               ("ar" "Anki basic & reversed"
+                entry
+                (file+headline org-my-anki-file "Dispatch")
+                "* %^{prompt|card %<%Y-%m-%d %H:%M>} %^g%^{ANKI_DECK}p\n:PROPERTIES:\n:ANKI_NOTE_TYPE: Basic (and reversed card)\n:END:\n** Front\n%?\n** Back\n%x\n"
+                :jump-to-captured t)
+               ("ac" "Anki cloze"
+                entry
+                (file+headline org-my-anki-file "Dispatch")
+                "* %^{prompt|card %<%Y-%m-%d %H:%M>} %^g%^{ANKI_DECK}p\n:PROPERTIES:\n:ANKI_NOTE_TYPE: Cloze\n:END:\n** Text\n%?\n** Extra\n%x\n"
+                :jump-to-captured t)))
+      (add-to-list 'org-capture-templates template)))
+
+  ;; Initialize
+  (anki-editor-reset-cloze-number) ; see: https://docs.ankiweb.net/editing.html#cloze-deletion
+  )

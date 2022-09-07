@@ -59,3 +59,6 @@
 
 (package! org-pomodoro)
 (package! verb)
+
+(package! anki-editor)
+
