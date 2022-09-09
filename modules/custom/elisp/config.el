@@ -12,7 +12,10 @@
 (use-package! evilify-edebug
   :after (edebug evil-collection)
   :config
-  (evilify-edebug-setup))
+  (evilify-edebug-setup)
+  (map! :map edebug-mode-map
+        :localleader
+        "ec" #'edebug-eval-current-form-sp))
 
 (after! elisp-mode
   (map! :localleader

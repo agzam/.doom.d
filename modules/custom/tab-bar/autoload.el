@@ -16,10 +16,10 @@
                    (find-file (car (seq-remove (lambda (x) (equal x "./")) recent))))))
     ("ed" "doom.d" (doom/goto-private-config-file))
     ("ei" "emacs.d" (dired (file-name-directory doom-emacs-dir)))
-    ("SPC" "projects" (switch-to-buffer
+    ("p" "projects" (switch-to-buffer
                        (find-file-noselect
                         (completing-read "choose project:" projectile-known-projects))))
-    ("fh" "fasd history"
+    ("SPC" "fasd history"
      (switch-to-buffer
       (find-file-noselect
        (completing-read "choose dir:" (split-string (shell-command-to-string "fasd -lRd")))))))

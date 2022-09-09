@@ -112,10 +112,10 @@
 ;; most keys set in ':custom general' module,
 ;; yet the most important one I want to set early
 (map! :leader
-      (:when (featurep! :completion vertico)
+      (:when (modulep! :completion vertico)
        :desc "M-x" :n "SPC" #'execute-extended-command))
 
-(when (featurep! :custom general)
+(when (modulep! :custom general)
   (add-hook! 'window-setup-hook
     (defun position-frame-on-load-h ()
       ;; Emacs 29 changed font for the modeline

@@ -1,7 +1,7 @@
 ;;; custom/modeline/config.el -*- lexical-binding: t; -*-
 
 (use-package! doom-modeline
-  :unless (featurep! :ui modeline)
+  :unless (modulep! :ui modeline)
   :hook ((doom-modeline-mode . column-number-mode)
          (doom-modeline-mode . setup-custom-doom-modeline)
          (window-state-change . setup-custom-doom-modeline)

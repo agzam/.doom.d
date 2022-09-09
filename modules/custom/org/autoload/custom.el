@@ -246,18 +246,27 @@ and if it is set to nil, then it would forcefully create the ID."
                  (cond
                   ;; set markdown-mode for quote & verse blocks
                   ((and (eq major-mode 'org-mode)
-                        (string-match-p
-                         "+begin_quote\\|+begin_verse"
-                         (save-mark-and-excursion
-                           (goto-char (- beg 1))
-                           (thing-at-point 'symbol))))
+                        (when-let ((s (save-mark-and-excursion
+                                        (goto-char (- beg 1))
+                                        (thing-at-point 'symbol))))
+                         (string-match-p
+                          "+begin_quote\\|+begin_verse" s)))
                    :quote)
+                  ((and (eq major-mode 'org-mode)
+                        (when-let ((s (save-mark-and-excursion
+                                        (goto-char (- beg 1))
+                                        (backward-word)
+                                        (thing-at-point 'word))))
+                          (string-match-p "results" s)))
+                   :results-drawer)
 
                   ((eq major-mode 'org-mode) :org-mode)))))
     (cl-case type
       (:quote (markdown-mode))
+      (:results-drawer (json-mode))
       (:org-mode (org-mode))
       (t (normal-mode)))))
+
 ;;;###autoload
 (defun +org-goto-bottommost-heading (&optional maxlevel)
   "Go to the last heading in the current subtree."

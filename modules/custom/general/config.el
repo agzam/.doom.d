@@ -42,7 +42,7 @@
        :desc "fasd file" "af" (cmd! (fasd-find-file -1))
        "e" nil ;; release it, or it complains
        (:prefix ("e" . "doom/emacs")
-        "d" #'doom/goto-private-config-file
+        "d" #'doom/goto-private-init-file
         :desc "doom init dir" "i" (cmd! () (dired doom-emacs-dir))))
 
       (:prefix ("g" . "goto")

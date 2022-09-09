@@ -56,7 +56,7 @@
         (:localleader
          "n" #'org-next-link
          "p" #'org-previous-link
-         (:when (featurep! :completion vertico)
+         (:when (modulep! :completion vertico)
           "." #'consult-org-heading)
          (:prefix ("b" . "babel")
           "k" #'org-babel-remove-result)
@@ -106,7 +106,19 @@
     (add-hook! 'org-attach-after-change-hook
       (defun org-attach-save-file-list-to-property (dir)
         (when-let ((files (org-attach-file-list dir)))
-          (org-set-property "ORG_ATTACH_FILES" (mapconcat #'identity files ", ")))))))
+          (org-set-property "ORG_ATTACH_FILES" (mapconcat #'identity files ", "))))))
+
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (shell . t)
+     (js . t)
+     (python . t)
+     (clojure . t)
+     (sql . t)
+     ;; (ditaa . t)
+     ;; (ruby . t)
+     )))
 
 (use-package! org-tempo
   :after org

@@ -5,5 +5,5 @@
 (package! rjsx-mode)
 (package! prettier-js)
 
-(when (featurep! :tools lookup)
+(when (modulep! :tools lookup)
   (package! xref-js2))

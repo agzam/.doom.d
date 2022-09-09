@@ -93,7 +93,7 @@
   )
 
 (use-package! evil-collection-magit
-  :when (featurep! :editor evil +everywhere)
+  :when (modulep! :editor evil +everywhere)
   :defer t
   :init (defvar evil-collection-magit-use-z-for-folds t)
   :config

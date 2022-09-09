@@ -37,7 +37,7 @@
     js-switch-indent-offset js2-basic-offset)
 
   (use-package! xref-js2
-    :when (featurep! :tools lookup)
+    :when (modulep! :tools lookup)
     :init
     (setq xref-js2-search-program 'rg)
     (set-lookup-handlers! 'rjsx-mode

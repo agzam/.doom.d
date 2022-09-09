@@ -81,6 +81,17 @@
     (kbd "C-c C-t") (lambda () (interactive) (edebug-set-breakpoint t))
     (kbd "C-c C-l") 'edebug-where))
 
+;;;###autoload
+(defun edebug-eval-current-form-sp (&optional arg)
+  "Just like 'eval-current-form-sp' but work in edebug context."
+  (interactive "p")
+  (let ((evil-move-beyond-eol t))
+    (save-excursion
+      (goto-char
+       (plist-get (or (sp-get-enclosing-sexp)
+                      (sp-get-expression)) :end))
+      (call-interactively #'edebug-eval-last-sexp))))
+
 (provide 'evilify-edebug)
 
 ;;; evilify-edebug.el ends here

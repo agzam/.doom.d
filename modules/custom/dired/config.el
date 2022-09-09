@@ -1,7 +1,7 @@
 ;;; custom/dired/config.el -*- lexical-binding: t; -*-
 
 (use-package! treemacs-icons-dired
-  :defer t
+  :after dired
   :hook (dired-mode . treemacs-icons-dired-mode))
 
 (use-package! treemacs
@@ -126,7 +126,7 @@
 
   (add-hook 'dired-mode-hook #'dired-hide-details-mode)
 
-  (when (featurep! :custom general)
+  (when (modulep! :custom general)
     (map!
      :map dired-mode-map
      :n "o" nil
