@@ -41,6 +41,7 @@
   :config
   (map! :map yaml-pro-mode-map
         [remap imenu] #'yaml-pro-jump
+        "C-c C-f" nil
         :n "zc" #'yaml-pro-fold-at-point
         :n "zo" #'yaml-pro-unfold-at-point
         :n "gk" #'yaml-pro-prev-subtree

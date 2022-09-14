@@ -42,7 +42,7 @@
        :desc "fasd file" "af" (cmd! (fasd-find-file -1))
        "e" nil ;; release it, or it complains
        (:prefix ("e" . "doom/emacs")
-        "d" #'doom/goto-private-init-file
+        :desc "doom.d" "d" (cmd! () (doom/goto-private-config-file) (projectile-find-dir))
         :desc "doom init dir" "i" (cmd! () (dired doom-emacs-dir))))
 
       (:prefix ("g" . "goto")
@@ -298,6 +298,16 @@
          "k" (embark-split-action xref-find-definitions split-window-vertically)
          "a" (embark-ace-action xref-find-definitions)))
 
+  (defun +edebug-instrument-symbol (symbol)
+    (interactive "sSymbol: ")
+    (edebug-instrument-function (intern symbol)))
+
+  (map! :map (embark-command-map embark-symbol-map)
+        (:after edebug
+         (:prefix ("D" . "debug")
+           "f" #'+edebug-instrument-symbol
+           "F" #'edebug-remove-instrumentation)))
+
   (add-hook! 'embark-collect-mode-hook
     (defun visual-line-mode-off-h ()
       (visual-line-mode -1)))
@@ -367,6 +377,9 @@
              :post-handlers '(("||\n[i]" "RET") ("| " "SPC"))
              :unless '(sp-point-before-same-p)))
 
+  (sp-pair "\"" nil :unless '(sp-point-before-word-p
+                              sp-point-after-word-p))
+
   (sp-local-pair sp-lisp-modes "(" ")"
                  :wrap ")"
                  :unless '(:rem sp-point-before-same-p)))
@@ -435,4 +448,8 @@
   (map! :map eww-mode-map
         :n "yy" #'eww-copy-page-url
         (:localleader
-         "z" #'eww-zoom-transient)))
+         "z" #'eww-zoom-transient
+         :desc "copy url" "y" (cmd!
+                               (let ((url (eww-current-url)))
+                                 (kill-new url)
+                                 (message url))))))

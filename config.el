@@ -201,6 +201,9 @@
 (add-hook! 'prog-mode-hook #'hs-minor-mode)
 
 ;; disable visual-line-navigation in certain modes
-(add-hook! (grep-mode paradox-menu-mode yaml-mode)
+(add-hook! (grep-mode paradox-menu-mode yaml-mode notmuch-search-mode notmuch-tree-mode)
   (defun no-wrap-h ()
     (toggle-visual-line-navigation -1)))
+
+(after! writeroom-mode
+  (setq writeroom-maximize-window t))

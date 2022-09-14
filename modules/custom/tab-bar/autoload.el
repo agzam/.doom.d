@@ -14,7 +14,9 @@
                  (hack-dir-local-variables-non-file-buffer)
                  (when-let ((recent (projectile-recentf-files)))
                    (find-file (car (seq-remove (lambda (x) (equal x "./")) recent))))))
-    ("ed" "doom.d" (doom/goto-private-config-file))
+    ("ed" "doom.d" (progn
+                     (doom/goto-private-config-file)
+                     (call-interactively #'projectile-find-dir)))
     ("ei" "emacs.d" (dired (file-name-directory doom-emacs-dir)))
     ("p" "projects" (switch-to-buffer
                        (find-file-noselect

@@ -26,7 +26,11 @@
         mm-text-html-renderer 'shr)
 
   (map! (:map notmuch-show-mode-map
-         :n "q" #'kill-buffer-and-window)
+         :n "q" #'kill-buffer-and-window
+         (:localleader
+          (:prefix ("o" . "open")
+           :desc "open in Gmail" "g" #'+notmuch-open-in-gmail
+           :desc "find in mailing list" "m" #'+notmuch-find-in-mailing-list)))
         (:map notmuch-tree-mode-map
          :n "RET" #'+notmuch-tree-show-thread
          :n "C-<return>" #'notmuch-tree-show-message))
@@ -43,13 +47,15 @@
           :desc "thread mark delete" "D" #'+notmuch-tree-thread-mark-delete
           :desc "thread nav" "T" #'notmuch-thread-navigation-mode
           (:prefix ("o" . "open")
-           :desc "open in Gmail" "g" #'+notmuch-open-in-gmail)))
+           :desc "open in Gmail" "g" #'+notmuch-open-in-gmail
+           :desc "find in mailing list" "m" #'+notmuch-find-in-mailing-list)))
         (:map notmuch-show-mode-map
          :desc "mark delete" :n "d" #'+notmuch/show-delete
          (:localleader
           :desc "thread nav" "T" #'notmuch-thread-navigation-mode
           (:prefix ("o" . "open")
-           :desc "open in Gmail" "g" #'+notmuch-open-in-gmail))))
+           :desc "open in Gmail" "g" #'+notmuch-open-in-gmail
+           :desc "find in mailing list" "m" #'+notmuch-find-in-mailing-list))))
 
   (add-hook! 'notmuch-tree-mode-hook #'notmuch-thread-navigation-mode)
 

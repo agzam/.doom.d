@@ -205,4 +205,6 @@
        yaml
        pdf
        email
-       webdev)
+       webdev
+       osx
+       )
