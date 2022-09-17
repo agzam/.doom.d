@@ -228,13 +228,16 @@
   ;; generates IDs per each day, and I don't need that. A day heading by itself doesn't
   ;; carry a meaningful context for me. A context to which I have to extend a relation. I
   ;; skip the automatic ID creation by hijacking #'org-roam-capture--setup-target-location
-  (defadvice! org-capture-set-target-location-a (fn &rest args)
-    :around #'org-capture-set-target-location
-    (cl-letf (((symbol-function 'org-entry-put)
-               (lambda (pom prop  &rest params)
-                 (unless (string= prop "ID")
-                   (apply #'org-entry-put pom prop params)))))
-      (apply fn args)))
+  ;;
+  ;; FIXME: It breaks org-roam-protocol capture
+  ;;
+  ;; (defadvice! org-capture-set-target-location-a (fn &rest args)
+  ;;   :around #'org-capture-set-target-location
+  ;;   (cl-letf (((symbol-function 'org-entry-put)
+  ;;              (lambda (pom prop  &rest params)
+  ;;                (unless (string= prop "ID")
+  ;;                  (apply #'org-entry-put pom prop params)))))
+  ;;     (apply fn args)))
 
   (org-roam-db-autosync-mode +1)
 
@@ -368,11 +371,13 @@
         org-appear-autosubmarkers t
         org-fold-core-style 'text-properties)
 
-  (add-hook! 'org-mode-hook
-    (defun enable-org-appear-in-insert-mode-h ()
-      (setq org-appear-trigger 'manual)
-      (add-hook 'evil-insert-state-entry-hook #'org-appear-manual-start nil t)
-      (add-hook 'evil-insert-state-exit-hook #'org-appear-manual-stop nil t))))
+  ;; appear in evil normal state
+  ;; (add-hook! 'org-mode-hook
+  ;;   (defun enable-org-appear-in-insert-mode-h ()
+  ;;     (setq org-appear-trigger 'manual)
+  ;;     (add-hook 'evil-insert-state-entry-hook #'org-appear-manual-start nil t)
+  ;;     (add-hook 'evil-insert-state-exit-hook #'org-appear-manual-stop nil t)))
+  )
 
 (use-package! org-superstar
   :after org

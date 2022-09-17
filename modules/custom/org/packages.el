@@ -53,12 +53,11 @@
 (package! ob-http)
 (package! ox-gfm)
 
-(package! consult-org-roam
-  :recipe (:host github
-           :repo "jgru/consult-org-roam"))
+(package! consult-org-roam :recipe (:host github :repo "jgru/consult-org-roam"))
 
 (package! org-pomodoro)
 (package! verb)
 
 (package! anki-editor)
 
+(package! org-transclusion :recipe (:host github :repo "nobiot/org-transclusion"))

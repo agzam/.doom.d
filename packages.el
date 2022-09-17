@@ -73,3 +73,10 @@
 
 ;; :config default module
 (package! drag-stuff :disable t)
+
+;; some transitive dependencies fail to fetch.
+;; temp fix.
+;; see: https://discourse.doomemacs.org/t/doom-cli-fails-with-file-missing-cannot-open-load-file-no-such-file-or-directory-pkg-info/3149/9
+;; (package! dash)
+;; (package! f)
+;; (package! pkg-info)

@@ -66,8 +66,8 @@ NODE-LINK  - which is title or id or a node."
 
       ;; always append stuff to the day in the daytree
       ;; without this, it would create new heading at the top
-      (goto-char (org-element-property :begin (org-element-property :parent (org-element-at-point))))
-      (org-end-of-subtree)
+      ;; (goto-char (org-element-property :begin (org-element-property :parent (org-element-at-point))))
+      ;; (org-end-of-subtree)
 
       ;; it needs to return a string
       "")))

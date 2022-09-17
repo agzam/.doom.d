@@ -194,9 +194,7 @@
   ;; grep buffers. A workaround until I figure out what the heck.
   (add-hook! 'embark-after-export-hook
     (defun embark-after-export-h ()
-      (run-with-timer 0.1 nil (lambda () (quiet! (wgrep-abort-changes))))))
-
-  (add-hook! 'grep-mode-hook #'next-error-follow-minor-mode))
+      (run-with-timer 0.1 nil (lambda () (quiet! (wgrep-abort-changes)))))))
 
 (add-hook! 'prog-mode-hook #'hs-minor-mode)
 
