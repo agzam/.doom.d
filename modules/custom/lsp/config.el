@@ -46,7 +46,9 @@
          "L" #'lsp-lens-mode)
         (:prefix ("x" . "text/code")
          "l" #'lsp-lens-show
-         "L" #'lsp-lens-hide))
+         "L" #'lsp-lens-hide)
+        (:prefix ("r" . "reset/remove")
+         "f" #'file-notify-rm-all-watches))
 
   (map! :map lsp-ui-flycheck-list-mode-map
         :nv "q" #'kill-buffer-and-window)

@@ -6,6 +6,7 @@
       ("clojurec" . "Clojure")
       ("emacs-lisp" . "Emacs Lisp")
       ("lisp-data" . "Emacs Lisp")
+      ("helpful" . "Emacs Lisp")
       ("js" . "JavaScript"))
     "Associates current mode with a language in Github terms"
     :type 'alist
