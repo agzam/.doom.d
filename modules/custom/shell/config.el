@@ -5,6 +5,14 @@
         "\"" #'shell-pop-choose
         "p '" #'shell-pop-in-project-root)
 
+(defun +insert-current-filename ()
+  (interactive)
+  (insert
+   (buffer-file-name
+    (window-buffer (minibuffer-selected-window)))))
+
+(map! :map minibuffer-local-map "C-c C-i" #'+insert-current-filename)
+
 (after! shell
   ;; Something messes up blue color in terminal. Usual way of setting it up in the theme,
   ;; not working for some reason. This is a hacky workaround

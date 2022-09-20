@@ -1,7 +1,6 @@
 ;;; custom/tab-bar/autoload.el -*- lexical-binding: t; -*-
 
 (require 'projectile)
-(require 'org-roam)
 
 ;;;###autoload
 (defvar tab-bar-tab-added-hook nil)
@@ -9,11 +8,13 @@
 
 ;;;###autoload
 (defvar tab-bar--templates
-  '(("o" "Org" (let ((default-directory (file-name-directory org-directory)))
-                 (find-file default-directory)
-                 (hack-dir-local-variables-non-file-buffer)
-                 (when-let ((recent (projectile-recentf-files)))
-                   (find-file (car (seq-remove (lambda (x) (equal x "./")) recent))))))
+  '(("o" "Org" (progn
+                 (require 'org)
+                 (let ((default-directory (file-name-directory org-directory)))
+                   (find-file default-directory)
+                   (hack-dir-local-variables-non-file-buffer)
+                   (when-let ((recent (projectile-recentf-files)))
+                     (find-file (car (seq-remove (lambda (x) (equal x "./")) recent)))))))
     ("ed" "doom.d" (progn
                      (doom/goto-private-config-file)
                      (call-interactively #'projectile-find-dir)))

@@ -211,8 +211,7 @@
             '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:")
             '("#\\+BEGIN_SRC" . "#\\+END_SRC")
             '("#\\+BEGIN_EXAMPLE" . "#\\+END_EXAMPLE"))
-  (setq ispell-program-name "enchant-2"
-        ispell-personal-dictionary (concat doom-user-dir "ispell.dic"))
+  (setq ispell-program-name "enchant-2")
   ;; (unless ispell-dictionary-alist
   ;;   (setq ispell-dictionary-alist
   ;;         '(("american"   ;; English

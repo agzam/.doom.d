@@ -77,7 +77,7 @@
   (interactive)
   (let* ((root (projectile-acquire-root))
          (fname buffer-file-name)
-         (parts (when fname (file-name-split (string-replace root "" fname)))))
+         (parts (when fname (split-string (string-replace root "" fname) "/"))))
     (dired root)
     (when parts
       (goto-char (point-min))

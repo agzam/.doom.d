@@ -23,16 +23,13 @@ See https://www.hammerspoon.org/docs/hs.ipc.html for more."
     (user-error "This function works only in OSX!"))
   (unless (executable-find "hs")
     (user-error "Hammerspoon IPC executable - 'hs' cmd util not found."))
-  (let ((fennel-form* (replace-regexp-in-string
-                       "\"" "\\\\\""
-                       (format "%S" fennel-form))))
+  (let ((fennel-form* (replace-regexp-in-string "\"" "\\\\\"" fennel-form)))
     (process-lines
      (executable-find "hs")
      "-c"
-     (concat
-      "local fennel = require(\"fennel\");"
-      "print(fennel.eval(\""
-      fennel-form* "\"))"))))
+     (format
+      "local fennel = require(\"fennel\"); print(fennel.eval(\" %s \"));"
+      fennel-form*))))
 
 ;;;###autoload
 (defun menu-bar-item-set-clock-or-pomodoro ()
@@ -55,14 +52,17 @@ See https://www.hammerspoon.org/docs/hs.ipc.html for more."
                          (replace-regexp-in-string "\"" "'" text)))))
            (fnl (cond
                  ((null text)
-                  '(: gl_org_clock_menubar_item :setTitle ""))
+                  "(: (. _G :org-clock-menubar-item) :setTitle \"\")")
                  ((eq color 'green)
-                  `(: gl_org_clock_menubar_item :setTitle
-                    (hs.styledtext.new ,full-txt '{:color {:green 0.7 :blue 0.1}})))
+                  (format
+                   "(: (. _G :org-clock-menubar-item) :setTitle (hs.styledtext.new %S '{:color {:green 0.7 :blue 0.1}}))"
+                   full-txt))
                  ((eq color 'red)
-                  `(: gl_org_clock_menubar_item :setTitle
-                    (hs.styledtext.new ,full-txt '{:color {:red 1}}))))))
+                  (format "(: (. _G :org-clock-menubar-item) :setTitle (hs.styledtext.new %S '{:color {:red 1}}))"
+                          full-txt)))))
       ;; create menubar item object if none
-      (unless (ignore-errors (spacehammer--hs-eval-fennel 'gl_org_clock_menubar_item))
-        (spacehammer--hs-eval-fennel '(global gl_org_clock_menubar_item (hs.menubar.new))))
+      (unless (ignore-errors
+                (spacehammer--hs-eval-fennel  ; make sure gl_org_clock_menubar_item is menubar object
+                 "(~= nil  (. (. _G :org-clock-menubar-item) :title))"))
+        (spacehammer--hs-eval-fennel "(tset _G :org-clock-menubar-item (hs.menubar.new))"))
       (spacehammer--hs-eval-fennel fnl))))
