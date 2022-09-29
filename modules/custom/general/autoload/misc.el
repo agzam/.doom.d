@@ -180,3 +180,9 @@ or creates new session. Optionally, BUFFER-NAME can be set"
   ["Fonts"
    [("j" "decrease" shr-text-decrease-font-size :transient t)
     ("k" "increase" shr-text-increase-font-size :transient t)]])
+
+;;;###autoload
+(defun find-in-doom-dir ()
+  (interactive)
+  (doom/goto-private-init-file)
+  (projectile-find-dir))

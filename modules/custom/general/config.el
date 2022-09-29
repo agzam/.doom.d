@@ -42,7 +42,7 @@
        :desc "fasd file" "af" (cmd! (fasd-find-file -1))
        "e" nil ;; release it, or it complains
        (:prefix ("e" . "doom/emacs")
-        :desc "doom.d" "d" (cmd! () (doom/goto-private-config-file) (projectile-find-dir))
+        :desc "doom.d" "d" #'find-in-doom-dir
         :desc "doom init dir" "i" (cmd! () (dired doom-emacs-dir))))
 
       (:prefix ("g" . "goto")
@@ -69,6 +69,7 @@
 
       (:prefix ("k" .  "lispy")
        "=" #'sp-reindent
+       "-" #'sp-reindent
        "W" #'sp-unwrap-sexp
        "b" #'sp-forward-barf-sexp
        "B" #'sp-backward-barf-sexp
