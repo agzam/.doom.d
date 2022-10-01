@@ -7,7 +7,7 @@
            ;; REVIEW I intentionally avoid git.savannah.gnu.org because of SSL
            ;;   issues (see #5655), uptime issues, download time, and lack of
            ;;   shallow clone support.
-           :repo "bzg/org-mode"
+           :repo "emacs-straight/org-mode"
            :files (:defaults "etc")
            :depth 1
            ;; HACK Org requires a post-install compilation step to generate a

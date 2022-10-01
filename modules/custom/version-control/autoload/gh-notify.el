@@ -18,7 +18,7 @@
            'unread notification) nil)
     (with-current-buffer (current-buffer)
       (read-only-mode -1)
-      (delete-line)
+      (kill-whole-line)
       (insert (funcall 'gh-notify-render-notification notification))
       (insert "\n")
       (read-only-mode +1)))
@@ -31,7 +31,7 @@
   "Jumps to PR review straight from notications list."
   (interactive)
   (if-let* ((obj (gh-notify-current-notification))
-            (pr-p (eq 'pullreq (oref obj type)))
+            (pr-p (cl-struct-slot-value 'gh-notify-notification 'type obj))
             (forge-buf (call-interactively #'gh-notify-visit-notification)))
       (with-current-buffer forge-buf
         (run-with-timer

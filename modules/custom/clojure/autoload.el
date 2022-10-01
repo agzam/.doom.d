@@ -225,6 +225,6 @@ convert from JSON."
          (search-backward ":require")
          (sp-end-of-sexp)
          (newline-and-indent)
-         (evil-insert)
+         (evil-insert 1)
          (keymap-local-set "C-c C-k" #'edit-indirect-abort)
          (keymap-local-set "C-c C-c" #'edit-indirect-commit))))))

@@ -205,3 +205,6 @@
 
 (after! writeroom-mode
   (setq writeroom-maximize-window t))
+
+(after! general
+  (general-auto-unbind-keys))
