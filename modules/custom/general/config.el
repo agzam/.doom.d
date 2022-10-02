@@ -11,7 +11,9 @@
       "s-=" #'text-scale-increase
       "s--" #'text-scale-decrease
       :n "] p" (cmd! () (evil-forward-paragraph) (recenter))
-      :n "[ p" (cmd! () (evil-backward-paragraph) (recenter)))
+      :n "[ p" (cmd! () (evil-backward-paragraph) (recenter))
+      :n "zk" #'text-scale-increase
+      :n "zj" #'text-scale-decrease)
 
 (map! :map minibuffer-mode-map
       "M-l" #'sp-forward-slurp-sexp
@@ -105,6 +107,7 @@
 
       (:prefix ("s". "search/symbol")
        "/" #'engine/search-google
+       "e" #'eww-search-words
        "f" #'find-name-dired
        "g" #'engine/search-github-with-lang
        "j" #'imenu)

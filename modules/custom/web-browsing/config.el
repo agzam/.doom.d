@@ -4,7 +4,8 @@
   :commands (eww)
   :config
   (setq shr-use-fonts nil
-        shr-max-image-proportion 0.5)
+        shr-max-image-proportion 0.5
+        eww-browse-url-new-window-is-tab nil)
 
   (add-hook! 'eww-after-render-hook #'eww--rename-buffer)
   (defadvice! eww-rename-buffer-a ()
@@ -14,16 +15,17 @@
 
   (map! :map eww-mode-map
         :ni "C-<return>" #'+eww-open-in-other-window
-        :n "yy" #'eww-copy-page-url
+        :n "yy" #'+eww-copy-current-url
         :n "zk" #'+eww-increase-font-size
         :n "zj" #'+eww-decrease-font-size
+        :n "q" #'kill-buffer-and-window
         [remap imenu] #'+eww-jump-to-url-on-page
 
         (:localleader
          :desc "zoom" "z" #'eww-zoom-transient
          :desc "external browser" "e" #'eww-browse-with-external-browser
          :desc "buffers" "b" #'eww-switch-to-buffer
-
+         :desc "reload" "r" #'eww-reload
          (:prefix ("t" . "toggle")
           :desc "readable" "r" #'eww-readable
           :desc "colors" "c" #'eww-toggle-colors

@@ -93,6 +93,7 @@ consider whole buffer."
 
 ;;;###autoload
 (defun +eww-copy-current-url ()
+  (interactive)
   (let ((url (eww-current-url)))
     (kill-new url)
     (message url)))

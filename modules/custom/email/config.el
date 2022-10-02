@@ -17,7 +17,9 @@
       auth-source-debug t
       auth-source-do-cache nil)
 
-(after! notmuch
+(use-package! notmuch
+  :defer t
+  :config
   (setq notmuch-search-oldest-first nil
         message-confirm-send t
 
@@ -75,6 +77,15 @@
         notmuch-tree-message-window
       (funcall #'+evil/window-move-left))))
 
+(use-package! org-mime
+  :when (modulep! +org)
+  :after (org notmuch)
+  :config (setq org-mime-library 'mml))
+
+(use-package! consult-notmuch
+  :when (modulep! :completion vertico)
+  :commands consult-notmuch
+  :after notmuch)
 
 ;; (notmuch-search
 ;;  (plist-get

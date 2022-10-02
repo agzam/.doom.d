@@ -46,6 +46,7 @@
 (defun colors/cycle-themes-up ()
   (interactive)
   (colors/load-prev-theme)
+  (circadian-setup)
   (colors/cycle-themes/body))
 
 ;;;###autoload

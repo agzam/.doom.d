@@ -71,7 +71,8 @@
           "i" #'org-id-store-link
           "c" #'markdown-link->org)
          (:prefix ("o" . "open/Org")
-          "l" #'org-id-store-link)
+          "l" #'org-id-store-link
+          "L" #'org-store-link-id-optional)
          (:prefix ("r" . "roam")
           "i" #'org-roam-node-insert+
           "l" #'org-roam-buffer-toggle

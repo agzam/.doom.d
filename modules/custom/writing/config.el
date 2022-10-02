@@ -33,7 +33,7 @@
       display-buffer-in-direction)
      (direction . right)
      (window . root)
-     (window-width . 0.25))))
+     (window-width . 0.30))))
 
 (use-package! lsp-grammarly
   :defer t

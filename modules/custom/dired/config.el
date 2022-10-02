@@ -18,8 +18,8 @@
   (treemacs-follow-mode 1)
 
   (after! winum
-    (map! :map winum-keymap
-     [remap winum-select-window-0] #'treemacs-select-window)
+    ;; (map! :map winum-keymap
+    ;;  [remap winum-select-window-0] #'treemacs-select-window)
 
     (dolist (wn (seq-map 'number-to-string (number-sequence 0 9)))
       (let ((f (intern (concat "winum-select-window-" wn)))
