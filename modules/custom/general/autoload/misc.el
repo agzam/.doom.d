@@ -160,28 +160,6 @@ or creates new session. Optionally, BUFFER-NAME can be set"
   t)
 
 ;;;###autoload
-(defun shr-text-decrease-font-size ()
-  (interactive)
-  (let* ((cur (face-attribute 'shr-text :height nil))
-         (cur (if (floatp cur) cur 1.0)))
-   (set-face-attribute 'shr-text nil :height (- cur 0.1))))
-
-;;;###autoload
-(defun shr-text-increase-font-size ()
-  (interactive)
-  (let* ((cur (face-attribute 'shr-text :height nil))
-         (cur (if (floatp cur) cur 1.0)))
-   (set-face-attribute 'shr-text nil :height (+ cur 0.1))))
-
-(require 'transient)
-;;;###autoload
-(transient-define-prefix eww-zoom-transient ()
-  "EWW"
-  ["Fonts"
-   [("j" "decrease" shr-text-decrease-font-size :transient t)
-    ("k" "increase" shr-text-increase-font-size :transient t)]])
-
-;;;###autoload
 (defun find-in-doom-dir ()
   (interactive)
   (doom/goto-private-init-file)

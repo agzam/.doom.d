@@ -442,15 +442,4 @@
     display-buffer-in-direction)
    (direction . right)
    (window . root)
-   (window-width . 0.3)))
-
-(after! eww
-  (setq shr-max-image-proportion 0.5)
-  (map! :map eww-mode-map
-        :n "yy" #'eww-copy-page-url
-        (:localleader
-         "z" #'eww-zoom-transient
-         :desc "copy url" "y" (cmd!
-                               (let ((url (eww-current-url)))
-                                 (kill-new url)
-                                 (message url))))))
+   (window-width . 0.35)))
