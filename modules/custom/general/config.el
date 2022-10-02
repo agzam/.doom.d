@@ -131,7 +131,6 @@
       (:prefix ("z" . "zoom")
        "f" #'frame-zoom-transient))
 
-(map! :localleader :map xwidget-webkit-mode-map "x" #'kill-current-buffer)
 (map! :map special-mode-map
       "SPC" nil
       "h" #'evil-backward-char)

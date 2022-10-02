@@ -1,4 +1,4 @@
 ;; -*- no-byte-compile: t; -*-
-;;; custom/eww/packages.el
+;;; custom/web-browsing/packages.el
 
 (package! eww :built-in t)

@@ -207,5 +207,4 @@
        email
        webdev
        osx
-       eww
-       )
+       web-browsing)
