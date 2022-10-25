@@ -8,3 +8,6 @@
 (package! git-link)
 (package! code-review :recipe (:host github :repo "wandersoncferreira/code-review"))
 (package! gist)
+
+(package! transient :recipe (:host github :repo "magit/transient" )
+  :pin "0a3b22f169b84ab7a51dc83856b0b6487fdf41da")
