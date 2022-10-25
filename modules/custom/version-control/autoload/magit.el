@@ -180,3 +180,65 @@ i.e.: show only commits that differ between selected (other branch) and current 
   "Compare log between branches à la GitHub style between current branch and origin/master"
   (interactive)
   (magit-diff-range (concat "origin/master.." (magit-get-current-branch))))
+
+(defun +magit-create-branch-friendly-string (sentence)
+  "From a SENTENCE, e.g., GitHub issue title, form a string that can
+be used as a git branch name."
+  (--> sentence
+       (string-split it " \\|\\[\\|\\]\\|\\:\\|{\\|}" :omit-nulls " ")
+       (seq-map
+        (-compose
+         (-rpartial #'string-trim "_\\|-" "_\\|-")
+         (lambda (x) (replace-regexp-in-string "_+\\|\\-+" "_" x))
+         #'downcase
+         (lambda (x) (replace-regexp-in-string "?\\|@\\|~\\|\\^\\|\\/\\|\\\\" "-" x)))
+        it)
+       (seq-remove (-rpartial #'string-match-p "_*\\| *\\|-*") it)
+       (seq-take it 8)
+       (string-join it "_")))
+
+(defun +forge-select-issue ()
+  "List issues of the current repository in a separate buffer."
+  (interactive)
+  (let* ((repo (forge-get-repository t))
+         (repo-id (oref repo id))
+         (_ (when repo-id (forge-pull repo)))
+         (issues-list
+          (forge-sql [:select [title number] :from issue :where (and (= repository $s2)
+                                                                     (= state 'open))
+                      :order-by [(desc updated)]]
+                     (forge--tablist-columns-vector)
+                     repo-id))
+         (get-issue-num (lambda (issue-str)
+                          (nth 1 (seq-find
+                                  (lambda (x) (string-equal issue-str (car x)))
+                                  issues-list))))
+         (completion-extra-properties
+          (list :annotation-function (-compose (-partial #'format "\t\t#%s") get-issue-num)))
+         (sel (completing-read "Choose an issue: " issues-list)))
+    (list sel (funcall get-issue-num sel))))
+
+;;;###autoload
+(defun +magit-worktree-branch-from-issue ()
+  "Select a forge issue, and create a worktree and a branch."
+  (interactive)
+  (let* ((sel-issue (+forge-select-issue))
+         (w-tree (format
+                  "%s__#%s"
+                  (+magit-create-branch-friendly-string (car sel-issue))
+                  (nth 1 sel-issue)))
+         (def-dir (if (magit-inside-worktree-p)
+                      (->> default-directory
+                           (file-name-split)
+                           (seq-remove #'string-blank-p)
+                           (-butlast)
+                           (s-join "/")
+                           (format "/%s/"))
+                    default-directory))
+         (path (read-directory-name "Create new worktree at:" def-dir nil nil w-tree))
+         (branch (magit-read-string-ns "With branch: " (->> path
+                                                            (file-name-split)
+                                                            (last)))))
+    (magit-run-git "worktree" "add" "-b"
+                   branch (magit--expand-worktree path) "origin/master")
+    (magit-diff-visit-directory path)))

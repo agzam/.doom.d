@@ -78,6 +78,9 @@
   (transient-append-suffix 'magit-diff "d"
     '("m" "origin/master..current" +magit-diff--origin-master))
 
+  (transient-append-suffix 'magit-worktree "n"
+    '("i" "create from issue" +magit-worktree-branch-from-issue))
+
   ;; Center the target file, because it's poor UX to have it at the bottom of
   ;; the window after invoking `magit-status-here'.
   (advice-add #'magit-status-here :after #'doom-recenter-a)
