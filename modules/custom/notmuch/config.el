@@ -5,7 +5,7 @@
       smtpmail-queue-mail nil
       smtpmail-queue-dir "~/.mail/queue/cur"
       ;; send-mail-function 'smtpmail-send-it
-      ;; message-send-mail-function 'smtpmail-send-it
+      message-send-mail-function 'smtpmail-send-it
       ;; mail-specify-envelope-from t
       ;; mail-envelope-from 'header
 
@@ -53,7 +53,6 @@ variable accordingly.")
 
   (setq notmuch-fcc-dirs nil
         message-kill-buffer-on-exit t
-        message-send-mail-function 'message-send-mail-with-sendmail
         send-mail-function 'sendmail-send-it
         ;; sendmail-program "/usr/local/bin/msmtp"
         notmuch-search-result-format
