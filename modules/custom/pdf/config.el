@@ -1,21 +1,10 @@
 ;;; custom/pdf/config.el -*- lexical-binding: t; -*-
 
 (use-package! pdf-tools
-  :mode ("\\.pdf\\'" . pdf-view-mode)
-  :init
-  (after! pdf-annot
-    (defun +pdf-cleanup-windows-h ()
-      "Kill left-over annotation buffers when the document is killed."
-      (when (buffer-live-p pdf-annot-list-document-buffer)
-        (pdf-info-close pdf-annot-list-document-buffer))
-      (when (buffer-live-p pdf-annot-list-buffer)
-        (kill-buffer pdf-annot-list-buffer))
-      (let ((contents-buffer (get-buffer "*Contents*")))
-        (when (and contents-buffer (buffer-live-p contents-buffer))
-          (kill-buffer contents-buffer))))
-    (add-hook! 'pdf-view-mode-hook
-      (add-hook 'kill-buffer-hook #'+pdf-cleanup-windows-h nil t)))
-
+  ;; :mode ("\\.pdf\\'" . pdf-view-mode)
+  ;; :magic ("%PDF" . pdf-view-mode)
+  :after pdf-view
+  :commands (pdf-view-mode)
   :config
   (defadvice! +pdf--install-epdfinfo-a (fn &rest args)
     "Install epdfinfo after the first PDF file, if needed."
@@ -39,9 +28,12 @@
         :n "[" #'pdf-history-backward
         :n "]" #'pdf-history-forward
         :n "o" #'pdf-outline
+        :nm "C-e" #'evil-collection-pdf-view-next-line-or-next-page
+        :nm "C-y" #'evil-collection-pdf-view-previous-line-or-previous-page
         :localleader
-        "n" #'pdf-view-midnight-minor-mode
+        "t" #'pdf-view-themed-minor-mode
         (:prefix ("s" . "slice/scroll")
+         "a" #'pdf-view-auto-slice-minor-mode
          "b" #'pdf-view-set-slice-from-bounding-box
          "m" #'pdf-view-set-slice-using-mouse
          "r" #'pdf-view-reset-slice
