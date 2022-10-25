@@ -204,7 +204,7 @@
        shell
        yaml
        pdf
-       email
+       notmuch
        webdev
        osx
        web-browsing)

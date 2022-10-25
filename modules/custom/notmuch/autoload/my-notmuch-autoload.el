@@ -1,4 +1,4 @@
-;;; custom/email/autoload.el -*- lexical-binding: t; -*-
+;;; custom/notmuch/autoload/my-notmuch-autoload.el -*- lexical-binding: t; -*-
 
 ;;;###autoload
 (defun +notmuch-message-id->thread-id (message-id)
@@ -110,6 +110,15 @@
     (message "opening url:%s" url)
     (browse-url url)))
 
+(let* ((headers (plist-get (notmuch-show-get-message-properties) :headers))
+       (send-to (concat (plist-get headers :To) ", " (plist-get headers :Cc))))
+  (when
+      (string-match (concat "\\([[:graph:]]*\\)@" send-to))
+   (match-string 1 send-to)))
+
+
+(string-match (concat "\\([[:graph:]]*\\)@" x) send-to)
+
 ;;;###autoload
 (defun +notmuch-find-in-mailing-list ()
     "Find message in mailing-list archives"
@@ -145,6 +154,11 @@
               ;;    "&submit=" (url-hexify-string "Search!")
               ;;    "&idxname="
               ;;    (car mlist))))
+
+              ((pred (lambda (x) (string-match-p "emacs-orgmode" (car x))))
+               (format
+                "https://list.orgmode.org/orgmode/%s/"
+                (url-hexify-string msg-id)))
 
               ((pred (lambda (x) (string-match-p "gnu.org" (cadr x))))
                (format
