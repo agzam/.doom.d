@@ -15,3 +15,5 @@
   (package! spacehammer :recipe (:local-repo "spacehammer" :files ("*.el"))))
 
 (package! separedit :recipe (:host github :repo "twlz0ne/separedit.el"))
+
+(package! youtube-sub-extractor :recipe (:local-repo "youtube-sub-extractor.el"))

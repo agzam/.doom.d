@@ -260,3 +260,6 @@
 
 (after! markdown-mode
   (require 'lsp-marksman))
+
+(use-package! youtube-sub-extractor
+  :commands (youtube-sub-extractor-extract-subs))
