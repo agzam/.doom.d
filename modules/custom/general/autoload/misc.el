@@ -120,3 +120,10 @@ narrowed to."
   (interactive)
   (doom/goto-private-init-file)
   (projectile-find-dir))
+
+;; indent on paste
+;; from Prelude: https://github.com/bbatsov/prelude
+(defun +yank-advised-indent-function (beg end)
+  "Do indentation, as long as the region isn't too large."
+  (if (<= (- end beg) +doom-yank-indent-threshold)
+      (indent-region beg end nil)))

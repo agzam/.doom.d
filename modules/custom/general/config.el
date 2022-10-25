@@ -445,3 +445,31 @@
    (direction . right)
    (window . root)
    (window-width . 0.35)))
+
+(setq +doom-indent-sensitive-modes '())
+(setq +doom-yank-indent-modes '())
+(setq +doom-yank-indent-threshold 1000)
+
+(defadvice! +yank-indent-region-a (yank-fn &rest args)
+  :around #'yank
+  :around #'yank-pop
+  :around #'evil-paste-before
+  :around #'evil-paste-after
+  ;; borrowed from spacemacs altered for Doom. see spacemacs//yank-indent-region
+  (evil-start-undo-step)
+  (prog1
+      (let ((prefix (car args))
+            (enable (and (not (member major-mode +doom-indent-sensitive-modes))
+                         (or (derived-mode-p 'prog-mode)
+                             (member major-mode +doom-yank-indent-modes)))))
+        (when (and enable (equal '(4) prefix))
+          (setq args (cdr args)))
+        (prog1
+            (apply yank-fn args)
+          (when (and enable (not (equal '(4) prefix)))
+            (let ((transient-mark-mode nil)
+                  (save-undo buffer-undo-list))
+              (+yank-advised-indent-function (region-beginning)
+                                             (region-end))))))
+    (evil-end-undo-step)))
+
