@@ -91,3 +91,17 @@ Leaves single window per buffer, removing all duplicates."
          (seq-filter (lambda (group) (length> (cdr group) 1)))
          (seq-do (lambda (group) (seq-do #'delete-window (cddr group)))))
     (balance-windows-area)))
+
+;;;###autoload
+(defun +scroll-line-down-other-window (&optional count)
+  "Scrolls in the window COUNT lines downwards."
+  (interactive "P")
+  (with-selected-window (other-window-for-scrolling)
+    (funcall (doom-lookup-key (kbd "C-e")) (or count 1))))
+
+;;;###autoload
+(defun +scroll-line-up-other-window (&optional count)
+  "Scrolls in the window COUNT lines downwards."
+  (interactive "P")
+  (with-selected-window (other-window-for-scrolling)
+    (funcall (doom-lookup-key (kbd "C-y")) (or count 1))))

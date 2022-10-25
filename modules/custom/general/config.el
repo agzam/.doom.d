@@ -13,7 +13,9 @@
       :n "] p" (cmd! () (evil-forward-paragraph) (recenter))
       :n "[ p" (cmd! () (evil-backward-paragraph) (recenter))
       :n "zk" #'text-scale-increase
-      :n "zj" #'text-scale-decrease)
+      :n "zj" #'text-scale-decrease
+      :n "s-e" #'+scroll-line-down-other-window
+      :n "s-y" #'+scroll-line-up-other-window)
 
 (map! :map minibuffer-mode-map
       "M-l" #'sp-forward-slurp-sexp

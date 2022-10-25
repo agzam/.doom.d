@@ -106,7 +106,7 @@
 (after! dired
   (map! :leader
         "fj" #'dired-jump
-        "fO" #'+macos-open-with)
+        "fO" #'+macos/open-in-default-program)
 
   (map! :map dired-mode-map
         :n "s" #'dired-sort-toggle-or-edit)
