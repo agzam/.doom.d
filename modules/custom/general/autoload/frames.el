@@ -22,7 +22,7 @@
     (set-frame-parameter nil 'fullscreen 'maximized)
     (set-frame-parameter frame 'undecorated (not on?))
     (set-frame-height frame (- display-height header-h) nil t)
-    (set-frame-width frame (- display-width 20) nil t)
+    (set-frame-width frame (- display-width 10) nil t)
     (set-frame-position frame x y)))
 
 ;;;###autoload

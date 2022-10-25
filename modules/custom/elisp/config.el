@@ -58,8 +58,17 @@
 
 (after! info
   (map! :map Info-mode-map
-       :n "C-j" #'Info-goto-node
-       :n "^" #'Info-up
-       :n "H" #'Info-history-back
-       :n "L" #'Info-history-forward
-       :n "C-<return>" #'Info-follow-nearest-node-new-window))
+        :n "C-j" #'Info-goto-node
+        :n "^" #'Info-up
+        :n "H" #'Info-history-back
+        :n "L" #'Info-history-forward
+        :n "C-<return>" #'Info-follow-nearest-node-new-window
+        :n "n" #'Info-search-next
+        :n "N" #'Info-search-backward
+        :localleader
+        "w" #'Info-goto-node-web
+        "g" #'Info-goto-node
+        "s" #'Info-search
+        "i" #'Info-index
+        "h" #'Info-history
+        "d" #'Info-directory))

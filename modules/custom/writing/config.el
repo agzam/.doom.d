@@ -169,14 +169,14 @@
   :defer t
   :config
   (add-hook! (text-mode org-mode markdown-mode message-mode git-commit-mode)
-             (defun flyspell-toggle-on () (flyspell-mode +1)))
+    (defun flyspell-toggle-on () (flyspell-mode +1)))
   (setq flyspell-issue-welcome-flag nil
         flyspell-issue-message-flag nil)
   (map! :map flyspell-mode-map "C-;" nil) ; release the key for embark-act
   (map! :map flyspell-mode-map
-      :i ",," #'flyspell-auto-correct-previous-word
-      :i ", SPC" #'comma-smart-insert
-      :i "s-." #'flyspell-correct-previous))
+        :i ",," (cmd! () (flyspell-auto-correct-previous-word (line-beginning-position)))
+        :i ", SPC" #'comma-smart-insert
+        :i "s-." #'flyspell-correct-previous))
 
 (use-package! flyspell-correct
   :defer t)

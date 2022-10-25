@@ -57,8 +57,12 @@ set so that it clears the whole REPL buffer, not just the output."
 (defun cider-clear-repl-buffers ()
   "Clears both repl and nrepl output"
   (interactive)
-  (let ((current-prefix-arg '(4)))
-    (call-interactively 'cider-find-and-clear-repl-output)
+  (let ((origin-buf (current-buffer))
+        (cider-buf (cider-current-repl nil 'ensure)))
+    (switch-to-buffer cider-buf)
+    (cider-repl-clear-buffer)
+    (when (not (eq origin-buf cider-buf))
+      (cider-switch-to-last-clojure-buffer))
     (when-let ((nrepl-buf (nrepl-make-buffer-name
                            (nrepl--make-hidden-name nrepl-server-buffer-name-template)
                            nil :no-dup)))
@@ -74,7 +78,17 @@ gets the name suitable for :require of ns declaration."
                         (message x)
                         (kill-new x)
                         x))
-         (sym (cond ((lsp--capability :hoverProvider)
+         (sym (cond ((cider-connected-p)
+                     (let ((cb (lambda (x)
+                                 (when-let ((v (nrepl-dict-get x "value"))
+                                            (s (replace-regexp-in-string "[()]" "" v)))
+                                   (message (string-trim s))
+                                   (kill-new s)))))
+                       (cider-interactive-eval
+                        (concat "`(" (cider-symbol-at-point t) ")")
+                        cb)))
+
+                    ((lsp--capability :hoverProvider)
                      (let ((s (-some->
                                   "textDocument/hover"
                                 (lsp--make-request
@@ -84,16 +98,6 @@ gets the name suitable for :require of ns declaration."
                                 (plist-get :value))))
                        (string-match "\\(```.*\n\\)\\(\\([[:word:]]\\|[[:graph:]]\\)*\\)" s)
                        (string-trim (match-string 2 s))))
-
-                    ((cider-connected-p)
-                     (let ((cb (lambda (x)
-                                 (when-let ((v (nrepl-dict-get x "value"))
-                                            (s (replace-regexp-in-string "[()]" "" v)))
-                                   (message (string-trim s))
-                                   (kill-new s)))))
-                       (cider-interactive-eval
-                        (concat "`(" (cider-symbol-at-point t) ")")
-                        cb)))
                     (t (message "Neither lsp nor cider are connected")))))
     (if for-req  ; want ns header name, e.g.: "[foo.core :as foo]"
         (if-let* ((m (string-match "^\\(.*\\)\\/" sym))) ; attempt to get anything before the slash

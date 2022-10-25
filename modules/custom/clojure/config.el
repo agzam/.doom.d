@@ -62,6 +62,8 @@
         cider-dynamic-indentation nil
         cider-overlays-use-font-lock nil
         cider-prompt-for-symbol nil
+
+        cider-repl-display-help-banner nil
         cider-repl-history-display-duplicates nil
         cider-repl-history-display-style 'one-line
         cider-repl-history-file (concat doom-cache-dir "cider-repl-history")

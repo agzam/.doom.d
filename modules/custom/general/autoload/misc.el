@@ -89,10 +89,10 @@ narrowed to."
          (new "/tmp/new-kill")
          (prev-ediff-quit-hook ediff-quit-hook))
     (cl-flet ((kill-temps
-               ()
-               (dolist (f (list old new))
-                 (kill-buffer (find-buffer-visiting f)))
-               (setq ediff-quit-hook prev-ediff-quit-hook)))
+                ()
+                (dolist (f (list old new))
+                  (kill-buffer (find-buffer-visiting f)))
+                (setq ediff-quit-hook prev-ediff-quit-hook)))
       (with-temp-file new
         (insert (current-kill 0 t)))
       (with-temp-file old

@@ -50,91 +50,92 @@
         :desc "doom init dir" "i" (cmd! () (dired doom-emacs-dir))))
 
       (:prefix ("g" . "goto")
-       "f" #'magit-file-dispatch
-       "j" #'evil-show-jumps
-       "s" #'magit-status)
+               "f" #'magit-file-dispatch
+               "j" #'evil-show-jumps
+               "s" #'magit-status)
 
       (:prefix ("h" . "help")
-       "a" #'helpful-at-point
-       "dd" nil ; muscle memory is still strong
-       "f" #'helpful-function
-       "h" #'helpful-symbol
-       "p" nil
-       (:prefix ("p" . "packages")
-        "l" #'list-packages
-        "f" #'find-library-other-window
-        "d" #'describe-package)
-       "s" #'find-function-other-window
-       "v" #'helpful-variable)
+               "a" #'helpful-at-point
+               "dd" nil ; muscle memory is still strong
+               "f" #'helpful-function
+               "h" #'helpful-symbol
+               "p" nil
+               (:prefix ("p" . "packages")
+                        "l" #'list-packages
+                        "f" #'find-library-other-window
+                        "d" #'doom/describe-package)
+               "s" #'find-function-other-window
+               "v" #'helpful-variable)
 
       (:prefix ("j" . "jump")
-       "j" #'avy-goto-char-timer
-       "x" #'xwidget-webkit-url-get-create)
+               "j" #'avy-goto-char-timer
+               "x" #'xwidget-webkit-url-get-create)
 
       (:prefix ("k" .  "lispy")
-       "=" #'sp-reindent
-       "-" #'sp-reindent
-       "W" #'sp-unwrap-sexp
-       "b" #'sp-forward-barf-sexp
-       "B" #'sp-backward-barf-sexp
-       "c" #'sp-convolute-sexp
-       "dx" #'sp-kill-sexp
-       "r" #'sp-raise-sexp
-       "s" #'sp-forward-slurp-sexp
-       "S" #'sp-backward-slurp-sexp
-       "t" #'sp-transpose-sexp
-       "w" #'sp-wrap-sexp
-       "y" #'sp-copy-sexp)
+               "=" #'sp-reindent
+               "-" #'sp-reindent
+               "W" #'sp-unwrap-sexp
+               "b" #'sp-forward-barf-sexp
+               "B" #'sp-backward-barf-sexp
+               "c" #'sp-convolute-sexp
+               "dx" #'sp-kill-sexp
+               "r" #'sp-raise-sexp
+               "s" #'sp-forward-slurp-sexp
+               "S" #'sp-backward-slurp-sexp
+               "t" #'sp-transpose-sexp
+               "w" #'sp-wrap-sexp
+               "y" #'sp-copy-sexp)
 
       (:prefix ("n" . "narrow")
-       "F" #'narrow-to-defun-indirect-buffer
-       "R" #'narrow-to-region-indirect-buffer
-       "f" #'narrow-to-defun
-       "r" #'narrow-to-region
-       "l" #'consult-focus-lines
-       "w" (cmd! (consult-focus-lines :show) (widen)))
+               "F" #'narrow-to-defun-indirect-buffer
+               "R" #'narrow-to-region-indirect-buffer
+               "f" #'narrow-to-defun
+               "r" #'narrow-to-region
+               "l" #'consult-focus-lines
+               "w" (cmd! (consult-focus-lines :show) (widen)))
 
       (:prefix ("o" . "open/Org")
        :desc "store link"      "l" #'org-store-link
        :desc "link without id" "L" #'org-store-link-id-optional
+       (:when (modulep! :custom notmuch) :desc "notmuch" "m" #'notmuch)
        (:prefix ("g" . "git")
-        "h" #'gh-notify))
+                "h" #'gh-notify))
 
       (:prefix ("p" . "projects")
        :desc "Invalidate project cache" "I" #'projectile-invalidate-cache
        :desc "project IBuffer" "i" #'projectile-ibuffer)
 
       (:prefix ("r" . "resume/ring")
-       "y" #'consult-yank-from-kill-ring)
+               "y" #'consult-yank-from-kill-ring)
 
       (:prefix ("s". "search/symbol")
-       "/" #'engine/search-google
-       "e" #'eww-search-words
-       "f" #'find-name-dired
-       "g" #'engine/search-github-with-lang
-       "j" #'imenu)
+               "/" #'engine/search-google
+               "e" #'eww-search-words
+               "f" #'find-name-dired
+               "g" #'engine/search-github-with-lang
+               "j" #'imenu)
 
       (:prefix ("t" . "toggle")
-       "w" #'toggle-visual-line-navigation)
+               "w" #'toggle-visual-line-navigation)
 
       (:prefix ("w" . "windows")
-       "." #'window-transient
-       "c" #'window-cleanup+
-       "g" #'golden-ratio
-       "D" #'ace-delete-window
-       "M" #'ace-swap-window
-       "W" #'ace-window
-       "_" #'delete-other-windows-horizontally
-       "m" #'toggle-maximize-buffer
-       "|" #'delete-other-windows-vertically
-       "=" #'balance-windows-area)
+               "." #'window-transient
+               "c" #'window-cleanup+
+               "g" #'golden-ratio
+               "D" #'ace-delete-window
+               "M" #'ace-swap-window
+               "W" #'ace-window
+               "_" #'delete-other-windows-horizontally
+               "m" #'toggle-maximize-buffer
+               "|" #'delete-other-windows-vertically
+               "=" #'balance-windows-area)
 
       (:prefix ("x" ."text")
-       "b" #'flyspell-correct-previous
-       "x" #'flyspell-correct-at-point)
+               "b" #'flyspell-correct-previous
+               "x" #'flyspell-correct-at-point)
 
       (:prefix ("z" . "zoom")
-       "f" #'frame-zoom-transient))
+               "f" #'frame-zoom-transient))
 
 (map! :map special-mode-map
       "SPC" nil
@@ -284,24 +285,24 @@
   (map! :map embark-file-map
         "o" nil
         (:prefix ("o" . "open")
-         "j" (embark-split-action find-file +evil/window-split-and-follow)
-         "l" (embark-split-action find-file +evil/window-vsplit-and-follow)
-         "h" (embark-split-action find-file split-window-horizontally)
-         "k" (embark-split-action find-file split-window-vertically)
-         "a" (embark-ace-action find-file)))
+                 "j" (embark-split-action find-file +evil/window-split-and-follow)
+                 "l" (embark-split-action find-file +evil/window-vsplit-and-follow)
+                 "h" (embark-split-action find-file split-window-horizontally)
+                 "k" (embark-split-action find-file split-window-vertically)
+                 "a" (embark-ace-action find-file)))
   (map! :map embark-buffer-map
         "o" nil
         (:prefix ("o" . "open")
-         "j" (embark-split-action switch-to-buffer +evil/window-split-and-follow)
-         "a" (embark-ace-action switch-to-buffer)))
+                 "j" (embark-split-action switch-to-buffer +evil/window-split-and-follow)
+                 "a" (embark-ace-action switch-to-buffer)))
   (map! :map embark-function-map
         "o" nil
         (:prefix ("d" . "definition")
-         "j" (embark-split-action xref-find-definitions +evil/window-split-and-follow)
-         "l" (embark-split-action xref-find-definitions +evil/window-vsplit-and-follow)
-         "h" (embark-split-action xref-find-definitions split-window-horizontally)
-         "k" (embark-split-action xref-find-definitions split-window-vertically)
-         "a" (embark-ace-action xref-find-definitions)))
+                 "j" (embark-split-action xref-find-definitions +evil/window-split-and-follow)
+                 "l" (embark-split-action xref-find-definitions +evil/window-vsplit-and-follow)
+                 "h" (embark-split-action xref-find-definitions split-window-horizontally)
+                 "k" (embark-split-action xref-find-definitions split-window-vertically)
+                 "a" (embark-ace-action xref-find-definitions)))
 
   (defun +edebug-instrument-symbol (symbol)
     (interactive "sSymbol: ")
@@ -309,9 +310,9 @@
 
   (map! :map (embark-command-map embark-symbol-map)
         (:after edebug
-         (:prefix ("D" . "debug")
-           "f" #'+edebug-instrument-symbol
-           "F" #'edebug-remove-instrumentation)))
+                (:prefix ("D" . "debug")
+                         "f" #'+edebug-instrument-symbol
+                         "F" #'edebug-remove-instrumentation)))
 
   (add-hook! 'embark-collect-mode-hook
     (defun visual-line-mode-off-h ()
