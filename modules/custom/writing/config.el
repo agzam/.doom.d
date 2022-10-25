@@ -254,3 +254,9 @@
    (":party:" ?🎉)
    (":spock:" ?🖖)
    (":thumb:" ?👍)))
+
+(after! writegood-mode
+  (remove-hook! 'org-mode-hook #'writegood-mode))
+
+(after! markdown-mode
+  (require 'lsp-marksman))

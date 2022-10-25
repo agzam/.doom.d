@@ -43,12 +43,11 @@
          "h" #'lsp-describe-thing-at-point)
         (:prefix ("t". "toggle")
          "h" #'lsp--document-highlight
-         "L" #'lsp-lens-mode)
+         "L" #'lsp-lens-mode
+         "f" #'file-notify-rm-all-watches)
         (:prefix ("x" . "text/code")
          "l" #'lsp-lens-show
-         "L" #'lsp-lens-hide)
-        (:prefix ("r" . "reset/remove")
-         "f" #'file-notify-rm-all-watches))
+         "L" #'lsp-lens-hide))
 
   (map! :map lsp-ui-flycheck-list-mode-map
         :nv "q" #'kill-buffer-and-window)

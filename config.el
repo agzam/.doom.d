@@ -75,7 +75,8 @@
  apropos-sort-by-scores t
  doom-font-increment 1
  split-width-threshold 160
- split-height-threshold 80)
+ split-height-threshold 80
+ switch-to-buffer-obey-display-actions t)
 
 (after! epa
   (setq epg-pinentry-mode nil))

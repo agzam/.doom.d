@@ -74,11 +74,13 @@
           "l" #'org-id-store-link
           "L" #'org-store-link-id-optional)
          (:prefix ("r" . "roam")
+          "b" #'consult-org-roam-backlinks
           "i" #'org-roam-node-insert+
           "l" #'org-roam-buffer-toggle
           :desc "org-roam-ui in xwidget" "w" #'org-roam-toggle-ui-xwidget
           :desc "org-roam-ui in browser" "W" (cmd! () (browse-url (concat "http://localhost:" (number-to-string org-roam-ui-port))))
           "f" #'org-roam-node-find
+          "F" #'consult-org-roam-forward-links
           "d" #'org-roam-dailies-find-date
           (:prefix ("r" . "refile")
            "n" #'org-roam-refile-to-node))

@@ -369,3 +369,6 @@ ensure it is built when we actually use Forge."
   (add-hook! 'bug-reference-mode-hook #'init-bug-reference-mode-settings)
 
   (add-hook! 'org-mode-hook #'bug-reference-mode))
+
+(after! diff-mode
+  (setq diff-add-log-use-relative-names t))
