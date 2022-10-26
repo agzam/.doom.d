@@ -134,7 +134,9 @@ gets the name suitable for :require of ns declaration."
       (while (re-search-forward "\\s-+" nil t)
         (replace-match " "))
       (let ((clojure-align-forms-automatically nil))
-        (indent-region beg end)))))
+        (if lsp-mode
+            (lsp-format-region beg end)
+          (indent-region beg end))))))
 
 ;;;###autoload
 (defun clojure-edn-json-transform (&optional from-json)

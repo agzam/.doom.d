@@ -158,6 +158,7 @@
   (map! (:localleader
          (:map (clojure-mode-map clojurescript-mode-map)
           ","  #'clj-fully-qualified-symbol-at-point
+          ";" #'clojure-toggle-ignore
           "m"  #'cider-macroexpand-1
           "M"  #'cider-macroexpand-all
           (:prefix ("d" . "debug")
@@ -260,6 +261,7 @@
   :config
   (set-lookup-handlers! 'clj-refactor-mode
     :references #'cljr-find-usages)
+  (setq cljr-magic-requires nil)
   (map! :map clojure-mode-map
         :localleader
         :desc "refactor" "R" #'hydra-cljr-help-menu/body))

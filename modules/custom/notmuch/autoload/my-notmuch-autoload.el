@@ -110,15 +110,6 @@
     (message "opening url:%s" url)
     (browse-url url)))
 
-(let* ((headers (plist-get (notmuch-show-get-message-properties) :headers))
-       (send-to (concat (plist-get headers :To) ", " (plist-get headers :Cc))))
-  (when
-      (string-match (concat "\\([[:graph:]]*\\)@" send-to))
-   (match-string 1 send-to)))
-
-
-(string-match (concat "\\([[:graph:]]*\\)@" x) send-to)
-
 ;;;###autoload
 (defun +notmuch-find-in-mailing-list ()
     "Find message in mailing-list archives"
@@ -155,7 +146,7 @@
               ;;    "&idxname="
               ;;    (car mlist))))
 
-              ((pred (lambda (x) (string-match-p "emacs-orgmode" (car x))))
+              ((pred (lambda (_) (string-match-p "emacs-orgmode@gnu.org" send-to)))
                (format
                 "https://list.orgmode.org/orgmode/%s/"
                 (url-hexify-string msg-id)))

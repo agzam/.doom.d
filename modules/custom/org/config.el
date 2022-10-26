@@ -480,8 +480,6 @@
 
 (use-package! anki-editor
   :commands anki-editor-mode
-  :hook (org-capture-after-finalize . anki-editor-reset-cloze-number) ; Reset cloze-number after each capture.
-  ;; :init
   :config
   (setq anki-editor-create-decks t      ; Allow anki-editor to create a new deck if it doesn't exist
         anki-editor-org-tags-as-anki-tags t)

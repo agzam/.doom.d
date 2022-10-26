@@ -128,6 +128,7 @@
                "_" #'delete-other-windows-horizontally
                "m" #'toggle-maximize-buffer
                "|" #'delete-other-windows-vertically
+               "r" #'balance-windows-area
                "=" #'balance-windows-area)
 
       (:prefix ("x" ."text")

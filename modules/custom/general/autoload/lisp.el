@@ -5,9 +5,13 @@
   (interactive)
   (save-excursion
     (er/expand-region 2)
-    (evil-indent
-     (region-beginning)
-     (region-end))))
+    (if lsp-mode
+        (lsp-format-region
+         (region-beginning)
+         (region-end))
+      (evil-indent
+       (region-beginning)
+       (region-end)))))
 
 ;;;###autoload
 (defun sp-wrap-sexp ()
