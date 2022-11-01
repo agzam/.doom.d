@@ -15,3 +15,5 @@
 (package! hydra)
 
 (package! expand-region)
+
+(unpin! wgrep)

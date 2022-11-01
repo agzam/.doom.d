@@ -19,7 +19,9 @@
 ;;;###autoload
 (defun shell-pop-in-project-root (&optional arg)
   (interactive)
-  (projectile-with-default-dir (projectile-project-root)
+  (if-let ((pr (projectile-project-root)))
+      (projectile-with-default-dir pr
+          (shell-pop arg))
     (shell-pop arg)))
 
 ;;;###autoload

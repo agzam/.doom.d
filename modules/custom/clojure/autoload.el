@@ -76,17 +76,20 @@ gets the name suitable for :require of ns declaration."
   (interactive "P")
   (let* ((use-results (lambda (x)
                         (message x)
-                        (kill-new x)
-                        x))
+                        (kill-new x)))
          (sym (cond ((cider-connected-p)
                      (let ((cb (lambda (x)
                                  (when-let ((v (nrepl-dict-get x "value"))
-                                            (s (replace-regexp-in-string "[()]" "" v)))
-                                   (message (string-trim s))
-                                   (kill-new s)))))
+                                            (s (string-trim
+                                                (replace-regexp-in-string "[()]" "" v))))
+                                   (message s)
+                                   (kill-new s)
+                                   (setq sym s)))))
                        (cider-interactive-eval
-                        (concat "`(" (cider-symbol-at-point t) ")")
-                        cb)))
+                        (format "`(%s)" (cider-symbol-at-point t))
+                        cb
+                        (bounds-of-thing-at-point 'symbol))
+                       sym))
 
                     ((lsp--capability :hoverProvider)
                      (let ((s (-some->
@@ -111,8 +114,8 @@ gets the name suitable for :require of ns declaration."
                                (projectile-project-root))))))
               (if-let* ((m (string-match "\\[.*\\]" grepped))
                         (res (match-string 0 grepped)))
-                  (funcall use-results res)
-                (funcall use-results (format "[%s :as ]" suffix))))
+                  (run-with-timer 0.05 nil use-results res)
+                (run-with-timer 0.05 nil use-results (format "[%s :as ]" suffix))))
           (funcall use-results sym))
       (funcall use-results sym))))
 
@@ -127,7 +130,7 @@ gets the name suitable for :require of ns declaration."
                      (clojure-backward-logical-sexp)
                      (list (point) end)))))
 
-  (save-excursion
+  (save-mark-and-excursion
     (save-restriction
       (narrow-to-region beg end)
       (goto-char (point-min))
@@ -135,7 +138,7 @@ gets the name suitable for :require of ns declaration."
         (replace-match " "))
       (let ((clojure-align-forms-automatically nil))
         (if lsp-mode
-            (lsp-format-region beg end)
+            (lsp--indent-lines beg end)
           (indent-region beg end))))))
 
 ;;;###autoload

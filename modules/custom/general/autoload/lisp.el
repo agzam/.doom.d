@@ -3,10 +3,10 @@
 ;;;###autoload
 (defun sp-reindent ()
   (interactive)
-  (save-excursion
+  (save-mark-and-excursion
     (er/expand-region 2)
-    (if lsp-mode
-        (lsp-format-region
+    (if (bound-and-true-p lsp-mode)
+        (lsp--indent-lines
          (region-beginning)
          (region-end))
       (evil-indent

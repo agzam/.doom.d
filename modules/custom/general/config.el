@@ -477,3 +477,11 @@
                                              (region-end))))))
     (evil-end-undo-step)))
 
+(after! edit-indirect
+  ;; I want indirect buffers to always appear on the right side of current window
+  (add-to-list
+   'display-buffer-alist
+   `("\\*edit-indirect .*\\*"
+     (display-buffer-reuse-window
+      display-buffer-in-direction)
+     (direction . right))))

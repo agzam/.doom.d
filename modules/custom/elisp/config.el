@@ -72,3 +72,11 @@
         "i" #'Info-index
         "h" #'Info-history
         "d" #'Info-directory))
+
+
+(add-to-list
+ 'display-buffer-alist
+ `("\\*Backtrace\\*"
+   (display-buffer-reuse-window
+    display-buffer-in-direction)
+   (direction . right)))
