@@ -9,15 +9,8 @@
         transient-values-file  (concat doom-etc-dir "transient/values")
         transient-history-file (concat doom-etc-dir "transient/history"))
   :config
-  (map! :leader
-        (:prefix ("g" . "goto/git")
-         :desc "blame" "b" (cmd!
-                            (call-interactively #'magit-blame-addition)
-                            (magit-blame-cycle-style))))
-
   (map! :map magit-blame-read-only-mode-map
         :n "RET" #'magit-show-commit)
-
   (add-hook! 'magit-blame-mode-hook
     (defun turn-off-evil-org-mode ()
       (evil-org-mode -1)))
@@ -262,12 +255,7 @@ ensure it is built when we actually use Forge."
 (use-package! git-link
   :after magit
   :config
-  (setq browse-at-remote-add-line-number-if-no-region-selected t)
-  (map! :leader
-        (:prefix ("gl" . "git link")
-         "b" #'git-link-blame
-         "l" #'git-link-kill
-         "m" #'git-link-main-branch)))
+  (setq browse-at-remote-add-line-number-if-no-region-selected t))
 
 (use-package! gh-notify
   :commands (gh-notify)

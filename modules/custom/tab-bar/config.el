@@ -13,8 +13,6 @@
    "s-j" #'tab-bar-switch-to-prev-tab
    "s-k" #'tab-bar-switch-to-next-tab)
 
-  (map! :leader "l" #'tab-bar-transient)
-
   (add-hook! 'tab-bar-mode-hook #'reset-frame-full-height)
 
   ;; tabs sometimes dissappear from the frame

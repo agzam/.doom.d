@@ -1,9 +1,5 @@
 ;;; custom/colors/config.el -*- lexical-binding: t; -*-
 
-(map! :leader
-      "Tn" #'colors/cycle-themes-down
-      "Tp" #'colors/cycle-themes-up)
-
 (use-package! ag-themes
   :after-call doom-init-ui-h
   :config)

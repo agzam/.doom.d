@@ -1,10 +1,4 @@
 ;;; custom/shell/config.el -*- lexical-binding: t; -*-
-
-(map! :leader
-        "'" #'shell-pop
-        "\"" #'shell-pop-choose
-        "p '" #'shell-pop-in-project-root)
-
 (defun +insert-current-filename ()
   (interactive)
   (insert

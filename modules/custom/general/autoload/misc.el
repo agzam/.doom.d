@@ -45,7 +45,7 @@ narrowed to."
   (evil-define-minor-mode-key 'motion 'visual-line-mode (kbd "<up>") #'evil-previous-visual-line))
 
 ;;;###autoload
-(defun toggle-visual-line-navigation (&optional arg)
+(defun +toggle-visual-line-navigation (&optional arg)
   (interactive)
   (visual-line-mode (or arg 'toggle))
   (if visual-line-mode

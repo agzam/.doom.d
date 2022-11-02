@@ -110,12 +110,6 @@
 
 (setq markdown-enable-math nil)
 
-;; most keys set in ':custom general' module,
-;; yet the most important one I want to set early
-(map! :leader
-      (:when (modulep! :completion vertico)
-       :desc "M-x" :n "SPC" #'execute-extended-command))
-
 (when (modulep! :custom general)
   (add-hook! 'window-setup-hook
     (defun position-frame-on-load-h ()
@@ -143,17 +137,11 @@
 (advice-remove 'evil-open-above #'+evil--insert-newline-above-and-respect-comments-a)
 (advice-remove 'newline-and-indent #'+default--newline-indent-and-continue-comments-a)
 
-(define-key! :keymaps +default-minibuffer-maps
-  "C-u" #'universal-argument)
-
 (defalias 'elisp-mode 'emacs-lisp-mode)
 
 ;; disable global-hl-line
 ;; oddly, that's the way: https://github.com/hlissner/doom-emacs/issues/4206
 (remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
-
-;; needed additional binding, because can't emit backslash from Hammerspoon
-(map! "C-<f12>" #'toggle-input-method)
 
 (after! evil
   (setq evil-jumps-cross-buffers t
@@ -178,24 +166,14 @@
   ;; (map! :leader "!" flycheck-command-map)
   )
 
-(after! helpful
-  (map! :map helpful-mode-map
-        :n "q" #'kill-buffer-and-window))
-
 (after! grep
   (setq grep-program "rg")
-  (map! :map grep-mode-map
-        :n "q" #'kill-buffer-and-window
-        :n "[" #'compilation-previous-file
-        :n "]" #'compilation-next-file
-        (:localleader
-         "f" #'next-error-follow-minor-mode))
-
   ;; for whatever strange reason, embark-export started automatically enabling wgrep in
   ;; grep buffers. A workaround until I figure out what the heck.
-  (add-hook! 'embark-after-export-hook
-    (defun embark-after-export-h ()
-      (run-with-timer 0.1 nil (lambda () (quiet! (wgrep-abort-changes)))))))
+  ;; (add-hook! 'embark-after-export-hook
+  ;;   (defun embark-after-export-h ()
+  ;;     (run-with-timer 0.1 nil (lambda () (quiet! (wgrep-abort-changes))))))
+  )
 
 (add-hook! 'prog-mode-hook #'hs-minor-mode)
 
@@ -203,10 +181,299 @@
 (add-hook! (grep-mode paradox-menu-mode yaml-mode notmuch-search-mode notmuch-tree-mode
                       magit-log-mode notmuch-hello-mode)
   (defun no-wrap-h ()
-    (toggle-visual-line-navigation -1)))
+    (+toggle-visual-line-navigation -1)))
 
 (after! writeroom-mode
   (setq writeroom-maximize-window t))
 
 (after! general
   (general-auto-unbind-keys))
+
+;;;;;;;;;;;;;;;;;
+;; keybindings ;;
+;;;;;;;;;;;;;;;;;
+
+(define-key! :keymaps +default-minibuffer-maps
+  "C-u" #'universal-argument)
+
+;; needed additional binding, because can't emit backslash from Hammerspoon
+(map! "C-<f12>" #'toggle-input-method)
+
+(map! :map grep-mode-map
+      :n "q" #'kill-buffer-and-window
+      :n "[" #'compilation-previous-file
+      :n "]" #'compilation-next-file
+      (:localleader
+       "f" #'next-error-follow-minor-mode))
+
+;; disable nonsensical keys
+(dolist (key '("s-n" "s-p" "s-q" "s-m" "C-x C-c"))
+  (global-set-key (kbd key) nil))
+
+;;; Globals
+(map! :i "M-l" #'sp-forward-slurp-sexp
+      :i "M-h" #'sp-forward-barf-sexp
+      :v "s" #'evil-surround-region
+      "s-b" #'consult-buffer
+      "s-=" #'text-scale-increase
+      "s--" #'text-scale-decrease
+      :n "] p" (cmd! () (evil-forward-paragraph) (recenter))
+      :n "[ p" (cmd! () (evil-backward-paragraph) (recenter))
+      :n "zk" #'text-scale-increase
+      :n "zj" #'text-scale-decrease
+      :n "s-e" #'+scroll-line-down-other-window
+      :n "s-y" #'+scroll-line-up-other-window)
+
+(map! (:map minibuffer-mode-map
+            "M-l" #'sp-forward-slurp-sexp
+            "M-h" #'sp-forward-barf-sexp)
+      (:map minibuffer-local-map
+            "C-c C-s" #'embark-collect))
+
+(map! :leader
+      :desc "M-x" "SPC" #'execute-extended-command
+      "TAB"   #'alternate-buffer
+      "v"     #'er/expand-region
+      :desc "(un)comment" ";" #'evilnc-comment-or-uncomment-lines
+
+      (:when (modulep! :custom shell)
+        :desc "pop shell" "'" #'shell-pop
+        :desc "choose shell" "\"" #'shell-pop-choose)
+
+      (:prefix ("b" . "buffers")
+       :desc "scratch" "s" #'doom/switch-to-scratch-buffer
+       :desc "Messages" "m" #'switch-to-messages-buffer
+       :desc "kill" "d" #'kill-this-buffer
+       :desc "kill with window" "k" #'kill-buffer-and-window
+       :desc "diff with file" "D" #'diff-current-buffer-with-file
+       :desc "kill some buffers" "s-d" #'spacemacs/kill-matching-buffers-rudely)
+
+      (:prefix ("f" . "files")
+       :desc "fasd dir" "ad" (cmd! (fasd-find-file 1))
+       :desc "fasd file" "af" (cmd! (fasd-find-file -1))
+       :desc "dired" "j" #'dired-jump
+       (:when IS-MAC
+         :desc "open in app" "O" #'+macos/open-in-default-program)
+       "e" nil
+       (:prefix ("e" . "doom/emacs")
+        :desc "doom.d" "d" #'find-in-doom-dir
+        :desc "doom init dir" "i" (cmd! (dired doom-emacs-dir))))
+
+      (:prefix ("g" . "goto/git")
+       :desc "magit file" "f" #'magit-file-dispatch
+       :desc "jump list" "j" #'evil-show-jumps
+       :desc "git status" "s" #'magit-status
+       :desc "blame" "b" (cmd!
+                          (call-interactively #'magit-blame-addition)
+                          (magit-blame-cycle-style))
+       (:prefix ("l" . "git link")
+        :desc "blame link" "b" #'git-link-blame
+        :desc "copy link" "l" #'git-link-kill
+        :desc "main branch" "m" #'git-link-main-branch))
+
+      (:prefix ("h" . "help")
+               "a" #'helpful-at-point
+               "f" #'helpful-function
+               "h" #'helpful-symbol
+               "p" nil
+               (:prefix ("p" . "packages")
+                        "l" #'list-packages
+                        "f" #'find-library-other-window
+                        "d" #'doom/describe-package)
+               "s" #'find-function-other-window
+               "v" #'helpful-variable
+               "j" #'info-display-manual)
+
+      (:prefix ("j" . "jump")
+       "j" #'avy-goto-char-timer
+       :desc "xwidget" "x" #'xwidget-webkit-url-get-create)
+
+      (:prefix ("k" .  "lispy")
+               "=" #'sp-reindent
+               "-" #'sp-reindent
+               "W" #'sp-unwrap-sexp
+               "b" #'sp-forward-barf-sexp
+               "B" #'sp-backward-barf-sexp
+               "c" #'sp-convolute-sexp
+               (:prefix ("d" . "kill")
+                "x" #'sp-kill-sexp)
+               "r" #'sp-raise-sexp
+               "s" #'sp-forward-slurp-sexp
+               "S" #'sp-backward-slurp-sexp
+               "t" #'sp-transpose-sexp
+               "w" #'sp-wrap-sexp
+               "y" #'sp-copy-sexp)
+
+      (:when (modulep! :custom tab-bar)
+        :desc "tab-bar" "l" #'tab-bar-transient)
+
+      (:prefix ("n" . "narrow")
+       "F" #'narrow-to-defun-indirect-buffer
+       "R" #'narrow-to-region-indirect-buffer
+       "f" #'narrow-to-defun
+       "r" #'narrow-to-region
+       "l" #'consult-focus-lines
+       :desc "widen" "w" (cmd! (consult-focus-lines :show) (widen)))
+
+      (:prefix ("o" . "open/Org")
+       :desc "store link" "l" #'org-store-link
+       :desc "link without id" "L" #'org-store-link-id-optional
+       (:when (modulep! :custom notmuch)
+         :desc "notmuch" "m" #'notmuch)
+       (:prefix ("g" . "git")
+                "h" #'gh-notify))
+
+      (:prefix ("p" . "projects")
+               (:after projectile
+                :desc "Invalidate project cache" "I" #'projectile-invalidate-cache
+                :desc "project IBuffer" "i" #'projectile-ibuffer
+                :desc "find dir" "d" #'projectile-find-dir)
+               (:when (modulep! :custom dired)
+                 :desc "treemacs" "T" #'treemacs-project-toggle+
+                 :desc "dired locate" "t" #'+dired-jump-find-in-project))
+
+      (:prefix ("r" . "resume/ring")
+       :desc "yank from kill-ring" "y" #'consult-yank-from-kill-ring
+       (:after vertico
+        :desc "vertico repeat" "l" #'vertico-repeat-last))
+
+      (:prefix ("s" . "search/symbol")
+       :desc "google search" "/" #'engine/search-google
+       :desc "eww search" "e" #'eww-search-words
+       :desc "find-name-dired" "f" #'find-name-dired
+       :desc "GitHub" "g" #'engine/search-github-with-lang
+       :desc "imenu" "j" #'imenu)
+
+      (:prefix ("t" . "toggle yo")
+       :desc "v-line nav" "w" #'+toggle-visual-line-navigation)
+
+      (:prefix ("T" . "toggle global")
+               (:when (modulep! :custom colors)
+                 :desc "next color theme" "n" #'colors/cycle-themes-down
+                 :desc "prev color theme" "p" #'colors/cycle-themes-up))
+
+      (:prefix ("w" . "windows")
+               "." #'window-transient
+               "c" #'window-cleanup+
+               "g" #'golden-ratio
+               "D" #'ace-delete-window
+               "M" #'ace-swap-window
+               "W" #'ace-window
+               "_" #'delete-other-windows-horizontally
+               "m" #'toggle-maximize-buffer
+               "|" #'delete-other-windows-vertically
+               "r" #'balance-windows-area
+               "=" #'balance-windows-area)
+      "x" nil
+      (:prefix ("x" ."text")
+               "b" #'flyspell-correct-previous
+               "x" #'flyspell-correct-at-point
+               (:when (modulep! :custom writing)
+                 (:prefix ("l" . "language")
+                  :desc "define" "d" #'define-it-at-point
+                  :desc "grammarly check" "g" #'lsp-grammarly-check-grammar
+                  :desc "sdcv" "l" #'sdcv-search-at-point
+                  :desc "Merriam Webster" "m" #'mw-thesaurus-lookup-dwim)
+                 (:prefix ("g" . "translate")
+                  :desc "en->ru" "e" #'google-translate-query-translate-reverse
+                  :desc "ru->en" "r" #'google-translate-query-translate
+                  :desc "translate" "g" #'google-translate-at-point)))
+
+      (:prefix ("z" . "zoom")
+       :desc "frame" "f" #'frame-zoom-transient))
+
+(map! :map special-mode-map
+      "SPC" nil
+      "h" #'evil-backward-char)
+
+(after! evil-maps
+  ;; often conflicts with doom-local-leader
+  ;; (unbind-key (kbd ",") evil-motion-state-map)
+  (map! (:map evil-motion-state-map "C-u" nil)
+        (:map evil-insert-state-map "C-u" nil)))
+
+(map! :after company
+      (:map company-active-map
+            "C-h" (cmd! () (company-posframe-quickhelp-show))
+            "C-c C-d" #'company-show-doc-buffer
+            "C-n" #'company-select-next
+            "C-p"  #'company-select-previous
+            "C-c C-l" #'company-show-location)
+      (:map company-posframe-active-map
+            "C-c h"  #'company-posframe-quickhelp-toggle
+            "C-n" #'company-select-next
+            "C-p" #'company-select-previous)
+      (:map company-search-map
+            "C-n" #'company-select-next
+            "C-p" #'company-select-previous))
+
+(map! :after vertico
+      :map vertico-map
+      "C-c C-p"  #'vertico-posframe-briefly-off
+      "C-'" #'vertico-quick-insert
+      "C-h" #'vertico-directory-delete-word
+      "C-c C-g" #'vertico-grid-mode
+      "M-h" #'vertico-grid-left
+      "M-l" #'vertico-grid-right
+      "M-j" #'vertico-next
+      "M-k" #'vertico-previous
+      "C-e" #'vertico-scroll-up
+      "C-y" #'vertico-scroll-down
+      "]" #'vertico-next-group
+      "[" #'vertico-previous-group
+      "~" #'vertico-jump-to-home-dir-on~)
+
+(map! :after embark
+      (:map embark-file-map
+            "o" nil
+            (:prefix ("o" . "open")
+                     "j" (embark-split-action find-file +evil/window-split-and-follow)
+                     "l" (embark-split-action find-file +evil/window-vsplit-and-follow)
+                     "h" (embark-split-action find-file split-window-horizontally)
+                     "k" (embark-split-action find-file split-window-vertically)
+                     "a" (embark-ace-action find-file)))
+      (:map embark-buffer-map
+            "o" nil
+            (:prefix ("o" . "open")
+                     "j" (embark-split-action switch-to-buffer +evil/window-split-and-follow)
+                     "a" (embark-ace-action switch-to-buffer)))
+      (:map embark-function-map
+            "o" nil
+            (:prefix ("d" . "definition")
+                     "j" (embark-split-action xref-find-definitions +evil/window-split-and-follow)
+                     "l" (embark-split-action xref-find-definitions +evil/window-vsplit-and-follow)
+                     "h" (embark-split-action xref-find-definitions split-window-horizontally)
+                     "k" (embark-split-action xref-find-definitions split-window-vertically)
+                     "a" (embark-ace-action xref-find-definitions)))
+      (:map embark-url-map
+            "e" #'+eww-open-in-other-window)
+      (:map embark-collect-mode-map
+       :n "[" #'embark-previous-symbol
+       :n "]" #'embark-next-symbol)
+      (:map (embark-command-map embark-symbol-map)
+            (:after edebug
+                    (:prefix ("D" . "debug")
+                             "f" #'+edebug-instrument-symbol
+                             "F" #'edebug-remove-instrumentation))))
+
+(map! :after ibuffer
+      :map ibuffer-mode-map
+      :n "su" #'ibuffer-filter-by-unsaved-file-buffers
+      :n "sF" #'ibuffer-filter-by-file-buffers)
+
+(map! :map occur-mode-map
+      :n "f" #'occur-mode-display-occurrence)
+
+(map! :after consult
+      :map isearch-mode-map "M-s l" #'consult-line)
+
+(map! :after transient
+      (:map transient-map
+            "q" #'transient-quit-one
+            "<escape>" #'transient-quit-one)
+      (:map transient-edit-map "q" #'transient-quit-one)
+      (:map transient-sticky-map "q" #'transient-quit-seq))
+
+(map! :after helpful
+      :map helpful-mode-map
+      :n "q" #'kill-buffer-and-window)

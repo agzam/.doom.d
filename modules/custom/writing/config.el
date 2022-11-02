@@ -1,16 +1,4 @@
 ;;; custom/writing/config.el -*- lexical-binding: t; -*-
-(map! :leader
-      :prefix ("x" . "text")
-      (:prefix ("l" . "language")
-       "d" #'define-it-at-point
-       "g" #'lsp-grammarly-check-grammar
-       "l" #'sdcv-search-at-point
-       "m" #'mw-thesaurus-lookup-dwim)
-      (:prefix ("g" . "translate")
-       "e" #'google-translate-query-translate-reverse
-       "r" #'google-translate-query-translate
-       "g" #'google-translate-at-point))
-
 (use-package! keytar
   :defer 5
   :after lsp-grammarly
