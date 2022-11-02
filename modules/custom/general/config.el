@@ -304,6 +304,7 @@
                  "h" (embark-split-action xref-find-definitions split-window-horizontally)
                  "k" (embark-split-action xref-find-definitions split-window-vertically)
                  "a" (embark-ace-action xref-find-definitions)))
+  (map! :map embark-url-map "e" #'+eww-open-in-other-window)
 
   (defun +edebug-instrument-symbol (symbol)
     (interactive "sSymbol: ")

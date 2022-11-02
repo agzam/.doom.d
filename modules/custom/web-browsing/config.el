@@ -36,4 +36,8 @@
           :desc "copy url" "y" #'+eww-copy-current-url
           :desc "copy for Org" "o" #'org-eww-copy-for-org-mode))))
 
-(map! :localleader :map xwidget-webkit-mode-map "x" #'kill-current-buffer)
+(after! xwidget
+  (map! :localleader :map xwidget-webkit-mode-map "x" #'kill-current-buffer))
+
+(use-package! hnreader
+  :commands (hnreader-news hnreader-best))

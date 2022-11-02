@@ -131,7 +131,9 @@
       (defun +clojure--cider-setup-debug ()
         "Setup cider debug to override evil keys cleanly"
         (evil-make-overriding-map cider--debug-mode-map 'normal)
-        (evil-normalize-keymaps))))
+        (evil-normalize-keymaps)
+        ;; liberate evil keys
+        (map! :map cider--debug-mode-map :nv "h" nil :n "j" nil :n "l" nil :n "o" nil :n "p" nil :n "i" nil))))
 
   (after! evil-collection
     (advice-add 'cider-eval-sexp-at-point :around 'evil-collection-cider-last-sexp))
