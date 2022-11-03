@@ -1,13 +1,14 @@
 ;;; custom/search-engine/autoload.el -*- lexical-binding: t; -*-
 
 (defcustom engine-mode/github-mode->lang
-    '(("clojurescript" . "Clojure")
-      ("clojure" . "Clojure")
-      ("clojurec" . "Clojure")
-      ("emacs-lisp" . "Emacs Lisp")
-      ("lisp-data" . "Emacs Lisp")
-      ("helpful" . "Emacs Lisp")
-      ("js" . "JavaScript"))
+  '(("clojurescript" . "Clojure")
+    ("clojure" . "Clojure")
+    ("clojurec" . "Clojure")
+    ("emacs-lisp" . "Emacs Lisp")
+    ("Info" . "Emacs Lisp")
+    ("lisp-data" . "Emacs Lisp")
+    ("helpful" . "Emacs Lisp")
+    ("js" . "JavaScript"))
     "Associates current mode with a language in Github terms"
     :type 'alist
     :group 'engine)

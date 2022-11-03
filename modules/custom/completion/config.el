@@ -4,23 +4,23 @@
 ;;; https://github.com/itome/.doom.d/
 
 (use-package! corfu
-  :custom
-  (corfu-separator ?\s)
-  (corfu-auto nil)
-  (corfu-auto-delay 0.0)
-  (corfu-preview-current nil) ;; Disable current candidate preview
-  (corfu-on-exact-match nil)
-  (corfu-quit-no-match 'separator)
-  (corfu-cycle t)
-  (corfu-auto-prefix 2)
-  (completion-cycle-threshold 1)
-  (tab-always-indent 'complete)
-  (corfu-max-width 56)
-  (corfu-min-width 56)
-  (corfu-preselect-first t)
   :hook
   (doom-first-buffer . global-corfu-mode)
   :config
+  (setq
+   corfu-separator ?\s
+   corfu-auto t
+   corfu-auto-delay 0.0
+   corfu-preview-current nil ; Disable current candidate preview
+   corfu-on-exact-match nil
+   corfu-quit-no-match 'separator
+   corfu-cycle t
+   corfu-auto-prefix 2
+   completion-cycle-threshold 1
+   tab-always-indent 'complete
+   corfu-max-width 56
+   corfu-min-width 56
+   corfu-preselect-first t)
   (when (modulep! +minibuffer)
     (add-hook 'minibuffer-setup-hook #'+corfu--enable-in-minibuffer))
 
@@ -87,7 +87,8 @@
     (add-to-list 'completion-at-point-functions #'cape-ispell))
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-keyword t)
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev t))
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev t)
+  (add-to-list 'completion-at-point-functions #'cape-abbrev t))
 
 
 (use-package! corfu-history

@@ -315,8 +315,13 @@
        :desc "link without id" "L" #'org-store-link-id-optional
        (:when (modulep! :custom notmuch)
          :desc "notmuch" "m" #'notmuch)
-       (:prefix ("g" . "git")
-                "h" #'gh-notify))
+       (:when (modulep! :custom web-browsing)
+         (:prefix ("h" . "HackerNews")
+          :desc "top" "t" #'hnreader-best
+          :desc "news" "n" #'hnreader-news))
+       (:when (modulep! :custom version-control)
+         (:prefix ("g" . "git")
+                  "h" #'gh-notify)))
 
       (:prefix ("p" . "projects")
                (:after projectile
