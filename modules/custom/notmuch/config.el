@@ -38,9 +38,6 @@ variable accordingly.")
 (use-package! notmuch
   :commands (notmuch)
   :config
-  (set-company-backend! 'notmuch-message-mode
-    'notmuch-company '(company-ispell company-yasnippet))
-
   (defadvice! +notmuch-search-show-thread-a (fn &rest args)
     "Give email buffers a sane name so they can be targeted via
 `display-buffer-alist' (and the :ui popup module)."

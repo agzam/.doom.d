@@ -114,14 +114,6 @@ This function is called by `org-babel-execute-src-block'."
                       (ob-ipython--normalize-session
                        (cdr (assoc :pydir (nth 2 info))))))
   (ob-ipython-mode 1)
-  ;; hack on company mode to use company-capf rather than company-anaconda
-  (when (modulep! :completion company)
-    (setq-local company-backends
-                '(company-capf
-                  company-dabbrev
-                  company-files
-                  company-yasnippet))
-    (setq-local company-idle-delay nil))
   (when (featurep 'lpy)
     (setq lispy-python-proc
           (format "Python:ob-ipython-%s"

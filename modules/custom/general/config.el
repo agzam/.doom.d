@@ -28,11 +28,6 @@
   :config
   (global-fasd-mode +1))
 
-(use-package! consult-company
-  :after company consult
-  :config
-  (map! :map company [remap completion-at-point] #'consult-company))
-
 ;;;;;;;;;;;;;;;;;;;
 ;; vertico stuff ;;
 ;;;;;;;;;;;;;;;;;;;
@@ -133,33 +128,6 @@
   :config
   (setq Info-fontify-angle-bracketed-flag nil)
   (add-hook 'Info-mode-hook (lambda () (require 'info+))))
-
-(use-package! company-posframe
-  :after company
-  :hook (company-mode . company-posframe-mode)
-  :init
-  (setq company-posframe-quickhelp-delay nil
-        company-posframe-show-indicator nil
-        company-quickhelp-delay nil)
-  :config
-  (company-posframe-mode +1)
-  ;; doom-modeline keeps re-rendendering through company completion changes
-  ;; (add-hook! 'company-completion-started-hook
-  ;;   (defun doom-modeline-off (_)
-  ;;     (doom-modeline-mode -1)))
-  ;; (add-hook! ('company-completion-finished-hook
-  ;;             'company-completion-cancelled-hook)
-  ;;            #'doom-modeline-mode)
-  )
-
-;; (use-package! unicode-fonts
-;;   :after-call doom-init-ui-h
-;;   :init
-;;   (when (and unicode-fonts-force-multi-color-on-mac
-;;              (eq window-system 'ns))
-;;     (setq unicode-fonts-skip-font-groups '(decorative low-quality-glyphs)))
-;;   (unicode-fonts-setup))
-
 
 (after! smartparens
   ;; fix for smartparens. Doom's default module does things like skipping pairs if

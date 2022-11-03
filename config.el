@@ -103,11 +103,6 @@
 
   (which-key-mode))
 
-(after! company
-  (setq company-show-numbers t
-        company-tooltip-limit 10)
-  (map! :map company-active-map "C-/" #'completion-at-point))
-
 (setq markdown-enable-math nil)
 
 (when (modulep! :custom general)
@@ -391,21 +386,6 @@
   ;; (unbind-key (kbd ",") evil-motion-state-map)
   (map! (:map evil-motion-state-map "C-u" nil)
         (:map evil-insert-state-map "C-u" nil)))
-
-(map! :after company
-      (:map company-active-map
-            "C-h" (cmd! () (company-posframe-quickhelp-show))
-            "C-c C-d" #'company-show-doc-buffer
-            "C-n" #'company-select-next
-            "C-p"  #'company-select-previous
-            "C-c C-l" #'company-show-location)
-      (:map company-posframe-active-map
-            "C-c h"  #'company-posframe-quickhelp-toggle
-            "C-n" #'company-select-next
-            "C-p" #'company-select-previous)
-      (:map company-search-map
-            "C-n" #'company-select-next
-            "C-p" #'company-select-previous))
 
 (map! :after vertico
       :map vertico-map
