@@ -10,4 +10,6 @@
 (package! gist)
 
 (package! transient :recipe (:host github :repo "magit/transient" )
-  :pin "0a3b22f169b84ab7a51dc83856b0b6487fdf41da")
+  ;; update breaks my transients, see: https://github.com/magit/transient/issues/219
+  :pin "0a3b22f169b84ab7a51dc83856b0b6487fdf41da"
+  )
