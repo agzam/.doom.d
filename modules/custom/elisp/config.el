@@ -41,7 +41,11 @@
         (:prefix  ("h" . "help")
          "h" #'helpful-at-point)
         (:prefix ("k" . "kill")
-         "m" #'erase-messages-buffer))
+         "m" #'erase-messages-buffer)
+        (:prefix ("s" . "repl")
+         :desc "messages" "s" #'+switch-to-messages-buffer-other-window
+         :desc "clear " "l" #'erase-messages-buffer
+         :desc "hide" "k" #'+hide-messages-window))
   (map! :map emacs-lisp-mode-map
         :g "C-c C-f" nil ; remove elisp-byte-compile-file binding
         :i "#" #'sharp-quote)
@@ -49,7 +53,11 @@
   (map! :localleader
         :map messages-buffer-mode-map
         (:prefix ("k" . "kill")
-         "m" #'erase-messages-buffer)))
+         "m" #'erase-messages-buffer)
+        (:prefix ("s" . "repl")
+         :desc "clear" "l" #'erase-messages-buffer
+         :desc "back to elisp" "s" #'+switch-to-last-elisp-buffer
+         :desc "hide" "k" #'+hide-messages-window)))
 
 (after! debug
   (map! :map debugger-mode-map
