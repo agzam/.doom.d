@@ -156,3 +156,103 @@
           (variable "va" :icon "adjust" :face font-lock-variable-name-face)))
   (add-hook 'doom-load-theme-hook #'kind-icon-reset-cache)
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+
+
+;;;;;;;;;;;;;;;;;;;
+;; vertico stuff ;;
+;;;;;;;;;;;;;;;;;;;
+
+;; Add vertico extensions load path
+(add-to-list 'load-path (format "%sstraight/build-%s/vertico/extensions/" (file-truename doom-local-dir) emacs-version))
+
+(use-package! vertico-posframe
+  :after vertico
+  :config
+  (setq vertico-posframe-poshandler 'posframe-poshandler-frame-bottom-center)
+  (setq
+   vertico-posframe-global t
+   vertico-posframe-height 23
+   vertico-posframe-width 200
+   marginalia-margin-threshold 500)
+  (vertico-posframe-mode +1)
+
+  ;; disable and restore posframe when emacslient connects in terminal
+  (add-hook! 'after-make-frame-functions
+    (defun disable-vertico-posframe-in-term-h (frame)
+      (when (and (not (display-graphic-p frame))
+                 (bound-and-true-p vertico-posframe-mode))
+        (vertico-posframe-mode -1)
+        (setq vertico-posframe-restore-after-term-p t))))
+
+  (add-hook! 'delete-frame-functions
+    (defun restore-vertico-posframe-after-term-h (frame)
+      (when (bound-and-true-p vertico-posframe-restore-after-term-p)
+        (vertico-posframe-mode +1))))
+
+  ;; fixing "Doesn't properly respond to C-n"
+  ;; https://github.com/tumashu/vertico-posframe/issues/11
+  (defadvice! vertico-posframe--display-no-evil (fn _lines)
+    :around #'vertico-posframe--display
+    (evil-mode -1)
+    (funcall-interactively fn _lines))
+
+  (add-hook! 'minibuffer-exit-hook #'evil-mode))
+
+
+(use-package! vertico-repeat
+  :after vertico
+  :config
+  (add-hook! 'minibuffer-setup-hook #'vertico-repeat-save))
+
+(use-package! vertico-quick
+  :after vertico)
+
+(use-package! vertico-directory
+  :after vertico)
+
+(use-package! vertico-grid
+  :after vertico
+  :config
+  (add-hook! 'minibuffer-exit-hook
+    (defun vertico-grid-mode-off ()
+      (vertico-grid-mode -1))))
+
+(use-package! vertico-buffer
+  :after vertico
+  :config
+  (add-hook! 'vertico-buffer-mode-hook
+    (defun vertico-buffer-h ()
+      (vertico-posframe-mode (if vertico-buffer-mode -1 +1)))))
+
+(after! vertico
+  (setq completion-ignore-case t
+        read-buffer-completion-ignore-case t)
+
+  ;; Prefix current candidate with arrow
+  (advice-add #'vertico--format-candidate :around
+              (lambda (orig cand prefix suffix index _start)
+                (setq cand (funcall orig cand prefix suffix index _start))
+                (concat
+                 (if (= vertico--index index)
+                     (propertize "» " 'face 'vertico-current)
+                   "  ")
+                 cand))))
+
+(after! consult
+  (consult-customize +default/search-buffer :preview-key 'any))
+
+(after! embark
+  (setq embark-cycle-key (kbd "C-;"))
+
+  (defun +edebug-instrument-symbol (symbol)
+    (interactive "sSymbol: ")
+    (edebug-instrument-function (intern symbol)))
+
+  (add-hook! 'embark-collect-mode-hook
+    (defun visual-line-mode-off-h ()
+      (visual-line-mode -1)))
+
+  (defadvice! embark-prev-next-recenter-a ()
+    :after #'embark-previous-symbol
+    :after #'embark-next-symbol
+    (recenter)))

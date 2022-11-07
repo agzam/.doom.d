@@ -1,4 +1,4 @@
-;;; custom/general/autoload/vertico.el -*- lexical-binding: t; -*-
+;;; custom/completion/autoload/vertico.el -*- lexical-binding: t; -*-
 
 (defvar vertico-posframe-global nil)
 
