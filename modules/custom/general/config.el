@@ -22,11 +22,6 @@
       (map! :leader :n wn f)
       (global-set-key (kbd k) f))))
 
-(use-package! fasd
-  :commands fasd-find-file
-  :defer t
-  :config
-  (global-fasd-mode +1))
 
 ;;;;;;;;;;;;;;;;;;;
 ;; vertico stuff ;;

@@ -245,9 +245,11 @@
        :desc "kill some buffers" "s-d" #'spacemacs/kill-matching-buffers-rudely)
 
       (:prefix ("f" . "files")
-       :desc "fasd dir" "ad" (cmd! (fasd-find-file 1))
-       :desc "fasd file" "af" (cmd! (fasd-find-file -1))
-       :desc "dired" "j" #'dired-jump
+        (:when (modulep! :custom search)
+           :desc "fasd dir" "ad" (cmd! (+fasd-find 'dirs))
+           :desc "fasd file" "af" (cmd! (+fasd-find 'files))
+           :desc "fasd any" "aa" (cmd! (+fasd-find 'both)))
+        :desc "dired" "j" #'dired-jump
        (:when IS-MAC
          :desc "open in app" "O" #'+macos/open-in-default-program)
        "e" nil

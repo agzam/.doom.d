@@ -196,7 +196,7 @@
        tab-bar
        version-control
        elisp
-       search-engine
+       search
        dired
        writing
        lsp

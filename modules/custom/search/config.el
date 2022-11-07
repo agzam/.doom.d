@@ -1,4 +1,4 @@
-;;; custom/search-engine/config.el -*- lexical-binding: t; -*-
+;;; custom/search/config.el -*- lexical-binding: t; -*-
 
 (use-package! engine-mode
   :defer t
