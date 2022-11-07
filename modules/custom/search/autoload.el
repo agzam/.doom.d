@@ -34,23 +34,16 @@ SEARCH-TYPE can be files, dirs, or both"
   (interactive "P")
   (if (not (executable-find "fasd"))
       (error "Fasd executable cannot be found.  It is required by `fasd.el'.  Cannot use `fasd-find-file'")
-    (unless query (setq query (read-from-minibuffer "Fasd query: ")))
-    (let* ((prompt "Fasd query: ")
-           (results
-            (split-string
-             (shell-command-to-string
-              (format "fasd -lR%s %s"
-                      (pcase search-type
-                        ('files "f")
-                        ('dirs "d")
-                        ('both "a"))
-                      query))
-             "\n" t))
-           (file (when results
-                   (setq this-command '+fasd-find-file)
-                   (completing-read prompt results nil t))))
-      (cond
-       ((not file)
-        (message "Fasd found nothing for query `%s'" query))
+    ;; (unless query (setq query (read-from-minibuffer "Fasd query: ")))
 
-       (t (find-file file))))))
+
+    (let* ((fasd-items (split-string
+                        (shell-command-to-string
+                         (format "fasd -lR%s"
+                                 (pcase search-type
+                                   ('files "f")
+                                   ('dirs "d")
+                                   ('both "a"))))))
+
+           (path (completing-read "Choose:" fasd-items)))
+      (find-file path))))
