@@ -510,8 +510,4 @@
                 (file+headline org-my-anki-file "Dispatch")
                 "* %^{prompt|card %<%Y-%m-%d %H:%M>} %^g%^{ANKI_DECK}p\n:PROPERTIES:\n:ANKI_NOTE_TYPE: Cloze\n:END:\n** Text\n%?\n** Extra\n%x\n"
                 :jump-to-captured t)))
-      (add-to-list 'org-capture-templates template)))
-
-  ;; Initialize
-  (anki-editor-reset-cloze-number) ; see: https://docs.ankiweb.net/editing.html#cloze-deletion
-  )
+      (add-to-list 'org-capture-templates template))))

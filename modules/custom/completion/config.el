@@ -67,7 +67,7 @@
 
 
 (use-package! orderless
-  :init
+  :config
   (setq completion-styles '(orderless partial-completion)
         completion-category-defaults nil
         completion-category-overrides '((file (styles . (partial-completion))))))
@@ -87,8 +87,7 @@
     (add-to-list 'completion-at-point-functions #'cape-ispell))
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-keyword t)
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev t)
-  (add-to-list 'completion-at-point-functions #'cape-abbrev t))
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev t))
 
 
 (use-package! corfu-history
