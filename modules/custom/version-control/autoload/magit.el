@@ -53,8 +53,8 @@ window that already exists in that direction. It will split otherwise."
                               (`left 'right)
                               ((or `up `above) 'down)
                               ((or `down `below) 'up)))))
-        (unless magit-display-buffer-noselect
-          (select-window window))
+          (unless magit-display-buffer-noselect
+            (select-window window))
         (let ((window (split-window nil nil direction)))
           (when (and (not magit-display-buffer-noselect)
                      (memq direction '(right down below)))
@@ -199,7 +199,6 @@ be used as a git branch name."
 
 (defun +forge-select-issue ()
   "List issues of the current repository in a separate buffer."
-  (interactive)
   (let* ((repo (forge-get-repository t))
          (repo-id (oref repo id))
          (_ (when repo-id (forge-pull repo)))
@@ -239,6 +238,8 @@ be used as a git branch name."
          (branch (magit-read-string-ns "With branch: " (->> path
                                                             (file-name-split)
                                                             (last)))))
-    (magit-run-git "worktree" "add" "-b"
-                   branch (magit--expand-worktree path) "origin/master")
+    (if  (magit-local-branch-p (format "refs/heads/%s" branch))
+        (magit-run-git "worktree" "add" (magit--expand-worktree path) branch)
+      (magit-run-git "worktree" "add" "-b"
+                     branch (magit--expand-worktree path) "origin/master"))
     (magit-diff-visit-directory path)))
