@@ -27,7 +27,7 @@
 ;; `load-theme' function. This is the default:
 (setq
  doom-font (font-spec :family "JetBrains Mono" :size 15)
- doom-variable-pitch-font (font-spec :family "Open Sans" :size 18)
+ doom-variable-pitch-font (font-spec :family "Karla" :size 18)
  ;; doom-theme 'spacemacs-light
  )
 
@@ -156,7 +156,8 @@
           ("Asia/Tashkent" "Tashkent"))))
 
 (after! flycheck
-  (define-key flycheck-mode-map flycheck-keymap-prefix nil)
+  (ignore-error
+   (define-key flycheck-mode-map flycheck-keymap-prefix nil))
   (setq flycheck-keymap-prefix nil)
   ;; (map! :leader "!" flycheck-command-map)
   )
