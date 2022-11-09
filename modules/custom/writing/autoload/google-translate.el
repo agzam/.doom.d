@@ -17,6 +17,20 @@ For instance pass En as source for English."
 
 ;;;###autoload (autoload 'set-google-translate-language "custom/writing/autoload/google-translate" nil t)
 (defun set-google-translate-target-language ()
-        "Set the target language for google translate."
-        (interactive)
-        (set-google-translate-languages nil))
+  "Set the target language for google translate."
+  (interactive)
+  (set-google-translate-languages nil))
+
+;;;###autoload
+(defun +google-translate-es->en ()
+  (interactive)
+  (let ((google-translate-default-source-language "es")
+        (google-translate-default-target-language "en"))
+    (google-translate-query-translate)))
+
+;;;###autoload
+(defun +google-translate-en->es ()
+  (interactive)
+  (let ((google-translate-default-source-language "en")
+        (google-translate-default-target-language "es"))
+    (google-translate-query-translate)))

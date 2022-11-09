@@ -380,6 +380,8 @@
                  (:prefix ("g" . "translate")
                   :desc "en->ru" "e" #'google-translate-query-translate-reverse
                   :desc "ru->en" "r" #'google-translate-query-translate
+                  :desc "es->en" "s" #'+google-translate-es->en
+                  :desc "en->es" "S" #'+google-translate-en->es
                   :desc "translate" "g" #'google-translate-at-point)))
 
       (:prefix ("z" . "zoom")
