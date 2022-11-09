@@ -59,16 +59,18 @@
      (window . root)
      (window-width . 0.3))))
 
-(use-package! sdcv-mode
+(use-package! sdcv
   :defer t
-  :commands sdcv-search sdcv-search-at-point
+  :commands (sdcv-search-pointer sdcv-search)
   :hook (sdcv-mode . visual-line-mode)
   :config
   (map! :map sdcv-mode-map
-        :n "q" #'sdcv-return-from-sdcv
-        :n "n" #'sdcv-next-entry
-        :n "p" #'sdcv-previous-entry
-        :ni "RET" #'sdcv-search-at-point
+        :n "q" #'sdcv-quit
+        :n "n" #'sdcv-next-dictionary
+        :n "p" #'sdcv-previous-dictionary
+        :n "TAB" #'outline-cycle-buffer
+        :n "<backtab>" #'outline-show-all
+        :ni "RET" #'sdcv-search-pointer
         :n "a" #'sdcv-search-at-point)
   (add-to-list
    'display-buffer-alist

@@ -16,29 +16,37 @@ brew install sdcv
 
 ** Download and extract selected dictionaries
    #+begin_src sh :tangle ~/install-dictionaries :shebang "#!/usr/bin/env zsh" :tangle-mode (identity #o777)
-     declare -a urls
-     urls=("http://download.huzheng.org/dict.org/stardict-dictd_www.dict.org_gcide-2.4.2.tar.bz2"
-           "http://download.huzheng.org/dict.org/stardict-dictd-moby-thesaurus-2.4.2.tar.bz2"
-           "http://download.huzheng.org/dict.org/stardict-EnglishEtymology-2.4.2.tar.bz2")
+   declare -a urls
+   urls=(
+       "http://download.huzheng.org/dict.org/stardict-dictd_www.dict.org_gcide-2.4.2.tar.bz2"
+       "http://download.huzheng.org/dict.org/stardict-dictd-moby-thesaurus-2.4.2.tar.bz2"
+       "http://download.huzheng.org/dict.org/stardict-EnglishEtymology-2.4.2.tar.bz2"
 
-     mkdir -p ~/.stardict/dic
-     mkdir -p ~/Downloads/dictionary/extracted
-     cd ~/Downloads/dictionary
+       # English-Spanish Babylon
+       "http://download.huzheng.org/misc2/stardict-en-es_Babylon-2.4.2.tar.bz2"
+       # Babylon Spanish-English
+       "http://download.huzheng.org/misc2/stardict-es-en_Babylon-2.4.2.tar.bz2"
+   )
 
-     for url in "${urls[@]}"; do
-         echo "Downloading $url ..."
-         curl -o ~/Downloads/dictionary/dict.tar.bz2 $url
-         echo "Extracting ..."
-         mkdir -p ./extracted
-         tar -xvf ./dict.tar.bz2 -C ./extracted --strip-components=1
-         echo "Copying ..."
-         cp ~/Downloads/dictionary/extracted/* ~/.stardict/dic/
-         rm -rf ./extracted
-     done
+   mkdir -p ~/.stardict/dic
+   mkdir -p ~/Downloads/dictionary/extracted
+   cd ~/Downloads/dictionary
 
-     cd ~
-     rm -rf ~/Downloads/dictionary
+   for url in "${urls[@]}"; do
+       echo "Downloading $url ..."
+       curl -o ~/Downloads/dictionary/dict.tar.bz2 $url
+       echo "Extracting ..."
+       mkdir -p ./extracted
+       tar -xvf ./dict.tar.bz2 -C ./extracted --strip-components=1
+       echo "Copying ..."
+       cp ~/Downloads/dictionary/extracted/* ~/.stardict/dic/
+       rm -rf ./extracted
+   done
+
+   cd ~
+   rm -rf ~/Downloads/dictionary
    #+end_src
+
 * Features
 # An in-depth list of features, how to use them, and their dependencies.
 
