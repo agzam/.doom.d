@@ -1,0 +1,6 @@
+[submodule "modules/custom/colors/ag-themes"]
+	path = modules/custom/colors/ag-themes
+	url = git@github.com:agzam/ag-themes.el.git
+[submodule "modules/custom/writing/youtube-sub-extractor"]
+	path = modules/custom/writing/youtube-sub-extractor
+	url = git@github.com:agzam/youtube-sub-extractor.el.git
