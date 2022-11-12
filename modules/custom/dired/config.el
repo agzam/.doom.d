@@ -124,4 +124,7 @@
       :desc "right" :n "l" (dired-split-action +evil/window-vsplit-and-follow)
       :desc "left"  :n "h" (dired-split-action split-window-horizontally)
       :desc "above" :n "k" (dired-split-action split-window-vertically)
-      :desc "ace-action" :n "a" #'dired-ace-action))))
+      :desc "ace-action" :n "a" #'dired-ace-action)))
+
+  (when (modulep! :custom seach)
+    (add-hook 'dired-after-readin-hook #'+add-to-fasd-cache)))

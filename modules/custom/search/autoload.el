@@ -45,5 +45,15 @@ SEARCH-TYPE can be files, dirs, or both"
                                    ('dirs "d")
                                    ('both "a"))))))
 
-           (path (completing-read "Choose:" fasd-items)))
+           (path (completing-read "Choose: " fasd-items)))
       (find-file path))))
+
+;;;###autoload
+(defun +add-to-fasd-cache ()
+  (let ((file (if (string= major-mode "dired-mode")
+                  dired-directory
+                (buffer-file-name))))
+    (when (and file
+               (stringp file)
+               (file-readable-p file))
+      (start-process "*fasd*" nil "fasd" "--add" file))))
