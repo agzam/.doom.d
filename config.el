@@ -174,8 +174,10 @@
 (add-hook! 'prog-mode-hook #'hs-minor-mode)
 
 ;; disable visual-line-navigation in certain modes
-(add-hook! (grep-mode paradox-menu-mode yaml-mode notmuch-search-mode notmuch-tree-mode
-                      magit-log-mode notmuch-hello-mode)
+(add-hook! (gh-notify-mode
+            grep-mode magit-log-mode
+            notmuch-hello-mode notmuch-search-mode notmuch-tree-mode
+            paradox-menu-mode yaml-mode)
   (defun no-wrap-h ()
     (+toggle-visual-line-navigation -1)))
 

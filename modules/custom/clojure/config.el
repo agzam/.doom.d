@@ -133,10 +133,16 @@
         (evil-make-overriding-map cider--debug-mode-map 'normal)
         (evil-normalize-keymaps)
         ;; liberate evil keys
-        (map! :map cider--debug-mode-map :nv "h" nil :n "j" nil :n "l" nil :n "o" nil :n "p" nil :n "i" nil))))
+        (map! :map cider--debug-mode-map
+              :nv "h" nil :n "j" nil :n "l" nil :n "o" nil :n "p" nil :n "i" nil)))
 
-  (after! evil-collection
-    (advice-add 'cider-eval-sexp-at-point :around 'evil-collection-cider-last-sexp))
+    (defadvice! cider-eval-sexp-at-point-a (fn &rest args)
+      :around #'cider-eval-sexp-at-point
+      (save-excursion
+        (when (thing-at-point-looking-at "(\\|\\[\\|{")
+          (forward-char))
+        (sp-end-of-sexp)
+        (apply fn args))))
 
   (after! ob-clojure
     (setq! org-babel-clojure-backend 'cider))
