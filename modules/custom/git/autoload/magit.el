@@ -1,4 +1,4 @@
-;;; tools/magit/autoload.el -*- lexical-binding: t; -*-
+;;; custom/git/autoload/magit.el -*- lexical-binding: t; -*-
 
 ;;;###autoload
 (defun +magit-display-buffer-fn (buffer)

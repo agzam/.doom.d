@@ -1,4 +1,4 @@
-;;; custom/version-control/config.el -*- lexical-binding: t; -*-
+;;; custom/git/config.el -*- lexical-binding: t; -*-
 
 (use-package! magit
   :commands magit-file-delete

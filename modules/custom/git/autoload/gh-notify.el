@@ -1,4 +1,4 @@
-;;; custom/version-control/autoload/gh-notify.el -*- lexical-binding: t; -*-
+;;; custom/git/autoload/gh-notify.el -*- lexical-binding: t; -*-
 
 (defun gh-notify-notification-read-p (&optional notification)
   (when-let ((obj (gh-notify-notification-forge-obj

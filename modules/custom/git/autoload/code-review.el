@@ -1,4 +1,4 @@
-;;; custom/version-control/autoload/code-review.el -*- lexical-binding: t; -*-
+;;; custom/git/autoload/code-review.el -*- lexical-binding: t; -*-
 
 ;;;###autoload
 (defun code-review-browse-pr+ ()

@@ -194,7 +194,7 @@
        colors
        modeline
        tab-bar
-       version-control
+       git
        elisp
        search
        dired

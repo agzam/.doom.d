@@ -1,4 +1,4 @@
-;;; custom/version-control/autoload/misc.el -*- lexical-binding: t; -*-
+;;; custom/git/autoload/misc.el -*- lexical-binding: t; -*-
 
 ;; Shared by eleven_cupfuls on Reddit
 ;; https://www.reddit.com/r/emacs/comments/w9p2oo/resetting_dirlocalsel/ii2kn47/

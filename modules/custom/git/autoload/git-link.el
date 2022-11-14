@@ -1,4 +1,4 @@
-;;; custom/version-control/autoload/git-link.el -*- lexical-binding: t; -*-
+;;; custom/git/autoload/git-link.el -*- lexical-binding: t; -*-
 
 ;;;###autoload
 (defun git-link-main-branch (&optional browse?)

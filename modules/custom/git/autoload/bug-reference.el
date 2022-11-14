@@ -1,4 +1,4 @@
-;;; custom/version-control/autoload/bug-reference.el -*- lexical-binding: t; -*-
+;;; custom/git/autoload/bug-reference.el -*- lexical-binding: t; -*-
 
 ;;;###autoload
 (defun init-bug-reference-mode-settings ()

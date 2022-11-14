@@ -1,5 +1,5 @@
 ;; -*- no-byte-compile: t; -*-
-;;; custom/version-control/packages.el
+;;; custom/git/packages.el
 
 (package! magit)
 (package! forge)
