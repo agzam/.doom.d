@@ -1,7 +1,7 @@
 ;;; custom/web-browsing/config.el -*- lexical-binding: t; -*-
 
 (use-package! eww
-  :commands (eww)
+  :commands (eww +eww-open-in-other-window)
   :config
   (setq shr-use-fonts nil
         shr-max-image-proportion 0.5
@@ -41,3 +41,6 @@
 
 (use-package! hnreader
   :commands (hnreader-news hnreader-best))
+
+(use-package! browser-hist
+  :commands (browser-hist-search))

@@ -10,7 +10,7 @@
   (setq
    corfu-separator ?\s
    corfu-auto t
-   corfu-auto-delay 0.2
+   corfu-auto-delay 0.3
    corfu-preview-current nil ; Disable current candidate preview
    corfu-on-exact-match nil
    corfu-quit-no-match 'separator
@@ -103,6 +103,7 @@
 (use-package! corfu-indexed
   :after corfu
   :config
+  (setq corfu-indexed-start 1)
   (add-hook! corfu-mode #'corfu-indexed-mode))
 
 

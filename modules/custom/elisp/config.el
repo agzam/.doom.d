@@ -57,7 +57,11 @@
         (:prefix ("s" . "repl")
          :desc "clear" "l" #'erase-messages-buffer
          :desc "back to elisp" "s" #'+switch-to-last-elisp-buffer
-         :desc "hide" "k" #'+hide-messages-window)))
+         :desc "hide" "k" #'+hide-messages-window))
+
+  (add-hook! 'emacs-lisp-mode-hook
+    (defun always-lexical-binding-h ()
+      (setq lexical-binding t))))
 
 (after! debug
   (map! :map debugger-mode-map

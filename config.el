@@ -246,6 +246,9 @@
        :desc "diff with file" "D" #'diff-current-buffer-with-file
        :desc "kill some buffers" "s-d" #'spacemacs/kill-matching-buffers-rudely)
 
+      (:prefix ("e" . "edit")
+       :desc "edit indirect" "i" #'edit-indirect-region)
+
       (:prefix ("f" . "files")
         (:when (modulep! :custom search)
            :desc "fasd dir" "ad" (cmd! (+fasd-find 'dirs))
@@ -321,6 +324,7 @@
        (:when (modulep! :custom notmuch)
          :desc "notmuch" "m" #'notmuch)
        (:when (modulep! :custom web-browsing)
+         :desc "browser history" "b" #'browser-hist-search
          (:prefix ("h" . "HackerNews")
           :desc "top" "t" #'hnreader-best
           :desc "news" "n" #'hnreader-news))

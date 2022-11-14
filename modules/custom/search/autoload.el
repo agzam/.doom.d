@@ -13,7 +13,7 @@
   :type 'alist
   :group 'engine)
 
-;;;###autoload (autoload 'engine/search-github-with-lang "custom/search-engine/autoload" nil t)
+;;;###autoload
 (defun engine/search-github-with-lang ()
   "Search on Github with attempt of detecting language associated with current-buffer's mode"
   (interactive)
@@ -25,7 +25,6 @@
                          (thing-at-point 'symbol)))
          (search-term (read-string "Search Github: " (concat lang-term current-word))))
     (engine/search-github search-term)))
-
 
 ;;;###autoload
 (defun +fasd-find (search-type &optional query)

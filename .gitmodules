@@ -4,3 +4,6 @@
 [submodule "modules/custom/writing/youtube-sub-extractor"]
 	path = modules/custom/writing/youtube-sub-extractor
 	url = git@github.com:agzam/youtube-sub-extractor.el.git
+[submodule "modules/custom/web-browsing/browser-hist"]
+	path = modules/custom/web-browsing/browser-hist
+	url = git@github.com:agzam/browser-hist.el.git

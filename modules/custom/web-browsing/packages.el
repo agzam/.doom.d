@@ -3,3 +3,4 @@
 
 (package! eww :built-in t)
 (package! hnreader)
+(package! browser-hist :recipe (:local-repo "browser-hist"))
