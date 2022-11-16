@@ -174,8 +174,8 @@
 (add-hook! 'prog-mode-hook #'hs-minor-mode)
 
 ;; disable visual-line-navigation in certain modes
-(add-hook! (gh-notify-mode
-            grep-mode magit-log-mode
+(add-hook! (elfeed-search-mode
+            gh-notify-mode grep-mode magit-log-mode
             notmuch-hello-mode notmuch-search-mode notmuch-tree-mode
             paradox-menu-mode yaml-mode)
   (defun no-wrap-h ()
@@ -325,6 +325,7 @@
          :desc "notmuch" "m" #'notmuch)
        (:when (modulep! :custom web-browsing)
          :desc "browser history" "b" #'browser-hist-search
+         :desc "elfeed" "e" #'elfeed
          (:prefix ("h" . "HackerNews")
           :desc "top" "t" #'hnreader-best
           :desc "news" "n" #'hnreader-news))
