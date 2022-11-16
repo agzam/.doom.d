@@ -13,7 +13,10 @@
    "s-j" #'tab-bar-switch-to-prev-tab
    "s-k" #'tab-bar-switch-to-next-tab)
 
-  (add-hook! 'tab-bar-mode-hook #'reset-frame-full-height)
+  ;; (add-hook! 'tab-bar-mode-hook #'reset-frame-full-height)
+
+  (when (modulep! :custom completion)
+   (add-hook! 'tab-bar-mode-hook #'+corfu-kill-frames))
 
   ;; tabs sometimes dissappear from the frame
   ;; I need to make sure they are on when tab switching

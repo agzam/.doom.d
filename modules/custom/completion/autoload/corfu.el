@@ -1,5 +1,4 @@
 ;;; custom/completion/autoload/corfu.el -*- lexical-binding: t; -*-
-
 ;;; Courtesy of Takeshi Tsukamoto
 ;;; https://github.com/itome/.doom.d/
 
@@ -56,3 +55,9 @@ See `+dict--words' for extra words, and `+dict-file' for a wordslist source "
   (interactive)
   (let (completion-cycle-threshold completion-cycling)
     (apply #'consult-completion-in-region completion-in-region--data)))
+
+;;;###autoload
+(defun +corfu-kill-frames ()
+  (interactive)
+  (delete-frame corfu--frame)
+  (delete-frame corfu-doc--frame))
