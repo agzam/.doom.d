@@ -25,3 +25,77 @@ Signals an error if there is no current project."
           (setq-local dir-local-variables-alist locals)
           ;; and apply them.
           (hack-local-variables-apply))))))
+
+(defun +decrypt-gh-token ()
+  "Retrieves encrypted GitHub token from auth-sources."
+  (funcall
+   (plist-get
+    (car
+     (auth-source-search :machine "api.github.com"
+                         :type 'netrc
+                         :max 1))
+    :secret)))
+
+(defun bisect-github-url (url)
+  "Returns plist with parts of GitHub URL."
+  ;; different kinds of GH links, for future reference:
+  ;;
+  ;; plain:      https://github.com/fniessen/refcard-org-mode
+  ;; issues:     https://github.com/fniessen/refcard-org-mode/issues
+  ;; PRs:        https://github.com/fniessen/refcard-org-mode/pulls
+  ;; an issue:   https://github.com/fniessen/refcard-org-mode/issues/7
+  ;; a PR:       https://github.com/fniessen/refcard-org-mode/pull/5
+  ;; a file:     https://github.com/fniessen/refcard-org-mode/blob/master/images/org-mode-unicorn.png
+  ;; a diff:     https://github.com/advthreat/iroh/pull/7317/files#diff-3edf99653c7afaf324e036f0df597c2322e4fdfbb0f266bc6370f747e1e51bb4
+  ;; comparison: https://github.com/advthreat/iroh/compare/master...1.78-proposal
+  ;;
+  (let* ((seg "\\([A-z,0-9,._~!$&'()*+,;=:@%-]+\\)")
+         (bare-rx (concat "\\(https\\:\\/\\/github.com\\)\\/" seg "\\/" seg))
+         (file-rx (concat bare-rx "\\/blob\\/" seg "\\/\\(.*\\)")))
+    (if (not (string-match-p bare-rx url))
+        (error "Is that a GitHub url?\n%s" url)
+      (cond ((string-match file-rx url) 'file)
+            ((string-match bare-rx url) 'bare))
+      (list :org (match-string 2 url)
+            :repo (match-string 3 url)
+            :ref (match-string 4 url)
+            :path (match-string 5 url)
+            :ext (ignore-errors
+                   (replace-regexp-in-string
+                    ".*\\." "" (match-string 5 url)))))))
+
+;;;###autoload
+(defun +fetch-github-raw-file (url)
+  "Open the raw file of a GitHub URL.
+If URL is a link to a file, it extracts its raw form and tries to open in a buffer."
+  (let* ((parts (bisect-github-url url))
+         (raw-url (thread-last
+                    url
+                    (replace-regexp-in-string
+                     "https://github.com/"
+                     "https://raw.githubusercontent.com/")
+                    (replace-regexp-in-string "blob/" "")))
+         (path (plist-get parts :path))
+         (bufname (format
+                   "%s/%s/%s | %s"
+                   (plist-get parts :org)
+                   (plist-get parts :repo)
+                   (plist-get parts :ref)
+                   (plist-get parts :path)))
+         (mode (thread-first
+                 (concat "." (plist-get parts :ext))
+                 (assoc auto-mode-alist #'string-match-p)
+                 (cdr))))
+    (when path
+      (request raw-url
+        :sync t
+        :headers `(("Authorization" . ,(format "Token %s" (+decrypt-gh-token))))
+        :parser 'buffer-string
+        :complete (cl-function
+                   (lambda (&key data &allow-other-keys)
+                     (when data
+                       (with-current-buffer (get-buffer-create bufname)
+                         (erase-buffer)
+                         (insert data)
+                         (funcall mode)
+                         (pop-to-buffer (current-buffer))))))))))
