@@ -98,7 +98,13 @@
   ;;   "r" #'elfeed-search-update--force
   ;;   (kbd "M-RET") #'elfeed-search-browse-url)
 
-  (advice-add  'elfeed-show-entry :after #'+process-elfeed-entry))
+  (advice-add  'elfeed-show-entry :after #'+process-elfeed-entry)
+
+  (defadvice! elfeed-search-untag-all-a (_)
+    :after #'elfeed-search-untag-all
+    (when-let ((nxt-entry (car (elfeed-search-selected))))
+      (unless (member 'unread (elfeed-entry-tags nxt-entry))
+        (forward-line -2)))))
 
 (use-package! elfeed-org
   :after elfeed

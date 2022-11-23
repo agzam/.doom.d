@@ -16,7 +16,7 @@
   (setq
    org-ctrl-k-protect-subtree t
    org-ellipsis " ↴"
-   org-catch-invisible-edits 'smart
+   org-fold-catch-invisible-edits 'smart
    org-hide-emphasis-markers t
    org-pretty-entities t
    org-pretty-entities-include-sub-superscripts nil
@@ -31,7 +31,7 @@
    ;; Temporarily changing fold style. Track the issue here:
    ;; https://github.com/minad/consult/issues/563
    ;; https://github.com/doomemacs/doomemacs/issues/6380
-   org-fold-core-style 'overlays
+   ;; org-fold-core-style 'overlays
    )
 
   (add-to-list
@@ -95,7 +95,10 @@
          (:prefix ("t" . "toggle")
           "l" #'org-toggle-link-display)))
 
-  (add-hook! 'org-mode-hook #'org-indent-mode)
+  (add-hook!
+   'org-mode-hook
+   #'org-indent-mode
+   (defun flycheck-disable-h () (flycheck-mode -1)))
   (add-hook! 'org-capture-mode-hook #'recenter)
 
   (setq org-export-with-smart-quotes t
@@ -171,7 +174,7 @@
            "w" #'org-roam-toggle-ui-xwidget)))
 
   (setq
-   org-roam-completion-everywhere t
+   org-roam-completion-everywhere nil
    org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
 
   (setq org-roam-capture-templates

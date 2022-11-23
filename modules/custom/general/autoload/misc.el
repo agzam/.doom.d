@@ -95,3 +95,15 @@ narrowed to."
   (if (<= (- end beg) +doom-yank-indent-threshold)
       (sp-reindent)
     (indent-region beg end nil)))
+
+
+;;;###autoload
+(defun +doom-delete-package-artifacts ()
+  "Remove repo and build file for a selected package.
+Useful for clean up before running `doom -up`."
+  (interactive)
+  (let* ((straight-dir (format "%sstraight/" doom-local-dir))
+         (sel-dir (completing-read
+                    "Select package repo: "
+                    (directory-files (concat straight-dir "repos")))))
+    (delete-directory sel-dir :recursive)))

@@ -213,45 +213,6 @@ ensure it is built when we actually use Forge."
    gist-view-gist t ; view your Gist using `browse-url` after it is created
    ))
 
-(use-package! github-review
-  :after forge
-  :config
-
-  (after! (magit forge gh-notify)
-    (map! :map (magit-status-mode-map
-                forge-topic-mode-map
-                gh-notify-mode-map)
-          "M-r" #'github-review-forge-pr-at-point))
-
-  (defun github-review--copy-suggestion ()
-    "kill a region of diff+ as a review suggestion template."
-    (interactive)
-    (setq deactivate-mark t)
-    (let ((s-region
-           (buffer-substring-no-properties
-            (region-beginning)
-            (region-end))))
-      (kill-new
-       (format "# ```suggestion\n%s\n# ```\n"
-               (replace-regexp-in-string "^\\+" "# " s-region)))))
-
-  (map! :map github-review-mode-map :v "M-y" #'github-review--copy-suggestion)
-
-  (defun github-review--after-save-diff (pr-alist diff)
-    (let-alist pr-alist
-      (with-current-buffer
-          (format "%s___%s___%s___%s.diff" .owner .repo .num .sha)
-        (forward-line 1))))
-
-  (advice-add 'github-review-save-diff :after 'github-review--after-save-diff)
-
-  ;; otherwise it messes up with backwards-kill-word when commenting
-  (bind-key (kbd "M-DEL") nil diff-mode-map)
-
-  (setq github-review-fetch-top-level-and-review-comments t
-        github-review-view-comments-in-code-lines t
-        github-review-view-comments-in-code-lines-outdated t))
-
 (use-package! git-link
   :after magit
   :config

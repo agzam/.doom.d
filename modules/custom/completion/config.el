@@ -195,10 +195,8 @@
   (defadvice! vertico-posframe--display-no-evil (fn _lines)
     :around #'vertico-posframe--display
     (evil-mode -1)
-    (funcall-interactively fn _lines))
-
-  (add-hook! 'minibuffer-exit-hook #'evil-mode))
-
+    (funcall-interactively fn _lines)
+    (evil-mode 1)))
 
 (use-package! vertico-repeat
   :after vertico

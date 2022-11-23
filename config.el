@@ -329,7 +329,7 @@
          (:prefix ("h" . "HackerNews")
           :desc "top" "t" #'hnreader-best
           :desc "news" "n" #'hnreader-news))
-       (:when (modulep! :custom version-control)
+       (:when (modulep! :custom git)
          (:prefix ("g" . "git")
                   "h" #'gh-notify)))
 
@@ -342,10 +342,12 @@
                  :desc "treemacs" "T" #'treemacs-project-toggle+
                  :desc "dired locate" "t" #'+dired-jump-find-in-project))
 
-      (:prefix ("r" . "resume/ring")
+      (:prefix ("r" . "reset/resume/ring")
        :desc "yank from kill-ring" "y" #'consult-yank-from-kill-ring
        (:after vertico
-        :desc "vertico repeat" "l" #'vertico-repeat-last))
+        :desc "vertico repeat" "l" #'vertico-repeat-last)
+       (:after corfu
+        :desc "corfu reset" "c" #'+corfu-kill-frames))
 
       (:prefix ("s" . "search/symbol")
        :desc "google search" "/" #'engine/search-google
@@ -355,7 +357,8 @@
        :desc "imenu" "j" #'imenu)
 
       (:prefix ("t" . "toggle yo")
-       :desc "v-line nav" "w" #'+toggle-visual-line-navigation)
+       :desc "v-line nav" "w" #'+toggle-visual-line-navigation
+       :desc "minor modes" "m" #'consult-minor-mode-menu)
 
       (:prefix ("T" . "toggle global")
                (:when (modulep! :custom colors)
