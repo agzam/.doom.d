@@ -87,6 +87,8 @@
 
   (map! :map elfeed-search-mode-map
         :n "q" #'elfeed-kill-buffer
+        "C-c C-o" #'elfeed-search-browse-url
+        :n "r" #'elfeed-search-untag-all-unread
         (:localleader
          "u" #'elfeed-update))
 
