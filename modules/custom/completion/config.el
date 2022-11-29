@@ -57,15 +57,6 @@
     (corfu-terminal-mode)))
 
 
-(use-package! corfu-doc
-  :hook (corfu-mode . corfu-doc-mode)
-  :custom
-  (corfu-doc-delay 0)
-  :bind (:map corfu-map
-              ("M-j" . corfu-doc-scroll-down)
-              ("M-k" . corfu-doc-scroll-up)))
-
-
 (use-package! orderless
   :config
   (setq completion-styles '(orderless partial-completion)
@@ -88,6 +79,13 @@
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-keyword t)
   (add-to-list 'completion-at-point-functions #'cape-dabbrev t))
+
+
+(use-package! corfu-popupinfo
+  :after corfu
+  :config
+  (setq corfu-popupinfo-delay t)
+  (corfu-popupinfo-mode +1))
 
 
 (use-package! corfu-history
