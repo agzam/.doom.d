@@ -153,7 +153,8 @@
   :after-call magit-status
   :commands forge-create-pullreq forge-create-issue
   :preface
-  (setq forge-database-file (concat doom-etc-dir "forge/forge-database.sqlite"))
+  (setq forge-database-file (concat doom-data-dir "forge/forge-database.sqlite")
+        forge-database-connector 'sqlite-builtin)
   :config
   ;; All forge list modes are derived from `forge-topic-list-mode'
   (map! :map forge-topic-list-mode-map :n "q" #'kill-current-buffer)

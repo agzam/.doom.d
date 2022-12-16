@@ -60,4 +60,4 @@ See `+dict--words' for extra words, and `+dict-file' for a wordslist source "
 (defun +corfu-kill-frames ()
   (interactive)
   (delete-frame corfu--frame)
-  (delete-frame corfu-doc--frame))
+  (delete-frame corfu-popupinfo--frame))

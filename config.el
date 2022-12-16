@@ -140,7 +140,8 @@
 
 (after! evil
   (setq evil-jumps-cross-buffers t
-        evil-move-cursor-back nil))
+        evil-move-cursor-back nil)
+  (map! :map 'evil-visual-state-map "u" #'undo))
 
 (after! better-jumper
   (setq better-jumper-context 'window))
@@ -446,7 +447,8 @@
                      "k" (embark-split-action xref-find-definitions split-window-vertically)
                      "a" (embark-ace-action xref-find-definitions)))
       (:map embark-url-map
-            "e" #'+eww-open-in-other-window)
+            "e" #'+eww-open-in-other-window
+            "b" #'+browse-url)
       (:map embark-collect-mode-map
        :n "[" #'embark-previous-symbol
        :n "]" #'embark-next-symbol)

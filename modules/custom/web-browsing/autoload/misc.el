@@ -1,5 +1,6 @@
 ;;; custom/web-browsing/autoload/misc.el -*- lexical-binding: t; -*-
 
+;;;###autoload
 (defun +process-external-url (url)
   "To be called when an external process sends a URL to Emacs."
   (pcase url
@@ -11,6 +12,10 @@
     (_
      (+eww-open-in-other-window url))))
 
-(string-match-p
- "https\\:\\/\\/github.com.*\\/blob"
- "https://github.com/advthreat/iroh/pulls")
+;;;###autoload
+(defun +browse-url (URL &rest ARGS)
+  "Always use default (external) browser"
+  (interactive (browse-url-interactive-arg "URL: "))
+  ;; eww resets browse-url-function, I don't want that
+  (let ((browse-url-browser-function 'browse-url-default-browser))
+    (funcall-interactively #'browse-url URL ARGS)))

@@ -37,7 +37,7 @@
                            (git-link-open-in-browser browse?)
                            (lnk (call-interactively #'git-link)))
                        (kill-new lnk)
-                       (message lnk))))))
+                       (prin1 lnk))))))
       (when browse? (browse-url link)))))
 
 ;;;###autoload

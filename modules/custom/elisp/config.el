@@ -22,26 +22,26 @@
         :map (emacs-lisp-mode-map lisp-data-mode-map)
         :desc "Expand macro" "m" #'macrostep-expand
         (:prefix ("d" . "debug")
-         "f" #'+emacs-lisp/edebug-instrument-defun-on
-         "F" #'+emacs-lisp/edebug-instrument-defun-off)
+                 "f" #'+emacs-lisp/edebug-instrument-defun-on
+                 "F" #'+emacs-lisp/edebug-instrument-defun-off)
         (:prefix ("e" . "eval")
-         "b" #'eval-buffer
-         "d" #'eval-defun
-         "e" #'eval-last-sexp
-         "r" #'eval-region
-         "l" #'load-library
-         "c" #'eval-current-form-sp
-         "p" #'pp-eval-current)
+                 "b" #'eval-buffer
+                 "d" #'eval-defun
+                 "e" #'eval-last-sexp
+                 "r" #'eval-region
+                 "l" #'load-library
+                 "c" #'eval-current-form-sp
+                 "p" #'pp-eval-current)
         (:prefix ("g" . "goto")
-         "f" #'find-function
-         "v" #'find-variable
-         "l" #'find-library
-         "d" #'xref-find-definitions
-         "D" #'xref-find-definitions-other-window)
+                 "f" #'find-function
+                 "v" #'find-variable
+                 "l" #'find-library
+                 "d" #'xref-find-definitions
+                 "D" #'xref-find-definitions-other-window)
         (:prefix  ("h" . "help")
-         "h" #'helpful-at-point)
+                  "h" #'helpful-at-point)
         (:prefix ("k" . "kill")
-         "m" #'erase-messages-buffer)
+                 "m" #'erase-messages-buffer)
         (:prefix ("s" . "repl")
          :desc "messages" "s" #'+switch-to-messages-buffer-other-window
          :desc "clear " "l" #'erase-messages-buffer
@@ -53,7 +53,7 @@
   (map! :localleader
         :map messages-buffer-mode-map
         (:prefix ("k" . "kill")
-         "m" #'erase-messages-buffer)
+                 "m" #'erase-messages-buffer)
         (:prefix ("s" . "repl")
          :desc "clear" "l" #'erase-messages-buffer
          :desc "back to elisp" "s" #'+switch-to-last-elisp-buffer
@@ -92,3 +92,10 @@
    (display-buffer-reuse-window
     display-buffer-in-direction)
    (direction . right)))
+
+(after! woman
+  (setq woman-manpath '("/Applications/kitty.app/Contents/Resources/man/"
+                        "/usr/share/man"
+                        "/usr/local/share/man"
+                        "/usr/X11/man"
+                        "/Library/Apple/usr/share/man")))

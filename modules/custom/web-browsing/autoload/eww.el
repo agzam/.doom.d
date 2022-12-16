@@ -89,7 +89,7 @@ consider whole buffer."
   "Use `eww-open-in-new-buffer' in another window."
   (interactive (list (car (eww-suggested-uris))))
   (other-window-prefix)  ; For emacs28 -- it's a hack, but why not?
-  (eww-browse-url url :new-window))
+  (eww url :new-buffer))
 
 ;;;###autoload
 (defun +eww-copy-current-url ()

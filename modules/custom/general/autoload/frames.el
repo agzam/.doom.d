@@ -71,7 +71,7 @@ it remains shown or hidden - whatever the previous value was."
       (progn
         (set-frame-parameter fr 'undecorated t)
         (set-frame-parameter fr 'undecorated-fullheight t)
-        (set-frame-position fr (car (frame-position)) (+ 1 tbh))
+        (set-frame-position fr (car (frame-position)) (+ 0 tbh))
         (set-frame-height fr (- (x-display-pixel-height) (+ tbh 26)) nil :pixelwise)))
     (redraw-display)))
 

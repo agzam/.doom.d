@@ -14,6 +14,11 @@
     (eww--rename-buffer))
 
   (map! :map eww-mode-map
+        "C-c C-o" #'eww-browse-with-external-browser
+        :n "j" (cmd! () (pixel-scroll-precision-scroll-down 50))
+        :n "k" (cmd! () (pixel-scroll-precision-scroll-up 50))
+        :n "C-j" #'evil-next-visual-line
+        :n "C-k" #'evil-previous-visual-line
         :ni "C-<return>" #'+eww-open-in-other-window
         :n "yy" #'+eww-copy-current-url
         :n "zk" #'+eww-increase-font-size
@@ -43,6 +48,8 @@
   :commands (hnreader-news hnreader-best))
 
 (use-package! browser-hist
+  :init
+  (require 'embark)
   :commands (browser-hist-search))
 
 (use-package! elfeed
