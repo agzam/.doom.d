@@ -212,28 +212,35 @@ convert from JSON."
                 (lambda (e) (string-match "\\*cider\\|\\*nrepl" (buffer-name e)))
                 (buffer-list)))
         (kill-buffer-query-functions nil))
-   (thread-last
-     blist
-     (seq-map #'get-buffer-window)
-     (seq-remove #'null)
-     (seq-do (lambda (w) (quit-window :kill w))))
-   (seq-do #'kill-buffer blist)))
+    (thread-last
+      blist
+      (seq-map #'get-buffer-window)
+      (seq-remove #'null)
+      (seq-do (lambda (w) (quit-window :kill w))))
+    (seq-do #'kill-buffer blist)))
 
 ;;;###autoload
 (defun clj-edit-ns-header ()
   (interactive)
   (save-mark-and-excursion
-   (let ((edit-indirect-guess-mode-function (lambda (buf b_ e_)
-                                              (funcall (buffer-local-value 'major-mode buf)))))
-     (cljr--goto-ns)
-     (sp-select-next-thing)
-     (map! :map cider-mode-map "C-c C-k" nil)
-     (let ((buf (edit-indirect-region (region-beginning) (region-end) :display-buffer)))
-       (with-current-buffer buf
-         (use-local-map cider-mode-map)
-         (search-backward ":require")
-         (sp-end-of-sexp)
-         (newline-and-indent)
-         (evil-insert 1)
-         (keymap-local-set "C-c C-k" #'edit-indirect-abort)
-         (keymap-local-set "C-c C-c" #'edit-indirect-commit))))))
+    (let ((edit-indirect-guess-mode-function (lambda (buf b_ e_)
+                                               (funcall (buffer-local-value 'major-mode buf)))))
+      (cljr--goto-ns)
+      (sp-select-next-thing)
+      (map! :map cider-mode-map "C-c C-k" nil)
+      (let ((buf (edit-indirect-region (region-beginning) (region-end) :display-buffer)))
+        (with-current-buffer buf
+          (use-local-map cider-mode-map)
+          (search-backward ":require")
+          (sp-end-of-sexp)
+          (newline-and-indent)
+          (evil-insert 1)
+          (keymap-local-set "C-c C-k" #'edit-indirect-abort)
+          (keymap-local-set "C-c C-c" #'edit-indirect-commit))))))
+
+;;;###autoload
+(defun +cider-test-result-buffer-quit ()
+  "Quit test popup and immediately focus on the REPL."
+  (interactive)
+  (quit-restore-window (selected-window))
+  (cider-switch-to-repl-buffer))

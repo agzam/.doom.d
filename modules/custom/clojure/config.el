@@ -51,10 +51,11 @@
     ;; don't let the name decieve you, works for corfu too
     #'cider-company-enable-fuzzy-completion)
 
-  (add-hook! 'cider-repl-mode-hook
-    ;; don't let the name decieve you, works for corfu too
-    #'cider-company-enable-fuzzy-completion
-    #'hs-minor-mode)
+  (add-hook!
+   'cider-repl-mode-hook
+   ;; don't let the name decieve you, works for corfu too
+   #'cider-company-enable-fuzzy-completion
+   #'hs-minor-mode)
 
   (set-popup-rules!
    '(("^\\*cider-error*" :ignore t)
@@ -116,6 +117,9 @@
 
   (map! :map cider-popup-buffer-mode-map
         :n "q" #'cider-popup-buffer-quit-function)
+
+  (map! :map cider-test-report-mode-map
+        :n "q" #'+cider-test-result-buffer-quit)
 
   (add-to-list
    'display-buffer-alist
