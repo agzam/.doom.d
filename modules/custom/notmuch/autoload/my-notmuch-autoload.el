@@ -60,6 +60,13 @@
          (notmuch-tree-tag +notmuch-delete-tags))))))
 
 ;;;###autoload
+(defun +notmuch-search-mark-read ()
+  (interactive)
+  (when (member "unread" (notmuch-search-get-tags))
+    (notmuch-search-remove-tag '("-unread")))
+  (evil-next-visual-line))
+
+;;;###autoload
 (defvar notmuch-thread-navigation-map
   (make-sparse-keymap))
 
@@ -112,58 +119,58 @@
 
 ;;;###autoload
 (defun +notmuch-find-in-mailing-list ()
-    "Find message in mailing-list archives"
-    (interactive)
-    (let* ((mailing-groups '("gnu.org" "googlegroups.com"))
-           (headers (plist-get (notmuch-show-get-message-properties) :headers))
-           (send-to (concat (plist-get headers :To) ", " (plist-get headers :Cc)))
-           (msg-id (notmuch-show-get-message-id :bare))
+  "Find message in mailing-list archives"
+  (interactive)
+  (let* ((mailing-groups '("gnu.org" "googlegroups.com"))
+         (headers (plist-get (notmuch-show-get-message-properties) :headers))
+         (send-to (concat (plist-get headers :To) ", " (plist-get headers :Cc)))
+         (msg-id (notmuch-show-get-message-id :bare))
 
-           ;; figure out the mailing-group index by finding first matching
-           ;; address in send-to field
-           (mlist (cl-some
-                   (lambda (x)
-                     (when (string-match (concat "\\([[:graph:]]*\\)@" x) send-to)
-                       ;; email addresses often contain < and >, e.g.: Vasya Pupkin <vasya@mail.ru>
-                       `(,(replace-regexp-in-string "<\\|>" "" (match-string 1 send-to)) ,x)))
-                   mailing-groups))
+         ;; figure out the mailing-group index by finding first matching
+         ;; address in send-to field
+         (mlist (cl-some
+                 (lambda (x)
+                   (when (string-match (concat "\\([[:graph:]]*\\)@" x) send-to)
+                     ;; email addresses often contain < and >, e.g.: Vasya Pupkin <vasya@mail.ru>
+                     `(,(replace-regexp-in-string "<\\|>" "" (match-string 1 send-to)) ,x)))
+                 mailing-groups))
 
-           (url
-            (pcase mlist
-              ;; gnu.org
-              ;; for some reason it's now broken. It looks like
-              ;; something has changed in the portal
-              ;; ((pred (lambda (x) (string-match-p "gnu.org" (cadr x))))
-              ;;  (concat
-              ;;   "https://lists.gnu.org/archive/cgi-bin/namazu.cgi?query="
-              ;;   (concat
-              ;;    (url-hexify-string
-              ;;     (concat
-              ;;      "+message-id:<"
-              ;;      msg-id
-              ;;      ">"))
-              ;;    "&submit=" (url-hexify-string "Search!")
-              ;;    "&idxname="
-              ;;    (car mlist))))
+         (url
+          (pcase mlist
+            ;; gnu.org
+            ;; for some reason it's now broken. It looks like
+            ;; something has changed in the portal
+            ;; ((pred (lambda (x) (string-match-p "gnu.org" (cadr x))))
+            ;;  (concat
+            ;;   "https://lists.gnu.org/archive/cgi-bin/namazu.cgi?query="
+            ;;   (concat
+            ;;    (url-hexify-string
+            ;;     (concat
+            ;;      "+message-id:<"
+            ;;      msg-id
+            ;;      ">"))
+            ;;    "&submit=" (url-hexify-string "Search!")
+            ;;    "&idxname="
+            ;;    (car mlist))))
 
-              ((pred (lambda (_) (string-match-p "emacs-orgmode@gnu.org" send-to)))
-               (format
-                "https://list.orgmode.org/orgmode/%s/"
-                (url-hexify-string msg-id)))
+            ((pred (lambda (_) (string-match-p "emacs-orgmode@gnu.org" send-to)))
+             (format
+              "https://list.orgmode.org/orgmode/%s/"
+              (url-hexify-string msg-id)))
 
-              ((pred (lambda (x) (string-match-p "gnu.org" (cadr x))))
-               (format
-                "https://yhetil.org/%s/%s"
-                (car mlist)
-                (url-hexify-string msg-id)))
+            ((pred (lambda (x) (string-match-p "gnu.org" (cadr x))))
+             (format
+              "https://yhetil.org/%s/%s"
+              (car mlist)
+              (url-hexify-string msg-id)))
 
-              ;; google.groups
-              ((pred (lambda (x) (string-match-p "googlegroups.com" (cadr x))))
-               (concat
-                "https://groups.google.com/forum/#!topicsearchin/"
-                (car mlist)
-                "/messageid$3A"
-                (url-hexify-string (concat "\"" msg-id "\"")))))))
-      (when url
-        (message "opening url: " url)
-        (browse-url url))))
+            ;; google.groups
+            ((pred (lambda (x) (string-match-p "googlegroups.com" (cadr x))))
+             (concat
+              "https://groups.google.com/forum/#!topicsearchin/"
+              (car mlist)
+              "/messageid$3A"
+              (url-hexify-string (concat "\"" msg-id "\"")))))))
+    (when url
+      (message "opening url: " url)
+      (browse-url url))))
