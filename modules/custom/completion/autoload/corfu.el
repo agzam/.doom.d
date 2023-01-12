@@ -59,5 +59,7 @@ See `+dict--words' for extra words, and `+dict-file' for a wordslist source "
 ;;;###autoload
 (defun +corfu-kill-frames ()
   (interactive)
-  (delete-frame corfu--frame)
-  (delete-frame corfu-popupinfo--frame))
+  (when corfu--frame
+   (delete-frame corfu--frame))
+  (when corfu-popupinfo--frame
+   (delete-frame corfu-popupinfo--frame)))

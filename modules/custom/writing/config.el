@@ -79,7 +79,7 @@
       display-buffer-in-direction)
      (direction . right)
      (window . root)
-     (window-width . 0.25))))
+     (window-width . 0.35))))
 
 (use-package! google-translate
   :defer t
@@ -258,3 +258,6 @@
         :desc "copy timestamp URL" :n "RET" #'youtube-sub-extractor-copy-ts-link
         :desc "browse at timestamp" :n "C-c C-o" #'youtube-sub-extractor-browse-ts-link
         :n "q" #'kill-buffer-and-window))
+
+(use-package! wiktionary-bro
+  :commands (wiktionary-bro-dwim))

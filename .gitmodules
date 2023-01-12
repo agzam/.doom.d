@@ -7,3 +7,6 @@
 [submodule "modules/custom/web-browsing/browser-hist"]
 	path = modules/custom/web-browsing/browser-hist
 	url = git@github.com:agzam/browser-hist.el.git
+[submodule "modules/custom/writing/wiktionary-bro"]
+	path = modules/custom/writing/wiktionary-bro
+	url = git@github.com:agzam/wiktionary-bro.el.git

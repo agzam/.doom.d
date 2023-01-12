@@ -86,7 +86,14 @@
   ;; who cares if tags not displayed in magit-refs buffer?
   (remove-hook 'magit-refs-sections-hook #'magit-insert-tags)
   ;; (remove-hook 'magit-process-mode-hook #'goto-address-mode)
-  )
+
+  ;; 'Path' column in submodule list is a bit too short
+  (setf
+   (car
+    (alist-get
+     "Path"
+     magit-submodule-list-columns nil nil #'string=))
+   50))
 
 (use-package! evil-collection-magit
   :when (modulep! :editor evil +everywhere)
@@ -147,14 +154,19 @@
   (transient-append-suffix 'magit-dispatch '(0 -1 -1)
     '("*" "Worktree" magit-worktree)))
 
+(use-package! emacsql-sqlite-builtin
+  :defer t)
+
 (use-package! forge
   ;; We defer loading even further because forge's dependencies will try to
   ;; compile emacsql, which is a slow and blocking operation.
+  :after emacsql-sqlite-builtin
   :after-call magit-status
+  :init
+  (setq forge-database-connector 'sqlite-builtin)
   :commands forge-create-pullreq forge-create-issue
   :preface
-  (setq forge-database-file (concat doom-data-dir "forge/forge-database.sqlite")
-        forge-database-connector 'sqlite-builtin)
+  (setq forge-database-file (concat doom-data-dir "forge/forge-database.sqlite"))
   :config
   ;; All forge list modes are derived from `forge-topic-list-mode'
   (map! :map forge-topic-list-mode-map :n "q" #'kill-current-buffer)
@@ -255,22 +267,22 @@ ensure it is built when we actually use Forge."
         "U" #'gh-notify-unmark-all-notifications
         ;; "\\" #'gh-notify-toggle-url-view
         (:prefix ("/" . "limit")
-         "d" #'gh-notify-toggle-global-ts-sort
-         "u" #'gh-notify-limit-unread
-         "U" (cmd! (gh-notify-limit-unread 2))
-         "'" #'gh-notify-limit-repo
-         "\"" #'gh-notify-limit-repo-none
-         "p" #'gh-notify-limit-pr
-         "i" #'gh-notify-limit-issue
-         "*" #'gh-notify-limit-marked
-         "a" #'gh-notify-limit-assign
-         "y" #'gh-notify-limit-author
-         "m" #'gh-notify-limit-mention
-         "t" #'gh-notify-limit-team-mention
-         "s" #'gh-notify-limit-subscribed
-         "c" #'gh-notify-limit-comment
-         "r" #'gh-notify-limit-review-requested
-         "/" #'gh-notify-limit-none))
+                 "d" #'gh-notify-toggle-global-ts-sort
+                 "u" #'gh-notify-limit-unread
+                 "U" (cmd! (gh-notify-limit-unread 2))
+                 "'" #'gh-notify-limit-repo
+                 "\"" #'gh-notify-limit-repo-none
+                 "p" #'gh-notify-limit-pr
+                 "i" #'gh-notify-limit-issue
+                 "*" #'gh-notify-limit-marked
+                 "a" #'gh-notify-limit-assign
+                 "y" #'gh-notify-limit-author
+                 "m" #'gh-notify-limit-mention
+                 "t" #'gh-notify-limit-team-mention
+                 "s" #'gh-notify-limit-subscribed
+                 "c" #'gh-notify-limit-comment
+                 "r" #'gh-notify-limit-review-requested
+                 "/" #'gh-notify-limit-none))
 
   ;; always recenter when getting back to gh-notify buffer from forge-buffers
   (advice-add 'gh-notify--filter-notifications :after 'recenter)

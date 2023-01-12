@@ -65,7 +65,10 @@
 
 (after! debug
   (map! :map debugger-mode-map
-        :n "e" #'debugger-eval-expression))
+        :n "e" #'debugger-eval-expression
+        :n "n" #'backtrace-forward-frame
+        :n "p" #'backtrace-backward-frame
+        :n "v" #'backtrace-toggle-locals))
 
 
 (after! info

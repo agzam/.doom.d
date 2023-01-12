@@ -13,6 +13,7 @@
       lsp
       misc-info
       process
+      pdf-pages
       ;; checker
 
       matches selection-info

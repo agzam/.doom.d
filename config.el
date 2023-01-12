@@ -251,17 +251,17 @@
        :desc "edit indirect" "i" #'edit-indirect-region)
 
       (:prefix ("f" . "files")
-        (:when (modulep! :custom search)
-           :desc "fasd dir" "ad" (cmd! (+fasd-find 'dirs))
-           :desc "fasd file" "af" (cmd! (+fasd-find 'files))
-           :desc "fasd any" "aa" (cmd! (+fasd-find 'both)))
-        :desc "dired" "j" #'dired-jump
-       (:when IS-MAC
-         :desc "open in app" "O" #'+macos/open-in-default-program)
-       "e" nil
-       (:prefix ("e" . "doom/emacs")
-        :desc "doom.d" "d" #'find-in-doom-dir
-        :desc "doom init dir" "i" (cmd! (dired doom-emacs-dir))))
+               (:when (modulep! :custom search)
+                 :desc "fasd dir" "ad" (cmd! (+fasd-find 'dirs))
+                 :desc "fasd file" "af" (cmd! (+fasd-find 'files))
+                 :desc "fasd any" "aa" (cmd! (+fasd-find 'both)))
+               :desc "dired" "j" #'dired-jump
+               (:when IS-MAC
+                 :desc "open in app" "O" #'+macos/open-in-default-program)
+               "e" nil
+               (:prefix ("e" . "doom/emacs")
+                :desc "doom.d" "d" #'find-in-doom-dir
+                :desc "doom init dir" "i" (cmd! (dired doom-emacs-dir))))
 
       (:prefix ("g" . "goto/git")
        :desc "magit file" "f" #'magit-file-dispatch
@@ -300,7 +300,7 @@
                "B" #'sp-backward-barf-sexp
                "c" #'sp-convolute-sexp
                (:prefix ("d" . "kill")
-                "x" #'sp-kill-sexp)
+                        "x" #'sp-kill-sexp)
                "r" #'sp-raise-sexp
                "s" #'sp-forward-slurp-sexp
                "S" #'sp-backward-slurp-sexp
@@ -387,7 +387,8 @@
                   :desc "define" "d" #'define-it-at-point
                   :desc "grammarly check" "g" #'lsp-grammarly-check-grammar
                   :desc "sdcv" "l" #'sdcv-search-pointer
-                  :desc "Merriam Webster" "m" #'mw-thesaurus-lookup-dwim)
+                  :desc "Merriam Webster" "m" #'mw-thesaurus-lookup-dwim
+                  :desc "wiktionary" "w" #'wiktionary-bro-dwim)
                  (:prefix ("g" . "translate")
                   :desc "en->ru" "e" #'google-translate-query-translate-reverse
                   :desc "ru->en" "r" #'google-translate-query-translate

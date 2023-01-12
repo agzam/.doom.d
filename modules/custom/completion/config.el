@@ -236,7 +236,11 @@
                  cand))))
 
 (after! consult
-  (consult-customize +default/search-buffer :preview-key 'any))
+  (consult-customize +default/search-buffer :preview-key 'any)
+
+  (define-key!
+    :keymaps (append +default-minibuffer-maps)
+    "C-/" #'consult-history))
 
 (after! embark
   (setq embark-cycle-key (kbd "C-;"))

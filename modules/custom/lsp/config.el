@@ -52,4 +52,8 @@
   (map! :map lsp-ui-flycheck-list-mode-map
         :nv "q" #'kill-buffer-and-window)
 
+  (add-hook! 'lsp-mode-hook
+             #'lsp-completion-mode
+             #'yas-minor-mode-on)
+
   (remove-hook! 'lsp-mode-hook #'lsp-ui-mode))

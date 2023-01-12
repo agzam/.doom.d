@@ -2,6 +2,7 @@
 ;;; custom/git/packages.el
 
 (package! magit)
+(package! emacsql-sqlite-builtin)
 (package! forge)
 (package! gh-notify :recipe (:host github :repo "anticomputer/gh-notify" :branch "dev"))
 (package! git-link)

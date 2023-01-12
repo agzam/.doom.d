@@ -18,3 +18,5 @@
 
 ;; (package! youtube-sub-extractor :recipe (:local-repo "youtube-sub-extractor.el"))
 (package! youtube-sub-extractor)
+
+(package! wiktionary-bro :recipe (:local-repo "wiktionary-bro"))

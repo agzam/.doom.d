@@ -95,6 +95,9 @@
          (:prefix ("t" . "toggle")
           "l" #'org-toggle-link-display)))
 
+  (map! :map org-agenda-mode-map
+        :n "RET" #'org-agenda-switch-to)
+
   (add-hook!
    'org-mode-hook
    #'org-indent-mode

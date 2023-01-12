@@ -28,15 +28,14 @@ temporarily toggle it off. Bind in vertico-map."
     (run-at-time
      "0 sec" nil
      (fn! ()
-       (when vertico-posframe-global
-         (vertico-posframe-mode +1)
-         (setq vertico-posframe-global nil))))))
+          (when vertico-posframe-global
+            (vertico-posframe-mode +1)
+            (setq vertico-posframe-global nil))))))
 
 ;;;###autoload
 (defun vertico-jump-to-home-dir-on~  ()
   (interactive)
-  (if (and (eq 'file (vertico--metadata-get 'category))
-           (string-match-p "^~\\/" (minibuffer-contents)))
-      (while (not (string-equal (minibuffer-contents) "~/"))
-        (vertico-directory-up 1))
-    (insert "~")))
+  (when (eq 'file (vertico--metadata-get 'category))
+    (vertico-directory-up 1000)
+    (when (string-blank-p (minibuffer-contents))
+      (insert "~"))))
