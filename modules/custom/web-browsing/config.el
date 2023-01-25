@@ -44,9 +44,6 @@
 (after! xwidget
   (map! :localleader :map xwidget-webkit-mode-map "x" #'kill-current-buffer))
 
-(use-package! hnreader
-  :commands (hnreader-news hnreader-best))
-
 (use-package! browser-hist
   :init
   (require 'embark)

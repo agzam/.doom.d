@@ -14,7 +14,13 @@
 (package! corfu-doc-terminal
   :recipe (:type git :repo "https://codeberg.org/akib/emacs-corfu-doc-terminal.git"))
 
-(unpin! vertico consult embark embark-consult)
+(package! compat)
+
+(unpin! compat
+        consult
+        embark
+        embark-consult
+        vertico)
 
 ;; (package! vertico :recipe (:host github :repo "minad/vertico" :files ("*.el" "extensions")))
 (package! vertico-posframe :recipe (:host github :repo "tumashu/vertico-posframe"))

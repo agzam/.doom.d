@@ -5,16 +5,16 @@
 
 (defun +org--toggle-inline-images-in-subtree (&optional beg end refresh)
   "Refresh inline image previews in the current heading/tree."
-  (let ((beg (or beg
-                 (if (org-before-first-heading-p)
-                     (line-beginning-position)
-                   (save-excursion (org-back-to-heading) (point)))))
-        (end (or end
-                 (if (org-before-first-heading-p)
-                     (line-end-position)
-                   (save-excursion (org-end-of-subtree) (point)))))
-        (overlays (cl-remove-if-not (lambda (ov) (overlay-get ov 'org-image-overlay))
-                                    (ignore-errors (overlays-in beg end)))))
+  (let* ((beg (or beg
+                  (if (org-before-first-heading-p)
+                      (save-excursion (point-min))
+                    (save-excursion (org-back-to-heading) (point)))))
+         (end (or end
+                  (if (org-before-first-heading-p)
+                      (save-excursion (org-next-visible-heading 1) (point))
+                    (save-excursion (org-end-of-subtree) (point)))))
+         (overlays (cl-remove-if-not (lambda (ov) (overlay-get ov 'org-image-overlay))
+                                     (ignore-errors (overlays-in beg end)))))
     (dolist (ov overlays nil)
       (delete-overlay ov)
       (setq org-inline-image-overlays (delete ov org-inline-image-overlays)))
@@ -114,8 +114,8 @@
   (setq org-hide-emphasis-markers +org-pretty-mode)
   (org-toggle-pretty-entities)
   (with-silent-modifications
-   ;; In case the above un-align tables
-   (org-table-map-tables 'org-table-align t)))
+    ;; In case the above un-align tables
+    (org-table-map-tables 'org-table-align t)))
 
 
 ;;
@@ -127,16 +127,19 @@
 
 If on a:
 - checkbox list item or todo heading: toggle it.
-- clock: update its time.
+- citation: follow it
 - headline: cycle ARCHIVE subtrees, toggle latex fragments and inline images in
   subtree; update statistics cookies/checkboxes and ToCs.
+- clock: update its time.
 - footnote reference: jump to the footnote's definition
 - footnote definition: jump to the first reference of this footnote
+- timestamp: open an agenda view for the time-stamp date/range at point.
 - table-row or a TBLFM: recalculate the table's formulas
 - table-cell: clear it and go into insert mode. If this is a formula cell,
   recaluclate it instead.
 - babel-call: execute the source block
 - statistics-cookie: update it.
+- src block: execute it
 - latex fragment: toggle it.
 - link: follow it
 - otherwise, refresh all inline images in current tree."
@@ -150,6 +153,9 @@ If on a:
         (setq context (org-element-property :parent context)
               type (org-element-type context)))
       (pcase type
+        ((or `citation `citation-reference)
+         (org-cite-follow context arg))
+
         (`headline
          (cond ((memq (bound-and-true-p org-goto-map)
                       (current-active-maps))
@@ -239,6 +245,9 @@ If on a:
                 (org-element-property :begin lineage)
                 (org-element-property :end lineage))
              (org-open-at-point arg))))
+
+        (`paragraph
+         (+org--toggle-inline-images-in-subtree))
 
         ((guard (org-element-property :checkbox (org-element-lineage context '(item) t)))
          (let ((match (and (org-at-item-checkbox-p) (match-string 1))))
@@ -372,6 +381,10 @@ Made for `org-tab-first-hook' in evil-mode."
   (cond ((not (and (bound-and-true-p evil-local-mode)
                    (evil-insert-state-p)))
          nil)
+        ((and (bound-and-true-p org-cdlatex-mode)
+              (or (org-inside-LaTeX-fragment-p)
+                  (org-inside-latex-macro-p)))
+         nil)
         ((org-at-item-p)
          (if (eq this-command 'org-shifttab)
              (org-outdent-item-tree)
@@ -384,8 +397,9 @@ Made for `org-tab-first-hook' in evil-mode."
              (org-demote)))
          t)
         ((org-in-src-block-p t)
-         (org-babel-do-in-edit-buffer
-          (call-interactively #'indent-for-tab-command))
+         (save-window-excursion
+           (org-babel-do-in-edit-buffer
+            (call-interactively #'indent-for-tab-command)))
          t)
         ((and (save-excursion
                 (skip-chars-backward " \t")
@@ -438,7 +452,10 @@ of the time I just want to peek into the current subtree -- at most, expand
 All my (performant) foldings needs are met between this and `org-show-subtree'
 (on zO for evil users), and `org-cycle' on shift-TAB if I need it."
   (interactive "P")
-  (unless (eq this-command 'org-shifttab)
+  (unless (or (eq this-command 'org-shifttab)
+              (and (bound-and-true-p org-cdlatex-mode)
+                   (or (org-inside-LaTeX-fragment-p)
+                       (org-inside-latex-macro-p))))
     (save-excursion
       (org-beginning-of-line)
       (let (invisible-p)

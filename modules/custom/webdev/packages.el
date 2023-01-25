@@ -7,3 +7,5 @@
 
 (when (modulep! :tools lookup)
   (package! xref-js2))
+
+(package! html-to-hiccup)

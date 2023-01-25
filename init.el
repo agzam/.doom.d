@@ -189,12 +189,12 @@
        (default +bindings +smartparens)
 
        :custom
+       git
        (completion +icons +minibuffer)
        general
        colors
        modeline
        tab-bar
-       git
        elisp
        search
        dired

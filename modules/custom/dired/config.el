@@ -126,5 +126,5 @@
       :desc "above" :n "k" (dired-split-action split-window-vertically)
       :desc "ace-action" :n "a" #'dired-ace-action)))
 
-  (when (modulep! :custom seach)
+  (when (modulep! :custom search)
     (add-hook 'dired-after-readin-hook #'+add-to-fasd-cache)))

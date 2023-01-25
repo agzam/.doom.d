@@ -60,3 +60,6 @@
   ;; :hook (rjsx-mode js2-mode)
   :config
   (setq prettier-js-args '()))
+
+(use-package! html-to-hiccup
+  :defer t)

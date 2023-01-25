@@ -345,7 +345,9 @@
                 :desc "find dir" "d" #'projectile-find-dir)
                (:when (modulep! :custom dired)
                  :desc "treemacs" "T" #'treemacs-project-toggle+
-                 :desc "dired locate" "t" #'+dired-jump-find-in-project))
+                 :desc "dired locate" "t" #'+dired-jump-find-in-project)
+               (:when (modulep! :custom shell)
+                 :desc "project shell" "'" #'shell-pop-in-project-root))
 
       (:prefix ("r" . "reset/resume/ring")
        :desc "yank from kill-ring" "y" #'consult-yank-from-kill-ring

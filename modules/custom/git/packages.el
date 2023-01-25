@@ -2,6 +2,7 @@
 ;;; custom/git/packages.el
 
 (package! magit)
+(package! compat)
 (package! emacsql-sqlite-builtin)
 (package! forge)
 (package! gh-notify :recipe (:host github :repo "anticomputer/gh-notify" :branch "dev"))
@@ -13,3 +14,5 @@
   ;; update breaks my transients, see: https://github.com/magit/transient/issues/219
   :pin "0a3b22f169b84ab7a51dc83856b0b6487fdf41da"
   )
+
+(unpin! magit forge compat)

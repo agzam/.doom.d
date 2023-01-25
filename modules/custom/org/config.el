@@ -3,7 +3,10 @@
 (add-to-list 'load-path (format "%sstraight/build-%s/org-roam/extensions/"
                                 (file-truename doom-local-dir) emacs-version))
 
-(defvar org-default-folder "~/Dropbox/org/")
+(defvar org-default-folder
+  (cond
+   (IS-MAC "~/Library/CloudStorage/Dropbox/org/")
+   (IS-LINUX "~/org/")))
 
 (global-set-key (kbd "C-c C-f") #'org-roam-node-find)
 (global-set-key (kbd "C-c r") #'org-roam-dailies-capture-date)
@@ -57,22 +60,22 @@
          "n" #'org-next-link
          "p" #'org-previous-link
          (:when (modulep! :completion vertico)
-          "." #'consult-org-heading)
+           "." #'consult-org-heading)
          (:prefix ("b" . "babel")
-          "k" #'org-babel-remove-result)
+                  "k" #'org-babel-remove-result)
          (:prefix ("d" . "date")
-          "t" #'+org-goto-datetree-date)
+                  "t" #'+org-goto-datetree-date)
          (:prefix ("g" . "goto")
           :desc "final heading" "L" #'+org-goto-bottommost-heading)
          (:prefix ("i" . "insert")
-          "l" #'org-insert-link
-          "L" #'org-cliplink)
+                  "l" #'org-insert-link
+                  "L" #'org-cliplink)
          (:prefix ("l" . "links")
-          "i" #'org-id-store-link
-          "c" #'markdown-link->org)
+                  "i" #'org-id-store-link
+                  "c" #'markdown-link->org)
          (:prefix ("o" . "open/Org")
-          "l" #'org-id-store-link
-          "L" #'org-store-link-id-optional)
+                  "l" #'org-id-store-link
+                  "L" #'org-store-link-id-optional)
          (:prefix ("r" . "roam")
           "b" #'consult-org-roam-backlinks
           "i" #'org-roam-node-insert+
@@ -83,17 +86,17 @@
           "F" #'consult-org-roam-forward-links
           "d" #'org-roam-dailies-find-date
           (:prefix ("r" . "refile")
-           "n" #'org-roam-refile-to-node))
+                   "n" #'org-roam-refile-to-node))
          (:prefix ("s" . "tree/subtree")
-          "a" #'org-toggle-archive-tag
-          "A" #'org-archive-subtree
-          "j" #'consult-org-heading
-          "n" #'org-narrow-to-subtree
-          "N" #'widen
-          "S" #'org-sort
-          "x" #'org-cut-subtree)
+                  "a" #'org-toggle-archive-tag
+                  "A" #'org-archive-subtree
+                  "j" #'consult-org-heading
+                  "n" #'org-narrow-to-subtree
+                  "N" #'widen
+                  "S" #'org-sort
+                  "x" #'org-cut-subtree)
          (:prefix ("t" . "toggle")
-          "l" #'org-toggle-link-display)))
+                  "l" #'org-toggle-link-display)))
 
   (map! :map org-agenda-mode-map
         :n "RET" #'org-agenda-switch-to)
@@ -162,12 +165,12 @@
         "C-c i" #'org-roam-node-insert+
         :n "q" #'quit-window
         (:prefix ("g" . "goto")
-         "k" #'org-backward-element
-         "j" #'org-forward-element)
+                 "k" #'org-backward-element
+                 "j" #'org-forward-element)
         (:localleader
          (:prefix ("r" . "roam")
-          "f" #'org-roam-node-find
-          "l" #'org-roam-buffer-toggle)))
+                  "f" #'org-roam-node-find
+                  "l" #'org-roam-buffer-toggle)))
 
   ;; always open Backlinks in other-window; or in the same window with universal arg
   (map! :map org-roam-preview-map
@@ -180,7 +183,7 @@
   (after! xwidget
     (map! :localleader :map xwidget-webkit-mode-map
           (:prefix ("r" . "roam")
-           "w" #'org-roam-toggle-ui-xwidget)))
+                   "w" #'org-roam-toggle-ui-xwidget)))
 
   (setq
    org-roam-completion-everywhere nil
@@ -445,8 +448,8 @@
   (setq verb-json-use-mode 'json-mode)
   (map! :map org-mode-map
         (:localleader "v" verb-command-map
-         (:prefix ("v" . "verb")
-          "r" #'verb-send-request-on-point-other-window-stay)))
+                      (:prefix ("v" . "verb")
+                               "r" #'verb-send-request-on-point-other-window-stay)))
 
   (map! :map verb-response-body-mode-map
         :n "q" #'kill-buffer-and-window)
@@ -499,7 +502,7 @@
   (map! :map anki-editor-mode-map
         :localleader
         (:prefix ("a" . "anki")
-         "p" #'anki-editor-push-tree))
+                 "p" #'anki-editor-push-tree))
 
   (add-to-list 'minor-mode-map-alist '(anki-editor-mode anki-editor-mode-map))
 
