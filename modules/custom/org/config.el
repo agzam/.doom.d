@@ -98,10 +98,16 @@
   (map! :map org-agenda-mode-map
         :n "RET" #'org-agenda-switch-to)
 
+  ;; (add-hook! 'org-tab-first-hook
+  ;;            #'+org-yas-expand-maybe-h
+  ;;            #'+org-indent-maybe-h)
+
   (add-hook!
    'org-mode-hook
    #'org-indent-mode
-   (defun flycheck-disable-h () (flycheck-mode -1)))
+   (defun flycheck-disable-h () (flycheck-mode -1))
+   #'yas-minor-mode-on)
+
   (add-hook! 'org-capture-mode-hook #'recenter)
 
   (setq org-export-with-smart-quotes t

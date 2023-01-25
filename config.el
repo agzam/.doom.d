@@ -172,6 +172,10 @@
   ;;     (run-with-timer 0.1 nil (lambda () (quiet! (wgrep-abort-changes))))))
   )
 
+(after! yasnippet
+  (add-to-list 'yas-snippet-dirs (concat doom-user-dir "snippets/"))
+  (yas-reload-all))
+
 (add-hook! 'prog-mode-hook #'hs-minor-mode)
 
 ;; disable visual-line-navigation in certain modes
