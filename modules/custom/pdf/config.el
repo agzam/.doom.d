@@ -32,6 +32,7 @@
         :nm "C-y" #'evil-collection-pdf-view-previous-line-or-previous-page
         :localleader
         "t" #'pdf-view-themed-minor-mode
+        "," #'pdf-view-current-progress
         (:prefix ("s" . "slice/scroll")
          "a" #'pdf-view-auto-slice-minor-mode
          "b" #'pdf-view-set-slice-from-bounding-box
