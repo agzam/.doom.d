@@ -445,7 +445,8 @@
 (use-package! verb
   :after org
   :config
-  (setq verb-json-use-mode 'json-mode)
+  (setq verb-inhibit-cookies t   ; I'll handle them manually
+        verb-json-use-mode 'json-mode)
   (map! :map org-mode-map
         (:localleader "v" verb-command-map
                       (:prefix ("v" . "verb")

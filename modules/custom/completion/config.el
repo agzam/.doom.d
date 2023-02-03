@@ -170,9 +170,10 @@
   (setq vertico-posframe-poshandler 'posframe-poshandler-frame-bottom-center)
   (setq
    vertico-posframe-global t
-   vertico-posframe-height 23
-   vertico-posframe-width 200
-   marginalia-margin-threshold 500)
+   vertico-posframe-height 18
+   vertico-posframe-width 120
+   marginalia-margin-threshold 500
+   vertico-posframe-parameters '((alpha . 85)))
   (vertico-posframe-mode +1)
 
   ;; disable and restore posframe when emacslient connects in terminal
@@ -192,9 +193,8 @@
   ;; https://github.com/tumashu/vertico-posframe/issues/11
   (defadvice! vertico-posframe--display-no-evil (fn _lines)
     :around #'vertico-posframe--display
-    (evil-mode -1)
     (funcall-interactively fn _lines)
-    (evil-mode 1)))
+    (evil-local-mode -1)))
 
 (use-package! vertico-repeat
   :after vertico

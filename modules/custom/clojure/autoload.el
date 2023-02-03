@@ -161,7 +161,10 @@ convert from JSON."
                        (list (point) (+ 1 end))))))
          (jet (executable-find "jet"))
          (params (if from-json*
-                     '("--from" "json" "--to" "edn" "--keywordize" "--pretty")
+                     '("--from" "json" "--to" "edn"
+                       "--keywordize"
+                       "#(cond-> % (not (clojure.string/starts-with? % \"@\")) (keyword))"
+                       "--pretty")
                    '("--from" "edn" "--to" "json" "--pretty"))))
     (when (not jet)
       (error "jet cli not found"))
