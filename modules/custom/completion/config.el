@@ -21,8 +21,9 @@
    corfu-max-width 56
    corfu-min-width 56
    corfu-preselect-first t)
-  (when (modulep! +minibuffer)
-    (add-hook 'minibuffer-setup-hook #'+corfu--enable-in-minibuffer))
+  ;; Not sure if completions in the minibuffer helpful or annoying. may enable it again later
+  ;; (when (modulep! +minibuffer)
+  ;;   (add-hook 'minibuffer-setup-hook #'+corfu--enable-in-minibuffer))
 
   (add-hook! 'doom-init-modules-hook
     (defun reset-lsp-completion-provider-h ()
@@ -172,8 +173,7 @@
    vertico-posframe-global t
    vertico-posframe-height 18
    vertico-posframe-width 120
-   marginalia-margin-threshold 500
-   vertico-posframe-parameters '((alpha . 85)))
+   marginalia-margin-threshold 500)
   (vertico-posframe-mode +1)
 
   ;; disable and restore posframe when emacslient connects in terminal
@@ -185,16 +185,21 @@
         (setq vertico-posframe-restore-after-term-p t))))
 
   (add-hook! 'delete-frame-functions
-    (defun restore-vertico-posframe-after-term-h (frame)
+    (defun restore-vertico-posframe-after-term-h (_frame)
       (when (bound-and-true-p vertico-posframe-restore-after-term-p)
         (vertico-posframe-mode +1))))
 
   ;; fixing "Doesn't properly respond to C-n"
   ;; https://github.com/tumashu/vertico-posframe/issues/11
-  (defadvice! vertico-posframe--display-no-evil (fn _lines)
+  (defadvice! vertico-posframe--display-no-evil (fn lines)
     :around #'vertico-posframe--display
-    (funcall-interactively fn _lines)
-    (evil-local-mode -1)))
+    (funcall-interactively fn lines)
+    (evil-local-mode -1))
+
+  (map! :after vertico
+        :map vertico-map
+        "C-c C-p"  #'vertico-posframe-briefly-off
+        "C-." #'vertico-posframe-briefly-transparent))
 
 (use-package! vertico-repeat
   :after vertico
@@ -233,21 +238,94 @@
                  (if (= vertico--index index)
                      (propertize "» " 'face 'vertico-current)
                    "  ")
-                 cand))))
+                 cand)))
+
+  (map! :map vertico-map
+        "C-'" #'vertico-quick-insert
+        "C-h" #'vertico-directory-delete-word
+        "C-c C-g" #'vertico-grid-mode
+        "M-h" #'vertico-grid-left
+        "M-l" #'vertico-grid-right
+        "M-j" #'vertico-next
+        "M-k" #'vertico-previous
+        "C-e" #'vertico-scroll-up
+        "C-y" #'vertico-scroll-down
+        "]" #'vertico-next-group
+        "[" #'vertico-previous-group
+        "~" #'vertico-jump-to-home-dir-on~))
 
 (after! consult
-  (consult-customize +default/search-buffer :preview-key 'any)
+  (consult-customize
+   consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file
+   +default/search-project +default/search-other-project
+   +default/search-project-for-symbol-at-point
+   +default/search-cwd +default/search-other-cwd
+   +default/search-notes-for-symbol-at-point
+   +default/search-emacsd
+   consult--source-recent-file consult--source-project-recent-file consult--source-bookmark
+   :preview-key "C-SPC")
+
+  (setq consult-preview-key "C-SPC")
+  (consult-customize
+   +default/search-buffer
+   :preview-key (list "C-SPC" :debounce 0.5 'any))
 
   (define-key!
     :keymaps (append +default-minibuffer-maps)
-    "C-/" #'consult-history))
+    "C-/" #'consult-history)
+
+  (map! :after consult
+        :map isearch-mode-map "M-s l" #'consult-line))
 
 (after! embark
-  (setq embark-cycle-key (kbd "C-;"))
+  (setq embark-cycle-key "C-;")
 
-  (defun +edebug-instrument-symbol (symbol)
-    (interactive "sSymbol: ")
-    (edebug-instrument-function (intern symbol)))
+  (map!
+   :after embark
+   (:map
+    embark-file-map
+    "o" nil
+    (:prefix ("o" . "open")
+             "j" (embark-split-action find-file +evil/window-split-and-follow)
+             "l" (embark-split-action find-file +evil/window-vsplit-and-follow)
+             "h" (embark-split-action find-file split-window-horizontally)
+             "k" (embark-split-action find-file split-window-vertically)
+             "a" (embark-ace-action find-file)))
+
+   (:map
+    embark-buffer-map
+    "o" nil
+    (:prefix ("o" . "open")
+             "j" (embark-split-action switch-to-buffer +evil/window-split-and-follow)
+             "a" (embark-ace-action switch-to-buffer)))
+
+   (:map
+    embark-function-map
+    "o" nil
+    (:prefix ("d" . "definition")
+             "j" (embark-split-action xref-find-definitions +evil/window-split-and-follow)
+             "l" (embark-split-action xref-find-definitions +evil/window-vsplit-and-follow)
+             "h" (embark-split-action xref-find-definitions split-window-horizontally)
+             "k" (embark-split-action xref-find-definitions split-window-vertically)
+             "a" (embark-ace-action xref-find-definitions)))
+
+   (:map
+    embark-url-map
+    "e" #'+eww-open-in-other-window
+    "b" #'+browse-url)
+
+   (:map
+    embark-collect-mode-map
+    :n "[" #'embark-previous-symbol
+    :n "]" #'embark-next-symbol)
+
+   (:map
+    (embark-command-map embark-symbol-map)
+    (:after edebug
+            (:prefix ("D" . "debug")
+                     "f" #'+edebug-instrument-symbol
+                     "F" #'edebug-remove-instrumentation))))
 
   (add-hook! 'embark-collect-mode-hook
     (defun visual-line-mode-off-h ()

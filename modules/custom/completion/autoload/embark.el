@@ -33,3 +33,8 @@
     (select-window
      (cdr (ring-ref avy-ring 0))))
   t)
+
+;;;###autoload
+(defun +edebug-instrument-symbol (symbol)
+  (interactive "sSymbol: ")
+  (edebug-instrument-function (intern symbol)))

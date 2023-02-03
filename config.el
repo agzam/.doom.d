@@ -415,56 +415,6 @@
   (map! (:map evil-motion-state-map "C-u" nil)
         (:map evil-insert-state-map "C-u" nil)))
 
-(map! :after vertico
-      :map vertico-map
-      "C-c C-p"  #'vertico-posframe-briefly-off
-      "C-'" #'vertico-quick-insert
-      "C-h" #'vertico-directory-delete-word
-      "C-c C-g" #'vertico-grid-mode
-      "M-h" #'vertico-grid-left
-      "M-l" #'vertico-grid-right
-      "M-j" #'vertico-next
-      "M-k" #'vertico-previous
-      "C-e" #'vertico-scroll-up
-      "C-y" #'vertico-scroll-down
-      "]" #'vertico-next-group
-      "[" #'vertico-previous-group
-      "~" #'vertico-jump-to-home-dir-on~)
-
-(map! :after embark
-      (:map embark-file-map
-            "o" nil
-            (:prefix ("o" . "open")
-                     "j" (embark-split-action find-file +evil/window-split-and-follow)
-                     "l" (embark-split-action find-file +evil/window-vsplit-and-follow)
-                     "h" (embark-split-action find-file split-window-horizontally)
-                     "k" (embark-split-action find-file split-window-vertically)
-                     "a" (embark-ace-action find-file)))
-      (:map embark-buffer-map
-            "o" nil
-            (:prefix ("o" . "open")
-                     "j" (embark-split-action switch-to-buffer +evil/window-split-and-follow)
-                     "a" (embark-ace-action switch-to-buffer)))
-      (:map embark-function-map
-            "o" nil
-            (:prefix ("d" . "definition")
-                     "j" (embark-split-action xref-find-definitions +evil/window-split-and-follow)
-                     "l" (embark-split-action xref-find-definitions +evil/window-vsplit-and-follow)
-                     "h" (embark-split-action xref-find-definitions split-window-horizontally)
-                     "k" (embark-split-action xref-find-definitions split-window-vertically)
-                     "a" (embark-ace-action xref-find-definitions)))
-      (:map embark-url-map
-            "e" #'+eww-open-in-other-window
-            "b" #'+browse-url)
-      (:map embark-collect-mode-map
-       :n "[" #'embark-previous-symbol
-       :n "]" #'embark-next-symbol)
-      (:map (embark-command-map embark-symbol-map)
-            (:after edebug
-                    (:prefix ("D" . "debug")
-                             "f" #'+edebug-instrument-symbol
-                             "F" #'edebug-remove-instrumentation))))
-
 (map! :after ibuffer
       :map ibuffer-mode-map
       :n "su" #'ibuffer-filter-by-unsaved-file-buffers
@@ -472,9 +422,6 @@
 
 (map! :map occur-mode-map
       :n "f" #'occur-mode-display-occurrence)
-
-(map! :after consult
-      :map isearch-mode-map "M-s l" #'consult-line)
 
 (map! :after transient
       (:map transient-map
@@ -486,3 +433,4 @@
 (map! :after helpful
       :map helpful-mode-map
       :n "q" #'kill-buffer-and-window)
+
