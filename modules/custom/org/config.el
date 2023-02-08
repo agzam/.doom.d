@@ -445,6 +445,9 @@
 (use-package! verb
   :after org
   :config
+  (defvar verb-edn-request-enabled t)
+  (defvar verb-edn-response-enabled t)
+
   (setq verb-inhibit-cookies t   ; I'll handle them manually
         verb-json-use-mode 'json-mode)
   (map! :map org-mode-map
@@ -459,16 +462,8 @@
    'org-babel-load-languages
    '((verb . t)))
 
-  (add-hook! 'verb-post-response-hook
-    (defun verb-post-response-h ()
-      ;; automatically transform json to edn
-      (with-current-buffer (current-buffer)
-        (when (eq major-mode 'json-mode)
-          (goto-char (point-min))
-          (clojure-edn-json-transform)
-          (clojure-mode)
-          (verb-response-body-mode +1)
-          (deactivate-mark))))))
+  (advice-add 'verb--request-spec-post-process :around #'verb--request-spec-post-process-a)
+  (add-hook! 'verb-post-response-hook #'verb-post-response-h))
 
 (use-package! ob-http
   :after org

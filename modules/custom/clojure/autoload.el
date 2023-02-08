@@ -142,6 +142,13 @@ gets the name suitable for :require of ns declaration."
           (indent-region beg end))))))
 
 ;;;###autoload
+(defun edn-string->json (edn-str)
+  "Attempts to convert edn string to json using jet."
+  (shell-command-to-string
+   (concat "echo '" edn-str "' | "
+           "jet --from edn --to json")))
+
+;;;###autoload
 (defun clojure-edn-json-transform (&optional from-json)
   "Transforms EDN to JSON and vice-versa using jet cli.
 The direction is determined by current major-mode or can be
@@ -247,3 +254,12 @@ convert from JSON."
   (interactive)
   (quit-restore-window (selected-window))
   (cider-switch-to-repl-buffer))
+
+;;;###autoload
+(defun cider-eval-sexp-at-point-a (fn &rest args)
+  (save-excursion
+    (when (thing-at-point-looking-at "(\\|\\[\\|{")
+      (forward-char))
+    (sp-end-of-sexp)
+    (forward-char)
+    (apply fn args)))

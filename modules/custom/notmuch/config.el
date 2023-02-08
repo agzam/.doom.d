@@ -50,6 +50,7 @@ variable accordingly.")
 
   (setq notmuch-fcc-dirs nil
         message-kill-buffer-on-exit t
+        message-fill-column nil        ; do not auto-fill
         send-mail-function 'sendmail-send-it
         ;; sendmail-program "/usr/local/bin/msmtp"
         notmuch-search-result-format

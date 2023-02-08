@@ -146,13 +146,7 @@
         (map! :map cider--debug-mode-map
               :nv "h" nil :n "j" nil :n "l" nil :n "o" nil :n "p" nil :n "i" nil)))
 
-    (defadvice! cider-eval-sexp-at-point-a (fn &rest args)
-      :around #'cider-eval-sexp-at-point
-      (save-excursion
-        (when (thing-at-point-looking-at "(\\|\\[\\|{")
-          (forward-char))
-        (sp-end-of-sexp)
-        (apply fn args))))
+    (advice-add 'cider-eval-sexp-at-point :around #'cider-eval-sexp-at-point-a))
 
   (after! ob-clojure
     (setq! org-babel-clojure-backend 'cider))

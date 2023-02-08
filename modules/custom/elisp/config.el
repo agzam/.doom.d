@@ -18,6 +18,9 @@
         "ec" #'edebug-eval-current-form-sp))
 
 (after! elisp-mode
+  (add-hook! doom-scratch-buffer-hook
+    (defun flycheck-off ()
+      (flycheck-mode -1)))
   (map! :localleader
         :map (emacs-lisp-mode-map lisp-data-mode-map)
         :desc "Expand macro" "m" #'macrostep-expand
@@ -70,6 +73,9 @@
         :n "p" #'backtrace-backward-frame
         :n "v" #'backtrace-toggle-locals))
 
+(after! edebug
+  (setq edebug-print-level nil
+        edebug-print-length nil))
 
 (after! info
   (map! :map Info-mode-map

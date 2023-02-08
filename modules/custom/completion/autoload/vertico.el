@@ -36,7 +36,7 @@ transparent. Bind in vertico-map."
     (modify-frame-parameters posframe `((alpha . ,new-alpha)))
     (setq vertico-posframe--reset-alpha-timer
           (run-with-timer
-           3 nil (lambda () (modify-frame-parameters posframe `((alpha . 100))))))))
+           5 nil (lambda () (modify-frame-parameters posframe `((alpha . 100))))))))
 
 ;;;###autoload
 (defun restore-vertico-posframe-state-h ()
