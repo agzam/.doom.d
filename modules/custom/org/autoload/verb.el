@@ -16,7 +16,7 @@
 (defun verb--request-spec-post-process-a (fn rs)
   (when verb-edn-request-enabled
    (when-let* ((body (slot-value rs :body))
-               (json (unless (string-match-p "\\w\":" body)
+               (json (unless (string-match-p "\\w\" ?:" body)
                        (edn-string->json body))))
      (setf (slot-value rs :body) json)))
   (funcall fn rs))

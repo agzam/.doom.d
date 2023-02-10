@@ -171,7 +171,7 @@
   (setq vertico-posframe-poshandler 'posframe-poshandler-frame-bottom-center)
   (setq
    vertico-posframe-global t
-   vertico-posframe-height 18
+   vertico-posframe-height 17
    vertico-posframe-width 120
    marginalia-margin-threshold 500)
   (vertico-posframe-mode +1)

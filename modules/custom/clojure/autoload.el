@@ -184,7 +184,8 @@ convert from JSON."
              '(t nil)
              :display
              params)
-      (sp-reindent))))
+      ;; (sp-reindent) ; takes too long, trying to disable it
+      )))
 
 ;;;###autoload
 (defun cider-hide-repl-buffers ()

@@ -35,7 +35,9 @@
    ;; https://github.com/minad/consult/issues/563
    ;; https://github.com/doomemacs/doomemacs/issues/6380
    ;; org-fold-core-style 'overlays
-   )
+
+   org-element-use-cache nil
+   org-element-cache-persistent nil)
 
   (add-to-list
    'auto-mode-alist
