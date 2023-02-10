@@ -14,6 +14,15 @@
 ;;      Alternatively, press 'gd' (or 'C-c c d') on a module to browse its
 ;;      directory (for easy access to its source code).
 
+(defvar +vertico/embark-doom-package-map nil)
+
+(defmacro embark-define-keymap (&rest args)
+  "Empty function.
+Temporary fix for:
+https://github.com/doomemacs/doomemacs/blob/master/modules/completion/vertico/config.el#L256"
+  `()
+  )
+
 (doom! :input
        ;;chinese
        ;;japanese
@@ -70,7 +79,7 @@
        electric         ; smarter, keyword-based electric-indent
        ibuffer           ; interactive buffer management
        undo              ; persistent, smarter undo for your inevitable mistakes
-       vc                ; version-control and Emacs, sitting in a tree
+       ;; vc             ; version-control and Emacs, sitting in a tree
 
        :term
        eshell            ; the elisp shell that works everywhere
@@ -152,7 +161,7 @@
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
-       ;;python            ; beautiful is better than ugly
+       (python +lsp +pyright)   ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        ;;raku              ; the artist formerly known as perl6

@@ -156,7 +156,7 @@
   (setq
    org-roam-v2-ack t
    org-roam-directory org-default-folder
-   org-roam-db-location (concat doom-user-dir "org-roam.db")
+   org-roam-db-location (concat org-default-folder "org-roam.db")
    org-roam-dailies-directory "daily/")
   :config
   (map! :map org-mode-map

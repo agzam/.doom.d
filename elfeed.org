@@ -1,0 +1,17 @@
+* Feeds                                                              :elfeed:
+** Blogs :programming:
+*** [[https://hnrss.org/frontpage][HN Front Page]]             :hackernews:
+*** [[https://lobste.rs/rss][lobste.rs]]                         :lobsters:
+*** [[https://medium.com/feed/@daveford][David Ford]]
+** Emacs :emacs:
+*** [[https://www.reddit.com/r/emacs][r/emacs]]              :reddit:
+*** [[https://www.reddit.com/r/doomemacs][r/doomemacs]]      :reddit:
+*** [[https://www.reddit.com/r/orgmode][r/orgmode]]          :reddit:
+*** [[https://www.reddit.com/r/OrgRoam][r/OrgRoam]]          :reddit:
+** Clojure :clojure:
+*** [[https://www.reddit.com/r/clojure][r/clojure]]        :reddit:
+** Science                                                         :science:
+*** [[http://rss.sciam.com/ScientificAmerican-Global][Scientific American]]
+*** [[https://www.wired.com/category/science/feed][Wired Science]]
+*** [[https://scienceblog.com/feed/][ScienceBlog]]
+*** [[https://feeds.feedburner.com/AllDiscovermagazinecomContent][Discover]]
