@@ -56,7 +56,8 @@
 (package! consult-org-roam :recipe (:host github :repo "jgru/consult-org-roam"))
 
 (package! org-pomodoro)
-(package! verb)
+(package! verb :recipe (:host github :repo "agzam/verb"
+                        :branch "development"))
 
 (package! anki-editor)
 

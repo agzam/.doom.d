@@ -46,6 +46,20 @@
                  "s"       #'cape-ispell
                  "C-n"     #'cape-keyword
                  "C-f"     #'cape-file))
+  ;; I want corfu-indexed to work just like in company, press a number key - insert the
+  ;; thing
+  (map! :map corfu-map
+        "0" (cmd! () (+corfu-insert-indexed 9))
+        "1" (cmd! () (+corfu-insert-indexed 0))
+        "2" (cmd! () (+corfu-insert-indexed 1))
+        "3" (cmd! () (+corfu-insert-indexed 2))
+        "4" (cmd! () (+corfu-insert-indexed 3))
+        "5" (cmd! () (+corfu-insert-indexed 4))
+        "6" (cmd! () (+corfu-insert-indexed 5))
+        "7" (cmd! () (+corfu-insert-indexed 6))
+        "8" (cmd! () (+corfu-insert-indexed 7))
+        "9" (cmd! () (+corfu-insert-indexed 8)))
+
   (after! evil
     (advice-add 'corfu--setup :after 'evil-normalize-keymaps)
     (advice-add 'corfu--teardown :after 'evil-normalize-keymaps)
@@ -154,6 +168,7 @@
           (unit "u" :icon "ruler-square" :face shadow)
           (value "v" :icon "numeric-1-box-multiple-outline" :face font-lock-builtin-face)
           (variable "va" :icon "adjust" :face font-lock-variable-name-face)))
+  (setq kind-icon-default-style '(:padding 0 :stroke 0 :margin 0 :radius 0 :height 0.8 :scale 0.8))
   (add-hook 'doom-load-theme-hook #'kind-icon-reset-cache)
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
@@ -172,6 +187,7 @@
   (setq
    vertico-posframe-global t
    vertico-posframe-height 17
+   vertico-count 15
    vertico-posframe-width 120
    marginalia-margin-threshold 500)
   (vertico-posframe-mode +1)

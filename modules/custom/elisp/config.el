@@ -105,6 +105,6 @@
 (after! woman
   (setq woman-manpath '("/Applications/kitty.app/Contents/Resources/man/"
                         "/usr/share/man"
-                        "/usr/local/share/man"
+                        "/opt/homebrew/share/man"
                         "/usr/X11/man"
                         "/Library/Apple/usr/share/man")))

@@ -60,6 +60,12 @@ See `+dict--words' for extra words, and `+dict-file' for a wordslist source "
 (defun +corfu-kill-frames ()
   (interactive)
   (when corfu--frame
-   (delete-frame corfu--frame))
+    (delete-frame corfu--frame))
   (when corfu-popupinfo--frame
-   (delete-frame corfu-popupinfo--frame)))
+    (delete-frame corfu-popupinfo--frame)))
+
+;;;###autoload
+(defun +corfu-insert-indexed (idx)
+  (interactive)
+  (let ((corfu--index idx))
+    (call-interactively #'corfu-insert)))

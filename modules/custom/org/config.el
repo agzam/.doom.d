@@ -383,7 +383,7 @@
   :after org
   :hook (org-mode . org-appear-mode)
   :config
-  (setq org-appear-delay 0.5
+  (setq org-appear-delay 1
         org-appear-autolinks t
         org-appear-autoemphasis t
         org-appear-autosubmarkers t

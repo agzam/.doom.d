@@ -9,8 +9,8 @@
    ;; lsp-diagnostics-provider :flycheck
    ;; lsp-enable-file-watchers nil
    lsp-modeline--enable-code-actions nil
-   lsp-headerline-breadcrumb-enable nil
-   lsp-enable-completion-at-point t
+   lsp-headerline-breadcrumb-enable t
+   lsp-completion-enable t
    lsp-enable-symbol-highlighting t
    lsp-enable-imenu nil
    lsp-treemacs-errors-position-params '((side . right))
@@ -23,7 +23,7 @@
    lsp-modeline-code-actions-enable nil
 
    lsp-semantic-tokens-enable nil
-   lsp-lens-enable nil
+   lsp-lens-enable t
    lsp-enable-indentation t)
 
   (map! :localleader

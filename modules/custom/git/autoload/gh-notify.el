@@ -11,11 +11,15 @@
   "Marks notification and moves either up or down, depending on the status of next notification."
   (interactive)
   (let* ((notification (gh-notify-current-notification))
+         (forge-obj (gh-notify-notification-forge-obj notification))
+         (repo (forge-get-repository forge-obj))
+         (topic (forge-get-topic repo (gh-notify-notification-topic notification)))
          (gh-notify-redraw-on-visit nil)
          (_ (gh-notify-mark-notification-read notification)))
     (setf (cl-struct-slot-value
            'gh-notify-notification
            'unread notification) nil)
+    (forge-topic-mark-read repo topic)
     (with-current-buffer (current-buffer)
       (read-only-mode -1)
       (kill-whole-line)

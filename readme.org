@@ -3,3 +3,7 @@
 
 Doom Emacs config and custom modules
 
+#+begin_src sh :results raw
+git clone git@github.com:agzam/.doom.d.git
+git submodule update --init --recursive
+#+end_src
