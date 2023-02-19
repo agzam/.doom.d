@@ -14,15 +14,6 @@
 ;;      Alternatively, press 'gd' (or 'C-c c d') on a module to browse its
 ;;      directory (for easy access to its source code).
 
-(defvar +vertico/embark-doom-package-map nil)
-
-(defmacro embark-define-keymap (&rest args)
-  "Empty function.
-Temporary fix for:
-https://github.com/doomemacs/doomemacs/blob/master/modules/completion/vertico/config.el#L256"
-  `()
-  )
-
 (doom! :input
        ;;chinese
        ;;japanese

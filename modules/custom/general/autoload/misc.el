@@ -105,5 +105,8 @@ Useful for clean up before running `doom -up`."
   (let* ((straight-dir (format "%sstraight/" doom-local-dir))
          (sel-dir (completing-read
                     "Select package repo: "
-                    (directory-files (concat straight-dir "repos")))))
-    (delete-directory sel-dir :recursive)))
+                    (directory-files (concat straight-dir "repos"))))
+         (dirs (list (format "%srepos/%s" straight-dir sel-dir)
+                     (format "%s%s/%s" straight-dir straight-build-dir sel-dir))))
+    (dolist (d dirs)
+      (delete-directory d :recursive))))
