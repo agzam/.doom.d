@@ -167,26 +167,31 @@ See: `(frame-position-display-spots)'  details."
     ("L" "widen frame" widen-frame-width :transient t)
     ("J" "reduce frame height" reduce-frame-height :transient t)
     ("K" "increase frame height" increase-frame-height :transient t)]]
-  [:hide always ,@(seq-map-indexed
-                   (lambda (elt idx)
-                     `(,(number-to-string (+ 1 idx))
-                       ,(format "layout %s" (+ 1 idx))
-                       (lambda ()
-                         (interactive)
-                         (place-frame-at-display-spot (quote ,elt)))
-                       :transient t))
-                   ;; list of pre-sets for different positions of Emacs frame on the
-                   ;; screen. Each pre-set is a list of X, Y, WIDTH, and HEIGHT.
-                   ;;
-                   ;; When a value is a decimal - it represents the discrete pixel
-                   ;; position on the display. Also, the numbers can be floats, in that
-                   ;; case - it represent the proportional value, e.g., width of 0.25
-                   ;; means quarter of `(display-pixel-width)'.
-                   '((0 0 0.332 1.0)
-                     (0 0 0.498 1.0)
-                     (0 0 0.664 1.0)
-                     (0 0 0.830 1.0)
-                     (0.166 0 0.664 1.0)
-                     (0.332 0 0.8 1.0)
-                     (0.5 0 0.5 1.0)
-                     (0.664 0 0.35 1.0)))])
+  [:hide always
+   :setup-children
+   (lambda (_)
+     (transient-parse-suffixes
+      'frame-zoom-transient
+      (seq-map-indexed
+       (lambda (geom idx)
+         (list (number-to-string (1+ idx))
+               (format "Layout %s" (1+ idx))
+               (lambda ()
+                 (interactive)
+                 (place-frame-at-display-spot geom))
+               :transient t))
+       ;; list of pre-sets for different positions of Emacs frame on the
+       ;; screen. Each pre-set is a list of X, Y, WIDTH, and HEIGHT.
+       ;;
+       ;; When a value is a decimal - it represents the discrete pixel
+       ;; position on the display. Also, the numbers can be floats, in that
+       ;; case - it represent the proportional value, e.g., width of 0.25
+       ;; means quarter of `(display-pixel-width)'.
+       '((0 0 0.332 1.0)
+         (0 0 0.498 1.0)
+         (0 0 0.664 1.0)
+         (0 0 0.830 1.0)
+         (0.166 0 0.664 1.0)
+         (0.332 0 0.8 1.0)
+         (0.5 0 0.5 1.0)
+         (0.664 0 0.35 1.0)))))])

@@ -35,15 +35,18 @@
   (transient-define-prefix new-tab-transient ()
     "New Tab"
     ["Choose a template\n"
-     ;; ea851f3bde0b769b04ad03ab1a1341c013d0ddc6 change in transient.el broke it
-     [,@(seq-map
-         (lambda (x)
-           (pcase-let ((`(,key ,desc ,form) x))
-             `(,key ,desc (lambda ()
-                            (interactive)
-                            ,form
-                            (run-hooks 'tab-bar-tab-added-hook)))))
-         tab-bar--templates)]
+     [:setup-children
+      (lambda (_)
+        (transient-parse-suffixes
+         'new-tab-transient
+         (seq-map
+          (lambda (x)
+            (pcase-let ((`(,key ,desc ,form) x))
+              `(,key ,desc (lambda ()
+                             (interactive)
+                             ,form
+                             (run-hooks 'tab-bar-tab-added-hook)))))
+          tab-bar--templates)))]
      [("d" "kill tab" +tab-bar-kill-tab)]]))
 
 ;;;###autoload
@@ -65,15 +68,19 @@
     ("D" "Duplicate" +tab-bar-duplicate-tab)
     ("r" "rename" +tab-bar-rename-tab)
     ("l" "select" tab-bar-select-tab-by-name)]]
-  ;; ea851f3bde0b769b04ad03ab1a1341c013d0ddc6 change in transient.el broke it
-  [:hide always ,@(seq-map
-                   (lambda (n)
-                     (let ((snum (number-to-string n)))
-                       `(,snum ,(format "Goto: %s" n)
-                         (lambda ()
-                           (interactive)
-                           (+tab-bar-switch-to-tab-number ,n)))))
-                   (number-sequence 1 9))])
+  [:hide always
+   :setup-children
+   (lambda (_)
+     (transient-parse-suffixes
+      'tab-bar-transient
+      (mapcar
+       (lambda (n)
+         (list (number-to-string n)
+               (format "Goto: %s" n)
+               (lambda ()
+                 (interactive)
+                 (+tab-bar-switch-to-tab-number n))))
+       (number-sequence 1 9))))])
 
 ;;;###autoload
 (defun +tab-bar-switch-to-tab-number (num)
