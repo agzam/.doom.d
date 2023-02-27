@@ -46,19 +46,18 @@
                  "s"       #'cape-ispell
                  "C-n"     #'cape-keyword
                  "C-f"     #'cape-file))
-  ;; I want corfu-indexed to work just like in company, press a number key - insert the
-  ;; thing
+  ;; corfu-indexed to work just like in company, press a C+number - inserts the thing
   (map! :map corfu-map
-        "0" (cmd! () (+corfu-insert-indexed 9))
-        "1" (cmd! () (+corfu-insert-indexed 0))
-        "2" (cmd! () (+corfu-insert-indexed 1))
-        "3" (cmd! () (+corfu-insert-indexed 2))
-        "4" (cmd! () (+corfu-insert-indexed 3))
-        "5" (cmd! () (+corfu-insert-indexed 4))
-        "6" (cmd! () (+corfu-insert-indexed 5))
-        "7" (cmd! () (+corfu-insert-indexed 6))
-        "8" (cmd! () (+corfu-insert-indexed 7))
-        "9" (cmd! () (+corfu-insert-indexed 8)))
+        "C-0" (cmd! () (+corfu-insert-indexed 9))
+        "C-1" (cmd! () (+corfu-insert-indexed 0))
+        "C-2" (cmd! () (+corfu-insert-indexed 1))
+        "C-3" (cmd! () (+corfu-insert-indexed 2))
+        "C-4" (cmd! () (+corfu-insert-indexed 3))
+        "C-5" (cmd! () (+corfu-insert-indexed 4))
+        "C-6" (cmd! () (+corfu-insert-indexed 5))
+        "C-7" (cmd! () (+corfu-insert-indexed 6))
+        "C-8" (cmd! () (+corfu-insert-indexed 7))
+        "C-9" (cmd! () (+corfu-insert-indexed 8)))
 
   (after! evil
     (advice-add 'corfu--setup :after 'evil-normalize-keymaps)

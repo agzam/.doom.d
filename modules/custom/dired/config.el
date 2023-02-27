@@ -2,7 +2,10 @@
 
 (use-package! treemacs-icons-dired
   :after dired
-  :hook (dired-mode . treemacs-icons-dired-mode))
+  :hook (dired-mode . treemacs-icons-dired-mode)
+  :config
+  ;; icons in subtrees
+  (advice-add 'dired-subtree-insert :after #'treemacs-icons-after-subtree-insert-a))
 
 (use-package! treemacs
   :defer t

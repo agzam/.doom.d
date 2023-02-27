@@ -1,17 +1,5 @@
 ;;; custom/dired/autoload.el -*- lexical-binding: t; -*-
 
-;;;###autoload (autoload 'direx/jump-to-project-root-or-current-dir "custom/dired/autoload" nil t)
-(defun direx/jump-to-project-root-or-current-dir ()
-  "Open in Direx - project root if there's one, otherwise current directory."
-  (interactive)
-  (let ((buf (direx-project:find-project-root-noselect
-              (or buffer-file-name default-directory))))
-    (if buf
-        (progn
-          (direx:maybe-goto-current-buffer-item buf)
-          (switch-to-buffer buf))
-      (direx:find-directory "."))))
-
 ;;;###autoload (autoload 'dired-subtree-remove* "custom/dired/autoload" nil t)
 (defun dired-subtree-remove* ()
   (interactive)
@@ -89,3 +77,20 @@
           (search-forward part bound :noerror)
           (dired-subtree-insert))))
     (recenter)))
+
+;;;###autoload
+(defun treemacs-icons-after-subtree-insert-a ()
+  (let ((end (overlay-end (dired-subtree--get-ov))))
+    (treemacs-with-writable-buffer
+     (save-excursion
+       (goto-char (point))
+       (dired-goto-next-file)
+       (while (< (point) end)
+         (if (dired-move-to-filename nil)
+             (let* ((file (dired-get-filename nil t))
+                    (icon (if (file-directory-p file)
+                              treemacs-icon-dir-closed
+                            (treemacs-icon-for-file file))))
+               (insert icon))
+           (treemacs-return nil))
+         (forward-line 1))))))

@@ -2,6 +2,7 @@
 
 ;;;###autoload
 (defun setup-custom-doom-modeline ()
+  (require 'doom-modeline)
   (doom-modeline-def-modeline
     'agcustom
     '(bar persp-name window-number buffer-info)
