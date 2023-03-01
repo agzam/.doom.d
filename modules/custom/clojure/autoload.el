@@ -216,12 +216,25 @@ convert from JSON."
       (call-interactively 'cider-pprint-eval-last-sexp))))
 
 ;;;###autoload
-(defun kill-cider-buffers ()
-  "Kill all CIDER buffers without asking any questions. Useful to execute when Emacs gets stuck."
-  (interactive)
-  (let ((blist (seq-filter
+(defun kill-cider-buffers (&optional arg)
+  "Kill all CIDER buffers in the project.
+Won't ask any questions. Useful to execute when Emacs gets stuck.
+With ARG, kills all buffers, not only in the current project"
+  (interactive "P")
+  (let ((blist
+         (if arg
+             (progn
+               (message "killing all CIDER REPLs")
+               (seq-filter
                 (lambda (e) (string-match "\\*cider\\|\\*nrepl" (buffer-name e)))
                 (buffer-list)))
+           (when-let ((rs (cider-repls)))
+             (message "killing REPLs for %s" (cider-current-dir))
+             (append rs (list (get-buffer
+                               (nrepl-make-buffer-name
+                                (nrepl--make-hidden-name
+                                 nrepl-server-buffer-name-template)
+                                nil :no-dup)))))))
         (kill-buffer-query-functions nil))
     (thread-last
       blist

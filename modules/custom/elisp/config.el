@@ -18,7 +18,7 @@
         "ec" #'edebug-eval-current-form-sp))
 
 (after! elisp-mode
-  (add-hook! doom-scratch-buffer-hook
+  (add-hook! 'doom-scratch-buffer-created-hook
     (defun flycheck-off ()
       (flycheck-mode -1)))
   (map! :localleader
