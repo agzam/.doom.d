@@ -49,7 +49,12 @@
              (lambda (x) (eq x 'lsp-describe-thing-at-point))
              +lookup-documentation-functions)))
     ;; don't let the name decieve you, works for corfu too
-    #'cider-company-enable-fuzzy-completion)
+    (defun cider-completion-styles-h ()
+      (setq-local
+       completion-styles
+       '(cider orderless partial-completion))
+      (when (featurep 'cape)
+        (cape-completion-at-point-functions-h))))
 
   (add-hook!
    'cider-repl-mode-hook

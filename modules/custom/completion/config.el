@@ -10,7 +10,7 @@
   (setq
    corfu-separator ?\s
    corfu-auto t
-   corfu-auto-delay 0.3
+   corfu-auto-delay 0.2
    corfu-preview-current nil ; Disable current candidate preview
    corfu-on-exact-match nil
    corfu-quit-no-match 'separator
@@ -48,16 +48,16 @@
                  "C-f"     #'cape-file))
   ;; corfu-indexed to work just like in company, press a C+number - inserts the thing
   (map! :map corfu-map
-        "C-0" (cmd! () (+corfu-insert-indexed 9))
-        "C-1" (cmd! () (+corfu-insert-indexed 0))
-        "C-2" (cmd! () (+corfu-insert-indexed 1))
-        "C-3" (cmd! () (+corfu-insert-indexed 2))
-        "C-4" (cmd! () (+corfu-insert-indexed 3))
-        "C-5" (cmd! () (+corfu-insert-indexed 4))
-        "C-6" (cmd! () (+corfu-insert-indexed 5))
-        "C-7" (cmd! () (+corfu-insert-indexed 6))
-        "C-8" (cmd! () (+corfu-insert-indexed 7))
-        "C-9" (cmd! () (+corfu-insert-indexed 8)))
+        "M-0" (cmd! () (+corfu-insert-indexed 9))
+        "M-1" (cmd! () (+corfu-insert-indexed 0))
+        "M-2" (cmd! () (+corfu-insert-indexed 1))
+        "M-3" (cmd! () (+corfu-insert-indexed 2))
+        "M-4" (cmd! () (+corfu-insert-indexed 3))
+        "M-5" (cmd! () (+corfu-insert-indexed 4))
+        "M-6" (cmd! () (+corfu-insert-indexed 5))
+        "M-7" (cmd! () (+corfu-insert-indexed 6))
+        "M-8" (cmd! () (+corfu-insert-indexed 7))
+        "M-9" (cmd! () (+corfu-insert-indexed 8)))
 
   (after! evil
     (advice-add 'corfu--setup :after 'evil-normalize-keymaps)
@@ -77,9 +77,8 @@
         completion-category-defaults nil
         completion-category-overrides '((file (styles . (partial-completion))))))
 
-
 (use-package! cape
-  :defer t
+  :after corfu
   :init
   (map!
    [remap dabbrev-expand] 'cape-dabbrev)
@@ -90,10 +89,12 @@
   (when (modulep! :custom writing)
     (add-to-list 'completion-at-point-functions #'cape-dict)
     (add-to-list 'completion-at-point-functions #'cape-ispell))
-  (add-to-list 'completion-at-point-functions #'cape-file)
-  (add-to-list 'completion-at-point-functions #'cape-keyword t)
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev t))
-
+  (add-hook! ('text-mode-hook
+              'prog-mode-hook)
+    (defun cape-completion-at-point-functions-h ()
+      (add-to-list 'completion-at-point-functions #'cape-file)
+      (add-to-list 'completion-at-point-functions #'cape-keyword t)
+      (add-to-list 'completion-at-point-functions #'cape-dabbrev t))))
 
 (use-package! corfu-popupinfo
   :after corfu

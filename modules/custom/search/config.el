@@ -40,7 +40,7 @@
              :url "https://www.wikipedia.org/search-redirect.php?language=en&go=Go&search=%s")
             (maven
              :name "Maven Central"
-             :url "https://search.maven.org/search?q=%s")
+             :url "https://central.sonatype.com/search?q=%s")
             (npm
              :name "Npmjs")
             (clojure
