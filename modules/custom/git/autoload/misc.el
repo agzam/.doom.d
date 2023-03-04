@@ -99,3 +99,38 @@ If URL is a link to a file, it extracts its raw form and tries to open in a buff
                          (insert data)
                          (funcall mode)
                          (pop-to-buffer (current-buffer))))))))))
+
+
+;;;###autoload
+(defun magit-transient-unblock-global-keys ()
+  "Enable/unblock <M-x>, <M-:>, <C-h k>, etc. keys in Magit transients."
+  (dolist (sfx (transient-suffixes 'magit-dispatch))
+    (when-let ((cmd (transient--suffix-command sfx)))
+      (ignore-errors
+        (transient-append-suffix cmd '(0)
+          [:hide always
+           :setup-children
+           (lambda (_)
+             (list
+              (transient-parse-suffix
+               'magit-remote
+               [("M-x" "M-x" execute-extended-command :transient t)
+                ("M-:" "M-:" eval-expression :transient t)
+                ("C-h k" "describe key"
+                 (lambda ()
+                   (interactive)
+                   (let ((transient-hide-during-minibuffer-read nil))
+                     (call-interactively (keymap-global-lookup "C-h k"))))
+                 :transient t)])))])))))
+
+;;;###autoload
+(defun transient-export-content ()
+  "Open content of the current transient in a buffer."
+  (interactive)
+  (when-let ((trans (get-buffer transient--buffer-name))
+             (b (generate-new-buffer
+                 (format "%S transient"
+                         transient-current-command))))
+    (with-current-buffer b
+      (insert-buffer-substring-no-properties trans)
+      (switch-to-buffer-other-window b))))

@@ -93,7 +93,9 @@
     (alist-get
      "Path"
      magit-submodule-list-columns nil nil #'string=))
-   50))
+   50)
+
+  (magit-transient-unblock-global-keys))
 
 (use-package! evil-collection-magit
   :when (modulep! :editor evil +everywhere)
