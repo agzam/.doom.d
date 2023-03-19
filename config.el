@@ -176,6 +176,9 @@
   (add-to-list 'yas-snippet-dirs (concat doom-user-dir "snippets/"))
   (yas-reload-all))
 
+(after! grip-mode
+  (setq grip-preview-use-webkit nil))
+
 (add-hook! 'prog-mode-hook #'hs-minor-mode)
 
 ;; disable visual-line-navigation in certain modes
@@ -330,13 +333,14 @@
          :desc "notmuch" "m" #'notmuch)
        (:when (modulep! :custom web-browsing)
          :desc "browser history" "b" #'browser-hist-search
-         :desc "elfeed" "e" #'elfeed
-         (:prefix ("h" . "HackerNews")
-          :desc "top" "t" #'hnreader-best
-          :desc "news" "n" #'hnreader-news))
+         :desc "elfeed" "e" #'elfeed)
        (:when (modulep! :custom git)
          (:prefix ("g" . "git")
-                  "h" #'gh-notify)))
+                  "h" #'gh-notify))
+       (:when (modulep! :custom chat)
+         (:prefix ("c" . "chat")
+                  "g" #'gptel
+                  "t" #'telega)))
 
       (:prefix ("p" . "projects")
                (:after projectile

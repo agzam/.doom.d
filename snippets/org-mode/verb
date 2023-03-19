@@ -6,4 +6,6 @@
 template ${2:$$(yas-choose-value +verb-template-urls)}
 Accept: application/json
 Content-Type: application/json
-authorization: Bearer {{(replace-regexp-in-string "export JWT=\\|\"\\|Authorization: Bearer " "" (read-string "JWT: "))}}
+authorization: Bearer {{(replace-regexp-in-string "export JWT=\\\\|\\"\\\\|Authorization: Bearer " "" (read-string "JWT: "))}}
+
+** ${3}

@@ -210,4 +210,5 @@
        osx
        web-browsing
        flutter
+       chat
        )

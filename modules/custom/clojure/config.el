@@ -6,6 +6,10 @@
 (use-package! clojure-mode
   :defer t
   :config
+  (add-to-list
+   '+lookup-provider-url-alist
+   '("Clojure Docs" "https://clojuredocs.org/search?q=%s"))
+
   (add-hook! '(clojure-mode-local-vars-hook
                clojurec-mode-local-vars-hook
                clojurescript-mode-local-vars-hook)
@@ -151,7 +155,8 @@
         (map! :map cider--debug-mode-map
               :nv "h" nil :n "j" nil :n "l" nil :n "o" nil :n "p" nil :n "i" nil)))
 
-    (advice-add 'cider-eval-sexp-at-point :around #'cider-eval-sexp-at-point-a))
+    (advice-add 'cider-eval-sexp-at-point :around #'cider-eval-sexp-at-point-a)
+    (advice-add 'cider-pprint-eval-last-sexp-to-comment :around #'cider-eval-sexp-at-point-a))
 
   (after! ob-clojure
     (setq! org-babel-clojure-backend 'cider))

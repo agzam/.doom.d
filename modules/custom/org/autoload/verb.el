@@ -14,9 +14,15 @@
 
 ;;;###autoload
 (defun verb--request-spec-post-process-a (fn rs)
+  "Turn edn to json before sending."
   (when verb-edn-request-enabled
-   (when-let* ((body (slot-value rs :body))
-               (json (unless (string-match-p "\\w\" ?:" body)
-                       (edn-string->json body))))
-     (setf (slot-value rs :body) json)))
+    (when-let* ((body (slot-value rs :body))
+                (headers (slot-value rs :headers))
+                (json (unless (or (string-match-p "\\w\" ?:" body)
+                                  ;; if the header explicitly set to accept edn
+                                  (string-equal-ignore-case
+                                   (or (alist-get "Accept" headers nil nil 'string-equal-ignore-case) "")
+                                   "application/edn"))
+                        (edn-string->json body))))
+      (setf (slot-value rs :body) json)))
   (funcall fn rs))

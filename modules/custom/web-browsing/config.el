@@ -42,7 +42,12 @@
           :desc "copy for Org" "o" #'org-eww-copy-for-org-mode))))
 
 (after! xwidget
-  (map! :localleader :map xwidget-webkit-mode-map "x" #'kill-current-buffer))
+  (map!
+   :map xwidget-webkit-mode-map
+   :n "zk" #'xwidget-webkit-zoom-in
+   :n "zj" #'xwidget-webkit-zoom-out
+   :localleader
+   "x" #'kill-current-buffer))
 
 (use-package! browser-hist
   :init
