@@ -476,6 +476,12 @@
 ;; consult search commands won't reveal the context
 ;; see: minad/consult#563
 (after! consult
+  (defadvice! evil-ex-store-pattern-a (_ _)
+    "Remember the search pattern after consult-line."
+    :after #'consult-line
+    (setq evil-ex-search-pattern
+          (list (car consult--line-history) t t)))
+
   (defadvice! org-show-entry-consult-a (fn &rest args)
     :around #'consult-line
     :around #'consult-org-heading
