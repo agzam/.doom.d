@@ -12,15 +12,13 @@
    corfu-auto t
    corfu-auto-delay 0.2
    corfu-preview-current nil ; Disable current candidate preview
-   corfu-on-exact-match nil
+   corfu-on-exact-match 'insert
    corfu-quit-no-match 'separator
    corfu-cycle t
-   corfu-auto-prefix 2
+   corfu-auto-prefix 3
    completion-cycle-threshold 1
    tab-always-indent 'complete
-   corfu-max-width 56
-   corfu-min-width 56
-   corfu-preselect-first t)
+   corfu-count 9)
   ;; Not sure if completions in the minibuffer helpful or annoying. may enable it again later
   ;; (when (modulep! +minibuffer)
   ;;   (add-hook 'minibuffer-setup-hook #'+corfu--enable-in-minibuffer))
@@ -46,7 +44,7 @@
                  "s"       #'cape-ispell
                  "C-n"     #'cape-keyword
                  "C-f"     #'cape-file))
-  ;; corfu-indexed to work just like in company, press a C+number - inserts the thing
+  ;; corfu-indexed like in Company, M+number - inserts the thing
   (map! :map corfu-map
         "M-0" (cmd! () (+corfu-insert-indexed 9))
         "M-1" (cmd! () (+corfu-insert-indexed 0))
@@ -99,7 +97,6 @@
 (use-package! corfu-popupinfo
   :after corfu
   :config
-  (setq corfu-popupinfo-delay t)
   (corfu-popupinfo-mode +1))
 
 

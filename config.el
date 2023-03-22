@@ -157,7 +157,7 @@
           ("Asia/Tashkent" "Tashkent"))))
 
 (after! flycheck
-  (ignore-error
+  (ignore-errors
    (define-key flycheck-mode-map flycheck-keymap-prefix nil))
   (setq flycheck-keymap-prefix nil)
   ;; (map! :leader "!" flycheck-command-map)
