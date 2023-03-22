@@ -127,3 +127,6 @@
      (display-buffer-reuse-window
       display-buffer-in-direction)
      (direction . right))))
+
+(after! evil
+  (advice-add #'evil-ex-start-word-search :around #'evil-ex-visual-star-search-a))
