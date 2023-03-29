@@ -9,9 +9,7 @@
 (package! cape)
 (package! popon
   :recipe (:type git :repo "https://codeberg.org/akib/emacs-popon"))
-
 (package! compat)
-
 (unpin! compat
         consult
         embark

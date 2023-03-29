@@ -36,8 +36,9 @@
    ;; https://github.com/doomemacs/doomemacs/issues/6380
    ;; org-fold-core-style 'overlays
 
-   org-element-use-cache nil
-   org-element-cache-persistent nil)
+   ;; org-element-use-cache nil
+   ;; org-element-cache-persistent nil
+   )
 
   (add-to-list
    'auto-mode-alist
@@ -214,6 +215,10 @@
            :jump-to-captured t)
           ("p" "person" entry
            (file ,(concat org-directory "people.org"))
+           "* %(+person-w-name-based-id)\n%?"
+           :jump-to-captured t)
+          ("c" "colleague" entry
+           (file ,(concat org-directory "coworkers.org"))
            "* %(+person-w-name-based-id)\n%?"
            :jump-to-captured t)))
 

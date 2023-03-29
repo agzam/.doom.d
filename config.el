@@ -183,9 +183,10 @@
 
 ;; disable visual-line-navigation in certain modes
 (add-hook! (elfeed-search-mode
-            gh-notify-mode grep-mode magit-log-mode
+            gh-notify-mode grep-mode magit-log-mode magit-refs-mode
             notmuch-hello-mode notmuch-search-mode notmuch-tree-mode
-            paradox-menu-mode yaml-mode)
+            paradox-menu-mode yaml-mode
+            vc-annotate-mode)
   (defun no-wrap-h ()
     (+toggle-visual-line-navigation -1)))
 

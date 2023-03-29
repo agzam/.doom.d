@@ -338,7 +338,10 @@
     (:after edebug
             (:prefix ("D" . "debug")
                      "f" #'+edebug-instrument-symbol
-                     "F" #'edebug-remove-instrumentation))))
+                     "F" #'edebug-remove-instrumentation)))
+
+   (:map embark-collect-mode-map
+    :n "TAB" #'+embark-collect-outline-cycle))
 
   (add-hook! 'embark-collect-mode-hook
     (defun visual-line-mode-off-h ()

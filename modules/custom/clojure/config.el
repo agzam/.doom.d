@@ -47,11 +47,6 @@
 
   ;; remove lsp's doc lookup handler, so it always uses cider-clojuredocs
   (add-hook! 'cider-mode-hook
-    (defun remove-lsp-lookup-handler-h ()
-      (setf +lookup-documentation-functions
-            (seq-remove
-             (lambda (x) (eq x 'lsp-describe-thing-at-point))
-             +lookup-documentation-functions)))
     ;; don't let the name decieve you, works for corfu too
     (defun cider-completion-styles-h ()
       (setq-local

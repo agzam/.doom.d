@@ -38,3 +38,10 @@
 (defun +edebug-instrument-symbol (symbol)
   (interactive "sSymbol: ")
   (edebug-instrument-function (intern symbol)))
+
+;;;###autoload
+(defun +embark-collect-outline-cycle (&optional arg)
+  (interactive "P")
+  (if arg (outline-cycle-buffer)
+    (outline-cycle))
+  (evil-beginning-of-line))

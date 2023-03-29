@@ -227,17 +227,19 @@ be used as a git branch name."
                   (+magit-create-branch-friendly-string (car sel-issue))
                   (nth 1 sel-issue)))
          (def-dir (if (magit-inside-worktree-p)
-                      (->> default-directory
-                           (file-name-split)
-                           (seq-remove #'string-blank-p)
-                           (-butlast)
-                           (s-join "/")
-                           (format "/%s/"))
+                      (thread-last
+                        default-directory
+                        (file-name-split)
+                        (seq-remove #'string-blank-p)
+                        (-butlast)
+                        (s-join "/")
+                        (format "/%s/"))
                     default-directory))
          (path (read-directory-name "Create new worktree at:" def-dir nil nil w-tree))
-         (branch (magit-read-string-ns "With branch: " (->> path
-                                                            (file-name-split)
-                                                            (last)))))
+         (branch (magit-read-string-ns "With branch: " (thread-last
+                                                         path
+                                                         (file-name-split)
+                                                         (last)))))
     (if  (magit-local-branch-p (format "refs/heads/%s" branch))
         (magit-run-git "worktree" "add" (magit--expand-worktree path) branch)
       (magit-run-git "worktree" "add" "-b"
