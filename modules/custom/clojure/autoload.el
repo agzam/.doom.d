@@ -271,9 +271,24 @@ With ARG, kills all buffers, not only in the current project"
 
 ;;;###autoload
 (defun cider-eval-sexp-at-point-a (fn &rest args)
+  (require 'evil-collection-cider)
   (save-excursion
-    (when (thing-at-point-looking-at "(\\|\\[\\|{")
-      (forward-char))
-    (sp-end-of-sexp)
-    (forward-char)
-    (apply fn args)))
+    (when (or (evil-normal-state-p) (evil-motion-state-p))
+      (sp-end-of-sexp)
+      (unless (thing-at-point 'sexp)
+        (forward-char)))
+    (evil-collection-cider-last-sexp (apply fn args)))
+  ;; (save-excursion
+  ;;   (when (thing-at-point-looking-at "(\\|\\[\\|{")
+  ;;     (forward-char))
+  ;;   (evil-collection-cider-last-sexp)
+  ;;   (sp-end-of-sexp)
+  ;;   ;; (forward-char)
+  ;;   (apply fn args))
+  )
+
+;;;###autoload
+(defun add-edn-imenu-regexp-h ()
+  "Hacky way to get imenu for root-level keywords. Useful in edn files."
+  (when (string= "edn" (file-name-extension (or (buffer-file-name) "")))
+    (add-to-list 'imenu-generic-expression '(nil "^.?.?\\(:[^ ]+\\).*$" 1) t)))

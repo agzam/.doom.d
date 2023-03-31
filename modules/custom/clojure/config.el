@@ -24,6 +24,8 @@
                  clojurex-mode))
       (add-to-list 'lsp-language-id-configuration (cons m "clojure"))))
 
+  (add-hook! 'clojure-mode-hook #'add-edn-imenu-regexp-h)
+
   (add-hook! 'clojurescript-mode-hook
     (defun add-reframe-regs-to-imenu ()
       (add-to-list
