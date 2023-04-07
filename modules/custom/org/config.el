@@ -535,3 +535,8 @@
                 "* %^{prompt|card %<%Y-%m-%d %H:%M>} %^g%^{ANKI_DECK}p\n:PROPERTIES:\n:ANKI_NOTE_TYPE: Cloze\n:END:\n** Text\n%?\n** Extra\n%x\n"
                 :jump-to-captured t)))
       (add-to-list 'org-capture-templates template))))
+
+(use-package! toc-org
+  ;; :hook (org-mode . toc-org-enable)
+  :config
+  (setq toc-org-hrefify-default "gh"))

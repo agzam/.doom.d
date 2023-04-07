@@ -67,3 +67,4 @@
 (package! anki-editor)
 
 (package! org-transclusion :recipe (:host github :repo "nobiot/org-transclusion"))
+(package! toc-org)
