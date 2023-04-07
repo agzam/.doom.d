@@ -158,8 +158,8 @@
 (use-package! flyspell
   :defer t
   :config
-  (add-hook! (text-mode org-mode markdown-mode message-mode git-commit-mode)
-    (defun flyspell-toggle-on () (flyspell-mode +1)))
+  ;; (add-hook! (text-mode org-mode markdown-mode message-mode git-commit-mode)
+  ;;   (defun flyspell-toggle-on () (flyspell-mode +1)))
   (setq flyspell-issue-welcome-flag nil
         flyspell-issue-message-flag nil)
   (map! :map flyspell-mode-map "C-;" nil) ; release the key for embark-act
@@ -202,6 +202,10 @@
             '("#\\+BEGIN_SRC" . "#\\+END_SRC")
             '("#\\+BEGIN_EXAMPLE" . "#\\+END_EXAMPLE"))
   (setq ispell-program-name "enchant-2")
+  (add-to-list 'ispell-dictionary-alist
+               '(nil "[[:alpha:]]"
+                 "[^[:alpha:]]"
+                 "['’]" nil ("-B") nil utf-8))
   ;; (unless ispell-dictionary-alist
   ;;   (setq ispell-dictionary-alist
   ;;         '(("american"   ;; English
