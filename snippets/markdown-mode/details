@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: details
+# key: <details
+# --
+<details>
+  <summary>$1</summary>
+  $2
+</details>

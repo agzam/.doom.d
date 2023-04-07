@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# -*- coding: utf-8 -*-
+# name: println
+# key: pr
+# --
+(println "`(mapconcat 'identity (make-list 5 (format "%c" (+ 128045 (random 16)))))`" $1)
+$0

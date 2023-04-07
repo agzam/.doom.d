@@ -174,7 +174,8 @@
 
 (after! yasnippet
   (add-to-list 'yas-snippet-dirs (concat doom-user-dir "snippets/"))
-  (yas-reload-all))
+  (yas-reload-all)
+  (add-to-list 'hippie-expand-try-functions-list 'yas-hippie-try-expand))
 
 (after! grip-mode
   (setq grip-preview-use-webkit nil))
@@ -229,7 +230,8 @@
       :n "zk" #'text-scale-increase
       :n "zj" #'text-scale-decrease
       :n "s-e" #'+scroll-line-down-other-window
-      :n "s-y" #'+scroll-line-up-other-window)
+      :n "s-y" #'+scroll-line-up-other-window
+      :i "M-/" #'hippie-expand)
 
 (map! (:map minibuffer-mode-map
             "M-l" #'sp-forward-slurp-sexp
