@@ -19,7 +19,6 @@
    lsp-ui-sideline-enable nil
    lsp-ui-doc-enable nil
    lsp-ui-doc-position 'top
-   lsp-completion-enable nil
    lsp-modeline-code-actions-enable nil
 
    lsp-semantic-tokens-enable nil

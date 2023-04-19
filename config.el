@@ -420,7 +420,10 @@
                (:when (modulep! :custom chat)
                  (:prefix ("c" . "chatgpt")
                   :desc "chatgpt" "c" #'chatgpt-shell
-                  :desc "check English" "e" #'+chatgpt-shell-improve-text
+                  :desc "check text" "e" #'+chatgpt-shell-improve-text
+                  :desc "check w.prompt" "E" (cmd!
+                                              (let ((current-prefix-arg 2))
+                                                (call-interactively #'+chatgpt-shell-improve-text)))
                   :desc "region" "r" #'chatgpt-shell-send-and-review-region)))
 
       (:prefix ("z" . "zoom")

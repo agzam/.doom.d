@@ -20,10 +20,17 @@
     (delete-region (point-min) (point-max)))
   (insert replacement))
 
+(defvar chatgpt-improve-text-hist
+  '("Improve this text, don't be too formal:"
+    "Improve this code:"
+    "Add comments to the following code snippet:"
+    "Improve and make it witty:"
+    "Improve and add some humor:"))
+
 ;;;###autoload
-(defun +chatgpt-shell-improve-text ()
-  "Improve given text with chat-gpt."
-  (interactive)
+(defun +chatgpt-shell-improve-text (prompt-str)
+  "Send given text to chat-gpt for given PROMPT-STR."
+  (interactive "P")
   (message "beep-bop... checking your crap...")
   (let* ((text (if (region-active-p)
                    (buffer-substring-no-properties
@@ -32,8 +39,14 @@
                  (buffer-substring-no-properties
                   (point-min)
                   (point-max))))
+         (default-prompt "Improve the following text:")
+         (prompt (if prompt-str
+                     (read-string "Prompt to use: "
+                                  default-prompt
+                                  'chatgpt-improve-text-hist)
+                   default-prompt))
          (new-text (chatgpt-shell-post-prompt
-                    (format "Improve the following text:\n%s" text)))
+                    (format "%s\n%s" prompt text)))
          (fst-buf (with-current-buffer (generate-new-buffer " * chat-gpt text 1 *")
                     (insert text)
                     (current-buffer)))
@@ -42,6 +55,7 @@
                     (current-buffer)))
          (diff-win (diff fst-buf snd-buf "--text" 'no-async)))
     (+replace-region-with-string new-text)
+    (message "I hope you like it")
 
     ;; cleaner diff
     (with-current-buffer (window-buffer diff-win)

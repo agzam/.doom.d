@@ -15,7 +15,7 @@
    corfu-on-exact-match 'insert
    corfu-quit-no-match 'separator
    corfu-cycle t
-   corfu-auto-prefix 3
+   corfu-auto-prefix 2
    completion-cycle-threshold 1
    tab-always-indent 'complete
    corfu-count 9)
@@ -28,10 +28,20 @@
       (after! lsp-mode
         (setq lsp-completion-provider :none))))
 
+  (defun lsp-completion-off-in-text-modes-h ()
+    (when (member major-mode '(text-mode org-mode markdown-mode
+                               message-mode git-commit-mode))
+      (lsp-completion-mode -1)))
+
   (add-hook! 'lsp-completion-mode-hook
     (defun init-orderless-lsp-completions-h ()
       (setf (alist-get 'lsp-capf completion-category-defaults)
-            '((styles . (orderless flex))))))
+            '((styles . (orderless flex)))))
+    (defun lsp-completion-off-in-text-modes-h ()
+      (when (and lsp-completion-mode
+                 (member major-mode '(text-mode org-mode markdown-mode
+                                      message-mode git-commit-mode)))
+        (lsp-completion-mode -1))))
 
   (map! :map corfu-map
         "<escape>" #'evil-collection-corfu-quit-and-escape
