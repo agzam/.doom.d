@@ -21,17 +21,38 @@
   (insert replacement))
 
 ;;;###autoload
-(defun +chatgpt-shell-check-english-in-place ()
-  "Check English and replace text in place."
+(defun +chatgpt-shell-improve-text ()
+  "Improve given text with chat-gpt."
   (interactive)
   (message "beep-bop... checking your crap...")
-  (+replace-region-with-string
-   (chatgpt-shell-post-prompt
-    (format "Please help me proofread the following text with English:\n%s"
-            (if (region-active-p)
-                (buffer-substring-no-properties
-                 (region-beginning)
-                 (region-end))
-              (buffer-substring-no-properties
-               (point-min)
-               (point-max)))))))
+  (let* ((text (if (region-active-p)
+                   (buffer-substring-no-properties
+                    (region-beginning)
+                    (region-end))
+                 (buffer-substring-no-properties
+                  (point-min)
+                  (point-max))))
+         (new-text (chatgpt-shell-post-prompt
+                    (format "Improve the following text:\n%s" text)))
+         (fst-buf (with-current-buffer (generate-new-buffer " * chat-gpt text 1 *")
+                    (insert text)
+                    (current-buffer)))
+         (snd-buf (with-current-buffer (generate-new-buffer " * chat-gpt text 2 *")
+                    (insert new-text)
+                    (current-buffer)))
+         (diff-win (diff fst-buf snd-buf "--text" 'no-async)))
+    (+replace-region-with-string new-text)
+
+    ;; cleaner diff
+    (with-current-buffer (window-buffer diff-win)
+      (read-only-mode -1)
+      (goto-char (point-min))
+      (dolist (r '("^diff.*\n"
+                   "^. No newline at end of file\n"
+                   "^. No newline at end of file\n"
+                   "^Diff finished.*$"))
+        (re-search-forward r nil :noerror)
+        (replace-match ""))
+      (visual-line-mode))
+    (kill-buffer fst-buf)
+    (kill-buffer snd-buf)))
