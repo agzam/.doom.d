@@ -84,3 +84,19 @@ window."
           (diff-buffer-with-file buf)
           (select-window (get-buffer-window "*Diff*")))
        (message "Buffer has no file!")))))
+
+;;;###autoload
+(defun ibuffer-sidebar-jump ()
+  "Find ibuffer-sidebar window and jump to the line listing current buffer."
+  (interactive)
+  (if (member major-mode '(ibuffer-sidebar-mode ibuffer-mode))
+      (call-interactively #'ibuffer-visit-buffer)
+   (let ((name (buffer-name))
+         (ibuffer-jump-offer-only-visible-buffers nil)
+         (ibuffer-sidebar-pop-to-sidebar-on-toggle-open t))
+     (if (ibuffer-sidebar-showing-sidebar-p)
+         (pop-to-buffer (ibuffer-sidebar-get-or-create-buffer))
+       (ibuffer-sidebar-toggle-sidebar))
+     (when (string-match-p "*" name)
+       (ibuffer-filter-disable))
+     (ibuffer-jump-to-buffer name))))

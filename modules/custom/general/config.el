@@ -19,7 +19,8 @@
     (let ((f (intern (concat "winum-select-window-" wn)))
           (k (concat "s-" wn)))
       (map! :n k f)
-      (map! :leader :n wn f)
+      (map! :leader :n wn f
+            :n (concat "w" wn) f)
       (global-set-key (kbd k) f))))
 
 
@@ -60,7 +61,8 @@
    ibuffer-old-time 8 ; buffer considered old after that many hours
    ibuffer-group-buffers-by 'projects
    ibuffer-expert t
-   ibuffer-show-empty-filter-groups nil)
+   ibuffer-show-empty-filter-groups nil
+   ibuffer-jump-offer-only-visible-buffers t)
 
   (define-ibuffer-filter unsaved-file-buffers
       "Toggle current view to buffers whose file is unsaved."
@@ -73,8 +75,13 @@
       "Only show buffers backed by a file."
     (:description "file buffers")
     (ignore qualifier)
-    (buffer-local-value 'buffer-file-name buf)))
+    (buffer-local-value 'buffer-file-name buf))
 
+  (define-ibuffer-filter non-special-buffers
+      "Only show non-special buffers (without earmuffs)."
+    (:description "non-special buffers")
+    (ignore qualifier)
+    (string-match "^[^*].*" (buffer-name buf))))
 
 (after! avy
   (setq avy-all-windows t)
@@ -130,3 +137,19 @@
 
 (after! evil
   (advice-add #'evil-ex-start-word-search :around #'evil-ex-visual-star-search-a))
+
+(use-package! ibuffer-sidebar
+  :defer t
+  :commands (ibuffer-siderbar-toggle-sidebar)
+  :config
+  (add-hook!
+   'ibuffer-sidebar-mode-hook
+   (defun ibuffer-sidebar-h ()
+     (ibuffer-vc-set-filter-groups-by-vc-root)
+     (ibuffer-do-sort-by-recency)
+     (call-interactively #'ibuffer-filter-by-non-special-buffers)))
+
+  (setq ibuffer-sidebar-use-custom-font t
+        ibuffer-sidebar-face `(:height 0.9)
+        ibuffer-sidebar-width 20
+        ibuffer-sidebar-pop-to-sidebar-on-toggle-open nil))

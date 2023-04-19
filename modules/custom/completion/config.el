@@ -78,8 +78,7 @@
 (use-package! cape
   :after corfu
   :init
-  (map!
-   [remap dabbrev-expand] 'cape-dabbrev)
+  (map! [remap dabbrev-expand] 'cape-dabbrev)
   (add-hook! 'latex-mode-hook
     (defun +corfu--latex-set-capfs ()
       (add-to-list 'completion-at-point-functions #'cape-tex)))
@@ -185,7 +184,7 @@
    vertico-posframe-global t
    vertico-posframe-height nil
    vertico-count 15
-   vertico-posframe-width 120
+   vertico-posframe-width 150
    marginalia-margin-threshold 500)
   (vertico-posframe-mode +1)
 

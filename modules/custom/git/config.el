@@ -122,7 +122,8 @@
          :nv "gR" #'magit-refresh-all
          :nv "l" #'evil-forward-char
          :nv "h" #'evil-backward-char
-         "M-l" #'magit-log)
+         "M-l" #'magit-log
+         :n "gi" #'ibuffer-sidebar-jump)
         (:map magit-status-mode-map
          :nv "gz" #'magit-refresh)
         (:map magit-diff-mode-map

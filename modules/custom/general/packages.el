@@ -7,3 +7,5 @@
 (package! expand-region)
 
 (unpin! wgrep)
+
+(package! ibuffer-sidebar)

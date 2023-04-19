@@ -202,12 +202,6 @@
            :unnarrowed t
            :jump-to-captured t)))
 
-  (defun +person-w-name-based-id ()
-    "Returns a person record with name-based id. To be used in capture template."
-    (let* ((name (read-from-minibuffer "Name: " (x-get-clipboard)))
-           (id (downcase (replace-regexp-in-string " " "-" name))))
-      (format "%s\n:PROPERTIES:\n:ID: %s\n:END:" name id)))
-
   (setq org-capture-templates
         `(("Q" "quote" entry
            (file ,(concat org-directory "quotes.org"))
@@ -537,6 +531,7 @@
       (add-to-list 'org-capture-templates template))))
 
 (use-package! toc-org
+  :after org
   ;; :hook (org-mode . toc-org-enable)
   :config
   (setq toc-org-hrefify-default "gh"))

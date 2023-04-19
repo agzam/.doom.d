@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# -*- coding: utf-8 -*-
+# name: print-with-pp
+# key: prnpp
+# --
+(println "`(mapconcat 'identity (make-list 5 (format "%c" (+ 128045 (random 16)))))` $1")
+(clojure.pprint/pprint $1)

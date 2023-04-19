@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: autoload-comment
+# key: ;#
+# --
+;;;###autoload
+$1

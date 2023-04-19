@@ -113,7 +113,6 @@
       (custom-set-faces! '(mode-line-active :inherit mode-line))
 
       (init-visual-line-keys)
-      (global-visual-line-mode +1)
       (fringe-mode '(6 . 0))
       (toggle-frame-full-height)
 
@@ -158,7 +157,7 @@
 
 (after! flycheck
   (ignore-errors
-   (define-key flycheck-mode-map flycheck-keymap-prefix nil))
+    (define-key flycheck-mode-map flycheck-keymap-prefix nil))
   (setq flycheck-keymap-prefix nil)
   ;; (map! :leader "!" flycheck-command-map)
   )
@@ -175,21 +174,24 @@
 (after! yasnippet
   (add-to-list 'yas-snippet-dirs (concat doom-user-dir "snippets/"))
   (yas-reload-all)
-  (add-to-list 'hippie-expand-try-functions-list 'yas-hippie-try-expand))
+  (add-to-list 'hippie-expand-try-functions-list 'yas-hippie-try-expand)
+  (add-hook! 'prog-mode-hook #'yas-minor-mode-on))
 
 (after! grip-mode
   (setq grip-preview-use-webkit nil))
 
-(add-hook! 'prog-mode-hook #'hs-minor-mode)
+(add-hook! 'prog-mode-hook
+           #'hs-minor-mode
+           #'visual-line-mode)
 
 ;; disable visual-line-navigation in certain modes
-(add-hook! (elfeed-search-mode
-            gh-notify-mode grep-mode magit-log-mode magit-refs-mode
-            notmuch-hello-mode notmuch-search-mode notmuch-tree-mode
-            paradox-menu-mode yaml-mode
-            vc-annotate-mode)
-  (defun no-wrap-h ()
-    (+toggle-visual-line-navigation -1)))
+;; (add-hook! (elfeed-search-mode
+;;             gh-notify-mode grep-mode magit-log-mode magit-refs-mode
+;;             notmuch-hello-mode notmuch-search-mode notmuch-tree-mode
+;;             paradox-menu-mode yaml-mode
+;;             vc-annotate-mode)
+;;   (defun no-wrap-h ()
+;;     (+toggle-visual-line-navigation -1)))
 
 (after! writeroom-mode
   (setq writeroom-maximize-window t))
@@ -231,13 +233,18 @@
       :n "zj" #'text-scale-decrease
       :n "s-e" #'+scroll-line-down-other-window
       :n "s-y" #'+scroll-line-up-other-window
-      :i "M-/" #'hippie-expand)
+      :i "M-/" #'hippie-expand
+      :n "gi" #'ibuffer-sidebar-jump)
 
 (map! (:map minibuffer-mode-map
             "M-l" #'sp-forward-slurp-sexp
             "M-h" #'sp-forward-barf-sexp)
       (:map minibuffer-local-map
             "C-c C-s" #'embark-collect))
+
+;;;;;;;;;;;;;;;;;;;;;;;
+;; Leader keybidings ;;
+;;;;;;;;;;;;;;;;;;;;;;;
 
 (map! :leader
       :desc "M-x" "SPC" #'execute-extended-command
@@ -342,7 +349,7 @@
                   "h" #'gh-notify))
        (:when (modulep! :custom chat)
          (:prefix ("c" . "chat")
-                  "g" #'gptel
+                  "g" #'chatgpt-shell
                   "t" #'telega)))
 
       (:prefix ("p" . "projects")
@@ -372,7 +379,9 @@
 
       (:prefix ("t" . "toggle yo")
        :desc "v-line nav" "w" #'+toggle-visual-line-navigation
-       :desc "minor modes" "m" #'consult-minor-mode-menu)
+       :desc "minor modes" "m" #'consult-minor-mode-menu
+       :desc "iBuffer side" "i" #'ibuffer-sidebar-toggle-sidebar
+       :desc "Dired side" "d" #'dired-sidebar-toggle-sidebar)
 
       (:prefix ("T" . "toggle global")
                (:when (modulep! :custom colors)
@@ -407,7 +416,12 @@
                   :desc "ru->en" "r" #'google-translate-query-translate
                   :desc "es->en" "s" #'+google-translate-es->en
                   :desc "en->es" "S" #'+google-translate-en->es
-                  :desc "translate" "g" #'google-translate-at-point)))
+                  :desc "translate" "g" #'google-translate-at-point))
+               (:when (modulep! :custom chat)
+                 (:prefix ("c" . "chatgpt")
+                  :desc "chatgpt" "c" #'chatgpt-shell
+                  :desc "check English" "e" #'+chatgpt-shell-check-english-in-place
+                  :desc "region" "r" #'chatgpt-shell-send-and-review-region)))
 
       (:prefix ("z" . "zoom")
        :desc "frame" "f" #'frame-zoom-transient))
@@ -424,8 +438,10 @@
 
 (map! :after ibuffer
       :map ibuffer-mode-map
+      [remap imenu] #'ibuffer-jump-to-buffer
       :n "su" #'ibuffer-filter-by-unsaved-file-buffers
-      :n "sF" #'ibuffer-filter-by-file-buffers)
+      :n "sF" #'ibuffer-filter-by-file-buffers
+      :n "s*" #'ibuffer-filter-by-non-special-buffers)
 
 (map! :map occur-mode-map
       :n "f" #'occur-mode-display-occurrence)

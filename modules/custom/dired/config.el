@@ -131,3 +131,10 @@
 
   (when (modulep! :custom search)
     (add-hook 'dired-after-readin-hook #'+add-to-fasd-cache)))
+
+(use-package! dired-sidebar
+  :defer t
+  :commands (dired-sidebar-toggle-sidebar)
+  :config
+  (setq dired-sidebar-should-follow-file t
+        dired-sidebar-window-fixed nil))
