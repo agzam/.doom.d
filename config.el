@@ -460,3 +460,4 @@
       :map helpful-mode-map
       :n "q" #'kill-buffer-and-window)
 
+(setq epg-pinentry-mode 'loopback)

@@ -13,7 +13,7 @@
   (add-hook! 'telega-chat-update-hook
     (defun lg-telega-chat-update-h (_)
       (with-telega-root-buffer
-        (hl-line-highlight))))
+       (hl-line-highlight))))
 
   ;; (add-hook! 'telega-chat-mode-hook
   ;;   (defun telega-chat-mode-h ()

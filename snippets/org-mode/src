@@ -3,6 +3,6 @@
 # key: <s
 # expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))
 # --
-#+begin_src ${1:$$(yas-choose-value '("emacs-lisp" "elisp" "sh :results verbatim" "clojure" "python :session" "http :pretty" "js" "json" "yaml" "markdown" "verb :wrap src clojure :op send get-body"))}
+#+begin_src ${1:$$(yas-choose-value '("emacs-lisp" "elisp" "sh :results verbatim" "clojure" "python :session" "http :pretty" "js" "json" "yaml" "markdown" "verb :wrap src clojure :op send get-body" "chatgpt-shell"))}
 $0
 #+end_src

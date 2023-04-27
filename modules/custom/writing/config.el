@@ -47,7 +47,7 @@
 (use-package! mw-thesaurus
   :defer t
   :commands mw-thesaurus-lookup-dwim
-  :hook (mw-thesaurus-mode . variable-pitch-mode)
+  ;; :hook (mw-thesaurus-mode . variable-pitch-mode)
   :config
   (map! :map mw-thesaurus-mode-map [remap evil-record-macro] #'mw-thesaurus--quit)
   (add-to-list

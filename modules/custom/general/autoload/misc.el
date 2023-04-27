@@ -104,9 +104,22 @@ Useful for clean up before running `doom -up`."
   (interactive)
   (let* ((straight-dir (format "%sstraight/" doom-local-dir))
          (sel-dir (completing-read
-                    "Select package repo: "
-                    (directory-files (concat straight-dir "repos"))))
+                   "Select package repo: "
+                   (directory-files (concat straight-dir "repos"))))
          (dirs (list (format "%srepos/%s" straight-dir sel-dir)
                      (format "%s%s/%s" straight-dir straight-build-dir sel-dir))))
     (dolist (d dirs)
       (delete-directory d :recursive))))
+
+;;;###autoload
+(defun yas-completing-prompt (prompt choices &optional display-fn completion-fn)
+  "Overriding yas-completing-prompt with my own version that doesn't require-match."
+  (let* ((formatted-choices
+          (if display-fn (mapcar display-fn choices) choices))
+         (chosen (funcall (or completion-fn #'completing-read)
+                          prompt formatted-choices
+                          nil nil nil nil)))
+    (if (eq choices formatted-choices)
+        chosen
+      (nth (or (cl-position chosen formatted-choices :test #'string=) 0)
+           choices))))
