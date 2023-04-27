@@ -69,81 +69,83 @@ NODE-LINK  - which is title or id or a node."
       ;; (goto-char (org-element-property :begin (org-element-property :parent (org-element-at-point))))
       ;; (org-end-of-subtree)
 
+      ;; append properties drawer to the heading, not the other way around
+      (search-backward ":PROPERTIES:")
+
       ;; it needs to return a string
       "")))
 
 ;;;###autoload
 (cl-defun org-roam-node-insert+ (&optional lines-before lines-after &key templates info)
   "Improved org-roam-node-insert that additionally also removes conflicting and
-duplicating links around the context.  If a node has 'collides_with:' property,
+duplicating links around the context.  If a node has `collides_with:' property,
 inserting a link to that node would remove any links to nodes with IDs contained
 in that prop."
   (interactive)
   (require 'a)
-  (unwind-protect
-      (atomic-change-group
-        (let* (region-text
-               beg end
-               (_ (when (region-active-p)
-                    (setq beg (set-marker (make-marker) (region-beginning)))
-                    (setq end (set-marker (make-marker) (region-end)))
-                    (setq region-text (org-link-display-format (buffer-substring-no-properties beg end)))))
-               (node-to-insert (org-roam-node-read region-text))   ; first we choose a node to insert
-               (description (or region-text (org-roam-node-title node-to-insert)))
-               ;; then we find the IDs of nodes, links that need to be removed if that link to be inserted
-               (id+collides (seq-remove
-                             'string-empty-p
-                             (-> node-to-insert
-                                 (org-roam-node-properties)
-                                 (a-get "COLLIDES_WITH")
-                                 (concat " " (org-roam-node-id node-to-insert))
-                                 (split-string " "))))
-               (re (concat "\\(\\[\\[\\)\\(id:\\|roam:\\)"
-                           "\\(" (mapconcat 'identity id+collides "\\|")
-                           "\\)\\]\\[\\w*\\]\\]"))
-               (before (or lines-before 0))
-               (after (or lines-after 0)))
-          (save-mark-and-excursion
-            (unless region-text
-              (setq prev-pos (point))
-              (previous-line before)
-              (beginning-of-line)
-              (set-mark (point))
-              (next-line (+ before after))
-              (end-of-line))
-            (save-restriction
-              (narrow-to-region (region-beginning) (region-end))
-              (if (org-roam-node-id node-to-insert)
-                  (progn
-                    (when region-text
-                      (delete-region beg end)
-                      (set-marker beg nil)
-                      (set-marker end nil))
-                    (unless region-text
-                      (goto-char 0)
-                      (while (re-search-forward re nil :no-error)
-                        (replace-match ""))
-                      (goto-char prev-pos))
-                    (makunbound 'prev-pos)
-                    (insert (org-link-make-string
-                             (concat "id:" (org-roam-node-id node-to-insert))
-                             description)))
-                (org-roam-capture-
-                 :node node-to-insert
-                 :info info
-                 :templates templates
-                 :props (append
-                         (when (and beg end)
-                           (list :region (cons beg end)))
-                         (list :insert-at (point-marker)
-                               :link-description description
-                               :finalize 'insert-link
-                               :immediate-finish t
-                               :jump-to-captured nil))))
-              ;; make sure links always separated by a single space
-              (goto-char 0)
-              (while (re-search-forward "\\]\\]\\[\\[" nil :no-error)
-                (replace-match "]] [["))))))))
+  (atomic-change-group
+    (let* (region-text
+           beg end
+           (_ (when (region-active-p)
+                (setq beg (set-marker (make-marker) (region-beginning)))
+                (setq end (set-marker (make-marker) (region-end)))
+                (setq region-text (org-link-display-format (buffer-substring-no-properties beg end)))))
+           (node-to-insert (org-roam-node-read region-text))   ; first we choose a node to insert
+           (description (or region-text (org-roam-node-title node-to-insert)))
+           ;; then we find the IDs of nodes, links that need to be removed if that link to be inserted
+           (id+collides (seq-remove
+                         'string-empty-p
+                         (-> node-to-insert
+                             (org-roam-node-properties)
+                             (a-get "COLLIDES_WITH")
+                             (concat " " (org-roam-node-id node-to-insert))
+                             (split-string " "))))
+           (re (concat "\\(\\[\\[\\)\\(id:\\|roam:\\)"
+                       "\\(" (mapconcat 'identity id+collides "\\|")
+                       "\\)\\]\\[\\w*\\]\\]"))
+           (before (or lines-before 0))
+           (after (or lines-after 0)))
+      (save-mark-and-excursion
+        (unless region-text
+          (setq prev-pos (point))
+          (forward-line (- before))
+          (beginning-of-line)
+          (set-mark (point))
+          (forward-line (+ before after))
+          (end-of-line))
+        (save-restriction
+          (narrow-to-region (region-beginning) (region-end))
+          (if (org-roam-node-id node-to-insert)
+              (progn
+                (when region-text
+                  (delete-region beg end)
+                  (set-marker beg nil)
+                  (set-marker end nil))
+                (unless region-text
+                  (goto-char 0)
+                  (while (re-search-forward re nil :no-error)
+                    (replace-match ""))
+                  (goto-char prev-pos))
+                (makunbound 'prev-pos)
+                (insert (org-link-make-string
+                         (concat "id:" (org-roam-node-id node-to-insert))
+                         description)))
+            (org-roam-capture-
+             :node node-to-insert
+             :info info
+             :templates templates
+             :props (append
+                     (when (and beg end)
+                       (list :region (cons beg end)))
+                     (list :insert-at (point-marker)
+                           :link-description description
+                           :finalize 'insert-link
+                           :immediate-finish t
+                           :jump-to-captured nil))))
+          ;; make sure links always separated by a single space
+          (goto-char 0)
+          (while (re-search-forward "\\]\\]\\[\\[" nil :no-error)
+            (replace-match "]] [[")))))))
 
 ;;;###autoload
 (defun org-roam-toggle-ui-xwidget ()
@@ -298,7 +300,7 @@ and if it is set to nil, then it would forcefully create the ID."
 (defun +person-w-name-based-id ()
   "Returns a person record with name-based id. To be used in capture template."
   (let* ((name-parts (thread-last
-                       (gui-get-selection)
+                       (gui-get-selection 'CLIPBOARD)
                        (read-from-minibuffer "Name: ")
                        (split-string)
                        (seq-map 's-trim)))

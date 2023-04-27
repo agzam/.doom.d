@@ -221,13 +221,14 @@
            (file+head "${slug}.org" "#+title: ${title}\n%(org-roam--link-to \"unread\")\n%(org--insert-selection-dwim \"${body}\")")
            :unnarrowed t
            :jump-to-captured t)
-          ("n" "non-browser" plain "%?" :if-new
-           (file+head "read-later/${slug}.org" "#+title: ${title}\n%(org--insert-selection-dwim \"${body}\")")
-           :unnarrowed t)))
+          ("c" "chat-gpt" plain "%?" :if-new
+           (file+head "${slug}.org" "%(+chat-gpt-page-summary \"${ref}\" \"${title}\")")
+           :unnarrowed t
+           :jump-to-captured t)))
 
   (setq org-roam-dailies-capture-templates
         '(("w" "work" plain
-           "%(org-roam-capture-dailies--set-node-props \"work\")**** %?"
+           "**** %?%(org-roam-capture-dailies--set-node-props \"work\")"
            :if-new
            (file+datetree
             "%<%Y-%m>-work-notes.org"

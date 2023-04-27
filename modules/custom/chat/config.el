@@ -41,5 +41,17 @@
   :defer t
   :commands (chatgpt-shell chatgpt-shell-post-prompt)
   :config
+  (require 'ob-chatgpt-shell)
+  (ob-chatgpt-shell-setup)
   (setq chatgpt-shell-openai-key
-     (auth-source-pick-first-password :host "api.openai.com")))
+        (auth-source-pick-first-password :host "api.openai.com")
+        chatgpt-shell-request-timeout 180))
+
+(use-package! dall-e-shell
+  :defer t
+  :commands (dall-e-shell)
+  :config
+  (require 'ob-dall-e-shell)
+  (ob-dall-e-shell-setup)
+  (setq dall-e-shell-openai-key
+        (auth-source-pick-first-password :host "api.openai.com")))
