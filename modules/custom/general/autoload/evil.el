@@ -25,3 +25,21 @@ I want * and # operators to respect marked region."
                            (- p delta)
                          (+ p delta))))))
     (funcall fn unbounded direction count symbol)))
+
+;; I may not need to override these manually,
+;; watch for PR doomemacs/doomemacs#7218
+;;;###autoload
+(defun +evil/window-move-right ()
+  "Swap windows to the right"
+  (interactive)
+  (if (window-at-side-p nil 'right)
+       (evil-window-move-far-left)
+    (+evil--window-swap 'right)))
+
+;;;###autoload
+(defun +evil/window-move-left ()
+  "Swap windows to the right"
+  (interactive)
+  (if (window-at-side-p nil 'left)
+      (evil-window-move-far-right)
+    (+evil--window-swap 'left)))

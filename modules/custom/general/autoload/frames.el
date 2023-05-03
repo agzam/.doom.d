@@ -103,18 +103,31 @@ it remains shown or hidden - whatever the previous value was."
   (set-frame-height nil (- (frame-height) (or delta 1))))
 
 ;;;###autoload
+(defun screen-width-height ()
+  "Returns width and height of current monitor in pixels."
+  (pcase-let ((`(_ _ _ ,h ,v)
+               (assq 'geometry (frame-monitor-attributes))))
+    (list h v)))
+
+;;;###autoload
 (defun widen-frame-width (&optional delta)
   (interactive)
   (when transient--window
     (quit-restore-window transient--window))
-  (set-frame-width nil (+ (frame-width) (or delta 5))))
+  (let ((disp-width (car (screen-width-height))))
+    (if (< (frame-native-width) disp-width)
+       (set-frame-width nil (+ (frame-width) (or delta 5)))
+      (set-frame-width nil disp-width nil :pixelwise))))
 
 ;;;###autoload
 (defun increase-frame-height (&optional delta)
   (interactive)
   (when transient--window
     (quit-restore-window transient--window))
-  (set-frame-height nil (+ (frame-height) (or delta 1))))
+  (let ((disp-height (- (cadr (screen-width-height)) 30)))
+    (if (< (frame-native-height) disp-height)
+        (set-frame-height nil (+ (frame-height) (or delta 1)))
+      (set-frame-height nil disp-height nil :pixelwise))))
 
 ;;;###autoload
 (defun place-frame-at-display-spot (specs &optional frame)
