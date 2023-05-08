@@ -49,11 +49,20 @@
         "C-n"      #'corfu-next
         "C-p"      #'corfu-previous
         "C-/" #'+corfu-move-to-minibuffer
-        (:prefix ("C-x" . "cape")
-                 "C-k"     #'cape-dict
-                 "s"       #'cape-ispell
-                 "C-n"     #'cape-keyword
-                 "C-f"     #'cape-file))
+        (:prefix ("C-c p" . "cape")
+                 "p"  #'complete-tag
+                 "t"  #'cape-dabbrev
+                 "d"  #'cape-history
+                 "h"  #'cape-file
+                 "f"  #'cape-keyword
+                 "k"  #'cape-symbol
+                 "s"  #'cape-abbrev
+                 "a"  #'cape-line
+                 "l"  #'cape-dict
+                 "w"  #'cape-tex
+                 "_"  #'cape-tex
+                 "&"  #'cape-sgml
+                 "r"  #'cape-rfc1345))
   ;; corfu-indexed like in Company, M+number - inserts the thing
   (map! :map corfu-map
         "M-0" (cmd! () (+corfu-insert-indexed 9))
@@ -93,15 +102,28 @@
     (defun +corfu--latex-set-capfs ()
       (add-to-list 'completion-at-point-functions #'cape-tex)))
 
-  (when (modulep! :custom writing)
-    (add-to-list 'completion-at-point-functions #'cape-dict)
-    (add-to-list 'completion-at-point-functions #'cape-ispell))
+
   (add-hook! ('text-mode-hook
               'prog-mode-hook)
     (defun cape-completion-at-point-functions-h ()
       (add-to-list 'completion-at-point-functions #'cape-file)
-      (add-to-list 'completion-at-point-functions #'cape-keyword t)
-      (add-to-list 'completion-at-point-functions #'cape-dabbrev t))))
+      (add-to-list 'completion-at-point-functions #'cape-keyword)
+      (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+      (add-to-list 'completion-at-point-functions #'cape-abbrev)
+      (add-to-list 'completion-at-point-functions #'cape-dict)))
+
+  (add-hook! 'emacs-lisp-mode-hook
+    (defun +cape-completion-at-point-elisp-h ()
+      (add-to-list 'completion-at-point-functions #'cape-symbol)))
+
+  (add-hook! '(org-mode-hook markdown-mode-hook)
+    (defun +cape-completion-at-point-org-md-h ()
+      (add-to-list 'completion-at-point-functions #'cape-elisp-block)))
+
+  (add-hook! '(eshell-mode-hook comint-mode-hook minibuffer-setup-hook)
+    (defun +cape-completion-at-point-history-h ()
+      (add-to-list 'completion-at-point-functions #'cape-history))))
+
 
 (use-package! corfu-popupinfo
   :after corfu
