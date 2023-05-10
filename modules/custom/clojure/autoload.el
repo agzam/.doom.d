@@ -212,7 +212,8 @@ convert from JSON."
     (save-excursion
       (when (looking-at "(\\|\\[\\|{")
         (forward-char))
-      (goto-char (plist-get (sp-get-enclosing-sexp) :end))
+      (when-let ((end-sexp (plist-get (sp-get-enclosing-sexp) :end)))
+        (goto-char end-sexp))
       (call-interactively 'cider-pprint-eval-last-sexp))))
 
 ;;;###autoload

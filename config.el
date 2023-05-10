@@ -437,7 +437,10 @@
   ;; often conflicts with doom-local-leader
   ;; (unbind-key (kbd ",") evil-motion-state-map)
   (map! (:map evil-motion-state-map "C-u" nil)
-        (:map evil-insert-state-map "C-u" nil)))
+        (:map evil-insert-state-map "C-u" nil)
+        (:map evil-window-map
+              "L" #'+evil-window-move-right
+              "H" #'+evil-window-move-left)))
 
 (map! :after ibuffer
       :map ibuffer-mode-map
@@ -460,4 +463,5 @@
       :map helpful-mode-map
       :n "q" #'kill-buffer-and-window)
 
-(setq epg-pinentry-mode 'loopback)
+(after! epa
+ (setq epg-pinentry-mode 'loopback))

@@ -29,7 +29,7 @@ I want * and # operators to respect marked region."
 ;; I may not need to override these manually,
 ;; watch for PR doomemacs/doomemacs#7218
 ;;;###autoload
-(defun +evil/window-move-right ()
+(defun +evil-window-move-right ()
   "Swap windows to the right"
   (interactive)
   (if (window-at-side-p nil 'right)
@@ -37,7 +37,7 @@ I want * and # operators to respect marked region."
     (+evil--window-swap 'right)))
 
 ;;;###autoload
-(defun +evil/window-move-left ()
+(defun +evil-window-move-left ()
   "Swap windows to the right"
   (interactive)
   (if (window-at-side-p nil 'left)

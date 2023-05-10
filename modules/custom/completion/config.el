@@ -10,7 +10,7 @@
   (setq
    corfu-separator ?\s
    corfu-auto t
-   corfu-auto-delay 0.2
+   corfu-auto-delay 0.4
    corfu-preview-current nil ; Disable current candidate preview
    corfu-on-exact-match 'insert
    corfu-quit-no-match 'separator
@@ -19,9 +19,8 @@
    completion-cycle-threshold 1
    tab-always-indent 'complete
    corfu-count 9)
-  ;; Not sure if completions in the minibuffer helpful or annoying. may enable it again later
-  ;; (when (modulep! +minibuffer)
-  ;;   (add-hook 'minibuffer-setup-hook #'+corfu--enable-in-minibuffer))
+  (when (modulep! +minibuffer)
+    (add-hook 'minibuffer-setup-hook #'+corfu--enable-in-minibuffer))
 
   (add-hook! 'doom-init-modules-hook
     (defun reset-lsp-completion-provider-h ()
@@ -44,7 +43,7 @@
         (lsp-completion-mode -1))))
 
   (map! :map corfu-map
-        "<escape>" #'evil-collection-corfu-quit-and-escape
+        "<escape>" #'+corfu-quit-and-escape
         "C-SPC"    #'corfu-insert-separator
         "C-n"      #'corfu-next
         "C-p"      #'corfu-previous
@@ -377,6 +376,12 @@
   (add-hook! 'embark-collect-mode-hook
     (defun visual-line-mode-off-h ()
       (visual-line-mode -1)))
+
+  ;; don't ask when killing buffers
+  (setq embark-pre-action-hooks
+        (cl-remove
+         '(kill-buffer embark--confirm)
+         embark-pre-action-hooks :test #'equal))
 
   (defadvice! embark-prev-next-recenter-a ()
     :after #'embark-previous-symbol

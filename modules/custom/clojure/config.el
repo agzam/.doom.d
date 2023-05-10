@@ -36,26 +36,19 @@
 (use-package! cider
   :after clojure-mode
   :hook (clojure-mode-local-vars . cider-mode)
-  :init
-  (after! clojure-mode
-    (set-repl-handler! 'clojure-mode #'+clojure/open-repl :persist t)
-    (set-repl-handler! 'clojurescript-mode #'+clojure/open-cljs-repl :persist t)
-    (set-eval-handler! '(clojure-mode clojurescript-mode) #'cider-eval-region))
-
   :config
   (set-lookup-handlers! '(cider-mode cider-repl-mode)
     :definition #'+clojure-cider-lookup-definition
     :documentation #'cider-clojuredocs)
 
-  ;; remove lsp's doc lookup handler, so it always uses cider-clojuredocs
+  (defalias 'cape-cider-lsp
+    (cape-super-capf #'cider-complete-at-point #'lsp-completion-at-point))
+
   (add-hook! 'cider-mode-hook
-    ;; don't let the name decieve you, works for corfu too
     (defun cider-completion-styles-h ()
-      (setq-local
-       completion-styles
-       '(cider orderless partial-completion))
-      (when (featurep 'cape)
-        (cape-completion-at-point-functions-h))))
+      (setq-local completion-styles '(cider orderless partial-completion))
+      (cape-completion-at-point-functions-h)
+      (add-to-list 'completion-at-point-functions #'cape-cider-lsp)))
 
   (add-hook!
    'cider-repl-mode-hook
@@ -63,10 +56,6 @@
    #'cider-company-enable-fuzzy-completion
    #'hs-minor-mode)
 
-  (set-popup-rules!
-   '(("^\\*cider-error*" :ignore t)
-     ("^\\*cider-repl" :quit nil :ttl nil)
-     ("^\\*cider-repl-history" :vslot 2 :ttl nil)))
 
   (setq nrepl-hide-special-buffers nil
         nrepl-log-messages nil

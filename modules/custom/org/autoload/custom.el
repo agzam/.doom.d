@@ -299,12 +299,15 @@ and if it is set to nil, then it would forcefully create the ID."
 ;;;###autoload
 (defun +person-w-name-based-id ()
   "Returns a person record with name-based id. To be used in capture template."
+  (interactive)
   (let* ((name-parts (thread-last
                        (gui-get-selection 'CLIPBOARD)
                        (read-from-minibuffer "Name: ")
                        (split-string)
-                       (seq-map 's-trim)))
+                       (seq-map 's-trim)
+                       (seq-map 'capitalize)))
          (id (mapconcat 'downcase (reverse name-parts) "-"))
-         (name (capitalize (car name-parts)))
-         (full-name (mapconcat 'capitalize name-parts " ")))
+         (name (format "%s %s" (car name-parts)
+                       (substring (cadr name-parts) 0 1)))
+         (full-name (mapconcat 'identity name-parts " ")))
     (format "%s\n:PROPERTIES:\n:ID: %s\n:roam_aliases: \"%s\"\n:END:" name id full-name)))

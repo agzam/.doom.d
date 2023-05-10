@@ -9,8 +9,8 @@
               (memq this-command '(evil-ex
                                    evil-ex-search-forward
                                    evil-ex-search-backward))
-              (and (modulep! :completion helm)
-                   (helm--alive-p))
+              (setq-local corfu-echo-delay nil
+                          corfu-popupinfo-delay nil)
               (corfu-mode +1))))
 
 
@@ -71,3 +71,11 @@ See `+dict--words' for extra words, and `+dict-file' for a wordslist source "
   (interactive)
   (let ((corfu--index idx))
     (call-interactively #'corfu-insert)))
+
+;;;###autoload
+(defun +corfu-quit-and-escape ()
+  "Call `corfu-quit' and then return to Normal State."
+  (interactive)
+  (call-interactively 'corfu-quit)
+  (forward-char)
+  (evil-normal-state))
