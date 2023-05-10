@@ -322,7 +322,8 @@
         :map isearch-mode-map "M-s l" #'consult-line))
 
 (after! embark
-  (setq embark-cycle-key "C-;")
+  (setq embark-cycle-key "C-;"
+        embark-help-key "M-h")
 
   (map!
    :after embark

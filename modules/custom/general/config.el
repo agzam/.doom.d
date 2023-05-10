@@ -153,3 +153,27 @@
         ibuffer-sidebar-face `(:height 0.9)
         ibuffer-sidebar-width 20
         ibuffer-sidebar-pop-to-sidebar-on-toggle-open nil))
+
+(use-package! which-key-posframe
+  :config
+  (defun posframe-poshandler-frame-right-vertical (info)
+    ;; (pp info)
+    (cons (- (plist-get info :parent-frame-width)
+             (plist-get info :posframe-width) 10)
+          (/ (- (plist-get info :parent-frame-height)
+              (plist-get info :posframe-height))
+             2)))
+  (setq which-key-posframe-poshandler 'posframe-poshandler-frame-right-vertical)
+
+  (add-hook! 'which-key-posframe-mode-hook
+    (defun which-key-posframe-mode-h ()
+      (if which-key-posframe-mode
+          (setq which-key-max-display-columns 2
+                which-key-min-display-lines 60
+                which-key-max-description-length 100)
+        (setq which-key-popup-type 'side-window
+              which-key-max-display-columns nil
+              which-key-min-display-lines 6
+              which-key-max-description-length 35))))
+
+  (which-key-posframe-mode +1))

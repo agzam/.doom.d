@@ -9,3 +9,5 @@
 (unpin! wgrep)
 
 (package! ibuffer-sidebar)
+
+(package! which-key-posframe)

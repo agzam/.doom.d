@@ -90,7 +90,8 @@
    which-key-use-C-h-commands t
    which-key-show-early-on-C-h t
    which-key-idle-delay 0.5
-   which-key-idle-secondary-delay 0.2)
+   which-key-idle-secondary-delay 0.2
+   which-key-show-prefix 'left)
 
   ;; replace 'evil-' in which-key HUD with a tiny triangle
   ;; borrowed from https://tecosaur.github.io/emacs-config/config.html
