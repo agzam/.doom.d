@@ -74,7 +74,7 @@
         cider-repl-history-highlight-inserted-item t
         cider-repl-history-size 1000
         cider-repl-result-prefix ";; => "
-        cider-repl-print-length 100
+        cider-print-options '(("length" 10000) ("right-margin" 70))
         cider-repl-use-clojure-font-lock nil
         cider-repl-use-pretty-printing t
         cider-repl-wrap-history nil
