@@ -77,5 +77,4 @@ See `+dict--words' for extra words, and `+dict-file' for a wordslist source "
   "Call `corfu-quit' and then return to Normal State."
   (interactive)
   (call-interactively 'corfu-quit)
-  (forward-char)
   (evil-normal-state))

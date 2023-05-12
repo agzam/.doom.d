@@ -15,6 +15,9 @@
                    (hack-dir-local-variables-non-file-buffer)
                    (when-let ((recent (projectile-recentf-files)))
                      (find-file (car (seq-remove (lambda (x) (equal x "./")) recent)))))))
+    ("gn" "gh-notify" (gh-notify))
+    ("ef" "elfeed" (elfeed))
+    ("no" "notmuch" (notmuch))
     ("ed" "doom.d" (progn
                      (doom/goto-private-config-file)
                      (call-interactively #'projectile-find-dir)))
@@ -165,24 +168,34 @@
   (let* ((project-name (projectile-project-name))
          (buf-fname (buffer-file-name))
          (buf-name (buffer-name))
-         (buf-dir (when buf-fname (file-name-directory buf-fname))))
-    (cond
-     ((member major-mode '(gh-notify-mode)) buf-name)
+         (buf-dir (when buf-fname (file-name-directory buf-fname)))
+         (branch (magit-get-current-branch))
+         (label (cond
+                 ((member major-mode '(gh-notify-mode)) buf-name)
 
-     ((and project-name
-           (not (string-equal "-" project-name)))
-      project-name)
+                 ;; in a worktree
+                 ((and branch
+                       (not (string= (file-name-nondirectory
+                                      (magit-rev-parse "--git-dir"))
+                                     ".git")))
+                  (file-name-nondirectory
+                   (expand-file-name ".." (projectile-project-root))))
 
-     ((eq 'dired-mode major-mode)
-      (projectile-project-name (projectile-project-root default-directory)))
+                 ((and project-name
+                       (not (string-equal "-" project-name)))
+                  project-name)
 
-     ((and buf-dir (projectile-project-p buf-dir))
-      (projectile-project-name (projectile-project-root buf-dir)))
+                 ;; ((eq 'dired-mode major-mode)
+                 ;;  (projectile-project-name (projectile-project-root default-directory)))
 
-     (buf-dir buf-dir)
+                 ;; ((and buf-dir (projectile-project-p buf-dir))
+                 ;;  (projectile-project-name (projectile-project-root buf-dir)))
 
-     ((not (string-match-p "\\*Minibuf" buf-name))
-      buf-name))))
+                 (buf-dir buf-dir)
+
+                 ((not (string-match-p "\\*Minibuf" buf-name))
+                  buf-name))))
+    (concat label (when branch (format "󠀠 ▸ %s" branch)))))
 
 ;;;###autoload
 (defun +tab-bar-move-buffer-to-tab ()
