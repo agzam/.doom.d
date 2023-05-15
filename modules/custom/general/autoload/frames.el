@@ -1,28 +1,47 @@
 ;;; custom/general/autoload/frames.el -*- lexical-binding: t; -*-
 
 ;;;###autoload
+(defun display-current-workarea ()
+  "Returns x,y width, height of active monitor of current-frame."
+  (let* ((current-frame (selected-frame))
+         (monitor-at-pos (car (seq-filter
+                               (lambda (monitor)
+                                 (let ((geometry (cdr (assoc 'geometry monitor))))
+                                   (and (<= (car geometry) (frame-parameter current-frame 'left))
+                                        (<= (+ (car geometry) (cadr geometry)) (frame-parameter current-frame 'left)))))
+                               (display-monitor-attributes-list)))))
+    (alist-get 'workarea monitor-at-pos)))
+
+;;;###autoload
+(defun display-workarea-height ()
+  "Returns current monitor height."
+  (nth 3 (display-current-workarea)))
+
+;;;###autoload
+(defun display-workarea-width ()
+  "Returns current monitor width."
+  (nth 2 (display-current-workarea)))
+
+;;;###autoload
 (defun toggle-frame-maximized-undecorated ()
   (interactive)
   (posframe-delete-all)
+  (+corfu-kill-frames)
   (let* ((frame (selected-frame))
          (on? (and (frame-parameter frame 'undecorated)
                    (eq (frame-parameter frame 'fullscreen) 'maximized)))
-         (geom (frame-monitor-attribute 'geometry))
-         (x (nth 0 geom))
-         (y (nth 1 geom))
-         (display-height (nth 3 geom))
-         (display-width (nth 2 geom))
+         (x (nth 0 (display-current-workarea)))
+         (y (nth 1 (display-current-workarea)))
          (ns-menu-autohide (bound-and-true-p ns-auto-hide-menu-bar))
          (cut (if on?
-                  (if ns-menu-autohide 26 50)
-                (if ns-menu-autohide 4 26)))
-         (header-h (+ (tab-bar-height nil t) cut)))
+                  (if ns-menu-autohide 26 25)
+                (if ns-menu-autohide 4 26))))
     (set-frame-position frame x y)
     (set-frame-parameter frame 'fullscreen-restore 'maximized)
     (set-frame-parameter nil 'fullscreen 'maximized)
     (set-frame-parameter frame 'undecorated (not on?))
-    (set-frame-height frame (- display-height header-h) nil t)
-    (set-frame-width frame (- display-width 10) nil t)
+    (set-frame-height frame (- (display-workarea-height) cut) nil t)
+    (set-frame-width frame (- (display-workarea-width) 10) nil t)
     (set-frame-position frame x y)))
 
 ;;;###autoload
@@ -37,8 +56,8 @@ the horizontal screen estate the frame should occupy."
                          (if prompt
                              (completing-read "Choose: " '("50%" "70%" "80%" "90%") nil t)
                            (number-to-string (or percentage 70)))))
-         (x-pos (round (* (x-display-pixel-width) (* (/ (- 100 stretch-ratio) 2) 0.01))))
-         (width (round (* (x-display-pixel-width) (* stretch-ratio 0.01)))))
+         (x-pos (round (* (display-pixel-width) (* (/ (- 100 stretch-ratio) 2) 0.01))))
+         (width (round (* (display-pixel-width) (* stretch-ratio 0.01)))))
     (set-frame-position nil x-pos 0)
     (set-frame-width nil width nil t)
     (when (not (frame-parameter nil 'undecorated))
@@ -60,8 +79,8 @@ it remains shown or hidden - whatever the previous value was."
   the display height. To be used on a Mac."
   (interactive)
   (posframe-delete-all)
-  (let* ((fr (selected-frame))
-         (tbh (tab-bar-height fr t)))
+  (+corfu-kill-frames)
+  (let* ((fr (selected-frame)))
     (if (frame-parameter fr 'undecorated-fullheight)
         (progn
           (set-frame-parameter fr 'undecorated-fullheight nil)
@@ -71,8 +90,8 @@ it remains shown or hidden - whatever the previous value was."
       (progn
         (set-frame-parameter fr 'undecorated t)
         (set-frame-parameter fr 'undecorated-fullheight t)
-        (set-frame-position fr (car (frame-position)) (+ 0 tbh))
-        (set-frame-height fr (- (x-display-pixel-height) (+ tbh 26)) nil :pixelwise)))
+        (set-frame-position fr (car (frame-position)) 26)
+        (set-frame-height fr (- (display-workarea-height) (tab-bar-height nil t)) nil :pixelwise)))
     (redraw-display)))
 
 ;;;###autoload
@@ -116,7 +135,7 @@ it remains shown or hidden - whatever the previous value was."
     (quit-restore-window transient--window))
   (let ((disp-width (car (screen-width-height))))
     (if (< (frame-native-width) disp-width)
-       (set-frame-width nil (+ (frame-width) (or delta 5)))
+        (set-frame-width nil (+ (frame-width) (or delta 5)))
       (set-frame-width nil disp-width nil :pixelwise))))
 
 ;;;###autoload
@@ -135,8 +154,8 @@ it remains shown or hidden - whatever the previous value was."
 SPECS is a list of x, y, width & height.
 See: `(frame-position-display-spots)'  details."
   (interactive)
-  (pcase-let* ((pw (display-pixel-width))
-               (ph (display-pixel-height))
+  (pcase-let* ((pw (display-workarea-width))
+               (ph (display-workarea-height))
                (`(,x ,y ,w ,h) (seq-mapn
                                 (lambda (val kind)
                                   (if (eq 'float (type-of val))
@@ -145,8 +164,8 @@ See: `(frame-position-display-spots)'  details."
                                         (:y (floor (* ph val)))
                                         (:h (let* ((tabs-h (tab-bar-height frame t)))
                                               (if (eq val 1.0)
-                                                  (- ph (+ 26 tabs-h))
-                                                (floor (- (* ph val) (+ 26 tabs-h)))))))
+                                                  (- ph tabs-h)
+                                                (floor (- (* ph val) tabs-h))))))
                                     val))
                                 specs '(:x :y :w :h)))
                (x (cond ((< x 0) 0) ((< pw x) pw) (t x)))

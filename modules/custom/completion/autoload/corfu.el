@@ -61,9 +61,9 @@ See `+dict--words' for extra words, and `+dict-file' for a wordslist source "
   (interactive)
   (when vertico-posframe-mode
     (vertico-posframe-cleanup))
-  (when corfu--frame
+  (when (boundp 'corfu--frame)
     (delete-frame corfu--frame))
-  (when corfu-popupinfo--frame
+  (when (boundp 'corfu-popupinfo--frame)
     (delete-frame corfu-popupinfo--frame)))
 
 ;;;###autoload

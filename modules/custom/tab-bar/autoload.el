@@ -170,26 +170,30 @@
          (buf-name (buffer-name))
          (buf-dir (when buf-fname (file-name-directory buf-fname)))
          (branch (magit-get-current-branch))
+         (check-fn (lambda (opt) (thread-first opt (magit-rev-parse) (substring -4) (string= ".git"))))
+         (worktree? (and branch
+                         (not (and (funcall check-fn "--git-dir")
+                                   (funcall check-fn "--git-common-dir")))))
          (label (cond
                  ((member major-mode '(gh-notify-mode)) buf-name)
 
-                 ;; in a worktree
-                 ((and branch
-                       (not (string= (file-name-nondirectory
-                                      (magit-rev-parse "--git-dir"))
-                                     ".git")))
+                 (worktree?
                   (file-name-nondirectory
                    (expand-file-name ".." (projectile-project-root))))
 
-                 ((and project-name
-                       (not (string-equal "-" project-name)))
-                  project-name)
+                 ((and branch (not worktree?))
+                  (file-name-nondirectory
+                   (expand-file-name "." (projectile-project-root))))
+
+                 ;; ((and branch
+                       ;; (not (string-equal "-" project-name)))
+                  ;; project-name)
 
                  ;; ((eq 'dired-mode major-mode)
                  ;;  (projectile-project-name (projectile-project-root default-directory)))
 
-                 ;; ((and buf-dir (projectile-project-p buf-dir))
-                 ;;  (projectile-project-name (projectile-project-root buf-dir)))
+                 ((and buf-dir (projectile-project-p buf-dir))
+                  (projectile-project-name (projectile-project-root buf-dir)))
 
                  (buf-dir buf-dir)
 
