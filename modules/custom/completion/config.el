@@ -357,7 +357,38 @@
    (:map
     embark-url-map
     "e" #'+eww-open-in-other-window
-    "b" #'+browse-url)
+    "b" #'+browse-url
+    (:prefix
+     ("c" . "convert")
+     :desc "markdown link" "m" #'+link-plain->link-markdown
+     :desc "org-mode link" "o" #'+link-plain->link-org-mode
+     :desc "bug-reference" "b" #'+link-plain->link-bug-reference))
+
+   (:map embark-markdown-link-map
+         "e" #'+eww-open-in-other-window
+         "b" (cmd! () (+browse-url (markdown-link-url)))
+         (:prefix
+          ("c" . "convert")
+          :desc "org-mode link" "o" #'+link-markdown->link-org-mode
+          :desc "plain" "p" #'+link-markdown->link-plain
+          :desc "bug-reference" "b" #'+link-markdown->link-bug-reference))
+
+   (:map embark-org-link-map
+         "e" #'+eww-open-in-other-window
+         "b" #'org-open-at-point
+         (:prefix
+          ("c" . "convert")
+          :desc "markdown link" "m" #'+link-org->link-markdown
+          :desc "plain" "p" #'+link-org->link-plain
+          :desc "bug-reference" "b" #'+link-org->link-bug-reference))
+
+   (:map embark-bug-reference-link-map
+         "e" #'+eww-open-in-other-window
+         (:prefix
+          ("c" . "convert")
+          :desc "markdown link" "m" #'+link-bug-reference->link-markdown
+          :desc "org-mode link" "o" #'+link-bug-reference->link-org-mode
+          :desc "plain" "p" #'+link-bug-reference->link-plain))
 
    (:map
     embark-collect-mode-map
@@ -387,4 +418,18 @@
   (defadvice! embark-prev-next-recenter-a ()
     :after #'embark-previous-symbol
     :after #'embark-next-symbol
-    (recenter)))
+    (recenter))
+
+  (add-to-list 'embark-target-finders '+embark-target-markdown-link-at-point)
+  (add-to-list 'embark-target-finders '+embark-target-bug-reference-link-at-point)
+
+  (defvar-keymap embark-markdown-link-map
+    :doc "Keymap for Embark markdown link actions."
+    :parent embark-general-map)
+  (add-to-list 'embark-keymap-alist '(markdown-link embark-markdown-link-map))
+
+  (defvar-keymap embark-bug-reference-link-map
+    :doc "Keymap for Embark bug-reference link actions."
+    :parent embark-general-map)
+  (add-to-list 'embark-keymap-alist '(bug-reference-link embark-bug-reference-link-map))
+  )

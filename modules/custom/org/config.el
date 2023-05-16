@@ -74,8 +74,7 @@
                   "l" #'org-insert-link
                   "L" #'org-cliplink)
          (:prefix ("l" . "links")
-                  "i" #'org-id-store-link
-                  "c" #'markdown-link->org)
+                  "i" #'org-id-store-link)
          (:prefix ("o" . "open/Org")
                   "l" #'org-id-store-link
                   "L" #'org-store-link-id-optional)

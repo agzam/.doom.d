@@ -226,10 +226,6 @@
          "ru"
        nil))))
 
-(after! markdown-mode
-  (map! :localleader :map markdown-mode-map
-        (:prefix ("l" . "links")
-         "c" #'org-link->markdown)))
 
 (after! quail
   (quail-define-package

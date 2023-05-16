@@ -51,18 +51,29 @@ Signals an error if there is no current project."
   ;;
   (let* ((seg "\\([A-z,0-9,._~!$&'()*+,;=:@%-]+\\)")
          (bare-rx (concat "\\(https\\:\\/\\/github.com\\)\\/" seg "\\/" seg))
-         (file-rx (concat bare-rx "\\/blob\\/" seg "\\/\\(.*\\)")))
-    (if (not (string-match-p bare-rx url))
-        (error "Is that a GitHub url?\n%s" url)
-      (cond ((string-match file-rx url) 'file)
-            ((string-match bare-rx url) 'bare))
-      (list :org (match-string 2 url)
-            :repo (match-string 3 url)
-            :ref (match-string 4 url)
-            :path (match-string 5 url)
-            :ext (ignore-errors
-                   (replace-regexp-in-string
-                    ".*\\." "" (match-string 5 url)))))))
+         (file-rx (concat bare-rx "\\/blob\\/" seg "\\/\\(.*\\)"))
+         (issue-rx (concat "\\(https\\:\\/\\/github.com\\)\\/" seg
+                           "\\/" seg "\\/issues\\/\\([0-9]+\\)" ))
+         (pr-rx (concat "\\(https\\:\\/\\/github.com\\)\\/" seg
+                        "\\/" seg "\\/pull\\/\\([0-9]+\\)"))
+         (type (if (not (string-match-p bare-rx url))
+                   (error "Is that a GitHub url?\n%s" url)
+                 (cond ((string-match file-rx url) 'file)
+                       ((string-match issue-rx url) 'issue)
+                       ((string-match pr-rx url) 'pull)
+                       ((string-match bare-rx url) 'bare)))))
+    (list :org (match-string 2 url)
+          :repo (match-string 3 url)
+          :ref (when (eq type 'file)
+                 (match-string 4 url))
+          :issue (when (eq type 'issue)
+                   (match-string 4 url))
+          :pull (when (eq type 'pull)
+                  (match-string 4 url))
+          :path (match-string 5 url)
+          :ext (ignore-errors
+                 (replace-regexp-in-string
+                  ".*\\." "" (match-string 5 url))))))
 
 ;;;###autoload
 (defun +fetch-github-raw-file (url)
