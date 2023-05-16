@@ -335,7 +335,7 @@
        "f" #'narrow-to-defun
        "r" #'narrow-to-region
        "l" #'consult-focus-lines
-       :desc "widen" "w" (cmd! (consult-focus-lines :show) (widen)))
+       :desc "widen" "w" (cmd! () (consult-focus-lines nil :show) (widen)))
 
       (:prefix ("o" . "open/Org")
        :desc "store link" "l" #'org-store-link

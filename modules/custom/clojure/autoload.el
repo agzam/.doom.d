@@ -293,3 +293,8 @@ With ARG, kills all buffers, not only in the current project"
   "Hacky way to get imenu for root-level keywords. Useful in edn files."
   (when (string= "edn" (file-name-extension (or (buffer-file-name) "")))
     (add-to-list 'imenu-generic-expression '(nil "^.?.?\\(:[^ ]+\\).*$" 1) t)))
+;;;###autoload
+(defun cider-completion-styles-h ()
+  (setq-local completion-styles '(cider orderless partial-completion))
+  (add-to-list 'completion-at-point-functions #'cape-cider-lsp)
+  (cape-completion-at-point-functions-h))

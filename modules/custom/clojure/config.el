@@ -42,20 +42,14 @@
     :documentation #'cider-clojuredocs)
 
   (defalias 'cape-cider-lsp
-    (cape-super-capf #'cider-complete-at-point #'lsp-completion-at-point))
+    (cape-super-capf #'cider-complete-at-point
+                     #'+lsp-completion-at-point))
 
-  (add-hook! 'cider-mode-hook
-    (defun cider-completion-styles-h ()
-      (setq-local completion-styles '(cider orderless partial-completion))
-      (cape-completion-at-point-functions-h)
-      (add-to-list 'completion-at-point-functions #'cape-cider-lsp)))
+  (add-hook! 'cider-mode-hook #'cider-completion-styles-h)
 
-  (add-hook!
-   'cider-repl-mode-hook
-   ;; don't let the name decieve you, works for corfu too
-   #'cider-company-enable-fuzzy-completion
-   #'hs-minor-mode)
-
+  (add-hook! 'cider-repl-mode-hook
+    #'cider-completion-styles-h
+    #'hs-minor-mode)
 
   (setq nrepl-hide-special-buffers nil
         nrepl-log-messages nil

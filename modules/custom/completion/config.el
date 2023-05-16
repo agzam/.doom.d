@@ -105,11 +105,11 @@
   (add-hook! ('text-mode-hook
               'prog-mode-hook)
     (defun cape-completion-at-point-functions-h ()
-      (add-to-list 'completion-at-point-functions #'cape-file)
-      (add-to-list 'completion-at-point-functions #'cape-keyword)
-      (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-      (add-to-list 'completion-at-point-functions #'cape-abbrev)
-      (add-to-list 'completion-at-point-functions #'cape-dict)))
+      (add-to-list 'completion-at-point-functions #'cape-file :append)
+      (add-to-list 'completion-at-point-functions #'cape-keyword :append)
+      (add-to-list 'completion-at-point-functions #'cape-dabbrev :append)
+      (add-to-list 'completion-at-point-functions #'cape-abbrev :append)
+      (add-to-list 'completion-at-point-functions #'cape-dict :append)))
 
   (add-hook! 'emacs-lisp-mode-hook
     (defun +cape-completion-at-point-elisp-h ()

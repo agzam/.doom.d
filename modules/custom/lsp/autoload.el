@@ -22,3 +22,8 @@ keeps wanting to control lsp-diagnostics window"
       ;; (set-window-dedicated-p win t)
       (select-window win)
       (fit-window-to-buffer nil nil 10))))
+
+;;;###autoload
+(defun +lsp-completion-at-point ()
+  (when lsp-mode
+    (funcall 'lsp-completion-at-point)))
