@@ -55,9 +55,9 @@ the horizontal screen estate the frame should occupy."
   (let* ((stretch-ratio (string-to-number
                          (if prompt
                              (completing-read "Choose: " '("50%" "70%" "80%" "90%") nil t)
-                           (number-to-string (or percentage 70)))))
-         (x-pos (round (* (display-pixel-width) (* (/ (- 100 stretch-ratio) 2) 0.01))))
-         (width (round (* (display-pixel-width) (* stretch-ratio 0.01)))))
+                           (number-to-string (or percentage 80)))))
+         (x-pos (round (* (display-workarea-width) (* (/ (- 100 stretch-ratio) 2) 0.01))))
+         (width (round (* (display-workarea-width) (* stretch-ratio 0.01)))))
     (set-frame-position nil x-pos 0)
     (set-frame-width nil width nil t)
     (when (not (frame-parameter nil 'undecorated))
@@ -112,7 +112,7 @@ it remains shown or hidden - whatever the previous value was."
   (interactive)
   (when transient--window
     (quit-restore-window transient--window))
-  (set-frame-width nil (- (frame-width) (or delta 5))))
+  (set-frame-width nil (- (frame-width) (or delta 3))))
 
 ;;;###autoload
 (defun reduce-frame-height (&optional delta)
@@ -135,7 +135,7 @@ it remains shown or hidden - whatever the previous value was."
     (quit-restore-window transient--window))
   (let ((disp-width (car (screen-width-height))))
     (if (< (frame-native-width) disp-width)
-        (set-frame-width nil (+ (frame-width) (or delta 5)))
+        (set-frame-width nil (+ (frame-width) (or delta 3)))
       (set-frame-width nil disp-width nil :pixelwise))))
 
 ;;;###autoload

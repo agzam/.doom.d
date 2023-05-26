@@ -45,7 +45,8 @@
   (ob-chatgpt-shell-setup)
   (setq chatgpt-shell-openai-key
         (auth-source-pick-first-password :host "api.openai.com")
-        chatgpt-shell-request-timeout 180))
+        chatgpt-shell-request-timeout 180)
+  (add-hook! 'comint-mode-hook #'cape-completion-at-point-functions-h))
 
 (use-package! dall-e-shell
   :defer t

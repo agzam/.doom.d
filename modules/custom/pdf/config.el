@@ -64,7 +64,11 @@
         (:prefix ("z" . "zoom")
                  "k" #'pdf-view-enlarge
                  "j" #'pdf-view-shrink
-                 "0" #'pdf-view-scale-reset)))
+                 "0" #'pdf-view-scale-reset)
+        (:prefix ("n" . "noter")
+                 "N" #'org-noter
+                 "n" #'org-noter-sync-current-page-or-chapter
+                 "i" #'org-noter-insert-note)))
 
 (use-package! saveplace-pdf-view
   :after pdf-view)
@@ -75,3 +79,23 @@
     (setq pdf-view-midnight-colors `(,(face-attribute 'default :foreground) .
                                      ,(face-attribute 'default :background)))
     (funcall fn args)))
+
+
+(use-package! org-noter
+  :defer t
+  :config
+  (setq
+   org-noter-notes-search-path (list org-directory)
+   org-noter-auto-save-last-location nil
+   org-noter-separate-notes-from-heading t
+   org-noter-always-create-frame nil
+   org-noter-insert-note-no-questions nil
+   org-noter-disable-narrowing t
+   org-noter-notes-window-behavior '(only-prev)
+   org-noter-kill-frame-at-session-end nil)
+
+                                        ; (defadvice! recenter-on-org-noter-sync-current-page-or-chapter-a ()
+                                        ;   :after #'org-noter-sync-current-page-or-chapter
+                                        ;   (recenter))
+  )
+

@@ -165,11 +165,14 @@
 
 ;;;###autoload
 (defun +tab-bar-name-fn ()
+  (require 'magit)
   (let* ((project-name (projectile-project-name))
          (buf-fname (buffer-file-name))
          (buf-name (buffer-name))
          (buf-dir (when buf-fname (file-name-directory buf-fname)))
-         (branch (magit-get-current-branch))
+         (branch (when (or buf-fname
+                           (eq major-mode 'dired-mode))
+                   (magit-get-current-branch)))
          (check-fn (lambda (opt) (thread-first opt (magit-rev-parse) (substring -4) (string= ".git"))))
          (worktree? (and branch
                          (not (and (funcall check-fn "--git-dir")

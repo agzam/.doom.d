@@ -26,6 +26,8 @@ I want * and # operators to respect marked region."
                          (+ p delta))))))
     (funcall fn unbounded direction count symbol)))
 
+(require 'evil)
+
 ;; I may not need to override these manually,
 ;; watch for PR doomemacs/doomemacs#7218
 ;;;###autoload
@@ -35,7 +37,7 @@ I want * and # operators to respect marked region."
   (if (and (window-at-side-p nil 'right)
            (not (or (window-in-direction 'above)
                     (window-in-direction 'below))))
-       (evil-window-move-far-left)
+      (evil-window-move-far-left)
     (+evil--window-swap 'right)))
 
 ;;;###autoload

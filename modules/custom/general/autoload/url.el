@@ -6,6 +6,7 @@
 Type can be: org-mode, markdown, plain,or bug-reference.
 Position is a cons-cell."
   (require 'org)
+  (require 'bug-reference)
   (cond
    ((when-let ((pos (org-in-regexp org-link-bracket-re 1))
                (_ (string-match-p "^http\\|https" (match-string-no-properties 1))))
@@ -175,7 +176,7 @@ Position is a cons-cell."
   (when-let* ((url (or (thing-at-point-url-at-point) ""))
               (link (if-let ((title (org-cliplink-retrieve-title-synchronously url)))
                         (format "[[%s][%s]]" url title)
-                      (format "[%s]" url))))
+                      (format "[[%s]]" url))))
     ;; TODO: do the GitHub stuff - ticket description, etc.
     (kill-new link)
     (message link)))
@@ -209,3 +210,58 @@ Position is a cons-cell."
                                 .org .repo (if .pull .pull .issue)))))))
     (kill-new link)
     (message link)))
+
+
+;;;###autoload
+(defun +find-related-pages (term)
+  "Finds all mentions of a given TERM in various websites.
+Uses bing api. Needs api-key stored in auth-source file.
+Returns list of org-mode links."
+  (let* ((sites '("news.ycombinator.com"
+                  "lobste.rs"
+                  "reddit.com"
+                  "youtube.com"
+                  "github.com"))
+         (api-key (auth-source-pick-first-password
+                   :host "api.bing.microsoft.com"))
+         ;; need to send multiple requests,
+         ;; stupid bing can't handle more than one site:x
+         ;; clause in a single query
+         (reqs
+          (deferred:parallel-list
+           (cl-loop
+            for site in sites
+            collect
+            ((lambda (uri)
+               (let ((query (format "\"%s\" site:%s" term uri)))
+                 (deferred:$
+                  (request-deferred
+                   (concat "https://api.bing.microsoft.com/v7.0/search")
+                   :params `(("mkt" . "en-US")
+                             ("q" . ,query))
+                   :headers `(("Ocp-Apim-Subscription-Key" . ,api-key))
+                   :parser 'json-read)
+                  (deferred:nextc
+                   it
+                   (lambda (resp)
+                     (->>
+                      resp
+                      (request-response-data)
+                      (funcall (-rpartial #'a-get-in '(webPages value)))
+                      (-map (lambda (x)
+                              (let-alist x
+                                (format "[[%s][%s]]" .url .name))))))))))
+             site)))))
+    (deferred:$
+     reqs
+     (deferred:nextc
+      it
+      (lambda (x)
+        (->> x
+         (-flatten)
+         (-remove #'null)))))))
+
+
+;; (print
+;;  (deferred:sync!
+;;   (+find-related-pages "agzam/spacehammer")))

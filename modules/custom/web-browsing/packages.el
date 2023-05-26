@@ -7,3 +7,4 @@
 (package! elfeed)
 (package! elfeed-goodies)
 (package! elfeed-org)
+(package! rfc-mode)

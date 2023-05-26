@@ -241,9 +241,7 @@ Returns deferred object with the list of urls to Reddit topics."
 ;; (with-current-buffer (generate-new-buffer "summary-buffer")
 ;;   (insert
 ;;    (+chat-gpt-page-summary
-;;     "https://www.nango.dev/blog/why-is-oauth-still-hard"
-;;     "Why is OAuth still hard in 2023?"
-;;     :retrieve-content
-;;     ))
+;;     "https://www.lesswrong.com/tag/squiggle-maximizer-formerly-paperclip-maximizer"
+;;     "Squiggle Maximizer (formerly \"Paperclip maximizer\")"))
 ;;   (org-mode)
 ;;   (pop-to-buffer (current-buffer)))

@@ -84,7 +84,9 @@
   ;; TODO: check how to deal with Daemon/Client workflow with that
   (unless (display-graphic-p)
     (corfu-doc-terminal-mode)
-    (corfu-terminal-mode)))
+    (corfu-terminal-mode))
+
+  (setq dabbrev-ignored-buffer-modes '(pdf-view-mode)))
 
 
 (use-package! orderless

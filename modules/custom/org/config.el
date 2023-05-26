@@ -60,8 +60,6 @@
         :iv "`" (cmd! (self-insert-command 1 126))
 
         (:localleader
-         "n" #'org-next-link
-         "p" #'org-previous-link
          (:when (modulep! :completion vertico)
            "." #'consult-org-heading)
          (:prefix ("b" . "babel")
@@ -74,7 +72,12 @@
                   "l" #'org-insert-link
                   "L" #'org-cliplink)
          (:prefix ("l" . "links")
-                  "i" #'org-id-store-link)
+                  "i" #'org-id-store-link
+                  "n" #'org-next-link
+                  "p" #'org-previous-link)
+         (:prefix ("n" . "noter")
+                  "N" #'org-noter
+                  "n" #'org-noter-sync-current-note)
          (:prefix ("o" . "open/Org")
                   "l" #'org-id-store-link
                   "L" #'org-store-link-id-optional)

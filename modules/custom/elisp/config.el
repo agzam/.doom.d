@@ -34,7 +34,8 @@
                  "r" #'eval-region
                  "l" #'load-library
                  "c" #'eval-current-form-sp
-                 "p" #'pp-eval-current)
+                 "p" #'pp-eval-current
+                 ";" #'eval-print-last-sexp)
         (:prefix ("g" . "goto")
                  "f" #'find-function
                  "v" #'find-variable

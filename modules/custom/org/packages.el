@@ -40,7 +40,6 @@
 (package! ox-clip)
 (package! org-cliplink)
 (package! evil-org :recipe (:host github :repo "hlissner/evil-org-mode"))
-(package! org-pdftools)
 
 (package! orgit)
 (package! orgit-forge)

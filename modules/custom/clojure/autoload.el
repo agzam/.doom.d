@@ -279,6 +279,7 @@ With ARG, kills all buffers, not only in the current project"
       (unless (thing-at-point 'sexp)
         (forward-char)))
     (evil-collection-cider-last-sexp (apply fn args)))
+
   ;; (save-excursion
   ;;   (when (thing-at-point-looking-at "(\\|\\[\\|{")
   ;;     (forward-char))

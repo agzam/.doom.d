@@ -62,7 +62,7 @@
  evil-escape-key-sequence "kj"
  evil-esc-delay 0.3
  messages-buffer-max-lines 10000
- fill-column 90)
+ fill-column 120)
 
 (setq
  doom-localleader-key ","
@@ -115,13 +115,14 @@
 
       (init-visual-line-keys)
       (fringe-mode '(6 . 0))
-      (toggle-frame-full-height)
 
       (when (fboundp 'pixel-scroll-precision-mode)
         (pixel-scroll-precision-mode +1))
       (run-with-timer
-       1.2 nil
-       #'place-frame-at-display-spot '(0 0 0.664 1.0)))))
+       1.5 nil
+       (lambda ()
+         (toggle-frame-full-height)
+         (place-frame-at-display-spot '(0 0 0.664 1.0)))))))
 
 (after! custom
   ;; in customize dialogs keep the elisp names
@@ -137,6 +138,9 @@
 ;; disable global-hl-line
 ;; oddly, that's the way: https://github.com/hlissner/doom-emacs/issues/4206
 (remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
+
+;; this hook has been giving me headaches with Org-Mode
+(remove-hook! 'doom-first-file-hook 'save-place-mode)
 
 (after! evil
   (setq evil-jumps-cross-buffers t
