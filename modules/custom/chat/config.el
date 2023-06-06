@@ -46,6 +46,22 @@
   (setq chatgpt-shell-openai-key
         (auth-source-pick-first-password :host "api.openai.com")
         chatgpt-shell-request-timeout 180)
+
+  (add-to-list
+   'chatgpt-shell-system-prompts
+   `("Cybersecurity" .
+     ,(concat "The user is an aspiring beginner cybersecurity expert. "
+              "You need to go as deep into technical details as possible. "
+              "Elaborate your answers for the highest level of expertise. "
+              "Do not expand abbreviations unless explicitly asked. "
+              "Code examples should be in Emacs Org-mode source blocks. "
+              "Cite relevant RFCs and CVEs, if any. "
+              "Links and citations should be in Org-mode link format.")))
+
+  (map! :map shell-maker-mode-map
+        "C-c C-l" #'chatgpt-shell-clear-buffer
+        (:localleader
+         "s" #'chatgpt-shell-swap-system-prompt))
   (add-hook! 'comint-mode-hook #'cape-completion-at-point-functions-h))
 
 (use-package! dall-e-shell

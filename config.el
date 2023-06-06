@@ -81,6 +81,10 @@
 (after! epa
   (setq epg-pinentry-mode nil))
 
+(after! man
+  ;; open man pages in the same window
+  (setq Man-notify-method 'pushy))
+
 (after! dumb-jump
   ;; https://github.com/jacktasia/dumb-jump#emacs-options
   (setq dumb-jump-force-searcher 'rg))
@@ -175,12 +179,6 @@
   ;;   (defun embark-after-export-h ()
   ;;     (run-with-timer 0.1 nil (lambda () (quiet! (wgrep-abort-changes))))))
   )
-
-(after! yasnippet
-  (add-to-list 'yas-snippet-dirs (concat doom-user-dir "snippets/"))
-  (yas-reload-all)
-  (add-to-list 'hippie-expand-try-functions-list 'yas-hippie-try-expand)
-  (add-hook! 'prog-mode-hook #'yas-minor-mode-on))
 
 (after! grip-mode
   (setq grip-preview-use-webkit nil))

@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: anki-reversed
+# key: <anki-r
+# --
+* $1
+:PROPERTIES:
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+** Front
+$2
+** Back

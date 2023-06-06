@@ -136,7 +136,13 @@
      (direction . right))))
 
 (after! evil
-  (advice-add #'evil-ex-start-word-search :around #'evil-ex-visual-star-search-a))
+  (advice-add #'evil-ex-start-word-search :around #'evil-ex-visual-star-search-a)
+  (defadvice! turn-off-writeroom-before-split-a (&rest args)
+    "writeroom hangs Emacs on splits"
+    :before #'evil-window-vsplit
+    :before #'evil-window-split
+    (when (bound-and-true-p writeroom-mode)
+      (writeroom-mode -1))))
 
 (use-package! ibuffer-sidebar
   :defer t

@@ -382,6 +382,7 @@
           ("c" . "convert")
           :desc "markdown link" "m" #'+link-org->link-markdown
           :desc "plain" "p" #'+link-org->link-plain
+          :desc "strip" "s" #'+link-org->just-text
           :desc "bug-reference" "b" #'+link-org->link-bug-reference))
 
    (:map embark-bug-reference-link-map
@@ -435,3 +436,21 @@
     :parent embark-general-map)
   (add-to-list 'embark-keymap-alist '(bug-reference-link embark-bug-reference-link-map))
   )
+
+(use-package! yasnippet
+  :defer-incrementally eldoc easymenu help-mode
+  :commands (yas-minor-mode-on
+             yas-expand
+             yas-expand-snippet
+             yas-lookup-snippet
+             yas-insert-snippet
+             yas-new-snippet
+             yas-visit-snippet-file
+             yas-activate-extra-mode
+             yas-deactivate-extra-mode
+             yas-maybe-expand-abbrev-key-filter)
+  :config
+  (add-to-list 'yas-snippet-dirs (concat doom-user-dir "snippets/"))
+  (add-to-list 'hippie-expand-try-functions-list 'yas-hippie-try-expand)
+  (yas-reload-all)
+  (add-hook! 'prog-mode-hook #'yas-minor-mode-on))

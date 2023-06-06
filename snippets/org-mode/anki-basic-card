@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: anki-basic
+# key: <anki
+# --
+* $1
+:PROPERTIES:
+:ANKI_NOTE_TYPE: Basic
+:END:
+** Front
+$2
+** Back

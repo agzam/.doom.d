@@ -19,3 +19,4 @@
 ;; (package! vertico :recipe (:host github :repo "minad/vertico" :files ("*.el" "extensions")))
 (package! vertico-posframe :recipe (:host github :repo "tumashu/vertico-posframe"))
 (package! consult-projectile)
+(package! yasnippet)

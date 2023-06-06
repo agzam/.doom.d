@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: anki-cloze
+# key: <anki-c
+# --
+* $1
+:PROPERTIES:
+:ANKI_NOTE_TYPE: Cloze
+:END:
+** Text
+{{c1::$2}}
+** Extra

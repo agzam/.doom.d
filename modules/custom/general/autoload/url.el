@@ -117,8 +117,8 @@ Position is a cons-cell."
                     (org-link-parse link-txt))))
          (bug-ref (let-plist (bisect-github-url (substring-no-properties (car parsed)))
                     (format "%s %s/%s#%s" (if .pull "PR" "Bug") .org .repo (if .pull .pull .issue)))))
-    (kill-new bug-ref)
-    (message bug-ref)))
+    (delete-region beg end)
+    (insert bug-ref)))
 
 ;;;###autoload
 (defun +link-org->link-plain ()
@@ -138,6 +138,23 @@ Position is a cons-cell."
                                       (car parsed)))))
         (kill-new plain-link)
         (message plain-link)))))
+
+(defun +link-org->just-text ()
+  "Convert link to simple text."
+  (interactive)
+  (when-let* ((ctx (org-element-context))
+            (ctx (org-element-lineage ctx '(link) t))
+            (beg (org-element-property :begin ctx))
+            (end (org-element-property :end ctx))
+            (begd (org-element-property :contents-begin ctx))
+            (endd (org-element-property :contents-end ctx))
+            (desc (unless (= begd endd)
+                    (replace-regexp-in-string
+                     "[ \n]+" " "
+                     (string-trim
+                      (buffer-substring-no-properties begd endd))))))
+    (delete-region beg end)
+    (insert desc)))
 
 ;;;###autoload
 (defun +link-bug-reference->link-org-mode ()
@@ -174,18 +191,21 @@ Position is a cons-cell."
   "Take a URL and convert it to bug-reference type."
   (interactive)
   (when-let* ((url (or (thing-at-point-url-at-point) ""))
-              (link (if-let ((title (org-cliplink-retrieve-title-synchronously url)))
+              (bounds (bounds-of-thing-at-point 'url))
+              ;; TODO: do the GitHub stuff - ticket description, etc.
+              (link (if-let ((title (or (org-cliplink-retrieve-title-synchronously url)
+                                        (get-gh-item-title url))))
                         (format "[[%s][%s]]" url title)
                       (format "[[%s]]" url))))
-    ;; TODO: do the GitHub stuff - ticket description, etc.
-    (kill-new link)
-    (message link)))
+    (delete-region (car bounds) (cdr bounds))
+    (insert link)))
 
 ;;;###autoload
 (defun +link-plain->link-markdown ()
   "Take a URL and convert it to markdown type."
   (interactive)
   (let* ((url (or (thing-at-point-url-at-point) ""))
+         (bounds (bounds-of-thing-at-point 'url))
          (link (cond
                 ((string-match-p ".*https://github.com.*" url)
                  (let-plist (bisect-github-url url)
@@ -195,21 +215,22 @@ Position is a cons-cell."
                 (t (if-let ((title (org-cliplink-retrieve-title-synchronously url)))
                        (format "[%s](%s)" title url)
                      (format "<%s>" url))))))
-    (kill-new link)
-    (message link)))
+    (delete-region (car bounds) (cdr bounds))
+    (insert link)))
 
 ;;;###autoload
 (defun +link-plain->link-bug-reference ()
   "Take a URL and convert it to bug-reference type."
   (interactive)
   (when-let* ((url (or (thing-at-point-url-at-point) ""))
+              (bounds (bounds-of-thing-at-point 'url))
               (link (cond
                      ((string-match-p ".*https://github.com.*" url)
                       (let-plist (bisect-github-url url)
                         (format "%s %s/%s#%s" (if .pull "PR" "Bug")
                                 .org .repo (if .pull .pull .issue)))))))
-    (kill-new link)
-    (message link)))
+    (delete-region (car bounds) (cdr bounds))
+    (insert link)))
 
 
 ;;;###autoload
@@ -258,8 +279,8 @@ Returns list of org-mode links."
       it
       (lambda (x)
         (->> x
-         (-flatten)
-         (-remove #'null)))))))
+             (-flatten)
+             (-remove #'null)))))))
 
 
 ;; (print
