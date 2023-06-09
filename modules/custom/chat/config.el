@@ -50,7 +50,7 @@
   (add-to-list
    'chatgpt-shell-system-prompts
    `("Cybersecurity" .
-     ,(concat "The user is an aspiring beginner cybersecurity expert. "
+     ,(concat "The user is an aspiring cybersecurity expert. "
               "You need to go as deep into technical details as possible. "
               "Elaborate your answers for the highest level of expertise. "
               "Do not expand abbreviations unless explicitly asked. "

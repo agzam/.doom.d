@@ -82,7 +82,7 @@
 
 
 (use-package! org-noter
-  :defer t
+  :after (org pdf-tools)
   :config
   (setq
    org-noter-notes-search-path (list org-directory)

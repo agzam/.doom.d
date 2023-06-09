@@ -436,7 +436,7 @@
       "SPC" nil
       "h" #'evil-backward-char)
 
-(after! evil-maps
+(after! (:and evil evil-maps)
   ;; often conflicts with doom-local-leader
   ;; (unbind-key (kbd ",") evil-motion-state-map)
   (map! (:map evil-motion-state-map "C-u" nil)

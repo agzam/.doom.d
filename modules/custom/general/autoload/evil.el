@@ -26,7 +26,6 @@ I want * and # operators to respect marked region."
                          (+ p delta))))))
     (funcall fn unbounded direction count symbol)))
 
-(require 'evil)
 
 ;; I may not need to override these manually,
 ;; watch for PR doomemacs/doomemacs#7218

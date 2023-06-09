@@ -19,8 +19,8 @@
    completion-cycle-threshold 1
    tab-always-indent 'complete
    corfu-count 9)
-  (when (modulep! +minibuffer)
-    (add-hook 'minibuffer-setup-hook #'+corfu--enable-in-minibuffer))
+  ;; (when (modulep! +minibuffer)
+  ;;   (add-hook 'minibuffer-setup-hook #'+corfu--enable-in-minibuffer))
 
   (add-hook! 'doom-init-modules-hook
     (defun reset-lsp-completion-provider-h ()
@@ -378,6 +378,7 @@
    (:map embark-org-link-map
          "e" #'+eww-open-in-other-window
          "b" #'org-open-at-point
+         "v" #'+open-link-in-vlc
          (:prefix
           ("c" . "convert")
           :desc "markdown link" "m" #'+link-org->link-markdown
@@ -423,8 +424,10 @@
     :after #'embark-next-symbol
     (recenter))
 
-  (add-to-list 'embark-target-finders '+embark-target-markdown-link-at-point)
-  (add-to-list 'embark-target-finders '+embark-target-bug-reference-link-at-point)
+  (dolist (finder '(+embark-target-markdown-link-at-point
+                    +embark-target-bug-reference-link-at-point
+                    +embark-target-RFC-number-at-point))
+    (add-to-list 'embark-target-finders finder))
 
   (defvar-keymap embark-markdown-link-map
     :doc "Keymap for Embark markdown link actions."

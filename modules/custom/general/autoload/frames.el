@@ -130,13 +130,22 @@ it remains shown or hidden - whatever the previous value was."
 
 ;;;###autoload
 (defun widen-frame-width (&optional delta)
+  "Widen frame width adding DELTA."
   (interactive)
   (when transient--window
     (quit-restore-window transient--window))
-  (let ((disp-width (car (screen-width-height))))
-    (if (< (frame-native-width) disp-width)
-        (set-frame-width nil (+ (frame-width) (or delta 3)))
-      (set-frame-width nil disp-width nil :pixelwise))))
+  (let* ((disp-width (car (screen-width-height)))
+         (new-w (+ (frame-native-width) (or delta 3))))
+    (set-frame-width nil (if (< new-w disp-width)
+                             new-w
+                           disp-width) nil :pixelwise)
+    (when-let* ((frame-right-x (+ (frame-parameter nil 'left)
+                                  (frame-native-width)))
+                (overflow? (< disp-width frame-right-x))
+                (new-x (- disp-width (frame-native-width))))
+      (set-frame-position
+       nil (if (< 0 new-x) new-x 0)
+       (frame-parameter nil 'top)))))
 
 ;;;###autoload
 (defun increase-frame-height (&optional delta)

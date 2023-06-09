@@ -143,16 +143,16 @@ Position is a cons-cell."
   "Convert link to simple text."
   (interactive)
   (when-let* ((ctx (org-element-context))
-            (ctx (org-element-lineage ctx '(link) t))
-            (beg (org-element-property :begin ctx))
-            (end (org-element-property :end ctx))
-            (begd (org-element-property :contents-begin ctx))
-            (endd (org-element-property :contents-end ctx))
-            (desc (unless (= begd endd)
-                    (replace-regexp-in-string
-                     "[ \n]+" " "
-                     (string-trim
-                      (buffer-substring-no-properties begd endd))))))
+              (ctx (org-element-lineage ctx '(link) t))
+              (beg (org-element-property :begin ctx))
+              (end (org-element-property :end ctx))
+              (begd (org-element-property :contents-begin ctx))
+              (endd (org-element-property :contents-end ctx))
+              (desc (unless (= begd endd)
+                      (replace-regexp-in-string
+                       "[ \n]+" " "
+                       (string-trim
+                        (buffer-substring-no-properties begd endd))))))
     (delete-region beg end)
     (insert desc)))
 
@@ -232,6 +232,18 @@ Position is a cons-cell."
     (delete-region (car bounds) (cdr bounds))
     (insert link)))
 
+;;;###autoload
+(defun +open-link-in-vlc ()
+  "Open link at point in VLC player."
+  (interactive)
+  (when-let* ((ctx (org-element-context))
+              (path (org-link-unescape
+                     (org-element-property :path ctx))))
+    ;; TODO: Add Linux version
+    (let ((dir? (file-directory-p path)))
+      (shell-command
+       (concat "open -a VLC \"" path "\""
+               (when dir? " --args --playlist-autostart"))))))
 
 ;;;###autoload
 (defun +find-related-pages (term)
