@@ -77,7 +77,8 @@
                   "p" #'org-previous-link)
          (:prefix ("n" . "noter")
                   "N" #'org-noter
-                  "n" #'org-noter-sync-current-note)
+                  "n" #'org-noter-sync-current-note
+                  "a" #'org-noter-anchor-to-current-page+)
          (:prefix ("o" . "open/Org")
                   "l" #'org-id-store-link
                   "L" #'org-store-link-id-optional)
@@ -114,8 +115,8 @@
    'org-mode-hook
    #'org-indent-mode
    (defun flycheck-disable-h () (flycheck-mode -1))
-   #'yas-minor-mode-on
-   #'flyspell-mode-on)
+   (defun flyspell-enable-h () (flyspell-mode +1))
+   #'yas-minor-mode-on)
 
   (add-hook! 'org-capture-mode-hook #'recenter)
 
@@ -499,7 +500,7 @@
       (org-fold-show-entry))))
 
 (use-package! anki-editor
-  :commands anki-editor-mode
+  :commands (anki-editor-mode anki-editor-push-notes anki-editor-push-tree)
   :config
   (setq anki-editor-create-decks t      ; Allow anki-editor to create a new deck if it doesn't exist
         anki-editor-org-tags-as-anki-tags t)
