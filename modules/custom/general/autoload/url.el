@@ -40,6 +40,17 @@ Position is a cons-cell."
     `(bug-reference-link ,(buffer-substring-no-properties beg end) . ,(cons beg end))))
 
 ;;;###autoload
+(defun +embark-target-RFC-number-at-point ()
+  "Target RFC number at point.
+anything like: RFC 123, rfc-123, RFC123 or rfc123."
+  (when-let* ((rfc-pattern "\\b[rR][fF][cC][- ]?[0-9]+\\b")
+              (bounds (org-in-regexp rfc-pattern 1))
+              (beg (car bounds))
+              (end (cdr bounds)))
+    `(rfc-number ,(buffer-substring-no-properties beg end)
+                  . ,(cons beg end))))
+
+;;;###autoload
 (defun +link-markdown->link-org-mode ()
   "Copies markdown link at point converting it to org-mode format."
   (interactive)

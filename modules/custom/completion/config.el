@@ -394,6 +394,9 @@
           :desc "org-mode link" "o" #'+link-bug-reference->link-org-mode
           :desc "plain" "p" #'+link-bug-reference->link-plain))
 
+   (:map embark-rfc-number-map
+    :desc "browse" "b" #'+browse-rfc-number-at-point)
+
    (:map
     embark-collect-mode-map
     :n "[" #'embark-previous-symbol
@@ -432,13 +435,23 @@
   (defvar-keymap embark-markdown-link-map
     :doc "Keymap for Embark markdown link actions."
     :parent embark-general-map)
-  (add-to-list 'embark-keymap-alist '(markdown-link embark-markdown-link-map))
+  (add-to-list
+   'embark-keymap-alist
+   '(markdown-link embark-markdown-link-map))
 
   (defvar-keymap embark-bug-reference-link-map
     :doc "Keymap for Embark bug-reference link actions."
     :parent embark-general-map)
-  (add-to-list 'embark-keymap-alist '(bug-reference-link embark-bug-reference-link-map))
-  )
+  (add-to-list
+   'embark-keymap-alist
+   '(bug-reference-link embark-bug-reference-link-map))
+
+  (defvar-keymap embark-rfc-number-map
+    :doc "Keymap for Embark RFC number link actions."
+    :parent embark-general-map)
+  (add-to-list
+   'embark-keymap-alist
+   '(rfc-number embark-rfc-number-map)))
 
 (use-package! yasnippet
   :defer-incrementally eldoc easymenu help-mode

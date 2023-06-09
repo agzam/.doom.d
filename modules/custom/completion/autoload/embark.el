@@ -45,3 +45,32 @@
   (if arg (outline-cycle-buffer)
     (outline-cycle))
   (evil-beginning-of-line))
+
+;;;###autoload
+(defun +search-rfc-number-online (&optional rfc-num)
+  "Search for RFC of RFC-NUM."
+  (interactive)
+  (browse-url
+   (format
+    "https://www.rfc-editor.org/search/rfc_search_detail.php?rfc=%s"
+    rfc-num)))
+
+;;;###autoload
+(defun +browse-rfc-number-at-point ()
+  "Reads RFC number at point."
+  (interactive)
+  (if-let* ((rfc-pattern "\\b[rR][fF][cC][- ]?[0-9]+\\b")
+            (bounds (org-in-regexp rfc-pattern 1))
+            (rfc-num (string-to-number
+                      (replace-regexp-in-string
+                       "[^0-9]" ""
+                       (buffer-substring-no-properties
+                        (car bounds)
+                        (cdr bounds))))))
+      (if (featurep 'rfc-mode)
+          (switch-to-buffer-other-window
+           (rfc-mode--document-buffer rfc-num))
+        (+search-rfc-number-online rfc-num))
+    (if (featurep 'rfc-mode)
+        (rfc-mode-browse)
+      (+search-rfc-number-online))))
