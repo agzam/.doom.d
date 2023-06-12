@@ -37,7 +37,7 @@ I want * and # operators to respect marked region."
            (not (or (window-in-direction 'above)
                     (window-in-direction 'below))))
       (evil-window-move-far-left)
-    (+evil--window-swap 'right)))
+    (+evil/window-move-right)))
 
 ;;;###autoload
 (defun +evil-window-move-left ()
@@ -47,4 +47,4 @@ I want * and # operators to respect marked region."
            (not (or (window-in-direction 'above)
                     (window-in-direction 'below))))
       (evil-window-move-far-right)
-    (+evil--window-swap 'left)))
+    (+evil/window-move-left)))

@@ -245,6 +245,14 @@
       (:map minibuffer-local-map
             "C-c C-s" #'embark-collect))
 
+(map! :after rfc-mode
+      :map rfc-mode-map
+      :n "q" #'quit-window
+      :n "[[" #'rfc-mode-previous-section
+      :n "]]" #'rfc-mode-next-section
+      :n "C-K" #'rfc-mode-previous-section
+      :n "C-j" #'rfc-mode-next-section)
+
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;; Leader keybidings ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -467,4 +475,4 @@
       :n "q" #'kill-buffer-and-window)
 
 (after! epa
- (setq epg-pinentry-mode 'loopback))
+  (setq epg-pinentry-mode 'loopback))

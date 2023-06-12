@@ -39,8 +39,8 @@
         :gn "q" #'kill-current-buffer
         :nm "J" #'pdf-view-next-page
         :nm "K" #'pdf-view-previous-page
-        :n "gg" #'pdf-view-first-page
-        :n "G"  #'pdf-view-last-page
+        :n "gg" #'pdf-evil-goto-first-line
+        :n "G"  #'pdf-evil-goto-last-line
         :nm "[" #'pdf-history-backward
         :nm "]" #'pdf-history-forward
         :nm "o" #'pdf-outline
@@ -56,7 +56,8 @@
                  "b" #'pdf-view-set-slice-from-bounding-box
                  "m" #'pdf-view-set-slice-using-mouse
                  "r" #'pdf-view-reset-slice
-                 "s" #'pdf-view-roll-minor-mode)
+                 "s" #'pdf-view-roll-minor-mode
+                 "c" #'pdf-toggle-continuous-scroll)
         (:prefix ("f" . "fit")
                  "h" #'pdf-view-fit-height-to-window
                  "p" #'pdf-view-fit-page-to-window
@@ -66,19 +67,32 @@
                  "j" #'pdf-view-shrink
                  "0" #'pdf-view-scale-reset)
         (:prefix ("n" . "noter")
-                 "N" #'org-noter
-                 "n" #'org-noter-sync-current-page-or-chapter
-                 "i" #'org-noter-insert-note)))
+                "N" #'org-noter
+                "n" #'org-noter-sync-current-page-or-chapter
+                "i" #'org-noter-insert-note
+                "j" #'pdf-view-scroll-up-or-next-page
+                "k" #'pdf-view-scroll-down-or-previous-page
+                "C-j" #'pdf-view-next-page
+                "C-k" #'pdf-view-previous-page
+                :n "gg" #'pdf-evil-goto-first-line
+                :n "G"  #'pdf-evil-goto-last-line)))
 
 (use-package! saveplace-pdf-view
   :after pdf-view)
 
 (after! pdf-view
   (defadvice! pdf-view-midnight-minor-mode-a (fn &rest args)
+    "Toggling midnight-mode uses current theme colors."
     :around #'pdf-view-midnight-minor-mode
     (setq pdf-view-midnight-colors `(,(face-attribute 'default :foreground) .
                                      ,(face-attribute 'default :background)))
-    (funcall fn args)))
+    (funcall fn args))
+
+  (defadvice! pdf-view-next-page-at-top-of-the-page-a (&optional N)
+    "Always start at the top of the page."
+    :after #'pdf-view-next-page
+    :after #'pdf-view-next-page-command
+    (image-scroll-down)))
 
 
 (use-package! org-noter
@@ -94,8 +108,16 @@
    org-noter-notes-window-behavior '(only-prev)
    org-noter-kill-frame-at-session-end nil)
 
-                                        ; (defadvice! recenter-on-org-noter-sync-current-page-or-chapter-a ()
-                                        ;   :after #'org-noter-sync-current-page-or-chapter
-                                        ;   (recenter))
-  )
-
+  (defadvice! org-noter--setup-windows-ignore-a (_ session)
+    "Cease org-noter's windows and frame shenanigans."
+    :around #'org-noter--setup-windows
+    (when (org-noter--valid-session session)
+      (with-selected-frame (org-noter--session-frame session)
+        (let* ((doc-buffer (org-noter--session-doc-buffer session))
+               (notes-buffer (org-noter--session-notes-buffer session)))
+          (switch-to-buffer-other-window doc-buffer)
+          (with-current-buffer notes-buffer
+            (unless org-noter-disable-narrowing
+              (org-noter--narrow-to-root (org-noter--parse-root session)))
+            (setq notes-window (org-noter--get-notes-window 'start))
+            (org-noter--set-notes-scroll notes-window)))))))

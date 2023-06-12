@@ -78,7 +78,13 @@
          (:prefix ("n" . "noter")
                   "N" #'org-noter
                   "n" #'org-noter-sync-current-note
-                  "a" #'org-noter-anchor-to-current-page+)
+                  "a" #'org-noter-anchor-to-current-page+
+                  "j" #'org-noter-pdf-scroll-down
+                  "k" #'org-noter-pdf-scroll-up
+                  "C-j" #'org-noter-pdf-next-page
+                  "C-k" #'org-noter-pdf-prev-page
+                  "gg" #'org-noter-top-of-the-page
+                  "G" #'org-noter-bottom-of-the-page)
          (:prefix ("o" . "open/Org")
                   "l" #'org-id-store-link
                   "L" #'org-store-link-id-optional)
@@ -202,7 +208,7 @@
            :if-new
            (file+head
             "${slug}.org"
-            "\n#+title: ${title}\n")
+            "\n#+title: ${title}\n#+startup: overview\n\n")
            :unnarrowed t
            :jump-to-captured t)))
 
