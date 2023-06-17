@@ -48,7 +48,7 @@ anything like: RFC 123, rfc-123, RFC123 or rfc123."
               (beg (car bounds))
               (end (cdr bounds)))
     `(rfc-number ,(buffer-substring-no-properties beg end)
-                  . ,(cons beg end))))
+      . ,(cons beg end))))
 
 ;;;###autoload
 (defun +link-markdown->link-org-mode ()
@@ -305,7 +305,54 @@ Returns list of org-mode links."
              (-flatten)
              (-remove #'null)))))))
 
-
-;; (print
-;;  (deferred:sync!
-;;   (+find-related-pages "agzam/spacehammer")))
+;;;###autoload
+(defun +find-related-pages-serpapi (&optional url)
+  "Using serpapi.com finds pages linking to URL on various sites.
+Returns Org-mode buffer with links."
+  (interactive)
+  (let* ((url (if (region-active-p)
+                  (buffer-substring
+                   (region-beginning)
+                   (region-end))
+                url))
+         (url (or url (thing-at-point-url-at-point)
+                  (read-string "Enter URL: ")))
+         (sites '("news.ycombinator.com"
+                  "lobste.rs"
+                  "reddit.com"
+                  "youtube.com"
+                  "github.com"))
+         (api-key (auth-source-pick-first-password :host "serpapi.com"))
+         (query (thread-last
+                  sites
+                  (-map (lambda (x)
+                          (format "site:%s" x)))
+                  (-interpose " OR ")
+                  (apply 'concat)
+                  (concat "link:" url " ")
+                  url-hexify-string))
+         (req-url (format "https://serpapi.com/search?api_key=%s&q=%s" api-key query))
+         (pipeline (deferred:$
+                    (request-deferred
+                     req-url
+                     :parser 'json-read)
+                    (deferred:nextc
+                     it
+                     (lambda (resp)
+                       (thread-last
+                         resp
+                         (request-response-data)
+                         (alist-get 'organic_results)
+                         (-map (lambda (x)
+                                 (let-alist x
+                                   (format "[[%s][%s]]" .link .title)))))))))
+         (links (deferred:sync! pipeline))
+         (buf (generate-new-buffer (format "* links to %s *" url))))
+    (with-current-buffer buf
+      (dolist (link links)
+        (insert link)
+        (insert "\n"))
+      (org-mode)
+      (if (called-interactively-p 'interactive)
+          (pop-to-buffer buf)
+        buf))))

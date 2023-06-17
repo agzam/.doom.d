@@ -71,81 +71,6 @@
     (kill-buffer fst-buf)
     (kill-buffer snd-buf)))
 
-(defun +find-hn-threads (url)
-  "Query HackerNews API and find discussions related to given URL.
-Returns deferred object with the list of urls to HN threads."
-  (deferred:$
-   (request-deferred
-    (format "https://hn.algolia.com/api/v1/search?query=%s" url)
-    :parser 'json-read)
-   (deferred:nextc
-    it
-    (lambda (resp)
-      (thread-last
-        resp
-        (request-response-data)
-        (alist-get 'hits)
-        (seq-map (lambda (x)
-                   (when-let ((obj (alist-get 'objectID x)))
-                     (format "https://news.ycombinator.com/item?id=%s" obj))))
-        (seq-remove 'null))))))
-
-(defun +find-reddit-topics (url)
-  "Query Reddit API and find discussions related to given URL.
-Returns deferred object with the list of urls to Reddit topics."
-  (deferred:$
-   (request-deferred
-    (format "https://www.reddit.com/search.json?sort=relevance&t=all&q=url:%s" url)
-    :headers '(("User-Agent" . "emacs-search/1.0"))
-    :parser 'json-read)
-   (deferred:nextc
-    it
-    (lambda (resp)
-      (thread-last
-        resp
-        (request-response-data)
-        (alist-get 'data)
-        (alist-get 'children)
-        (seq-map (lambda (x)
-                   (when-let ((obj (thread-last
-                                     x
-                                     (alist-get 'data)
-                                     (alist-get 'permalink))))
-                     (format "https://www.reddit.com%s" obj))))
-        (seq-remove 'null))))))
-
-;;;###autoload
-(defun +find-on-serpapi (url)
-  "Using serpapi.com finds pages linking to URL on various sites."
-  (let* ((sites '("news.ycombinator.com"
-                  "lobste.rs"
-                  "reddit.com"
-                  "youtube.com"
-                  "github.com"))
-         (api-key (auth-source-pick-first-password :host "serpapi.com"))
-         (query (thread-last
-                  sites
-                  (-map (lambda (x)
-                          (format "site:%s" x)))
-                  (-interpose " OR ")
-                  (apply 'concat)
-                  (concat url " ")
-                  url-hexify-string))
-         (req-url (format "https://serpapi.com/search?api_key=%s&q=%s" api-key query)))
-    (deferred:$
-     (request-deferred
-      req-url
-      :parser 'json-read)
-     (deferred:nextc
-      it
-      (lambda (resp)
-        (thread-last
-          resp
-          (request-response-data)
-          (alist-get 'organic_results)
-          (-map (lambda (x)
-                  (let-alist x
-                    (format "[[%s][%s]]" .link .title))))))))))
 
 (defun +reduce-buffer-content-to (max-words)
   "Trim current buffer content to contain no more than `MAX-WORDS'."
@@ -199,17 +124,23 @@ Returns deferred object with the list of urls to Reddit topics."
 (defun +chat-gpt-page-summary (ref title)
   (require 'deferred)
   (require 'request-deferred)
-  (let* ((content (+retrive-text-content-from-page ref))
+  (let* ((content
+          (thread-first
+            ref
+            +retrive-text-content-from-page
+            split-string
+            (seq-take 960) ; try not to exceed token limit, which is ~1000 words
+            (string-join " ")))
          (prompt-template
           (format
            (mapconcat
             #'identity
             '("Summarize info from the page: %s"
-              "Find what you know on URL and extrapolate from provided content:"
+              "Based on URL and extrapolate from provided content:"
               "--begin-content--\n%s\n--end-content--"
               "For new terms and phrases add Wikipedia links."
-              "Add books (with ISBNs and Amazon URLs) and related academic papers (with URLs)."
-              "Use the following Org-Mode template:" ""
+              "Optionally, add books (with ISBNs) and related academic papers (with URLs)."
+              "Output results using the following Org-Mode template:" ""
               "* Summary"
               "{{text-summary}}" ""
               "* Papers & Books"
