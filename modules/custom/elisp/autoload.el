@@ -18,9 +18,9 @@ Requires smartparens because all movement is done using `sp-up-sexp'."
   (let ((evil-move-beyond-eol t))
     ;; evil-move-beyond-eol disables the evil advices around eval-last-sexp
     (save-excursion
-      (goto-char
-       (plist-get (or (sp-get-enclosing-sexp)
-                      (sp-get-expression)) :end))
+      (when-let ((pos (plist-get (or (sp-get-enclosing-sexp)
+                                     (sp-get-expression)) :end)))
+        (goto-char pos))
       (call-interactively 'eros-eval-last-sexp))))
 
 ;;;###autoload
@@ -78,3 +78,41 @@ Requires smartparens because all movement is done using `sp-up-sexp'."
   (interactive)
   (when-let ((mw (get-buffer-window (messages-buffer))))
     (delete-window mw)))
+
+;;;###autoload
+(defun datetime->timestamp (&optional date-string)
+  "Converts to Unix time in ms.
+Takes datetime string, e.g., 2023-05-21 12:09:31
+Returns Unix time in milliseconds (like in Javascript)"
+  (interactive)
+  (let ((date-str (or date-string (word-at-point))))
+    (message
+     (* 1000 (car (time-convert (date-to-time date-str) t))))))
+
+;;;###autoload
+(defun timestamp->datetime (&optional timestamp)
+  "Takes Unix time in milliseconds (like in Javascript) and returns
+datetimestring."
+  (interactive)
+  (let ((ts (or timestamp (string-to-number (word-at-point)))))
+    (message
+     (format-time-string
+      "%Y-%m-%d %H:%M:%S"
+      (seconds-to-time
+       (string-to-number (substring (number-to-string ts) 0 10)))))))
+
+;;;###autoload
+(defun with-editor-eval ()
+  "Evaluates current form and pops a buffer with the results.
+Usually, the results of evaluation go into *Messages* buffer,
+this doesn't change that, it simply copies the relevant log into
+its own buffer."
+  (interactive)
+  (let ((last-pos (with-current-buffer "*Messages*"
+                    (point-max))))
+    (eval-current-form-sp)
+    (let ((log (with-current-buffer "*Messages*"
+                 (buffer-substring last-pos (point-max)))))
+      (with-current-buffer (get-buffer-create "*eval*")
+        (insert log)
+        (switch-to-buffer-other-window (current-buffer))))))

@@ -28,12 +28,13 @@
                  "f" #'+emacs-lisp/edebug-instrument-defun-on
                  "F" #'+emacs-lisp/edebug-instrument-defun-off)
         (:prefix ("e" . "eval")
+                 "c" #'eval-current-form-sp
                  "b" #'eval-buffer
                  "d" #'eval-defun
                  "e" #'eval-last-sexp
+                 "i" #'with-editor-eval
                  "r" #'eval-region
                  "l" #'load-library
-                 "c" #'eval-current-form-sp
                  "p" #'pp-eval-current
                  ";" #'eval-print-last-sexp)
         (:prefix ("g" . "goto")
