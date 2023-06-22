@@ -279,3 +279,36 @@
 (use-package! fennel-mode
   :mode "\\.fnl$"
   :defer t)
+
+(after! separedit
+  ;; edit Clojure (str) multiline blocks
+  (add-to-list
+   'separedit-block-regexp-plists
+   '(:header "(str\s+\""
+     :footer ".*\"\s?)"
+     :body ""
+     :keep-header t
+     :keep-footer t
+     :modes (clojure-mode clojurec-mode clojurescript-mode)
+     :delimiter-remove-fn separedit--remove-clj-str-delimeters
+     :delimiter-restore-fn separedit--restore-clj-str-delimeters
+     :edit-mode markdown-mode))
+
+  (defadvice! fix-separadit-region-for-clj-a (block-info-fn &optional)
+    "Fix separadit block for Clojure (str) multi-line."
+    :around #'separedit--block-info
+    (let ((block-info (funcall block-info-fn)))
+      (when-let* ((_ (member 'clojure-mode
+                             (plist-get
+                              (plist-get block-info :regexps)
+                              :modes)))
+                  (beg (plist-get block-info :beginning))
+                  (end (plist-get block-info :end)))
+        (goto-char beg)
+        (search-forward-regexp "(str\s+")
+        (plist-put block-info :beginning (point))
+        (goto-char end)
+        (search-backward-regexp "\")")
+        (forward-char)
+        (plist-put block-info :end (point)))
+      block-info)))

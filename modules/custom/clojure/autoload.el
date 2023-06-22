@@ -299,3 +299,16 @@ With ARG, kills all buffers, not only in the current project"
   (setq-local completion-styles '(cider orderless partial-completion))
   (add-to-list 'completion-at-point-functions #'cape-cider-lsp)
   (cape-completion-at-point-functions-h))
+
+;;;###autoload
+(defun separedit--remove-clj-str-delimeters (_ &optional _)
+  (save-excursion
+    (replace-regexp-in-region "^\s*\"" "" (point-min))
+    (replace-regexp-in-region "\"\s*$" "" (point-min))))
+
+;;;###autoload
+(defun separedit--restore-clj-str-delimeters (&optional _)
+  (save-excursion
+    (replace-regexp-in-region "^\\s-*$" "\\\\n" (point-min))
+    (replace-regexp-in-region "^" "\"" (point-min))
+    (replace-regexp-in-region ".$" "\\& \"" (point-min))))
