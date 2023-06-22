@@ -169,6 +169,8 @@
     (define-key flycheck-mode-map flycheck-keymap-prefix nil))
   (setq flycheck-keymap-prefix nil)
   ;; (map! :leader "!" flycheck-command-map)
+
+  (global-flycheck-mode -1)  ; I don't know why Doom enables is by default
   )
 
 (after! grep
@@ -181,7 +183,9 @@
   )
 
 (after! grip-mode
-  (setq grip-preview-use-webkit nil))
+  (setq grip-preview-use-webkit nil)
+  (setq grip-github-user "agzam")
+  (setf grip-github-password (auth-source-pick-first-password :host "api.github.com")))
 
 (add-hook! 'prog-mode-hook
            #'hs-minor-mode

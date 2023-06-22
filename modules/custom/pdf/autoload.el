@@ -50,6 +50,32 @@
 
 
 ;;;###autoload
+(defun org-noter-pdf-scroll-down ()
+  "Scroll current pdf down.
+It's convenient to issue scrolling the document without having to
+switch to it."
+  (interactive)
+  (org-noter--with-valid-session
+   (when-let ((cur (current-buffer))
+              (buf (org-noter--session-doc-buffer session)))
+     (switch-to-buffer-other-window buf)
+     (image-scroll-up 10)
+     (switch-to-buffer-other-window cur))))
+
+;;;###autoload
+(defun org-noter-pdf-scroll-up ()
+  "Scroll current pdf up.
+It's convenient to issue scrolling the document without having to
+switch to it."
+  (interactive)
+  (org-noter--with-valid-session
+   (when-let ((cur (current-buffer))
+              (buf (org-noter--session-doc-buffer session)))
+     (switch-to-buffer-other-window buf)
+     (image-scroll-down 10)
+     (switch-to-buffer-other-window cur))))
+
+;;;###autoload
 (defun org-noter-pdf-next-page ()
   "Scroll current pdf to the next page.
 It's convenient to issue scrolling the document without having to

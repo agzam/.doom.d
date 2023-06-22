@@ -152,27 +152,15 @@
          (_ (message "beep-bop... analyzing the crap from %s" ref))
          ;; (chatgpt-shell-model-temperature 1.5)
          (summary-string (chatgpt-shell-post-prompt prompt-template))
-         ;; (fetch-links (deferred:$
-         ;;               (deferred:parallel
-         ;;                (lambda () (+find-hn-threads ref))
-         ;;                (lambda () (+find-reddit-topics ref)))
-         ;;               (deferred:nextc it
-         ;;                               (lambda (lists)
-         ;;                                 (apply 'append lists)))))
-         (fetch-links (+find-on-serpapi ref)))
+         (links-content
+          (with-current-buffer (+find-related-pages-serpapi ref)
+            (let ((content (buffer-string)))
+              (kill-buffer)
+              content))))
     (with-temp-buffer
       (insert (format "#+title: %s\n\n" title))
       (insert summary-string)
       (insert "\n\n")
       (insert "* Other Links\n")
-      (dolist (link (deferred:sync! fetch-links))
-        (insert (format "- %s\n" link)))
+      (insert links-content)
       (buffer-string))))
-
-;; (with-current-buffer (generate-new-buffer "summary-buffer")
-;;   (insert
-;;    (+chat-gpt-page-summary
-;;     "https://www.lesswrong.com/tag/squiggle-maximizer-formerly-paperclip-maximizer"
-;;     "Squiggle Maximizer (formerly \"Paperclip maximizer\")"))
-;;   (org-mode)
-;;   (pop-to-buffer (current-buffer)))

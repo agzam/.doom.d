@@ -110,6 +110,8 @@
 
   (put 'dired-find-alternate-file 'disabled nil)
 
+  (add-to-list 'dired-guess-shell-alist-user '("\\.pdf\\'" "open -a Preview"))
+
   (when (eq system-type 'darwin)
     (let ((gls (executable-find "gls")))
       (when gls

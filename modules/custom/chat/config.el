@@ -58,10 +58,13 @@
               "Cite relevant RFCs and CVEs, if any. "
               "Links and citations should be in Org-mode link format.")))
 
-  (map! :map shell-maker-mode-map
+  (map! :map chatgpt-shell-mode-map
         "C-c C-l" #'chatgpt-shell-clear-buffer
         (:localleader
-         "s" #'chatgpt-shell-swap-system-prompt))
+         "s" #'chatgpt-shell-swap-system-prompt)
+        :map comint-mode-map
+        "C-c C-l" #'comint-clear-buffer)
+
   (add-hook! 'comint-mode-hook #'cape-completion-at-point-functions-h))
 
 (use-package! dall-e-shell

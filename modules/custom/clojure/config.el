@@ -48,8 +48,8 @@
   (add-hook! 'cider-mode-hook #'cider-completion-styles-h)
 
   (add-hook! 'cider-repl-mode-hook
-    #'cider-completion-styles-h
-    #'hs-minor-mode)
+             #'cider-completion-styles-h
+             #'hs-minor-mode)
 
   (setq nrepl-hide-special-buffers nil
         nrepl-log-messages nil

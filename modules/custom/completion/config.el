@@ -121,9 +121,11 @@
     (defun +cape-completion-at-point-org-md-h ()
       (add-to-list 'completion-at-point-functions #'cape-elisp-block)))
 
-  (add-hook! '(eshell-mode-hook comint-mode-hook minibuffer-setup-hook)
-    (defun +cape-completion-at-point-history-h ()
-      (add-to-list 'completion-at-point-functions #'cape-history))))
+
+  ;; (add-hook! '(eshell-mode-hook comint-mode-hook minibuffer-setup-hook)
+  ;;   (defun +cape-completion-at-point-history-h ()
+  ;;     (add-to-list 'completion-at-point-functions #'cape-history)))
+  )
 
 
 (use-package! corfu-popupinfo
