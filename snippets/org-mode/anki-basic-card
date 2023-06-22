@@ -1,11 +1,12 @@
 # -*- mode: snippet -*-
 # name: anki-basic
 # key: <anki
+# expand-env: ((yas-indent-line 'auto) (yas-wrap-around-region 'nil))
 # --
-* $1
+**** $1
 :PROPERTIES:
 :ANKI_NOTE_TYPE: Basic
 :END:
-** Front
+***** Front
 $2
-** Back
+***** Back

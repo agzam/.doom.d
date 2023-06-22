@@ -2,10 +2,10 @@
 # name: anki-cloze
 # key: <anki-c
 # --
-* $1
+**** $1
 :PROPERTIES:
 :ANKI_NOTE_TYPE: Cloze
 :END:
-** Text
+***** Text
 {{c1::$2}}
-** Extra
+***** Extra
