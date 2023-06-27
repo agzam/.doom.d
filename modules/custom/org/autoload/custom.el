@@ -226,8 +226,8 @@ and if it is set to nil, then it would forcefully create the ID."
                         (when-let ((s (save-mark-and-excursion
                                         (goto-char (- beg 1))
                                         (thing-at-point 'symbol))))
-                         (string-match-p
-                          "+begin_quote\\|+begin_verse" s)))
+                          (string-match-p
+                           "+begin_quote\\|+begin_verse" s)))
                    :quote)
                   ((and (eq major-mode 'org-mode)
                         (when-let ((s (save-mark-and-excursion
@@ -286,3 +286,40 @@ and if it is set to nil, then it would forcefully create the ID."
                        (substring (cadr name-parts) 0 1)))
          (full-name (mapconcat 'identity name-parts " ")))
     (format "%s\n:PROPERTIES:\n:ID: %s\n:roam_aliases: \"%s\"\n:END:" name id full-name)))
+
+
+;;;###autoload
+(defun org-roam-capture-dont-create-id-a (org-roam-capture-fn time &optional goto keys)
+  "Skip the automatic ID creation by hijacking org-roam-dailies--capture.
+
+I like to keep dailies a file/per month with a datetree. Org-roam automatically
+generates IDs per each day, and I don't need that. A day heading by itself doesn't
+carry a meaningful context (to which I have to extend a relation) for me."
+  (let ((lexical-binding t))
+    (cl-letf* ((org-entry-put-orig (symbol-function 'org-entry-put))
+               ((symbol-function 'org-entry-put)
+                (if goto
+                    (lambda (pom property value)
+                      (run-with-timer
+                       0.01 nil
+                       (lambda (pom property value org-entry-put-orig)
+                         (if (buffer-modified-p)
+                             (progn
+                               (funcall org-entry-put-orig pom property value)
+                               (goto-char pom)
+                               (re-search-forward org-property-drawer-re)
+                               (org-fold-reveal :siblings)
+                               (org-fold-show-subtree)
+                               (org-fold-show-context)
+                               (insert "\n")
+                               (evil-insert 1))
+                           (progn
+                             (goto-char pom)
+                             (forward-line)
+                             (org-fold-reveal :siblings)
+                             (org-fold-show-subtree)
+                             (org-fold-show-context)
+                             (recenter))))
+                       pom property value org-entry-put-orig))
+                  org-entry-put-orig)))
+      (apply org-roam-capture-fn time goto keys))))
