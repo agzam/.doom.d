@@ -308,3 +308,22 @@
 
 (after! diff-mode
   (setq diff-add-log-use-relative-names t))
+
+(use-package! consult-gh
+  :defer t
+  :commands (consult-gh-orgs consult-gh-find-file consult-gh-search-repos)
+  :config
+  (setq consult-gh-defaul-clone-directory "~/sandbox"
+        consult-gh-show-preview t
+        consult-gh-preview-buffer-mode 'org-mode
+        consult-gh-confirm-before-clone t
+        consult-gh-ask-for-path-before-save t
+        consult-gh-file-action 'consult-gh--files-view-action
+        consult-gh-issue-action 'consult-gh--issue-view-action
+        consult-gh-repo-action 'consult-gh--repo-view-action)
+
+  (dolist (repo '("agzam" "threatgrid" "advthreat"))
+    (add-to-list 'consult-gh-default-orgs-list repo))
+
+  (add-to-list 'savehist-additional-variables 'consult-gh--known-orgs-list)
+  (add-to-list 'savehist-additional-variables 'consult-gh--known-repos-list))

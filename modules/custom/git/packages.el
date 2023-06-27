@@ -16,3 +16,4 @@
   )
 
 (unpin! magit forge compat)
+(package! consult-gh :recipe (:host github :repo "armindarvish/consult-gh"))

@@ -302,6 +302,10 @@
        :desc "blame" "b" (cmd!
                           (call-interactively #'magit-blame-addition)
                           (magit-blame-cycle-style))
+       (:prefix ("c" . "consult-gh")
+                "o" #'consult-gh-orgs
+                "r" #'consult-gh-search-repos
+                "f" #'consult-gh-find-file)
        (:prefix ("l" . "git link")
         :desc "blame link" "b" #'git-link-blame
         :desc "copy link" "l" #'git-link-kill
