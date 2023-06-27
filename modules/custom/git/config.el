@@ -165,8 +165,6 @@
   ;; compile emacsql, which is a slow and blocking operation.
   :after emacsql-sqlite-builtin
   :after-call magit-status
-  :init
-  (setq forge-database-connector 'sqlite-builtin)
   :commands forge-create-pullreq forge-create-issue
   :preface
   (setq forge-database-file (concat doom-data-dir "forge/forge-database.sqlite"))

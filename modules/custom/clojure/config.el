@@ -311,4 +311,8 @@
         (search-backward-regexp "\")")
         (forward-char)
         (plist-put block-info :end (point)))
-      block-info)))
+      block-info))
+
+  (add-hook! 'separedit-buffer-creation-hook
+    (defun separedit-set-fill-column-h ()
+      (setq-local fill-column 80))))

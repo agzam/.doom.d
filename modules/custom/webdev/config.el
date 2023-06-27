@@ -6,6 +6,7 @@
   :mode "\\.pac\\'"
   :interpreter "node"
   :hook (rjsx-mode . rainbow-delimiters-mode)
+  :hook (rjsx-mode . lsp!)
   :init
   ;; Parse node stack traces in the compilation buffer
   (after! compilation
