@@ -145,3 +145,10 @@ If URL is a link to a file, it extracts its raw form and tries to open in a buff
     (with-current-buffer b
       (insert-buffer-substring-no-properties trans)
       (switch-to-buffer-other-window b))))
+
+;;;###autoload
+(defun consult-gh-remove-org+ (x)
+  (interactive)
+  (setq consult-gh--known-orgs-list
+        (cl-delete x consult-gh--known-orgs-list :test #'string=))
+  (message "Deleted '%s' org from list of orgs." x))

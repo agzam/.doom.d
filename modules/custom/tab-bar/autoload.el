@@ -24,7 +24,7 @@
     ("ei" "emacs.d" (dired (file-name-directory doom-emacs-dir)))
     ("p" "projects" (switch-to-buffer
                        (find-file-noselect
-                        (completing-read "choose project:" projectile-known-projects))))
+                        (completing-read "choose project: " projectile-known-projects))))
     ("SPC" "fasd history"
      (switch-to-buffer
       (find-file-noselect

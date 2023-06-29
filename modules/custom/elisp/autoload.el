@@ -114,5 +114,6 @@ its own buffer."
     (let ((log (with-current-buffer "*Messages*"
                  (buffer-substring last-pos (point-max)))))
       (with-current-buffer (get-buffer-create "*eval*")
+        (erase-buffer)
         (insert log)
         (switch-to-buffer-other-window (current-buffer))))))

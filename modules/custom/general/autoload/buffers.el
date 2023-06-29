@@ -31,12 +31,6 @@ Returns a message with the count of killed buffers."
            (spacemacs/rudekill-matching-buffers regexp internal-too))))
 
 ;;;###autoload
-(defun alternate-buffer ()
-  (interactive)
-  (when-let ((b (evil-alternate-buffer (get-buffer-window))))
-    (switch-to-buffer (car b))))
-
-;;;###autoload
 (defun toggle-maximize-buffer ()
   "Maximize buffer"
   (interactive)

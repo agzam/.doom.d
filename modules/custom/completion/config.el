@@ -390,6 +390,7 @@
 
    (:map embark-bug-reference-link-map
          "e" #'+eww-open-in-other-window
+         :desc "browse" "b" #'bug-reference-push-button
          (:prefix
           ("c" . "convert")
           :desc "markdown link" "m" #'+link-bug-reference->link-markdown

@@ -58,13 +58,14 @@
               "Cite relevant RFCs and CVEs, if any. "
               "Links and citations should be in Org-mode link format.")))
 
-  (after! chatgpt-shell
-   (map! :map chatgpt-shell-mode-map
-         "C-c C-l" #'chatgpt-shell-clear-buffer
-         (:localleader
-          "s" #'chatgpt-shell-swap-system-prompt)
-         :map comint-mode-map
-         "C-c C-l" #'comint-clear-buffer))
+  (add-hook! 'chatgpt-shell-mode-hook
+    (defun set-chat-gpt-shell-keys-h ()
+      (map! :map chatgpt-shell-mode-map
+            "C-c C-l" #'chatgpt-shell-clear-buffer
+            (:localleader
+             "s" #'chatgpt-shell-swap-system-prompt)
+            :map comint-mode-map
+            "C-c C-l" #'comint-clear-buffer)))
 
   (add-hook! 'comint-mode-hook #'cape-completion-at-point-functions-h))
 

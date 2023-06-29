@@ -263,7 +263,7 @@
 
 (map! :leader
       :desc "M-x" "SPC" #'execute-extended-command
-      "TAB"   #'alternate-buffer
+      "TAB"   #'mode-line-other-buffer
       "v"     #'er/expand-region
       :desc "(un)comment" ";" #'evilnc-comment-or-uncomment-lines
 
