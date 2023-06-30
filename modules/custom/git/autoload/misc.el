@@ -65,12 +65,20 @@ Signals an error if there is no current project."
      :path (match-string 5 url)
      :ext (ignore-errors
             (replace-regexp-in-string
-             ".*\\." "" (match-string 5 url))))))
+             ".*\\.\\(.*\\)#.*" "\\1"
+             (match-string 5 url)))
+     :line (ignore-errors
+             (let* ((fname (match-string 5 url))
+                    (re ".*#L\\([0-9]+\\).*"))
+               (when (string-match re fname)
+                 (replace-regexp-in-string
+                  re "\\1" fname)))))))
 
 ;;;###autoload
 (defun +fetch-github-raw-file (url)
   "Open the raw file of a GitHub URL.
 If URL is a link to a file, it extracts its raw form and tries to open in a buffer."
+  (interactive)
   (let* ((parts (bisect-github-url url))
          (raw-url (thread-last
                     url
@@ -105,11 +113,15 @@ If URL is a link to a file, it extracts its raw form and tries to open in a buff
                          (erase-buffer)
                          (insert data)
                          (funcall mode)
+                         (when-let* ((line (plist-get parts :line))
+                                     (line-num (1- (string-to-number line))))
+                           (goto-char (point-min))
+                           (forward-line line-num))
                          (pop-to-buffer (current-buffer))))))))))
 
 ;;;###autoload
 (defun forge-visit-topic-via-url (&optional url)
-  "Opens Forge Topic buffer, based on GitHub URL."
+  "Opens Forge Topic buffer or the raw file, based on GitHub URL."
   (interactive)
   (let* ((url (or url
                   ;; basic
@@ -126,44 +138,49 @@ If URL is a link to a file, it extracts its raw form and tries to open in a buff
          (parts (bisect-github-url url))
          (issue (plist-get parts :issue))
          (pr (plist-get parts :pull))
-         (topic-num (string-to-number (or issue pr "")))
          (owner (plist-get parts :org))
          (repo-name (plist-get parts :repo))
-         (repo-url (format "%s/%s/%s" (plist-get parts :forge) owner repo-name))
-         (repo (or (ignore-errors (forge-get-repository repo-url t t))
-                   (forge-get-repository repo-url nil 'create)))
+         (ext (plist-get parts :ext)))
+    (cond
+     ((or issue pr)
+      (let* ((topic-num (string-to-number (or issue pr "")))
+             (repo-url (format "%s/%s/%s" (plist-get parts :forge) owner repo-name))
+             (repo (or (ignore-errors (forge-get-repository repo-url t t))
+                       (forge-get-repository repo-url nil 'create)))
+             (topic
+              ;; This one is tricky:
+              ;; - first, it tries to find the topic in forge db
+              ;; - if that fails, it fetches the topic and updates the db
+              ;;  - and then grabs the topic from the db
+              ;;
+              ;; Since fetching fns are async with a callback, have to wrap it into a deferred
+              (or
+               (forge-get-topic repo topic-num)
+               (deferred:sync!
+                (deferred:$
+                 (deferred:next
+                  (lambda ()
+                    (let* ((d (deferred:new #'identity))
+                           (fetch-fn (if issue 'ghub-fetch-issue
+                                       'ghub-fetch-pullreq))
+                           (update-fn (if issue 'forge--update-issue
+                                        'forge--update-pullreq)))
+                      (funcall
+                       fetch-fn
+                       owner repo-name topic-num
+                       (lambda (data)
+                         (funcall update-fn repo data nil)
+                         (deferred:callback-post
+                          d
+                          (forge-get-topic repo topic-num))))
+                      d))))))))
 
-         ;; This one is tricky:
-         ;; - first, it tries to find the topic in forge db
-         ;; - if that fails, it fetches the topic and updates the db
-         ;;  - and then grabs the topic from the db
-         ;;
-         ;; Since fetching fns are async with a callback, have to wrap it into a deferred
-         (topic
-          (or
-           (forge-get-topic repo topic-num)
-           (deferred:sync!
-            (deferred:$
-             (deferred:next
-              (lambda ()
-                (let* ((d (deferred:new #'identity))
-                       (fetch-fn (if issue 'ghub-fetch-issue
-                                   'ghub-fetch-pullreq))
-                       (update-fn (if issue 'forge--update-issue
-                                    'forge--update-pullreq)))
-                  (funcall
-                   fetch-fn
-                   owner repo-name topic-num
-                   (lambda (data)
-                     (funcall update-fn repo data nil)
-                     (deferred:callback-post
-                      d
-                      (forge-get-topic repo topic-num))))
-                  d))))))))
-    ;; otherwise it complains for not running inside a git repo
-    (cl-letf (((symbol-function #'magit-toplevel)
-               (lambda () default-directory)))
-      (forge-topic-setup-buffer topic))))
+        ;; otherwise it complains for not running inside a git repo
+        (cl-letf (((symbol-function #'magit-toplevel)
+                   (lambda () default-directory)))
+          (forge-topic-setup-buffer topic))))
+
+     (ext (+fetch-github-raw-file url)))))
 
 ;;;###autoload
 (defun magit-transient-unblock-global-keys ()
