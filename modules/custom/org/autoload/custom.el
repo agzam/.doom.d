@@ -172,7 +172,7 @@ in that prop."
            (when resp
              (let-alist resp
                (format
-                "%s/%s#%s %s" owner repo number .title)))))
+                "%s/%s#%s — %s" owner repo number .title)))))
 
         ((string-match "\\(github.com\\).*" uri)          ; just a link to a repo or file in a branch
          (pcase-let* ((uri*  (->> (split-string uri "/\\|\\?")

@@ -59,12 +59,13 @@ See `+dict--words' for extra words, and `+dict-file' for a wordslist source "
 ;;;###autoload
 (defun +corfu-kill-frames ()
   (interactive)
-  (when vertico-posframe-mode
-    (vertico-posframe-cleanup))
-  (when (boundp 'corfu--frame)
-    (delete-frame corfu--frame))
-  (when (boundp 'corfu-popupinfo--frame)
-    (delete-frame corfu-popupinfo--frame)))
+  (ignore-errors
+    (when vertico-posframe-mode
+      (vertico-posframe-cleanup))
+    (when (boundp 'corfu--frame)
+      (delete-frame corfu--frame))
+    (when (boundp 'corfu-popupinfo--frame)
+      (delete-frame corfu-popupinfo--frame))))
 
 ;;;###autoload
 (defun +corfu-insert-indexed (idx)

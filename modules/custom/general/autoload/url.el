@@ -54,101 +54,84 @@ anything like: RFC 123, rfc-123, RFC123 or rfc123."
 (defun +link-markdown->link-org-mode ()
   "Copies markdown link at point converting it to org-mode format."
   (interactive)
-  (when (markdown-link-p)
-    (let* ((l (markdown-link-at-pos (point)))
-           (desc (nth 2 l))
-           (url (nth 3 l)))
-      (with-temp-buffer
-        (org-insert-link nil url desc)
-        (message (buffer-string))
-        (kill-new (buffer-string))))))
+  (when-let* ((ref (+embark-target-markdown-link-at-point))
+              (bounds (nthcdr 2 ref))
+              (url (nth 3 (markdown-link-at-pos (point))))
+              (link (format "[[%s][%s]]" url
+                            (or (get-gh-item-title url)
+                                (org-cliplink-retrieve-title-synchronously url)))))
+    (delete-region (car bounds) (cdr bounds))
+    (insert link)))
 
 ;;;###autoload
 (defun +link-markdown->link-bug-reference ()
   "Copies markdown link at point converting it to a bug-reference format."
   (interactive)
-  (when-let ((_ (and
-                 (org-in-regexp "\\[.+\\]\\(([^)]+)\\)\\|<\\([^>]+\\)>" 1)
-                 (string-match-p "https://github.com"
-                                 (or (match-string-no-properties 1)
-                                     (match-string-no-properties 2)))))
-             (url (funcall 'markdown-link-url)))
-    (let* ((issue? (string-match-p "\\/issues\\/" url))
-           (pr? (string-match-p "\\/pull\\/" url))
-           (bug-ref (when (or issue? pr?)
-                      (let-plist (bisect-github-url url)
-                        (format "%s %s/%s#%s" (if issue? "Bug" "PR") .org .repo (if issue? .issue .pull))))))
-      (kill-new bug-ref)
-      (message bug-ref))))
+  (when-let* ((ref (+embark-target-markdown-link-at-point))
+              (bounds (nthcdr 2 ref))
+              (url (nth 3 (markdown-link-at-pos (point))))
+              (bug-ref (let-plist (bisect-github-url url)
+                         (format "%s %s/%s#%s" (if .pull "PR" "Issue")
+                                 .org .repo (if .pull .pull .issue)))))
+    (delete-region (car bounds) (cdr bounds))
+    (insert bug-ref)))
 
 ;;;###autoload
 (defun +link-markdown->link-plain ()
   "Copies markdown link at point converting it to a plain http format."
   (interactive)
-  (when (markdown-link-p)
-    (let* ((l (markdown-link-at-pos (point)))
-           (url (nth 3 l)))
-      (message url)
-      (kill-new url))))
+  (when-let* ((ref (+embark-target-markdown-link-at-point))
+              (bounds (nthcdr 2 ref))
+              (url (nth 3 (markdown-link-at-pos (point)))))
+    (delete-region (car bounds) (cdr bounds))
+    (insert url)))
 
 ;;;###autoload
 (defun +link-org->link-markdown ()
   (interactive)
-  (let* ((ctx (org-in-regexp org-any-link-re))
-         (beg (car ctx)) (end (cdr ctx))
-         (link-txt (buffer-substring-no-properties beg end))
-         (parsed (unless (string-blank-p link-txt)
-                   (seq-map
-                    ;; escape square brackets and parens, see:
-                    ;; https://emacs.stackexchange.com/questions/68814/escape-all-square-brackets-with-replace-regexp-in-string
-                    (lambda (m)
-                      (when m
-                        (replace-regexp-in-string "\\[\\|\\]\\|(\\|)" "\\\\\\&" m)))
-                    (org-link-parse link-txt)))))
-    (when parsed
-      (let ((md-link (if (eq 1 (length parsed))
-                         (format "<%s>" (car parsed))
-                       (apply 'format "[%s](%s)" (reverse parsed)))))
-        (kill-new md-link)
-        (message md-link)))))
+  (let* ((ctx (org-element-context))
+         (ctx (org-element-lineage ctx '(link) t))
+         (beg (org-element-property :begin ctx))
+         (end (org-element-property :end ctx))
+         (url (org-element-property :raw-link ctx))
+         (begd (org-element-property :contents-begin ctx))
+         (endd (org-element-property :contents-end ctx))
+         (desc (if (and begd endd (not (= begd endd)))
+                   (replace-regexp-in-string
+                    "[ \n]+" " "
+                    (string-trim
+                     (buffer-substring-no-properties begd endd)))))
+         (desc (or desc (or (get-gh-item-title url)
+                            (org-cliplink-retrieve-title-synchronously url))))
+         (link (format "[%s](%s)" desc url)))
+    (when (and link desc)
+      (delete-region beg end)
+      (insert link))))
 
 ;;;###autoload
 (defun +link-org->link-bug-reference ()
   (interactive)
-  (let* ((ctx (org-in-regexp org-any-link-re))
-         (beg (car ctx)) (end (cdr ctx))
-         (link-txt (buffer-substring beg end))
-         (parsed (unless (string-blank-p link-txt)
-                   (seq-map
-                    ;; escape square brackets and parens, see:
-                    ;; https://emacs.stackexchange.com/questions/68814/escape-all-square-brackets-with-replace-regexp-in-string
-                    (lambda (m)
-                      (when m
-                        (replace-regexp-in-string "\\[\\|\\]\\|(\\|)" "\\\\\\&" m)))
-                    (org-link-parse link-txt))))
-         (bug-ref (let-plist (bisect-github-url (substring-no-properties (car parsed)))
-                    (format "%s %s/%s#%s" (if .pull "PR" "Bug") .org .repo (if .pull .pull .issue)))))
+  (when-let* ((ctx (org-element-context))
+              (ctx (org-element-lineage ctx '(link) t))
+              (beg (org-element-property :begin ctx))
+              (end (org-element-property :end ctx))
+              (url (org-element-property :raw-link ctx))
+              (bug-ref (let-plist (bisect-github-url url)
+                         (format "%s %s/%s#%s" (if .pull "PR" "Issue")
+                                 .org .repo (if .pull .pull .issue)))))
     (delete-region beg end)
     (insert bug-ref)))
 
 ;;;###autoload
 (defun +link-org->link-plain ()
   (interactive)
-  (let* ((ctx (org-in-regexp org-any-link-re))
-         (beg (car ctx)) (end (cdr ctx))
-         (link-txt (buffer-substring beg end))
-         (parsed (unless (string-blank-p link-txt)
-                   (seq-map
-                    ;; escape square brackets and parens, see:
-                    ;; https://emacs.stackexchange.com/questions/68814/escape-all-square-brackets-with-replace-regexp-in-string
-                    (lambda (m)
-                      (replace-regexp-in-string "\\[\\|\\]\\|(\\|)" "\\\\\\&" m))
-                    (org-link-parse link-txt)))))
-    (when parsed
-      (let ((plain-link (format "%s" (substring-no-properties
-                                      (car parsed)))))
-        (kill-new plain-link)
-        (message plain-link)))))
+  (when-let* ((ctx (org-element-context))
+              (ctx (org-element-lineage ctx '(link) t))
+              (beg (org-element-property :begin ctx))
+              (end (org-element-property :end ctx))
+              (url (org-element-property :raw-link ctx)))
+    (delete-region beg end)
+    (insert url)))
 
 (defun +link-org->just-text ()
   "Convert link to simple text."
@@ -170,32 +153,38 @@ anything like: RFC 123, rfc-123, RFC123 or rfc123."
 ;;;###autoload
 (defun +link-bug-reference->link-org-mode ()
   (interactive)
-  (when-let* ((o (car (overlays-at (point))))
-              (url (overlay-get o 'bug-reference-url))
-              (link (let-plist (bisect-github-url url)
-                      (format "[%s %s/%s#%s][%s]" (if .issue "Issue" "PR")
-                              .org .repo (if .issue .issue .pull) url))))
-    (kill-new link)
-    (message link)))
+  (when-let* ((ref (embark-target-bug-reference-at-point))
+              (url (nth 1 ref))
+              (bounds (nthcdr 2 ref))
+              (link (format "[[%s][%s]]"
+                            url
+                            (or (get-gh-item-title url)
+                                (org-cliplink-retrieve-title-synchronously url)))))
+    (delete-region (car bounds) (cdr bounds))
+    (insert link)))
 
 ;;;###autoload
 (defun +link-bug-reference->link-markdown ()
   (interactive)
-  (when-let* ((o (car (overlays-at (point))))
-              (url (overlay-get o 'bug-reference-url))
+  (when-let* ((ref (embark-target-bug-reference-at-point))
+              (url (nth 1 ref))
+              (bounds (nthcdr 2 ref))
               (link (let-plist (bisect-github-url url)
-                      (format "[%s %s/%s#%s](%s)" (if .issue "Issue" "PR")
-                              .org .repo (if .issue .issue .pull) url))))
-    (kill-new link)
-    (message link)))
+                      (format "[%s](%s)"
+                              (get-gh-item-title url)
+                              url))))
+    (delete-region (car bounds) (cdr bounds))
+    (insert link)))
 
 ;;;###autoload
 (defun +link-bug-reference->link-plain ()
   (interactive)
-  (when-let* ((o (car (overlays-at (point))))
-              (url (overlay-get o 'bug-reference-url)))
-    (kill-new url)
-    (message url)))
+  (when-let* ((ref (embark-target-bug-reference-at-point))
+              (url (nth 1 ref))
+              (bounds (nthcdr 2 ref)))
+    (delete-region (car bounds)
+                   (cdr bounds))
+    (insert url)))
 
 ;;;###autoload
 (defun +link-plain->link-org-mode ()
@@ -204,8 +193,8 @@ anything like: RFC 123, rfc-123, RFC123 or rfc123."
   (when-let* ((url (or (thing-at-point-url-at-point) ""))
               (bounds (bounds-of-thing-at-point 'url))
               ;; TODO: do the GitHub stuff - ticket description, etc.
-              (link (if-let ((title (or (org-cliplink-retrieve-title-synchronously url)
-                                        (get-gh-item-title url))))
+              (link (if-let ((title (or (get-gh-item-title url)
+                                        (org-cliplink-retrieve-title-synchronously url))))
                         (format "[[%s][%s]]" url title)
                       (format "[[%s]]" url))))
     (delete-region (car bounds) (cdr bounds))
@@ -223,7 +212,8 @@ anything like: RFC 123, rfc-123, RFC123 or rfc123."
                    (format "[%s %s/%s#%s](%s)" (if .issue "Issue" "PR")
                            .org .repo (if .issue .issue .pull) url)))
 
-                (t (if-let ((title (org-cliplink-retrieve-title-synchronously url)))
+                (t (if-let ((title (or (get-gh-item-title url)
+                                       (org-cliplink-retrieve-title-synchronously url))))
                        (format "[%s](%s)" title url)
                      (format "<%s>" url))))))
     (delete-region (car bounds) (cdr bounds))

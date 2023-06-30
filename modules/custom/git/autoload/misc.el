@@ -26,16 +26,6 @@ Signals an error if there is no current project."
           ;; and apply them.
           (hack-local-variables-apply))))))
 
-(defun +decrypt-gh-token ()
-  "Retrieves encrypted GitHub token from auth-sources."
-  (funcall
-   (plist-get
-    (car
-     (auth-source-search :machine "api.github.com"
-                         :type 'netrc
-                         :max 1))
-    :secret)))
-
 (defun bisect-github-url (url)
   "Returns plist with parts of GitHub URL."
   ;; different kinds of GH links, for future reference:
@@ -62,18 +52,20 @@ Signals an error if there is no current project."
                        ((string-match issue-rx url) 'issue)
                        ((string-match pr-rx url) 'pull)
                        ((string-match bare-rx url) 'bare)))))
-    (list :org (match-string 2 url)
-          :repo (match-string 3 url)
-          :ref (when (eq type 'file)
-                 (match-string 4 url))
-          :issue (when (eq type 'issue)
-                   (match-string 4 url))
-          :pull (when (eq type 'pull)
-                  (match-string 4 url))
-          :path (match-string 5 url)
-          :ext (ignore-errors
-                 (replace-regexp-in-string
-                  ".*\\." "" (match-string 5 url))))))
+    (list
+     :forge (match-string 1 url)
+     :org (match-string 2 url)
+     :repo (match-string 3 url)
+     :ref (when (eq type 'file)
+            (match-string 4 url))
+     :issue (when (eq type 'issue)
+              (match-string 4 url))
+     :pull (when (eq type 'pull)
+             (match-string 4 url))
+     :path (match-string 5 url)
+     :ext (ignore-errors
+            (replace-regexp-in-string
+             ".*\\." "" (match-string 5 url))))))
 
 ;;;###autoload
 (defun +fetch-github-raw-file (url)
@@ -100,7 +92,11 @@ If URL is a link to a file, it extracts its raw form and tries to open in a buff
     (when path
       (request raw-url
         :sync t
-        :headers `(("Authorization" . ,(format "Token %s" (+decrypt-gh-token))))
+        :headers `(("Authorization"
+                    . ,(format
+                        "Token %s"
+                        (auth-source-pick-first-password
+                         :host "api.github.com"))))
         :parser 'buffer-string
         :complete (cl-function
                    (lambda (&key data &allow-other-keys)
@@ -111,6 +107,63 @@ If URL is a link to a file, it extracts its raw form and tries to open in a buff
                          (funcall mode)
                          (pop-to-buffer (current-buffer))))))))))
 
+;;;###autoload
+(defun forge-visit-topic-via-url (&optional url)
+  "Opens Forge Topic buffer, based on GitHub URL."
+  (interactive)
+  (let* ((url (or url
+                  ;; basic
+                  (thing-at-point-url-at-point)
+                  ;; org-link
+                  (thread-last
+                    (org-element-lineage (org-element-context) '(link) t)
+                    (org-element-property :raw-link))
+                  ;; markdown link
+                  (nth 3 (markdown-link-at-pos (point)))
+                  ;; bug-reference
+                  (when-let* ((o (car (overlays-at (point)))))
+                    (overlay-get o 'bug-reference-url))))
+         (parts (bisect-github-url url))
+         (issue (plist-get parts :issue))
+         (pr (plist-get parts :pull))
+         (topic-num (string-to-number (or issue pr "")))
+         (owner (plist-get parts :org))
+         (repo-name (plist-get parts :repo))
+         (repo-url (format "%s/%s/%s" (plist-get parts :forge) owner repo-name))
+         (repo (or (ignore-errors (forge-get-repository repo-url t t))
+                   (forge-get-repository repo-url nil 'create)))
+
+         ;; This one is tricky:
+         ;; - first, it tries to find the topic in forge db
+         ;; - if that fails, it fetches the topic and updates the db
+         ;;  - and then grabs the topic from the db
+         ;;
+         ;; Since fetching fns are async with a callback, have to wrap it into a deferred
+         (topic
+          (or
+           (forge-get-topic repo topic-num)
+           (deferred:sync!
+            (deferred:$
+             (deferred:next
+              (lambda ()
+                (let* ((d (deferred:new #'identity))
+                       (fetch-fn (if issue 'ghub-fetch-issue
+                                   'ghub-fetch-pullreq))
+                       (update-fn (if issue 'forge--update-issue
+                                    'forge--update-pullreq)))
+                  (funcall
+                   fetch-fn
+                   owner repo-name topic-num
+                   (lambda (data)
+                     (funcall update-fn repo data nil)
+                     (deferred:callback-post
+                      d
+                      (forge-get-topic repo topic-num))))
+                  d))))))))
+    ;; otherwise it complains for not running inside a git repo
+    (cl-letf (((symbol-function #'magit-toplevel)
+               (lambda () default-directory)))
+      (forge-topic-setup-buffer topic))))
 
 ;;;###autoload
 (defun magit-transient-unblock-global-keys ()

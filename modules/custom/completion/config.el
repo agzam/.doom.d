@@ -362,25 +362,28 @@
     embark-url-map
     "e" #'+eww-open-in-other-window
     "b" #'+browse-url
+    "v" #'forge-visit-topic-via-url
     (:prefix
      ("c" . "convert")
      :desc "markdown link" "m" #'+link-plain->link-markdown
-     :desc "org-mode link" "o" #'+link-plain->link-org-mode
+     :desc "org-mode link" "O" #'+link-plain->link-org-mode
      :desc "bug-reference" "b" #'+link-plain->link-bug-reference))
 
    (:map embark-markdown-link-map
          "e" #'+eww-open-in-other-window
          "b" (cmd! () (+browse-url (markdown-link-url)))
+         "v" #'forge-visit-topic-via-url
          (:prefix
           ("c" . "convert")
-          :desc "org-mode link" "o" #'+link-markdown->link-org-mode
+          :desc "org-mode link" "O" #'+link-markdown->link-org-mode
           :desc "plain" "p" #'+link-markdown->link-plain
           :desc "bug-reference" "b" #'+link-markdown->link-bug-reference))
 
    (:map embark-org-link-map
          "e" #'+eww-open-in-other-window
          "b" #'org-open-at-point
-         "v" #'+open-link-in-vlc
+         "V" #'+open-link-in-vlc
+         "v" #'forge-visit-topic-via-url
          (:prefix
           ("c" . "convert")
           :desc "markdown link" "m" #'+link-org->link-markdown
@@ -390,11 +393,12 @@
 
    (:map embark-bug-reference-link-map
          "e" #'+eww-open-in-other-window
+         "v" #'forge-visit-topic-via-url
          :desc "browse" "b" #'bug-reference-push-button
          (:prefix
           ("c" . "convert")
           :desc "markdown link" "m" #'+link-bug-reference->link-markdown
-          :desc "org-mode link" "o" #'+link-bug-reference->link-org-mode
+          :desc "org-mode link" "O" #'+link-bug-reference->link-org-mode
           :desc "plain" "p" #'+link-bug-reference->link-plain))
 
    (:map embark-rfc-number-map

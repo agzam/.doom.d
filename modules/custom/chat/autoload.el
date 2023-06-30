@@ -122,8 +122,6 @@
 
 ;;;###autoload
 (defun +chat-gpt-page-summary (ref title)
-  (require 'deferred)
-  (require 'request-deferred)
   (let* ((content
           (thread-first
             ref
