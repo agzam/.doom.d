@@ -100,7 +100,8 @@
         "C-c C-o" #'elfeed-search-browse-url
         :n "r" #'elfeed-search-untag-all-unread
         (:localleader
-         "u" #'elfeed-update))
+         "u" #'elfeed-update
+         "p" #'elfeed-update))
 
   (map! :map elfeed-show-mode-map
         :n "yy" #'+rss/copy-link)
