@@ -73,12 +73,12 @@ window."
 (transient-define-prefix window-transient ()
   "Window manipulations"
   ["Window"
-  [(transient-window--enlarge-v)
-   (transient-window--shrink-v)
-   (transient-window--enlarge-h)
-   (transient-window--shrink-h)
-   (transient-window--balance)
-   (transient-window--golden-ratio)]])
+   [(transient-window--enlarge-v)
+    (transient-window--shrink-v)
+    (transient-window--enlarge-h)
+    (transient-window--shrink-h)
+    (transient-window--balance)
+    (transient-window--golden-ratio)]])
 
 ;;;###autoload
 (defun window-cleanup+ ()
@@ -105,3 +105,14 @@ Leaves single window per buffer, removing all duplicates."
   (interactive "P")
   (with-selected-window (other-window-for-scrolling)
     (funcall (doom-lookup-key (kbd "C-y")) (or count 1))))
+
+;;;###autoload
+(defun display-buffer-window-equal-width (buffer alist)
+  "Keep buffer window width proportional to other windows."
+  (let* ((win (display-buffer-in-direction buffer alist)))
+    (window-resize
+     win
+     (- (/ (frame-width) (length (window-list)))
+        (window-width win))
+     t t)
+    win))

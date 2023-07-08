@@ -130,8 +130,9 @@ anything like: RFC 123, rfc-123, RFC123 or rfc123."
               (beg (org-element-property :begin ctx))
               (end (org-element-property :end ctx))
               (url (org-element-property :raw-link ctx)))
-    (delete-region beg end)
-    (insert url)))
+    (save-excursion
+     (delete-region beg end)
+     (insert url))))
 
 (defun +link-org->just-text ()
   "Convert link to simple text."
@@ -207,7 +208,7 @@ anything like: RFC 123, rfc-123, RFC123 or rfc123."
   (let* ((url (or (thing-at-point-url-at-point) ""))
          (bounds (bounds-of-thing-at-point 'url))
          (link (cond
-                ((string-match-p ".*https://github.com.*" url)
+                ((not (string-match-p ".*https://github.com.*" url))
                  (let-plist (bisect-github-url url)
                    (format "[%s %s/%s#%s](%s)" (if .issue "Issue" "PR")
                            .org .repo (if .issue .issue .pull) url)))

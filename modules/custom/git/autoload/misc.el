@@ -117,7 +117,8 @@ If URL is a link to a file, it extracts its raw form and tries to open in a buff
                                      (line-num (1- (string-to-number line))))
                            (goto-char (point-min))
                            (forward-line line-num))
-                         (pop-to-buffer (current-buffer))))))))))
+                         (switch-to-buffer-other-window
+                          (current-buffer))))))))))
 
 ;;;###autoload
 (defun forge-visit-topic-via-url (&optional url)
@@ -177,7 +178,11 @@ If URL is a link to a file, it extracts its raw form and tries to open in a buff
 
         ;; otherwise it complains for not running inside a git repo
         (cl-letf (((symbol-function #'magit-toplevel)
-                   (lambda () default-directory)))
+                   (lambda () default-directory))
+                  (magit-display-buffer-function
+                   (lambda (buf)
+                     (get-buffer-window
+                      (pop-to-buffer buf)))))
           (forge-topic-setup-buffer topic))))
 
      (ext (+fetch-github-raw-file url)))))
@@ -215,10 +220,3 @@ If URL is a link to a file, it extracts its raw form and tries to open in a buff
     (with-current-buffer b
       (insert-buffer-substring-no-properties trans)
       (switch-to-buffer-other-window b))))
-
-;;;###autoload
-(defun consult-gh-remove-org+ (x)
-  (interactive)
-  (setq consult-gh--known-orgs-list
-        (cl-delete x consult-gh--known-orgs-list :test #'string=))
-  (message "Deleted '%s' org from list of orgs." x))

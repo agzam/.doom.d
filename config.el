@@ -263,7 +263,7 @@
 
 (map! :leader
       :desc "M-x" "SPC" #'execute-extended-command
-      "TAB"   #'mode-line-other-buffer
+      "TAB"   #'alternate-buffer
       "v"     #'er/expand-region
       :desc "(un)comment" ";" #'evilnc-comment-or-uncomment-lines
 
@@ -481,6 +481,10 @@
 (map! :after helpful
       :map helpful-mode-map
       :n "q" #'kill-buffer-and-window)
+
+(map! :after calendar
+      :map calendar-mode-map
+      :n "gd" #'calendar-goto-date)
 
 (after! epa
   (setq epg-pinentry-mode 'loopback))

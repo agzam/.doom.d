@@ -323,7 +323,10 @@
     "C-/" #'consult-history)
 
   (map! :after consult
-        :map isearch-mode-map "M-s l" #'consult-line))
+        :map isearch-mode-map "M-s l" #'consult-line)
+
+  (remove-hook! 'consult-after-jump-hook 'consult--maybe-recenter)
+  (add-hook! 'consult-after-jump-hook 'recenter))
 
 (after! embark
   (setq embark-cycle-key "C-;"

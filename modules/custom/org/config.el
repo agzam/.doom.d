@@ -228,7 +228,11 @@
 
   (setq org-roam-capture-ref-templates
         '(("r" "ref" plain "%?" :if-new
-           (file+head "${slug}.org" "#+title: ${title}\n%(org-roam--link-to \"unread\")\n%(org--insert-selection-dwim \"${body}\")")
+           (file+head
+            (concat "${slug}.org" "#+title: ${title}\n"
+                    "#+title: ${title}\n#+startup: overview\n\n"
+                    "%(org-roam--link-to \"unread\")\n"
+                    "%(org--insert-selection-dwim \"${body}\")"))
            :unnarrowed t
            :jump-to-captured t)
           ("c" "chat-gpt" plain "%?" :if-new

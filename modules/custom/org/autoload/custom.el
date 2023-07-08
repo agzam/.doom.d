@@ -158,35 +158,37 @@ in that prop."
         (delete-window win)
       (switch-to-buffer-other-window buf))))
 
+;;;###autoload
 (defun get-gh-item-title (uri)
   "Based on given GitHub URI for pull-request or issue,
   return the title of that pull-request or issue."
-  (cond ((string-match "\\(github.com\\).*\\(issues\\|pull\\)" uri)               ; either PR or issue
-         (pcase-let* ((`(_ _ ,owner ,repo ,type ,number) (remove "" (split-string uri "/")))
-                      (gh-resource (format "/repos/%s/%s/%s/%s"
-                                           owner
-                                           repo
-                                           (if (string= type "pull") "pulls" type)
-                                           number))
-                      (resp (ghub-get gh-resource nil :auth 'forge)))
-           (when resp
-             (let-alist resp
-               (format
-                "%s/%s#%s — %s" owner repo number .title)))))
+  (cond
+   ((string-match "\\(github.com\\).*\\(issues\\|pull\\)" uri) ; either PR or issue
+    (pcase-let*
+        ((`(_ _ ,owner ,repo ,type ,number) (remove "" (split-string uri "/")))
+         (gh-resource (format "/repos/%s/%s/%s/%s"
+                              owner
+                              repo
+                              (if (string= type "pull") "pulls" type)
+                              number))
+         (resp (ghub-get gh-resource nil :auth 'forge)))
+      (when resp
+        (let-alist resp
+          (format
+           "%s/%s#%s — %s" owner repo number .title)))))
 
-        ((string-match "\\(github.com\\).*" uri)          ; just a link to a repo or file in a branch
-         (pcase-let* ((uri*  (->> (split-string uri "/\\|\\?")
-                                  (remove "")
-                                  (-non-nil)))
-                      (`(_ _ ,owner ,repo ,type ,branch ,dir ,file) uri*)
-                      (branch (if (or (string= type "commit") (string= type "tree"))
-                                  (substring branch 0 7)  ; trim to short sha
-                                branch)))
-           (mapconcat
-            'identity (->> (list owner repo type branch dir file) (-non-nil))
-            "/")))
-
-        (t uri)))
+   ((string-match "\\(github.com\\).*" uri) ; just a link to a repo or file in a branch
+    (pcase-let* ((uri* (->> (split-string uri "/\\|\\?")
+                            (remove "")
+                            (-non-nil)))
+                 (`(_ _ ,owner ,repo ,type ,branch ,dir ,file) uri*)
+                 (branch (if (or (string= type "commit") (string= type "tree"))
+                             (substring branch 0 7)  ; trim to shorten sha
+                           branch)))
+      (mapconcat
+       'identity (->> (list owner repo type branch dir file) (-non-nil))
+       "/")))
+   (t uri)))
 
 ;;;###autoload
 (defun +org-link-make-description-function (link desc)

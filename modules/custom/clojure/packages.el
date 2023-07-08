@@ -8,3 +8,6 @@
 (package! fennel-mode)
 
 (package! neil :recipe (:host github :repo "babashka/neil" :files ("*.el")))
+
+(package! logivew :recipe (:host github :repo "doublep/logview"))
+(package! datetime :recipe (:host github :repo "doublep/datetime"))

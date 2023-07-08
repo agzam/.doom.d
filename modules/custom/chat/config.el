@@ -43,6 +43,10 @@
   :config
   (require 'ob-chatgpt-shell)
   (ob-chatgpt-shell-setup)
+  (setq chatgpt-shell-model-versions '("gpt-4-0613"
+                                       "gpt-4"
+                                       "gpt-4-32k"
+                                       "gpt-4-32k-0613"))
   (setq chatgpt-shell-openai-key
         (auth-source-pick-first-password :host "api.openai.com")
         chatgpt-shell-request-timeout 180)
@@ -57,6 +61,17 @@
               "Code examples should be in Emacs Org-mode source blocks. "
               "Cite relevant RFCs and CVEs, if any. "
               "Links and citations should be in Org-mode link format.")))
+
+  (add-to-list
+   'chatgpt-shell-system-prompts
+   `("Espanól" .
+     ,(concat "The user is a person trying to learn Spanish. "
+              "Expect request texts mixed in both languages."
+              "Answer in Spanish, unless specifically asked to provide the translation."
+              "Focus on Latin American (primarily Mexican) dialect. "
+              "When applicable, help the user with memorization and building vocabulary. "
+              "Highligh the connection of words with shared etymology, e.g.: 'quieres' to 'inquire', and 'ayuda' to 'aid'. "
+              "When asked about specific words, provide example sentences.")))
 
   (add-hook! 'chatgpt-shell-mode-hook
     (defun set-chat-gpt-shell-keys-h ()

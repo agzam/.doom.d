@@ -11,5 +11,5 @@
 
 ;;;###autoload (autoload 'sdcv-search-at-point "custom/writing/autoload/sdcv" nil t)
 (defun sdcv-search-at-point ()
-    (interactive)
-    (sdcv-search (region-or-word-at-point-str) nil nil t))
+  (interactive)
+  (sdcv-search (region-or-word-at-point-str) nil nil t))

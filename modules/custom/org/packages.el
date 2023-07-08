@@ -3,6 +3,7 @@
 
 ;; copied directly from the official module. unpinned
 (package! org
+  :pin "ca873f7fe47546bca19821f1578a6ab95bf5351c"
   :recipe (:host github
            ;; REVIEW: I intentionally avoid git.savannah.gnu.org because of SSL
            ;;   issues (see #5655), uptime issues, download time, and lack of
