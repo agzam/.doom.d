@@ -299,7 +299,8 @@
         "C-y" #'vertico-scroll-down
         "]" #'vertico-next-group
         "[" #'vertico-previous-group
-        "~" #'vertico-jump-to-home-dir-on~))
+        "~" #'vertico-jump-to-home-dir-on~
+        "M-m" #'embark-select))
 
 (after! consult
   (consult-customize
@@ -330,19 +331,23 @@
 
 (after! embark
   (setq embark-cycle-key "C-;"
-        embark-help-key "M-h")
+        embark-help-key "M-h"
+        embark-confirm-act-all nil)
 
   (map!
    :after embark
-   (:map
-    embark-file-map
-    "o" nil
-    (:prefix ("o" . "open")
-             "j" (embark-split-action find-file +evil/window-split-and-follow)
-             "l" (embark-split-action find-file +evil/window-vsplit-and-follow)
-             "h" (embark-split-action find-file split-window-horizontally)
-             "k" (embark-split-action find-file split-window-vertically)
-             "a" (embark-ace-action find-file)))
+   (:map embark-general-map
+         "C-<return>" #'embark-dwim
+         "m" #'embark-select
+         "/" #'+embark-project-search)
+   (:map embark-file-map
+         "o" nil
+         (:prefix ("o" . "open")
+                  "j" (embark-split-action find-file +evil/window-split-and-follow)
+                  "l" (embark-split-action find-file +evil/window-vsplit-and-follow)
+                  "h" (embark-split-action find-file split-window-horizontally)
+                  "k" (embark-split-action find-file split-window-vertically)
+                  "a" (embark-ace-action find-file)))
 
    (:map
     embark-buffer-map
@@ -395,14 +400,14 @@
           :desc "bug-reference" "b" #'+link-org->link-bug-reference))
 
    (:map embark-bug-reference-link-map
-         "e" #'+eww-open-in-other-window
-         "v" #'forge-visit-topic-via-url
-         :desc "browse" "b" #'bug-reference-push-button
-         (:prefix
-          ("c" . "convert")
-          :desc "markdown link" "m" #'+link-bug-reference->link-markdown
-          :desc "org-mode link" "O" #'+link-bug-reference->link-org-mode
-          :desc "plain" "p" #'+link-bug-reference->link-plain))
+    "e" #'+eww-open-in-other-window
+    "v" #'forge-visit-topic-via-url
+    :desc "browse" "b" #'bug-reference-push-button
+    (:prefix
+     ("c" . "convert")
+     :desc "markdown link" "m" #'+link-bug-reference->link-markdown
+     :desc "org-mode link" "O" #'+link-bug-reference->link-org-mode
+     :desc "plain" "p" #'+link-bug-reference->link-plain))
 
    (:map embark-rfc-number-map
     :desc "browse" "b" #'+browse-rfc-number-at-point)
@@ -410,17 +415,16 @@
    (:map
     embark-collect-mode-map
     :n "[" #'embark-previous-symbol
-    :n "]" #'embark-next-symbol)
+    :n "]" #'embark-next-symbol
+    :n "TAB" #'+embark-collect-outline-cycle
+    :n "m" #'embark-select)
 
    (:map
     (embark-command-map embark-symbol-map)
     (:after edebug
             (:prefix ("D" . "debug")
                      "f" #'+edebug-instrument-symbol
-                     "F" #'edebug-remove-instrumentation)))
-
-   (:map embark-collect-mode-map
-    :n "TAB" #'+embark-collect-outline-cycle))
+                     "F" #'edebug-remove-instrumentation))))
 
   (add-hook! 'embark-collect-mode-hook
     (defun visual-line-mode-off-h ()

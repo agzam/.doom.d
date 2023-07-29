@@ -74,3 +74,7 @@
     (if (featurep 'rfc-mode)
         (rfc-mode-browse)
       (+search-rfc-number-online))))
+
+;;;###autoload
+(defun +embark-project-search (target)
+  (+vertico-file-search :query target))

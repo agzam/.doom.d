@@ -53,6 +53,7 @@
   (setq org-link-make-description-function #'+org-link-make-description-function)
 
   (map! :map org-mode-map
+        [remap imenu] #'consult-outline
         "C-c C-f" #'org-roam-node-find
         "C-c C-i" #'org-roam-node-insert+
 
