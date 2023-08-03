@@ -56,3 +56,18 @@
              #'yas-minor-mode-on)
 
   (remove-hook! 'lsp-mode-hook #'lsp-ui-mode))
+
+(use-package! dap-mode
+  :after lsp-mode
+  :init
+  (after! lsp-mode (require 'dap-mode))
+  :config
+  (dap-mode 1)
+  (dap-tooltip-mode 1)
+  (tooltip-mode 1)
+  (dap-ui-controls-mode 1))
+
+(use-package! dap-ui
+  :after dap-mode
+  :hook (dap-mode . dap-ui-mode)
+  :hook (dap-ui-mode . dap-ui-controls-mode))

@@ -49,7 +49,8 @@
                                        "gpt-4-32k-0613"))
   (setq chatgpt-shell-openai-key
         (auth-source-pick-first-password :host "api.openai.com")
-        chatgpt-shell-request-timeout 180)
+        chatgpt-shell-request-timeout 180
+        chatgpt-shell-welcome-function nil)
 
   (add-to-list
    'chatgpt-shell-system-prompts
@@ -72,6 +73,14 @@
               "When applicable, help the user with memorization and building vocabulary. "
               "Highligh the connection of words with shared etymology, e.g.: 'quieres' to 'inquire', and 'ayuda' to 'aid'. "
               "When asked about specific words, provide example sentences.")))
+
+  (add-to-list
+   'chatgpt-shell-system-prompts
+   `("Leetcode" .
+     ,(concat "Help user to solve Leetcode problems. "
+              "Write solutions in javascript. "
+              "Avoid using 'for loops' whenever possible, using .map/.reduce instead."
+              "Comment on time and space complexity of each solution.")))
 
   (add-hook! 'chatgpt-shell-mode-hook
     (defun set-chat-gpt-shell-keys-h ()

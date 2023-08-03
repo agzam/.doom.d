@@ -59,7 +59,7 @@ switch to it."
    (when-let ((cur (current-buffer))
               (buf (org-noter--session-doc-buffer session)))
      (switch-to-buffer-other-window buf)
-     (image-scroll-up 10)
+     (pdf-view-next-line-or-next-page 1)
      (switch-to-buffer-other-window cur))))
 
 ;;;###autoload
@@ -72,7 +72,7 @@ switch to it."
    (when-let ((cur (current-buffer))
               (buf (org-noter--session-doc-buffer session)))
      (switch-to-buffer-other-window buf)
-     (image-scroll-down 10)
+     (pdf-view-previous-line-or-previous-page 1)
      (switch-to-buffer-other-window cur))))
 
 ;;;###autoload

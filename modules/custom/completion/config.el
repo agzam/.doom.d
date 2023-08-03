@@ -88,7 +88,6 @@
 
   (setq dabbrev-ignored-buffer-modes '(pdf-view-mode)))
 
-
 (use-package! orderless
   :config
   (setq completion-styles '(orderless partial-completion)
@@ -127,12 +126,10 @@
   ;;     (add-to-list 'completion-at-point-functions #'cape-history)))
   )
 
-
 (use-package! corfu-popupinfo
   :after corfu
   :config
   (corfu-popupinfo-mode +1))
-
 
 (use-package! corfu-history
   :after corfu
@@ -143,20 +140,17 @@
       (savehist-mode 1)
       (add-to-list 'savehist-additional-variables 'corfu-history))))
 
-
 (use-package! corfu-indexed
   :after corfu
   :config
   (setq corfu-indexed-start 1)
   (add-hook! corfu-mode #'corfu-indexed-mode))
 
-
 (use-package! corfu-quick
   :after corfu
   :bind (:map corfu-map
               ("M-q" . corfu-quick-complete)
               ("C-q" . corfu-quick-insert)))
-
 
 (use-package! kind-icon
   :after corfu
@@ -202,7 +196,6 @@
   (setq kind-icon-default-style '(:padding 0 :stroke 0 :margin 0 :radius 0 :height 0.8 :scale 0.8))
   (add-hook 'doom-load-theme-hook #'kind-icon-reset-cache)
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
-
 
 ;;;;;;;;;;;;;;;;;;;
 ;; vertico stuff ;;
@@ -484,3 +477,15 @@
   (add-to-list 'hippie-expand-try-functions-list 'yas-hippie-try-expand)
   (yas-reload-all)
   (add-hook! 'prog-mode-hook #'yas-minor-mode-on))
+
+(use-package! dash-docs
+  :defer t
+  :config
+  (setq dash-docs-browser-func #'+browse-dash-doc))
+
+(use-package! consult-dash
+  :after embark
+  :commands (consult-dash)
+  :config
+  (map! :map consult-dash-embark-keymap
+        :n "b" #'browse-url))

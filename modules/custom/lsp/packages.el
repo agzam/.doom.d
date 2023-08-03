@@ -9,3 +9,5 @@
 (unpin! lsp-mode)
 (unpin! lsp-ui)
 (unpin! consult-lsp)
+
+(package! dap-mode)

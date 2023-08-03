@@ -7,4 +7,5 @@
 (when (modulep! :lang org)
   (package! ol-notmuch))
 (when (modulep! :completion vertico)
-  (package! consult-notmuch))
+  (package! consult-notmuch
+	    :recipe (:host github :repo "emacsmirror/consult-notmuch")))

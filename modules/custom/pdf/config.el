@@ -67,15 +67,15 @@
                  "j" #'pdf-view-shrink
                  "0" #'pdf-view-scale-reset)
         (:prefix ("n" . "noter")
-                "N" #'org-noter
-                "n" #'org-noter-sync-current-page-or-chapter
-                "i" #'org-noter-insert-note
-                "j" #'pdf-view-scroll-up-or-next-page
-                "k" #'pdf-view-scroll-down-or-previous-page
-                "C-j" #'pdf-view-next-page
-                "C-k" #'pdf-view-previous-page
-                :n "gg" #'pdf-evil-goto-first-line
-                :n "G"  #'pdf-evil-goto-last-line)))
+         "N" #'org-noter
+         "n" #'org-noter-sync-current-page-or-chapter
+         "i" #'org-noter-insert-note
+         "j" #'pdf-view-scroll-up-or-next-page
+         "k" #'pdf-view-scroll-down-or-previous-page
+         "C-j" #'pdf-view-next-page
+         "C-k" #'pdf-view-previous-page
+         :n "gg" #'pdf-evil-goto-first-line
+         :n "G"  #'pdf-evil-goto-last-line)))
 
 (use-package! saveplace-pdf-view
   :after pdf-view)
@@ -120,4 +120,11 @@
             (unless org-noter-disable-narrowing
               (org-noter--narrow-to-root (org-noter--parse-root session)))
             (setq notes-window (org-noter--get-notes-window 'start))
-            (org-noter--set-notes-scroll notes-window)))))))
+            (org-noter--set-notes-scroll notes-window))))))
+
+  (defadvice! org-noter--create-session-a (orig-fn &rest args)
+    :around #'org-noter--create-session
+    (cl-letf (((symbol-function
+                #'org-noter--set-notes-scroll)
+               #'ignore))
+      (apply orig-fn args))))

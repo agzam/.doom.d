@@ -20,3 +20,6 @@
 (package! vertico-posframe :recipe (:host github :repo "tumashu/vertico-posframe"))
 (package! consult-projectile)
 (package! yasnippet)
+
+(package! dash-docs)
+(package! consult-dash)
