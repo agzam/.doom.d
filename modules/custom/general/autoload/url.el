@@ -208,7 +208,7 @@ anything like: RFC 123, rfc-123, RFC123 or rfc123."
   (let* ((url (or (thing-at-point-url-at-point) ""))
          (bounds (bounds-of-thing-at-point 'url))
          (link (cond
-                ((not (string-match-p ".*https://github.com.*" url))
+                ((string-match-p ".*https://github.com.*" url)
                  (let-plist (bisect-github-url url)
                    (format "[%s %s/%s#%s](%s)" (if .issue "Issue" "PR")
                            .org .repo (if .issue .issue .pull) url)))

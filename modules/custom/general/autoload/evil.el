@@ -33,6 +33,7 @@ I want * and # operators to respect marked region."
 (defun +evil-window-move-right ()
   "Swap windows to the right"
   (interactive)
+  (require 'windmove)
   (if (and (window-at-side-p nil 'right)
            (not (or (window-in-direction 'above)
                     (window-in-direction 'below))))
@@ -43,6 +44,7 @@ I want * and # operators to respect marked region."
 (defun +evil-window-move-left ()
   "Swap windows to the right"
   (interactive)
+  (require 'windmove)
   (if (and (window-at-side-p nil 'left)
            (not (or (window-in-direction 'above)
                     (window-in-direction 'below))))

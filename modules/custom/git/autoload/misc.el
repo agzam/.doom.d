@@ -26,6 +26,7 @@ Signals an error if there is no current project."
           ;; and apply them.
           (hack-local-variables-apply))))))
 
+;;;###autoload
 (defun bisect-github-url (url)
   "Returns plist with parts of GitHub URL."
   ;; different kinds of GH links, for future reference:

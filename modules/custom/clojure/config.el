@@ -279,7 +279,13 @@
 
 (use-package! fennel-mode
   :mode "\\.fnl$"
-  :defer t)
+  :defer t
+  :config
+  (set-lookup-handlers! 'fennel-mode
+    :documentation #'+consult-dash-doc)
+  (add-hook! 'fennel-mode-hook
+    (defun fennel-mode-h ()
+     (dash-docs-activate-docset "Hammerspoon"))))
 
 (after! separedit
   ;; edit Clojure (str) multiline blocks

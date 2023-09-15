@@ -481,11 +481,69 @@
 (use-package! dash-docs
   :defer t
   :config
-  (setq dash-docs-browser-func #'+browse-dash-doc))
+  (setq dash-docs-browser-func #'+browse-dash-doc)
+
+  ;;; overriding internal implementation fns for the time being
+  ;;; https://github.com/dash-docs-el/dash-docs/issues/23
+  (defun dash-docs-install-user-docset ()
+    "Download an unofficial docset with specified DOCSET-NAME and move its stuff to docsets-path."
+    (interactive)
+    (let* ((docsets (dash-docs-unofficial-docsets))
+           (docset-name (dash-docs-read-docset
+                         "Install docset"
+                         (mapcar 'car docsets)))
+           (docset (assoc-default docset-name docsets)))
+      (when (dash-docs--ensure-created-docsets-path (dash-docs-docsets-path))
+        (let ((url
+               (format "https://kapeli.com/feeds/zzz/user_contributed/build/%s/%s"
+                       (car docset)
+                       (cadr docset))))
+          (dash-docs--install-docset url (car docset))))))
+
+  (defun dash-docs-unofficial-docsets ()
+    "Return a list of lists with docsets contributed by users.
+The first element is the docset's name second the docset's archive url."
+    (let ((user-docs (assoc-default 'docsets
+                                    (dash-docs-read-json-from-url
+                                     "https://kapeli.com/feeds/zzz/user_contributed/build/index.json"))))
+      (mapcar (lambda (docset)
+                (list
+                 (assoc-default 'name docset)
+                 (car docset)
+                 (assoc-default 'archive docset)))
+              user-docs))))
 
 (use-package! consult-dash
-  :after embark
   :commands (consult-dash)
   :config
   (map! :map consult-dash-embark-keymap
-        :n "b" #'browse-url))
+        :n "b" #'browse-url)
+
+  (defun +consult-dash-doc (term)
+    (consult-dash term))
+
+  (set-lookup-handlers! 'lsp-mode
+    :definition #'+lsp-lookup-definition-handler
+    :references #'+lsp-lookup-references-handler
+    :documentation #'+consult-dash-doc
+    :implementations '(lsp-find-implementation :async t)
+    :type-definition #'lsp-find-type-definition)
+
+  (add-hook! (clojure-mode clojurec-mode clojurescript-mode)
+    (dash-docs-activate-docset "ClojureDocs"))
+
+  ;; (add-hook! 'lsp-mode-hook :append
+  ;;   (defun override-js-lookup-handlers-h ()
+  ;;     (set-lookup-handlers! '(js-mode rjsx-mode)
+  ;;       :documentation #'+consult-dash-doc)))
+
+  ;; (add-hook! '(js-mode-hook rjsx-mode-hook)
+  ;;   (defun js-mode-h ()
+  ;;     ;; lsp-describe is broken for javascript, use dash instead
+  ;;     (setq '+lookup-documentation-functions
+  ;;           (delete
+  ;;            'lsp-describe-thing-at-point
+  ;;            +lookup-documentation-functions))
+  ;;     (set-lookup-handlers! '(js-mode rjsx-mode)
+  ;;       :documentation #'+consult-dash-doc)))
+  )

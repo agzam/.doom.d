@@ -78,13 +78,24 @@
    'chatgpt-shell-system-prompts
    `("Leetcode" .
      ,(concat "Help user to solve Leetcode problems. "
+              "Structure responses in Org-Mode format and org-babel source blocks. "
               "Write solutions in javascript. "
-              "Avoid using 'for loops' whenever possible, using .map/.reduce instead."
-              "Comment on time and space complexity of each solution.")))
+              "Avoid using 'for loops' whenever possible, using .map/.reduce instead. "
+              "Comment on time and space complexity of each solution. "
+              "Advertise alternative algorithms and approaches for further research. ")))
+
+  ;; set default prompt to General
+  (setq chatgpt-shell-system-prompt
+        (- (length chatgpt-shell-system-prompts)
+           (length (member (assoc "General" chatgpt-shell-system-prompts)
+                           chatgpt-shell-system-prompts))))
 
   (add-hook! 'chatgpt-shell-mode-hook
     (defun set-chat-gpt-shell-keys-h ()
       (map! :map chatgpt-shell-mode-map
+            :i "RET" #'+default/newline
+            :i "s-<return>" #'shell-maker-submit
+            :i "s-RET" #'shell-maker-submit
             "C-c C-l" #'chatgpt-shell-clear-buffer
             (:localleader
              "s" #'chatgpt-shell-swap-system-prompt)

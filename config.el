@@ -277,7 +277,10 @@
        :desc "kill" "d" #'kill-this-buffer
        :desc "kill with window" "k" #'kill-buffer-and-window
        :desc "diff with file" "D" #'diff-current-buffer-with-file
-       :desc "kill some buffers" "s-d" #'spacemacs/kill-matching-buffers-rudely)
+       :desc "kill some buffers" "s-d" #'spacemacs/kill-matching-buffers-rudely
+       (:when (modulep! :custom web-browsing)
+         :desc "browser history" "h" #'browser-hist-search
+         :desc "browser tabs" "t" #'browser-goto-tab))
 
       (:prefix ("e" . "edit")
        :desc "edit indirect" "i" #'edit-indirect-region)
@@ -361,7 +364,6 @@
        (:when (modulep! :custom notmuch)
          :desc "notmuch" "m" #'notmuch)
        (:when (modulep! :custom web-browsing)
-         :desc "browser history" "b" #'browser-hist-search
          :desc "elfeed" "e" #'elfeed)
        (:when (modulep! :custom git)
          (:prefix ("g" . "git")

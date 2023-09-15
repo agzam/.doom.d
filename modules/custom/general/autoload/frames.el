@@ -147,6 +147,65 @@ it remains shown or hidden - whatever the previous value was."
        nil (if (< 0 new-x) new-x 0)
        (frame-parameter nil 'top)))))
 
+
+;;;###autoload
+(defun shrink-frame-width-from-right (&optional delta)
+  "Shrinks current frame from the right side subracting DELTA."
+  (interactive)
+  (when transient--window
+    (quit-restore-window transient--window))
+  (set-frame-width nil (- (frame-width) (or delta 2))))
+
+;;;###autoload
+(defun shrink-frame-width-from-left (&optional delta)
+  "Shrinks current frame from the left side subracting DELTA."
+  (interactive)
+  (when transient--window
+    (quit-restore-window transient--window))
+  (let* ((delta (or delta 20))
+         (frame-left-x (+ (frame-parameter nil 'left) (- delta 10)))
+         (disp-width (car (screen-width-height)))
+         (frame-right-x (+ (frame-parameter nil 'left)
+                           (frame-native-width)))
+         (at-right-edge? (<= disp-width frame-right-x)))
+    (set-frame-width nil (- (frame-native-width) delta) nil :pixelwise)
+    (unless at-right-edge?
+      (set-frame-position
+       nil frame-left-x
+       (frame-parameter nil 'top)))))
+
+;;;###autoload
+(defun widen-frame-width-to-the-right (&optional delta)
+  "Widen frame width adding DELTA on the right of the frame."
+  (interactive)
+  (when transient--window
+    (quit-restore-window transient--window))
+  (let* ((disp-width (car (screen-width-height)))
+         (new-w (+ (frame-native-width) (or delta 4)))
+         (frame-right-x (+ (frame-parameter nil 'left)
+                           (frame-native-width)))
+         (overflown? (< disp-width frame-right-x)))
+    (unless overflown?
+      (set-frame-width nil (if (< new-w disp-width)
+                               new-w
+                             disp-width) nil :pixelwise))))
+
+;;;###autoload
+(defun widen-frame-width-to-the-left (&optional delta)
+  "Widen frame width adding DELTA on the left of the frame."
+  (interactive)
+  (when transient--window
+    (quit-restore-window transient--window))
+  (let* ((delta (or delta 5))
+         (frame-left-x (- (frame-parameter nil 'left) (+ 10 delta)))
+         (at-zero? (< frame-left-x 0))
+         (new-w (+ (frame-native-width) delta)))
+    (unless at-zero?
+      (set-frame-width nil new-w nil :pixelwise))
+    (set-frame-position
+     nil (if at-zero? 0 frame-left-x)
+     (frame-parameter nil 'top))))
+
 ;;;###autoload
 (defun increase-frame-height (&optional delta)
   (interactive)
@@ -204,8 +263,10 @@ See: `(frame-position-display-spots)'  details."
     ("c" "center frame horizontally" center-frame-horizontally)
     ("m" "maximize frame" toggle-frame-maximized-undecorated)
     ("f" "full-screen" toggle-frame-fullscreen+)]
-   [("H" "shrink frame" shrink-frame-width :transient t)
-    ("L" "widen frame" widen-frame-width :transient t)
+   [("}" "shrink frame left" shrink-frame-width-from-left :transient t)
+    ("{" "shrink frame right" shrink-frame-width-from-right :transient t)
+    ("]" "widen frame right" widen-frame-width-to-the-right :transient t)
+    ("[" "widen frame left" widen-frame-width-to-the-left :transient t)
     ("J" "reduce frame height" reduce-frame-height :transient t)
     ("K" "increase frame height" increase-frame-height :transient t)]]
   [:hide always

@@ -9,10 +9,10 @@
   :config
   (setq
    ;; North of TX
-   calendar-latitude 33.16
-   calendar-longitude -96.93
-   circadian-themes '((:sunrise . ag-themes-spacemacs-light)
-                      (:sunset  . ag-themes-base16-ocean))))
+   ;; calendar-latitude 33.16
+   ;; calendar-longitude -96.93
+   circadian-themes '(("06:00" . ag-themes-spacemacs-light)
+                      ("20:00" . ag-themes-base16-ocean))))
 
 (use-package! rainbow-mode
   :defer t)

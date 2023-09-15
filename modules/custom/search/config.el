@@ -49,6 +49,9 @@
             (wolfram-alpha
              :name "Wolfram Alpha"
              :url "https://www.wolframalpha.com/input/?i=%s")
+            (hackernews
+             :name "HackerNews"
+             :url "https://hn.algolia.com/?q=%s")
             ,@search-engine-config-list))
     (dolist (engine search-engine-alist)
       (let ((func (intern (format "engine/search-%S" (car engine)))))
