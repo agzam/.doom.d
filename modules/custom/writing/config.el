@@ -275,4 +275,13 @@
         :n "q" #'kill-buffer-and-window))
 
 (use-package! wiktionary-bro
-  :commands (wiktionary-bro-dwim))
+  :commands (wiktionary-bro-dwim)
+  :config
+  (when (and (featurep 'evil))
+    (dolist (state '(normal visual insert))
+      (evil-make-intercept-map
+       (evil-get-auxiliary-keymap wiktionary-bro-mode-map state t t)
+       state))
+    (evil-define-key '(normal visual insert) wiktionary-bro-mode-map
+      (kbd "RET") #'wiktionary-bro-dwim
+      (kbd "<return>") #'wiktionary-bro-dwim)))

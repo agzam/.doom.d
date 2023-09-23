@@ -13,13 +13,14 @@
   ;; in both JXA and AppleScript, when you refer to an application, you're usually pointing directly to its location on
   ;; disk. For example, `Application('Safari')` works because there's an application named Safari.app in the
   ;; /Applications folder. So we really need to do some bullshit like this to find out the default browser app on Mac
-  (if (not (eq system-type 'darwin))
-      (user-error "This function only works on Mac.")
-    (string-trim
-     (shell-command-to-string
-      (concat "osascript -e \"tell application \\\"Finder\\\" to get the name of application file id"
-              "\\\"$(plutil -convert json -o - ~/Library/Preferences/com.apple.LaunchServices/com.apple.launchservices.secure.plist"
-              "| jq -r '.LSHandlers[] | select(.LSHandlerURLScheme==\"https\") | .LSHandlerRoleAll')\\\"\"")))))
+  (unless (eq system-type 'darwin) (user-error "This function only works on Mac."))
+  (unless (executable-find "jq") (user-error "jq is not found!"))
+  (string-trim
+   (shell-command-to-string
+    (concat
+     "osascript -e \"tell application \\\"Finder\\\" to get the name of application file id"
+     "\\\"$(plutil -convert json -o - ~/Library/Preferences/com.apple.LaunchServices/com.apple.launchservices.secure.plist"
+     "| jq -r '.LSHandlers[] | select(.LSHandlerURLScheme==\"https\") | .LSHandlerRoleAll')\\\"\""))))
 
 (defun browser-get-tabs ()
   "Using JXA reads browser tabs."
