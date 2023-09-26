@@ -64,6 +64,9 @@
          :desc "back to elisp" "s" #'+switch-to-last-elisp-buffer
          :desc "hide" "k" #'+hide-messages-window))
 
+  (map! :map lisp-interaction-mode-map
+        :i "C-j" #'eval-print-last-sexp)
+
   (add-hook! 'emacs-lisp-mode-hook
     (defun always-lexical-binding-h ()
       (setq lexical-binding t))))

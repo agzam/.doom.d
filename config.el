@@ -423,8 +423,7 @@
                "=" #'balance-windows-area)
       "x" nil
       (:prefix ("x" ."text")
-               "b" #'flyspell-correct-previous
-               "x" #'flyspell-correct-at-point
+               "x" #'jinx-correct-word
                (:when (modulep! :custom writing)
                  (:prefix ("l" . "language")
                   :desc "define" "d" #'define-it-at-point

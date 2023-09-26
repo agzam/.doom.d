@@ -78,3 +78,12 @@
 ;;;###autoload
 (defun +embark-project-search (target)
   (+vertico-file-search :query target))
+
+;;;###autoload
+(defun embark-open-externally+ (file)
+  "Extended version of `embark-open-externally'."
+  (interactive "fOpen: ")
+  (pcase (file-name-extension file)
+    ("mp3" (dired-file-to-mplayer file))
+    ("m4a" (dired-file-to-mplayer file))
+    (_ (embark-open-externally file))))

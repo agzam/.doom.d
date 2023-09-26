@@ -94,3 +94,15 @@
                (insert icon))
            (treemacs-return nil))
          (forward-line 1))))))
+
+;;;###autoload
+(defun dired-file-to-mplayer (&optional filename)
+  (interactive)
+  (let ((filename (or filename (dired-get-file-for-visit))))
+    (unless (get-buffer "*vterm*") (vterm))
+    (switch-to-buffer-other-window "*vterm*")
+    (vterm-send-string
+     (concat
+      "mplayer -af scaletempo=scale=1.3:speed=tempo -volume 80 -speed 1.3 "
+      "\"" filename "\""))
+    (vterm-send-return)))

@@ -285,3 +285,21 @@
     (evil-define-key '(normal visual insert) wiktionary-bro-mode-map
       (kbd "RET") #'wiktionary-bro-dwim
       (kbd "<return>") #'wiktionary-bro-dwim)))
+
+(use-package! jinx
+  :defer t
+  :hook (doom-first-file . global-jinx-mode)
+  :config
+  (add-to-list 'vertico-multiform-categories
+               '(jinx grid (vertico-grid-annotate . 20)))
+  (vertico-multiform-mode 1)
+
+  (map! :map (org-mode-map
+              markdown-mode-map
+              text-mode-map)
+        :i ", SPC" (cmd! (insert ", "))
+        :i ",," #'jinx-autocorrect-nearest+)
+
+  ;; (map! :map jinx-correct-map
+  ;;       "RET"  (cmd! (execute-kbd-macro (kbd "1"))))
+  )

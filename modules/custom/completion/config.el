@@ -334,6 +334,7 @@
          "m" #'embark-select
          "/" #'+embark-project-search)
    (:map embark-file-map
+         "x" #'embark-open-externally+
          "o" nil
          (:prefix ("o" . "open")
                   "j" (embark-split-action find-file +evil/window-split-and-follow)
