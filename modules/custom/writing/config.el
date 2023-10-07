@@ -294,11 +294,15 @@
                '(jinx grid (vertico-grid-annotate . 20)))
   (vertico-multiform-mode 1)
 
+  (setq jinx-languages "en_US ru_RU")
+
   (map! :map (org-mode-map
               markdown-mode-map
-              text-mode-map)
+              text-mode-map
+              chatgpt-shell-mode-map)
         :i ", SPC" (cmd! (insert ", "))
-        :i ",," #'jinx-autocorrect-nearest+)
+        :i ",," #'jinx-autocorrect-last+
+        :i ",." (cmd! (jinx-autocorrect-last+ :prompt)))
 
   ;; (map! :map jinx-correct-map
   ;;       "RET"  (cmd! (execute-kbd-macro (kbd "1"))))

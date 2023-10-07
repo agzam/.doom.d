@@ -25,18 +25,6 @@
       (setq line-spacing 9))))
 
 
-(use-package! gptel
-  :defer t
-  :config
-  (setq gptel--system-message-alist
-        `((default . "")
-          (programming . "You are a large language model and a careful programmer. Respond only with code unless explicitly asked.")
-          (writing . "You are a large language model and a writing assistant.")
-          (chat . "You are a large language model and a conversation partner.")))
-  (setq gptel-api-key #'+decrypt-open-ai-token)
-  (map! :map gptel-mode-map
-        :niv "s-<return>" #'gptel-send))
-
 (use-package! chatgpt-shell
   :defer t
   :commands (chatgpt-shell chatgpt-shell-post-prompt)
@@ -84,25 +72,27 @@
               "Comment on time and space complexity of each solution. "
               "Advertise alternative algorithms and approaches for further research. ")))
 
-  ;; set default prompt to General
+  ;; set default prompt to None
   (setq chatgpt-shell-system-prompt
         (- (length chatgpt-shell-system-prompts)
-           (length (member (assoc "General" chatgpt-shell-system-prompts)
+           (length (member (assoc "None" chatgpt-shell-system-prompts)
                            chatgpt-shell-system-prompts))))
 
-  (add-hook! 'chatgpt-shell-mode-hook
+  (add-hook! chatgpt-shell-mode
     (defun set-chat-gpt-shell-keys-h ()
       (map! :map chatgpt-shell-mode-map
             :i "RET" #'+default/newline
             :i "s-<return>" #'shell-maker-submit
             :i "s-RET" #'shell-maker-submit
+            :i
             "C-c C-l" #'chatgpt-shell-clear-buffer
             (:localleader
              "s" #'chatgpt-shell-swap-system-prompt)
             :map comint-mode-map
-            "C-c C-l" #'comint-clear-buffer)))
+            "C-c C-l" #'comint-clear-buffer))
+    #'jinx-mode)
 
-  (add-hook! 'comint-mode-hook #'cape-completion-at-point-functions-h))
+  (add-hook! comint-mode #'cape-completion-at-point-functions-h))
 
 (use-package! dall-e-shell
   :defer t

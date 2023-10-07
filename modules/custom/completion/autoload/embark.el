@@ -59,6 +59,7 @@
 (defun +browse-rfc-number-at-point ()
   "Reads RFC number at point."
   (interactive)
+  (require 'org)
   (if-let* ((rfc-pattern "\\b[rR][fF][cC][- ]?[0-9]+\\b")
             (bounds (org-in-regexp rfc-pattern 1))
             (rfc-num (string-to-number

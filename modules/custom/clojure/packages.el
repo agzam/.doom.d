@@ -11,3 +11,5 @@
 
 (package! logivew :recipe (:host github :repo "doublep/logview"))
 (package! datetime :recipe (:host github :repo "doublep/datetime"))
+
+(package! cider-storm :recipe (:host github :repo "jpmonettas/cider-storm"))

@@ -86,7 +86,7 @@
     (corfu-doc-terminal-mode)
     (corfu-terminal-mode))
 
-  (setq dabbrev-ignored-buffer-modes '(pdf-view-mode)))
+  (setq dabbrev-ignored-buffer-modes '(pdf-view-mode dired-mode vterm-mode)))
 
 (use-package! orderless
   :config
@@ -354,11 +354,11 @@
     embark-function-map
     "o" nil
     (:prefix ("d" . "definition")
-             "j" (embark-split-action xref-find-definitions +evil/window-split-and-follow)
-             "l" (embark-split-action xref-find-definitions +evil/window-vsplit-and-follow)
-             "h" (embark-split-action xref-find-definitions split-window-horizontally)
-             "k" (embark-split-action xref-find-definitions split-window-vertically)
-             "a" (embark-ace-action xref-find-definitions)))
+             "j" (embark-split-action embark-find-definition +evil/window-split-and-follow)
+             "l" (embark-split-action embark-find-definition +evil/window-vsplit-and-follow)
+             "h" (embark-split-action embark-find-definition split-window-horizontally)
+             "k" (embark-split-action embark-find-definition split-window-vertically)
+             "a" (embark-ace-action embark-find-definition)))
 
    (:map
     embark-url-map
@@ -368,7 +368,7 @@
     (:prefix
      ("c" . "convert")
      :desc "markdown link" "m" #'+link-plain->link-markdown
-     :desc "org-mode link" "O" #'+link-plain->link-org-mode
+     :desc "org-mode link" "o" #'+link-plain->link-org-mode
      :desc "bug-reference" "b" #'+link-plain->link-bug-reference))
 
    (:map embark-markdown-link-map
@@ -377,7 +377,7 @@
          "v" #'forge-visit-topic-via-url
          (:prefix
           ("c" . "convert")
-          :desc "org-mode link" "O" #'+link-markdown->link-org-mode
+          :desc "org-mode link" "o" #'+link-markdown->link-org-mode
           :desc "plain" "p" #'+link-markdown->link-plain
           :desc "bug-reference" "b" #'+link-markdown->link-bug-reference))
 
@@ -400,7 +400,7 @@
     (:prefix
      ("c" . "convert")
      :desc "markdown link" "m" #'+link-bug-reference->link-markdown
-     :desc "org-mode link" "O" #'+link-bug-reference->link-org-mode
+     :desc "org-mode link" "o" #'+link-bug-reference->link-org-mode
      :desc "plain" "p" #'+link-bug-reference->link-plain))
 
    (:map embark-rfc-number-map
@@ -418,7 +418,34 @@
     (:after edebug
             (:prefix ("D" . "debug")
                      "f" #'+edebug-instrument-symbol
-                     "F" #'edebug-remove-instrumentation))))
+                     "F" #'edebug-remove-instrumentation)))
+   (:map
+    (embark-identifier-map
+     embark-region-map
+     embark-sentence-map
+     embark-paragraph-map)
+    (:prefix
+     ("x" . "text")
+     (:when (modulep! :custom writing)
+       (:prefix ("l" . "language")
+        :desc "define" "d" #'define-it-at-point
+        :desc "sdcv" "l" #'sdcv-search-pointer
+        :desc "Merriam Webster" "m" #'mw-thesaurus-lookup-dwim
+        :desc "wiktionary" "w" #'wiktionary-bro-dwim)
+       (:prefix ("g" . "translate")
+        :desc "en->ru" "e" #'google-translate-query-translate-reverse
+        :desc "ru->en" "r" #'google-translate-query-translate
+        :desc "es->en" "s" #'+google-translate-es->en
+        :desc "en->es" "S" #'+google-translate-en->es
+        :desc "translate" "g" #'google-translate-at-point)
+       (:when (modulep! :custom chat)
+         (:prefix ("c" . "chatgpt")
+          :desc "chatgpt" "c" #'chatgpt-shell
+          :desc "check text" "e" #'+chatgpt-shell-improve-text
+          :desc "check w.prompt" "E" (cmd!
+                                      (let ((current-prefix-arg 2))
+                                        (call-interactively #'+chatgpt-shell-improve-text)))
+          :desc "region" "r" #'chatgpt-shell-send-and-review-region))))))
 
   (add-hook! 'embark-collect-mode-hook
     (defun visual-line-mode-off-h ()

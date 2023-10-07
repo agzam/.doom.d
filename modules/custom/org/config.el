@@ -540,3 +540,8 @@
   ;; :hook (org-mode . toc-org-enable)
   :config
   (setq toc-org-hrefify-default "gh"))
+
+(use-package! khoj
+  :after (org org-roam)
+  :config
+  (setq khoj-org-directories (list org-default-folder)))

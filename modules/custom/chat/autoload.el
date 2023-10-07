@@ -39,7 +39,7 @@
                  (buffer-substring-no-properties
                   (point-min)
                   (point-max))))
-         (default-prompt "Fix all possible mistakes in the following text, only improve it if you find it necessary:\n")
+         (default-prompt "Fix possible mistakes in the following text, improve it only if you find necessary. Do nothing if there's nothing to fix.:\n")
          (prompt (if prompt-str
                      (read-string "Prompt to use: "
                                   default-prompt

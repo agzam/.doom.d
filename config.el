@@ -26,10 +26,9 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 (setq
- doom-font (font-spec :family "JetBrains Mono" :size 15)
- doom-variable-pitch-font (font-spec :family "Karla" :size 18)
- ;; doom-theme 'spacemacs-light
- )
+ doom-font (font-spec :family "JetBrains Mono" :size 16)
+ doom-variable-pitch-font (font-spec :family "Verdana" :size 16)
+ doom-unicode-font (font-spec :family "Apple Color Emoji" :size 18))
 
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
