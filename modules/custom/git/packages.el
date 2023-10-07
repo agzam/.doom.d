@@ -3,17 +3,22 @@
 
 (package! magit)
 (package! compat)
-(package! emacsql-sqlite-builtin)
+;; (package! emacsql-sqlite-builtin)
 (package! forge)
 (package! gh-notify :recipe (:host github :repo "anticomputer/gh-notify" :branch "dev"))
 (package! git-link)
-(package! code-review :recipe (:host github :repo "wandersoncferreira/code-review"))
+;; (package! code-review :recipe (:host github :repo "wandersoncferreira/code-review")
+;; 	  :pin "26f426e99221a1f9356aabf874513e9105b68140")
+
+;; @tarsius broke Code-Review: https://github.com/wandersoncferreira/code-review/issues/245
+(package! code-review :recipe (:host github :repo "phelrine/code-review" :branch "fix/closql-update"))
+
 (package! gist)
 
-(package! transient :recipe (:host github :repo "magit/transient" )
-  ;; update breaks my transients, see: https://github.com/magit/transient/issues/219
-  :pin "0a3b22f169b84ab7a51dc83856b0b6487fdf41da"
-  )
+(package! transient :recipe (:host github :repo "magit/transient" ))
 
 (unpin! magit forge compat)
+
+(package! closql)
+
 (package! consult-gh :recipe (:host github :repo "armindarvish/consult-gh"))

@@ -95,7 +95,8 @@
      magit-submodule-list-columns nil nil #'string=))
    50)
 
-  (magit-transient-unblock-global-keys))
+  ;; (magit-transient-unblock-global-keys)
+  )
 
 (use-package! evil-collection-magit
   :when (modulep! :editor evil +everywhere)
@@ -157,8 +158,8 @@
   (transient-append-suffix 'magit-dispatch '(0 -1 -1)
     '("*" "Worktree" magit-worktree)))
 
-(use-package! emacsql-sqlite-builtin
-  :defer t)
+;; (use-package! emacsql-sqlite-builtin
+;;   :defer t)
 
 (use-package! forge
   ;; We defer loading even further because forge's dependencies will try to
@@ -212,8 +213,9 @@
   (map! :map gh-notify-mode-map
         :n "RET" #'gh-notify-visit-notification
         :n "q" #'kill-buffer-and-window
-        :after code-review
-        :n "s-r" #'gh-notify-code-review-forge-pr-at-point)
+        ;; (:after code-review
+        ;;  :n "s-r" #'gh-notify-code-review-forge-pr-at-point)
+        )
 
   (map! :map gh-notify-mode-map
         "C-c C-o" #'gh-notify-forge-browse-topic-at-point
@@ -262,7 +264,14 @@
     :around #'gh-notify-render-notification
     (replace-regexp-in-string
      "\\[subscribed\\]" ""
-     (funcall fn notification))))
+     (funcall fn notification)))
+
+  (defadvice! gh-notify-visit-notification-other-window-a (fn arg)
+    "Always open topics in other-window."
+    :around #'gh-notify-visit-notification
+    (let* ((lexical-binding t)
+           (magit-display-buffer-function #'magit-display-buffer-traditional))
+      (funcall-interactively fn arg))))
 
 (use-package! code-review
   :after (magit forge)

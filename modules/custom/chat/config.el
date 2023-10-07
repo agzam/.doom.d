@@ -102,3 +102,13 @@
   (ob-dall-e-shell-setup)
   (setq dall-e-shell-openai-key
         (auth-source-pick-first-password :host "api.openai.com")))
+
+(use-package! openai
+  :defer t
+  :config
+  (setq openai-key #'openai-key-auth-source)
+
+
+
+
+  )
