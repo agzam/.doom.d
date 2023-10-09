@@ -5,7 +5,7 @@
 
 (defvar org-default-folder
   (cond
-   (IS-MAC "~/Library/CloudStorage/Dropbox/org/")
+   (IS-MAC "/Users/ag/Library/CloudStorage/Dropbox")
    (IS-LINUX "~/org/")))
 
 (global-set-key (kbd "C-c C-f") #'org-roam-node-find)
@@ -541,3 +541,9 @@
   ;; :hook (org-mode . toc-org-enable)
   :config
   (setq toc-org-hrefify-default "gh"))
+
+(use-package! khoj
+  :after (org org-roam)
+  :config
+  (setq khoj-org-directories (list org-default-folder))
+  (add-hook! org-roam-mode #'khoj--server-start))
