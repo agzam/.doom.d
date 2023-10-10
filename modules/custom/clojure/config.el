@@ -332,5 +332,5 @@
   :config
   (defvar cider-storm-styles-path
     (expand-file-name
-     "~/.doom.d/modules/custom/clojure/flow-storm-styles.css"))
+     "~/.config/flowstorm/styles.css"))
   (setq cider-storm-flow-storm-theme 'light))
