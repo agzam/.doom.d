@@ -81,3 +81,23 @@ ago. With a prefix argument opens `jinx-correct-word' dialog."
               (setq jinx-autocorrect--ts (current-time))
               (setq jinx-autocorrect--pos pos-beg)))
           (undo-auto-amalgamate))))))
+
+(defun insert-comma ()
+  "Cleverly insert comma."
+  (interactive)
+  (cond
+   ;; I don't want char-equal to fail when (char-before) returns nil
+   ;; so we use 'default char' #x1F436 which represents 🐶
+   ((char-equal ?\s (or (char-before) #x1F436))
+    (progn
+      (re-search-backward "\\>")
+      (insert ",")
+      (forward-char)))
+
+   ((char-equal ?\s (or (char-after) #x1F436))
+    (progn
+      (insert ",")
+      (forward-char)
+      (delete-char 1)))
+
+   (t (insert ", "))))

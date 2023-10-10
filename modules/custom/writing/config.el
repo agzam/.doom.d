@@ -298,7 +298,7 @@
               markdown-mode-map
               text-mode-map
               chatgpt-shell-mode-map)
-        :i ", SPC" (cmd! (insert ", "))
+        :i ", SPC" #'insert-comma
         :i ",," #'jinx-autocorrect-last+
         :i ",." (cmd! (jinx-autocorrect-last+ :prompt)))
 
