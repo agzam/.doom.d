@@ -22,7 +22,9 @@
     (defun flycheck-off ()
       (flycheck-mode -1)))
   (map! :localleader
-        :map (emacs-lisp-mode-map lisp-data-mode-map)
+        :map (emacs-lisp-mode-map
+              lisp-data-mode-map
+              lisp-interaction-mode-map)
         :desc "Expand macro" "m" #'macrostep-expand
         (:prefix ("d" . "debug")
                  "f" #'+emacs-lisp/edebug-instrument-defun-on
@@ -63,6 +65,9 @@
          :desc "clear" "l" #'erase-messages-buffer
          :desc "back to elisp" "s" #'+switch-to-last-elisp-buffer
          :desc "hide" "k" #'+hide-messages-window))
+
+  (map! :map lisp-interaction-mode-map
+        :i "C-j" #'eval-print-last-sexp)
 
   (add-hook! 'emacs-lisp-mode-hook
     (defun always-lexical-binding-h ()

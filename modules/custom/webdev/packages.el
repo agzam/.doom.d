@@ -9,3 +9,7 @@
   (package! xref-js2))
 
 (package! html-to-hiccup)
+
+(package! tide)
+
+(package! js-comint)

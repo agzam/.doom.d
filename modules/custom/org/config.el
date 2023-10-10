@@ -5,7 +5,7 @@
 
 (defvar org-default-folder
   (cond
-   (IS-MAC "/Users/ag/Library/CloudStorage/Dropbox")
+   (IS-MAC "/Users/ag/Library/CloudStorage/Dropbox/org/")
    (IS-LINUX "~/org/")))
 
 (global-set-key (kbd "C-c C-f") #'org-roam-node-find)
@@ -36,8 +36,8 @@
    ;; https://github.com/doomemacs/doomemacs/issues/6380
    ;; org-fold-core-style 'overlays
 
-   org-element-use-cache nil
-   org-element-cache-persistent nil
+   ;; org-element-use-cache nil
+   ;; org-element-cache-persistent nil
    )
 
   (add-to-list
@@ -123,7 +123,6 @@
    'org-mode-hook
    #'org-indent-mode
    (defun flycheck-disable-h () (flycheck-mode -1))
-   (defun flyspell-enable-h () (flyspell-mode +1))
    #'yas-minor-mode-on)
 
   (add-hook! 'org-capture-mode-hook #'recenter)

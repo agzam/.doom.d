@@ -3,5 +3,5 @@
 
 (package! telega)
 
-(package! gptel :recipe (:host github :repo "karthink/gptel"))
 (package! chatgpt-shell :recipe (:host github :repo "xenodium/chatgpt-shell" :files ("*.el")))
+(package! openai :recipe (:host github :repo "emacs-openai/openai" :files ("*.el")))

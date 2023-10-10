@@ -23,26 +23,24 @@
      (window . root)
      (window-width . 0.30))))
 
-(use-package! lsp-grammarly
-  :defer t
-  :commands spacehammer/edit-with-emacs lsp-grammarly-check-grammar
-  :hook ((text-mode . lsp)
-         (markdown-mode . lsp))
-  :init
-  (setq lsp-grammarly-auto-activate nil)
-  :config
-  (setq lsp-grammarly-domain "technical"
-        lsp-grammarly-audience "expert")
-  ;; TODO
-  ;;(setq lsp-grammarly-active-modes (remove 'org-mode lsp-grammarly-active-modes))
+;; (use-package! lsp-grammarly
+;;   :defer t
+;;   :commands (spacehammer/edit-with-emacs lsp-grammarly-resume)
+;;   :hook ((text-mode . lsp)
+;;          (markdown-mode . lsp))
+;;   :config
+;;   (setq lsp-grammarly-domain "technical"
+;;         lsp-grammarly-audience "expert")
+;;   ;; TODO
+;;   ;;(setq lsp-grammarly-active-modes (remove 'org-mode lsp-grammarly-active-modes))
 
-  (defadvice! lsp-grammarly-check-grammar-a ()
-    "Set a temp file for the buffer, if there's no buffer-file, e.g., source blocks."
-    :before #'lsp-grammarly-check-grammar
-    (unless (buffer-file-name)
-      (set-visited-file-name (format "/tmp/%s" (uuidgen-4)))
-      (set-buffer-modified-p nil)
-      (lsp))))
+;;   (defadvice! lsp-grammarly-check-grammar-a ()
+;;     "Set a temp file for the buffer, if there's no buffer-file, e.g., source blocks."
+;;     :before #'lsp-grammarly-resume
+;;     (unless (buffer-file-name)
+;;       (set-visited-file-name (format "/tmp/%s" (uuidgen-4)))
+;;       (set-buffer-modified-p nil)
+;;       (lsp))))
 
 (use-package! mw-thesaurus
   :defer t
@@ -275,4 +273,35 @@
         :n "q" #'kill-buffer-and-window))
 
 (use-package! wiktionary-bro
-  :commands (wiktionary-bro-dwim))
+  :commands (wiktionary-bro-dwim)
+  :config
+  (when (and (featurep 'evil))
+    (dolist (state '(normal visual insert))
+      (evil-make-intercept-map
+       (evil-get-auxiliary-keymap wiktionary-bro-mode-map state t t)
+       state))
+    (evil-define-key '(normal visual insert) wiktionary-bro-mode-map
+      (kbd "RET") #'wiktionary-bro-dwim
+      (kbd "<return>") #'wiktionary-bro-dwim)))
+
+(use-package! jinx
+  :defer t
+  :hook (doom-first-file . global-jinx-mode)
+  :config
+  (add-to-list 'vertico-multiform-categories
+               '(jinx grid (vertico-grid-annotate . 20)))
+  (vertico-multiform-mode 1)
+
+  (setq jinx-languages "en_US ru_RU")
+
+  (map! :map (org-mode-map
+              markdown-mode-map
+              text-mode-map
+              chatgpt-shell-mode-map)
+        :i ", SPC" (cmd! (insert ", "))
+        :i ",," #'jinx-autocorrect-last+
+        :i ",." (cmd! (jinx-autocorrect-last+ :prompt)))
+
+  ;; (map! :map jinx-correct-map
+  ;;       "RET"  (cmd! (execute-kbd-macro (kbd "1"))))
+  )

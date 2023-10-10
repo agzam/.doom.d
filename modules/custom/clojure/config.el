@@ -10,11 +10,14 @@
    '+lookup-provider-url-alist
    '("Clojure Docs" "https://clojuredocs.org/search?q=%s"))
 
-  (add-hook! '(clojure-mode-local-vars-hook
-               clojurec-mode-local-vars-hook
-               clojurescript-mode-local-vars-hook)
+  (add-hook! (clojure-mode-local-vars
+              clojurec-mode-local-vars
+              clojurescript-mode-local-vars)
     (defun +clojure-disable-lsp-indentation-h ()
       (setq-local lsp-enable-indentation nil))
+    (defun +clojure-mode-lookup-handlers ()
+      (set-lookup-handlers! 'clojure-mode
+        :documentation #'+consult-dash-doc))
     #'lsp!)
 
   (after! lsp-clojure
@@ -24,9 +27,9 @@
                  clojurex-mode))
       (add-to-list 'lsp-language-id-configuration (cons m "clojure"))))
 
-  (add-hook! 'clojure-mode-hook #'add-edn-imenu-regexp-h)
+  (add-hook! clojure-mode #'add-edn-imenu-regexp-h)
 
-  (add-hook! 'clojurescript-mode-hook
+  (add-hook! clojurescript-mode
     (defun add-reframe-regs-to-imenu ()
       (add-to-list
        'imenu-generic-expression
@@ -283,7 +286,7 @@
   :config
   (set-lookup-handlers! 'fennel-mode
     :documentation #'+consult-dash-doc)
-  (add-hook! 'fennel-mode-hook
+  (add-hook! fennel-mode
     (defun fennel-mode-h ()
      (dash-docs-activate-docset "Hammerspoon"))))
 
@@ -323,3 +326,11 @@
   (add-hook! 'separedit-buffer-creation-hook
     (defun separedit-set-fill-column-h ()
       (setq-local fill-column 80))))
+
+(use-package! cider-storm
+  :after clojure-mode
+  :config
+  (defvar cider-storm-styles-path
+    (expand-file-name
+     "~/.doom.d/modules/custom/clojure/flow-storm-styles.css"))
+  (setq cider-storm-flow-storm-theme 'light))

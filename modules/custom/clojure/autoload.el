@@ -312,3 +312,13 @@ With ARG, kills all buffers, not only in the current project"
     (replace-regexp-in-region "^\\s-*$" "\\\\n" (point-min))
     (replace-regexp-in-region "^" "\"" (point-min))
     (replace-regexp-in-region ".$" "\\& \"" (point-min))))
+
+;;;###autoload
+(defun cider-storm-storm-start-gui+ ()
+  (interactive)
+  (cider-storm--ensure-connected
+   (cider-interactive-eval
+    (format
+     "((requiring-resolve 'flow-storm.api/local-connect) {:theme :%s :styles \"%s\"})"
+     cider-storm-flow-storm-theme
+     cider-storm-styles-path))))

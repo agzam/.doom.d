@@ -106,7 +106,8 @@
   (setq dired-use-ls-dired t
         dired-dwim-target t
         dired-kill-when-opening-new-dired-buffer nil
-        dired-do-revert-buffer t)
+        dired-do-revert-buffer t
+        remote-file-name-inhibit-delete-by-moving-to-trash t)
 
   (put 'dired-find-alternate-file 'disabled nil)
 

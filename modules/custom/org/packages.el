@@ -66,5 +66,7 @@
 
 (package! anki-editor)
 
-(package! org-transclusion :recipe (:host github :repo "nobiot/org-transclusion"))
+;; (package! org-transclusion :recipe (:host github :repo "nobiot/org-transclusion"))
 (package! toc-org)
+
+(package! khoj :recipe (:host github :repo "khoj-ai/khoj"))

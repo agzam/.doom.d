@@ -13,7 +13,7 @@
     (add-to-list 'compilation-error-regexp-alist 'node)
     (add-to-list 'compilation-error-regexp-alist-alist
                  '(node "^[[:blank:]]*at \\(.*(\\|\\)\\(.+?\\):\\([[:digit:]]+\\):\\([[:digit:]]+\\)"
-                        2 3 4)))
+                   2 3 4)))
   :config
   ;; (set-repl-handler! 'rjsx-mode #'+javascript/open-repl)
   (set-electric! 'rjsx-mode :chars '(?\} ?\) ?. ?:))
@@ -42,7 +42,46 @@
     :init
     (setq xref-js2-search-program 'rg)
     (set-lookup-handlers! 'rjsx-mode
-      :xref-backend #'xref-js2-xref-backend)))
+      :xref-backend #'xref-js2-xref-backend
+      :documentation #'+consult-dash-doc)))
+
+(use-package! tide
+  :hook (tide-mode . tide-hl-identifier-mode)
+  :config
+  ;; navigation
+  (set-lookup-handlers! 'tide-mode :async t
+    :xref-backend #'xref-tide-xref-backend
+    :documentation #'tide-documentation-at-point)
+
+  (setq tide-completion-detailed nil
+        tide-always-show-documentation nil
+        ;; Fix #1792: by default, tide ignores payloads larger than 100kb. This
+        ;; is too small for larger projects that produce long completion lists,
+        ;; so we up it to 512kb.
+        tide-server-max-response-length 524288
+        ;; We'll handle it
+        tide-completion-setup-company-backend nil)
+
+  ;; Resolve to `doom-project-root' if `tide-project-root' fails
+  (advice-add #'tide-project-root :override #'+javascript-tide-project-root-a)
+
+  ;; Cleanup tsserver when no tide buffers are left
+  (add-hook! 'tide-mode-hook
+    (add-hook 'kill-buffer-hook #'+javascript-cleanup-tide-processes-h
+              nil 'local))
+
+  ;; Eldoc is activated too soon and disables itself, thinking there is no eldoc
+  ;; support in the current buffer, so we must re-enable it later once eldoc
+  ;; support exists. It is set *after* tide-mode is enabled, so enabling it on
+  ;; `tide-mode-hook' is too early, so...
+  (advice-add #'tide-setup :after #'eldoc-mode)
+
+  (map! :localleader
+        :map tide-mode-map
+        "R"   #'tide-restart-server
+        "f"   #'tide-format
+        "rrs" #'tide-rename-symbol
+        "roi" #'tide-organize-imports))
 
 (use-package! emmet-mode
   :preface (defvar emmet-mode-keymap (make-sparse-keymap))
@@ -79,4 +118,7 @@
           (org-src-mode 1))))))
 
 (use-package! html-to-hiccup
+  :defer t)
+
+(use-package! js-comint
   :defer t)
