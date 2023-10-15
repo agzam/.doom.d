@@ -359,6 +359,10 @@
              "h" (embark-split-action embark-find-definition split-window-horizontally)
              "k" (embark-split-action embark-find-definition split-window-vertically)
              "a" (embark-ace-action embark-find-definition)))
+   (:map
+    embark-org-heading-map
+    (:prefix ("r" . "roam")
+     :desc "add ref" "u" #'add-roam-ref-for-active-tab))
 
    (:map
     embark-url-map

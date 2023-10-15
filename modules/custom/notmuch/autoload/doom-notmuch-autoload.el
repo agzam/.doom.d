@@ -82,7 +82,7 @@
 (defun +notmuch/search-delete ()
   (interactive)
   (notmuch-search-add-tag +notmuch-delete-tags)
-  (notmuch-tree-next-message))
+  (notmuch-tree-prev-message))
 
 ;;;###autoload
 (defun +notmuch/tree-delete ()

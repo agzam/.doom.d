@@ -82,6 +82,7 @@ ago. With a prefix argument opens `jinx-correct-word' dialog."
               (setq jinx-autocorrect--pos pos-beg)))
           (undo-auto-amalgamate))))))
 
+;;;###autoload
 (defun insert-comma ()
   "Cleverly insert comma."
   (interactive)
@@ -90,14 +91,11 @@ ago. With a prefix argument opens `jinx-correct-word' dialog."
    ;; so we use 'default char' #x1F436 which represents 🐶
    ((char-equal ?\s (or (char-before) #x1F436))
     (progn
-      (re-search-backward "\\>")
+      (re-search-backward "\\>") ; find the previous word boundary
       (insert ",")
       (forward-char)))
-
    ((char-equal ?\s (or (char-after) #x1F436))
     (progn
       (insert ",")
-      (forward-char)
-      (delete-char 1)))
-
+      (forward-char)))
    (t (insert ", "))))

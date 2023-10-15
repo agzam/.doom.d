@@ -28,13 +28,15 @@
           (format
            "const browser = Application(\"%s\");
             let tabsInfo = [];
+            const activeTabId = browser.windows()[0].activeTab.id();
             browser.windows().forEach((window, windowIndex) => {
             window.tabs().forEach((tab, tabIndex) => {
               let tabInfo = {
                 windowIndex: windowIndex + 1,
                 tabIndex: tabIndex + 1,
                 url: tab.url(),
-                title: tab.name()
+                title: tab.name(),
+                active: activeTabId === tab.id() ? true : false
               };
               tabsInfo.push(tabInfo);
             });
@@ -118,3 +120,34 @@ jump to selected tab, activating it in the browser."
          (winnum (match-string 1 selected))
          (tabnum (match-string 2 selected)))
     (browser-activate-tab winnum tabnum)))
+
+(defun browser--get-active-tab ()
+  (thread-last
+    (browser-get-tabs)
+    (seq-filter (lambda (tab) (eq t (plist-get tab :active))))
+    (car-safe)))
+
+;;;###autoload
+(defun browser-insert-link-from-active-tab ()
+  "Insert link to currently active tab in the browser."
+  (interactive)
+  (when-let* ((tab (browser--get-active-tab))
+              (url (plist-get tab :url))
+              (title (replace-regexp-in-string
+                      "\\(^\\(([0-9]+)\\)\\s-*\\)" ""
+                      (plist-get tab :title))))
+    (cond
+     ((eq major-mode 'markdown-mode)
+      (insert (format "[%s](%s)" title url)))
+     ((eq major-mode 'org-mode)
+      (insert (format "[[%s][%s]]" url title)))
+     (t (insert url)))))
+
+;;;###autoload
+(defun add-roam-ref-for-active-tab ()
+  "Adds a roam_ref property for current heading in org mode, using url from active browser tab."
+  (interactive)
+  (when-let* ((tab (browser--get-active-tab))
+              (url (plist-get tab :url)))
+    (org-id-get-create)
+    (org-roam-ref-add url)))

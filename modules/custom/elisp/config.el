@@ -115,3 +115,6 @@
                         "/opt/homebrew/share/man"
                         "/usr/X11/man"
                         "/Library/Apple/usr/share/man")))
+
+(use-package! elisp-autofmt
+  :after elisp-mode)

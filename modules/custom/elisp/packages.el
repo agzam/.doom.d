@@ -7,3 +7,4 @@
 (package! evilify-edebug :recipe (:local-repo "evilify-edebug" :files ("*.el")))
 
 (unpin! buttercup)
+(package! elisp-autofmt)
