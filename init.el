@@ -211,4 +211,6 @@
        web-browsing
        flutter
        chat
+       nix
+       golang
        )
