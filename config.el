@@ -26,7 +26,7 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 (setq
- doom-font (font-spec :family "JetBrains Mono" :size 16)
+ doom-font (font-spec :family "Fira Code" :size 16)
  doom-variable-pitch-font (font-spec :family "Verdana" :size 16)
  doom-unicode-font (font-spec :family "Apple Color Emoji" :size 18))
 
@@ -67,6 +67,7 @@
  doom-localleader-key ","
  doom-localleader-alt-key "C-,"
  chemacs-current-emacs-profile "doom"
+ scroll-margin 1
  evil-want-C-u-scroll nil
  ;; auto-hscroll-mode 'current-line
  default-input-method 'russian-computer
@@ -488,3 +489,18 @@
 
 (after! epa
   (setq epg-pinentry-mode 'loopback))
+
+(use-package! ligature
+  :config
+  (ligature-set-ligatures 't '("www"))
+  (ligature-set-ligatures 'prog-mode '("www" "**" "***" "**/" "*>" "*/" "\\\\" "\\\\\\" "{-" "::"
+                                       ":::" ":=" "!!" "!=" "!==" "-}" "----" "-->" "->" "->>"
+                                       "-<" "-<<" "-~" "#{" "#[" "##" "###" "####" "#(" "#?" "#_"
+                                       "#_(" ".-" ".=" ".." "..<" "..." "?=" "??" ";;" "/*" "/**"
+                                       "/=" "/==" "/>" "//" "///" "&&" "||" "||=" "|=" "|>" "^=" "$>"
+                                       "++" "+++" "+>" "=:=" "==" "===" "==>" "=>" "=>>" "<="
+                                       "=<<" "=/=" ">-" ">=" ">=>" ">>" ">>-" ">>=" ">>>" "<*"
+                                       "<*>" "<|" "<|>" "<$" "<$>" "<!--" "<-" "<--" "<->" "<+"
+                                       "<+>" "<=" "<==" "<=>" "<=<" "<>" "<<" "<<-" "<<=" "<<<"
+                                       "<~" "<~~" "</" "</>" "~@" "~-" "~>" "~~" "~~>" "%%"))
+  (global-ligature-mode 't))

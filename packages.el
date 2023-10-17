@@ -80,3 +80,5 @@
 ;; (package! dash)
 ;; (package! f)
 ;; (package! pkg-info)
+
+(package! ligature)
