@@ -76,7 +76,8 @@ gets the name suitable for :require of ns declaration."
   (interactive "P")
   (let* ((use-results (lambda (x)
                         (message x)
-                        (kill-new x)))
+                        (kill-new x)
+                        x))
          (sym (cond ((cider-connected-p)
                      (let ((cb (lambda (x)
                                  (when-let ((v (nrepl-dict-get x "value"))
@@ -322,3 +323,22 @@ With ARG, kills all buffers, not only in the current project"
      "((requiring-resolve 'flow-storm.api/local-connect) {:theme :%s :styles \"%s\"})"
      cider-storm-flow-storm-theme
      cider-storm-styles-path))))
+
+;;;###autoload
+(defun clj-fully-qualified-symbol-with-gh-link (&optional main-branch?)
+  "Returns a markdown link to line number on GH with a Symbol Name"
+  (interactive "P")
+  (let* ((git-link-default-branch (when main-branch? (magit-main-branch)))
+         (url (git-link-kill))
+         (symbol (let ((inhibit-message t))
+                   (clj-fully-qualified-symbol-at-point))))
+    ;; I have to run it within a timer, because
+    ;; clj-fully-qualified-symbol-at-point has a timer
+    ;; that sucks, even though works
+    (run-with-timer
+     0.06 nil
+     (lambda ()
+       (let ((link (format "[%s](%s)" symbol url)))
+         (message link)
+         (kill-new link)
+         link)))))

@@ -42,7 +42,7 @@
         (:prefix ("g" . "goto")
                  "f" #'find-function
                  "v" #'find-variable
-                 "l" #'find-library
+                 "l" #'elisp-fully-qualified-symbol-with-gh-link
                  "d" #'xref-find-definitions
                  "D" #'xref-find-definitions-other-window)
         (:prefix  ("h" . "help")

@@ -57,9 +57,11 @@ anything like: RFC 123, rfc-123, RFC123 or rfc123."
   (when-let* ((ref (+embark-target-markdown-link-at-point))
               (bounds (nthcdr 2 ref))
               (url (nth 3 (markdown-link-at-pos (point))))
+              (label (nth 2 (markdown-link-at-pos (point))))
               (link (format "[[%s][%s]]" url
-                            (or (get-gh-item-title url)
-                                (org-cliplink-retrieve-title-synchronously url)))))
+                            (if label label
+                             (or (get-gh-item-title url)
+                                 (org-cliplink-retrieve-title-synchronously url))))))
     (delete-region (car bounds) (cdr bounds))
     (insert link)))
 

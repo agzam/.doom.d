@@ -330,15 +330,13 @@
         consult-gh-preview-buffer-mode 'org-mode
         consult-gh-confirm-before-clone t
         consult-gh-ask-for-path-before-save t
-        consult-gh-file-action 'consult-gh--files-view-action
-        consult-gh-issue-action 'consult-gh--issue-view-action+
-        consult-gh-repo-action (lambda (x)
-                                 (interactive)
-                                 (consult-gh--repo-view-action
-                                  (car x)))
+        consult-gh-file-action #'consult-gh--files-view-action
+        consult-gh-issue-action #'consult-gh--view-action+
+        consult-gh-pr-action #'consult-gh--view-action+
+        consult-gh-repo-action #'consult-gh--repo-browse-url-action
         consult-gh-prioritize-local-folder t)
 
-  (dolist (repo '("agzam" "advthreat" "threatgrid"))
+  (dolist (repo '("agzam" "zerocmd"))
     (add-to-list 'consult-gh-default-orgs-list repo))
 
   (add-to-list 'savehist-additional-variables 'consult-gh--known-orgs-list)

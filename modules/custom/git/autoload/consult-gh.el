@@ -8,13 +8,20 @@
   (message "Deleted '%s' org from list of orgs." x))
 
 ;;;###autoload
-(defun consult-gh--issue-view-action+ ()
+(defun consult-gh--view-action+ (cand)
   (interactive)
-  (lambda (cand)
-    (when-let ((url (thread-last
-                      '(:repo :issue)
-                      (seq-map
-                       (lambda (k)
-                         (plist-get (text-properties-at 0 cand) k)))
-                      (apply #'format "https://github.com/%s/issues/%s"))))
-      (funcall-interactively #'forge-visit-topic-via-url url))))
+  (when-let* ((url
+               (thread-last
+                 '(:repo :issue :pr)
+                 (seq-map
+                  (lambda (k)
+                    (when-let ((x (plist-get (cdr cand) k)))
+                      (substring-no-properties x))))
+                 (apply
+                  (lambda (repo issue pr)
+                    (format
+                     "https://github.com/%s/%s/%s"
+                     repo (if issue "issues" "pull")
+                     (or issue pr)))))))
+    (funcall-interactively
+     #'forge-visit-topic-via-url url)))

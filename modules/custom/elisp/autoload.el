@@ -117,3 +117,26 @@ its own buffer."
         (erase-buffer)
         (insert log)
         (switch-to-buffer-other-window (current-buffer))))))
+
+;;;###autoload
+(defun elisp-fully-qualified-name ()
+  "Returns fully qualified name of a function at point."
+  (when-let* ((sym (symbol-at-point))
+              (lib (find-function-library 'erase-messages-buffer))
+              (ns (file-name-sans-extension
+                   (file-name-nondirectory (cdr lib))))
+              (name (format "%s/%s" ns sym)))
+    name))
+
+;;;###autoload
+(defun elisp-fully-qualified-symbol-with-gh-link (&optional main-branch?)
+  "Returns a markdown link to line number on GH with a Symbol Name"
+  (interactive "P")
+  (when-let* ((url (let ((git-link-default-branch
+                          (when main-branch? (magit-main-branch))))
+                     (git-link-kill)))
+              (symbol (elisp-fully-qualified-name))
+              (link (format "[%s](%s)" symbol url)))
+    (message link)
+    (kill-new link)
+    link))

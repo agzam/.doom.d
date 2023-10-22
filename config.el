@@ -148,7 +148,9 @@
 
 (after! evil
   (setq evil-jumps-cross-buffers t
-        evil-move-cursor-back nil)
+        evil-move-cursor-back nil
+        evil-in-single-undo t
+        evil-want-fine-undo t)
   (map! :map 'evil-visual-state-map "u" #'undo))
 
 (after! better-jumper
@@ -371,7 +373,11 @@
        (:when (modulep! :custom chat)
          (:prefix ("c" . "chat")
                   "g" #'chatgpt-shell
-                  "t" #'telega)))
+                  "t" #'telega))
+       "r" nil
+       (:prefix ("r" . "roam")
+                "r" #'org-roam-node-find
+                "t" #'org-roam-dailies-find-today))
 
       (:prefix ("p" . "projects")
                (:after projectile

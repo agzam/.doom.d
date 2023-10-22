@@ -38,7 +38,9 @@
                            (lnk (call-interactively #'git-link)))
                        (kill-new lnk)
                        (prin1 lnk))))))
-      (when browse? (browse-url link)))))
+      (if browse?
+          (browse-url link)
+        link))))
 
 ;;;###autoload
 (defun git-link-forge-topic ()

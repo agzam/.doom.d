@@ -188,7 +188,8 @@
                         "b" #'cider-pop-back
                         "g" #'cider-find-var
                         "n" #'cider-find-ns
-                        "s" #'cider-scratch)
+                        "s" #'cider-scratch
+                        "l" #'clj-fully-qualified-symbol-with-gh-link)
                (:prefix ("h" . "help")
                         "n" #'cider-find-ns
                         "a" #'cider-apropos

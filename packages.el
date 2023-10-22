@@ -82,3 +82,5 @@
 ;; (package! pkg-info)
 
 (package! ligature)
+
+(unpin! evil-nerd-commenter)

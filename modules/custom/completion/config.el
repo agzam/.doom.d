@@ -10,7 +10,7 @@
   (setq
    corfu-separator ?\s
    corfu-auto t
-   corfu-auto-delay 0.4
+   corfu-auto-delay 0.5
    corfu-preview-current nil ; Disable current candidate preview
    corfu-on-exact-match 'insert
    corfu-quit-no-match 'separator

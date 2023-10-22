@@ -262,7 +262,8 @@
   (remove-hook! 'org-mode-hook #'writegood-mode))
 
 (after! markdown-mode
-  (require 'lsp-marksman))
+  (require 'lsp-marksman)
+  (advice-add 'evil-yank :around #'maybe-yank-as-org))
 
 (use-package! youtube-sub-extractor
   :commands (youtube-sub-extractor-extract-subs)

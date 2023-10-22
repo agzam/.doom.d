@@ -129,7 +129,9 @@
 
   (setq org-export-with-smart-quotes t
         org-html-validation-link nil
-        org-latex-prefer-user-labels t)
+        org-latex-prefer-user-labels t
+        org-ascii-text-width 900 ; don't wrap text
+        org-ascii-links-to-notes nil)
   (add-to-list 'org-export-backends 'md)
 
   (setq org-capture-bookmark nil)
@@ -169,7 +171,11 @@
    org-roam-v2-ack t
    org-roam-directory org-default-folder
    org-roam-db-location (concat org-default-folder "org-roam.db")
-   org-roam-dailies-directory "daily/")
+   org-roam-dailies-directory "daily/"
+
+   ;; org-mode doesn't know how to properly export with roam links
+   org-export-with-broken-links t
+   )
   :config
   (map! :map org-mode-map
         :i "[[" #'org-roam-node-insert+
