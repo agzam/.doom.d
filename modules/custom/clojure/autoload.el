@@ -93,13 +93,13 @@ gets the name suitable for :require of ns declaration."
                        sym))
 
                     ((lsp--capability :hoverProvider)
-                     (let ((s (-some->
-                                  "textDocument/hover"
-                                (lsp--make-request
-                                 (lsp--text-document-position-params))
-                                (lsp--send-request)
-                                (lsp:hover-contents)
-                                (plist-get :value))))
+                     (when-let* ((cnt (-some->
+                                          "textDocument/hover"
+                                        (lsp--make-request
+                                         (lsp--text-document-position-params))
+                                        (lsp--send-request)
+                                        (lsp:hover-contents)))
+                                 (s (gethash "value" cnt)))
                        (string-match "\\(```.*\n\\)\\(\\([[:word:]]\\|[[:graph:]]\\)*\\)" s)
                        (string-trim (match-string 2 s))))
                     (t (message "Neither lsp nor cider are connected")))))
@@ -115,8 +115,8 @@ gets the name suitable for :require of ns declaration."
                                (projectile-project-root))))))
               (if-let* ((m (string-match "\\[.*\\]" grepped))
                         (res (match-string 0 grepped)))
-                  (run-with-timer 0.05 nil use-results res)
-                (run-with-timer 0.05 nil use-results (format "[%s :as ]" suffix))))
+                  (run-with-timer 0.03 nil use-results res)
+                (run-with-timer 0.03 nil use-results (format "[%s :as ]" suffix))))
           (funcall use-results sym))
       (funcall use-results sym))))
 
@@ -342,3 +342,34 @@ With ARG, kills all buffers, not only in the current project"
          (message link)
          (kill-new link)
          link)))))
+
+;;;###autoload
+(defun clj-dev-tool-profile+ ()
+  (interactive)
+  ;; the original idea borrowed from @jpmonettas
+  (let* ((current-ns (cider-current-ns))
+         (form (save-excursion
+                 (forward-char 1)
+                 (cider-last-sexp)))
+         (clj-cmd (format
+                   (concat
+                    "(do (require 'clj-async-profiler.core)"
+                    "(clj-async-profiler.core/profile %s))")
+                   form)))
+    (cider-interactive-eval clj-cmd nil nil `(("ns" ,current-ns)))
+    (run-with-timer
+     0.5 nil ; half a second should be enough to write results to a file
+     (lambda ()
+       (let ((latest-file
+              (thread-last
+                (directory-files
+                 "/tmp/clj-async-profiler/results/" t "\\.html\\'")
+                (seq-sort
+                 (lambda (a b)
+                   (time-less-p (file-attribute-modification-time
+                                 (file-attributes b))
+                                (file-attribute-modification-time
+                                 (file-attributes a)))))
+                car)))
+         (shell-command
+          (format "open \"file:///%s\"" latest-file)))))))
