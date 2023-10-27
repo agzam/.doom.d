@@ -25,3 +25,20 @@
        orig-fun
        beg end type register
        yank-handler))))
+
+;;;###autoload
+(defun markdown-wrap-collapsible ()
+  "Wrap region in a collapsible section."
+  (interactive)
+  (when (region-active-p)
+    (let* ((beg (region-beginning))
+           (end (region-end))
+           (content (buffer-substring beg end)))
+      (delete-region beg end)
+      (deactivate-mark)
+      (insert
+       (format "<details>\n  <summary></summary>\n%s\n</details>" content))
+      (search-backward "<summary>")
+      (forward-char 9)
+      (when evil-mode
+        (evil-insert-state)))))
