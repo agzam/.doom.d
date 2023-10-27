@@ -10,16 +10,15 @@
    '+lookup-provider-url-alist
    '("Clojure Docs" "https://clojuredocs.org/search?q=%s"))
 
-  (add-hook! (clojure-mode-local-vars
-              clojurec-mode-local-vars
-              clojurescript-mode-local-vars
-              lsp-mode)
+  (add-hook!
+    (clojure-mode-local-vars
+     clojurec-mode-local-vars
+     clojurescript-mode-local-vars
+     lsp-mode)
+    #'+clojure-mode-lookup-handlers
+    #'lsp!
     (defun +clojure-disable-lsp-indentation-h ()
-      (setq-local lsp-enable-indentation nil))
-    (defun +clojure-mode-lookup-handlers ()
-      (set-lookup-handlers! 'clojure-mode
-        :documentation #'+consult-dash-doc))
-    #'lsp!)
+      (setq-local lsp-enable-indentation nil)))
 
   (after! lsp-clojure
     (dolist (m '(clojure-mode
@@ -41,17 +40,15 @@
   :after clojure-mode
   :hook (clojure-mode-local-vars . cider-mode)
   :config
-  (set-lookup-handlers! '(cider-mode cider-repl-mode)
-    :definition #'+clojure-cider-lookup-definition
-    :documentation #'cider-clojuredocs)
-
   (defalias 'cape-cider-lsp
     (cape-super-capf #'cider-complete-at-point
                      #'+lsp-completion-at-point))
 
-  (add-hook! 'cider-mode-hook #'cider-completion-styles-h)
+  (add-hook! cider-mode
+             #'+clojure-mode-lookup-handlers
+             #'cider-completion-styles-h)
 
-  (add-hook! 'cider-repl-mode-hook
+  (add-hook! cider-repl-mode
              #'cider-completion-styles-h
              #'hs-minor-mode)
 
@@ -267,8 +264,6 @@
   :after clojure-mode
   :hook (clojure-mode . clj-refactor-mode)
   :config
-  (set-lookup-handlers! 'clj-refactor-mode
-    :references #'cljr-find-usages)
   (setq cljr-magic-requires nil)
   (map! :map clojure-mode-map
         :localleader

@@ -8,9 +8,15 @@ This is necessary to fix `cider-find-dwim's inability to capture the full symbol
 at point."
   (cider-find-dwim identifier))
 
+;;;###autoload
+(defun +clojure-mode-lookup-handlers ()
+  (set-lookup-handlers! 'clojure-mode
+    :definition #'+lsp-lookup-definition-handler
+    :references #'+lsp-lookup-references-handler
+    :implementations '(lsp-find-implementation :async t)
+    :type-definition #'lsp-find-type-definition
+    :documentation #'+consult-dash-doc))
 
-;;
-;;; Commands
 
 ;;;###autoload
 (defun +clojure/open-repl (&optional arg type)
