@@ -51,7 +51,7 @@
   (map! :map lsp-ui-flycheck-list-mode-map
         :nv "q" #'kill-buffer-and-window)
 
-  (remove-hook! 'lsp-mode-hook #'lsp-ui-mode))
+  (remove-hook! lsp-mode #'lsp-ui-mode #'+lookup--init-lsp-mode-handlers-h))
 
 (use-package! dap-mode
   :after lsp-mode

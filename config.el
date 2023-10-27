@@ -310,7 +310,9 @@
        (:prefix ("c" . "consult-gh")
                 "o" #'consult-gh-orgs
                 "r" #'consult-gh-search-repos
-                "f" #'consult-gh-find-file)
+                "f" #'consult-gh-find-file
+                "i" #'consult-gh-issue-list
+                "p" #'consult-gh-pr-list)
        (:prefix ("l" . "git link")
         :desc "blame link" "b" #'git-link-blame
         :desc "copy link" "l" #'git-link-kill

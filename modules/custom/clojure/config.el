@@ -12,7 +12,8 @@
 
   (add-hook! (clojure-mode-local-vars
               clojurec-mode-local-vars
-              clojurescript-mode-local-vars)
+              clojurescript-mode-local-vars
+              lsp-mode)
     (defun +clojure-disable-lsp-indentation-h ()
       (setq-local lsp-enable-indentation nil))
     (defun +clojure-mode-lookup-handlers ()

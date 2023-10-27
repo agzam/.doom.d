@@ -333,7 +333,10 @@
         consult-gh-file-action #'consult-gh--files-view-action
         consult-gh-issue-action #'consult-gh--view-action+
         consult-gh-pr-action #'consult-gh--view-action+
-        consult-gh-repo-action #'consult-gh--repo-browse-url-action
+        consult-gh-repo-action (lambda (x)
+                                 (interactive)
+                                 (consult-gh--repo-view-action
+                                  (car x)))
         consult-gh-prioritize-local-folder t)
 
   (dolist (repo '("agzam" "zerocmd"))
@@ -343,4 +346,11 @@
   (add-to-list 'savehist-additional-variables 'consult-gh--known-repos-list)
 
   (map! :map consult-gh-embark-orgs-actions-map
-        "k" #'consult-gh-remove-org+))
+        "k" #'consult-gh-remove-org+)
+
+  ;; there's always a default project when looking up issues and PRs
+  (defadvice! consult-gh-issue-list-a (orig-fn &optional initial noaction)
+    :around #'consult-gh-issue-list
+    :around #'consult-gh-pr-list
+    (if initial (fn initial noaction)
+     (funcall orig-fn "zerocmd/aegis"))))

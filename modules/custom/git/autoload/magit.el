@@ -243,5 +243,6 @@ be used as a git branch name."
     (if  (magit-local-branch-p (format "refs/heads/%s" branch))
         (magit-run-git "worktree" "add" (magit--expand-worktree path) branch)
       (magit-run-git "worktree" "add" "-b"
-                     branch (magit--expand-worktree path) "origin/master"))
+                     branch (magit--expand-worktree path)
+                     (magit-main-branch)))
     (magit-diff-visit-directory path)))
