@@ -58,3 +58,10 @@
         (insert content)
         (mark-whole-buffer)
         (org-do-promote)))))
+
+;;;###autoload
+(defun org-roam-ui-browser+ ()
+  (interactive)
+  (browse-url
+   (concat "http://localhost:"
+           (number-to-string org-roam-ui-port))))

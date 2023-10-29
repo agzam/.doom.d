@@ -282,7 +282,8 @@
        :desc "kill some buffers" "s-d" #'spacemacs/kill-matching-buffers-rudely
        (:when (modulep! :custom web-browsing)
          :desc "browser history" "h" #'browser-hist-search
-         :desc "browser tabs" "t" #'browser-goto-tab))
+         :desc "browser tabs" "t" #'browser-goto-tab
+         :desc "browser copy link" "l" #'browser-copy-tab-link))
 
       (:prefix ("e" . "edit")
        :desc "edit indirect" "i" #'edit-indirect-region)
@@ -378,8 +379,11 @@
                   "t" #'telega))
        "r" nil
        (:prefix ("r" . "roam")
-                "r" #'org-roam-node-find
-                "t" #'org-roam-dailies-find-today))
+        "r" #'org-roam-node-find
+        "t" #'org-roam-dailies-find-today
+        :desc "org-roam-ui in xwidget" "w" #'org-roam-toggle-ui-xwidget
+        :desc "org-roam-ui in browser" "W" #'org-roam-ui-browser+
+        "b" #'browser-create-roam-node-for-active-tab))
 
       (:prefix ("p" . "projects")
                (:after projectile

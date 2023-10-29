@@ -8,8 +8,31 @@
    (IS-MAC "/Users/ag/Library/CloudStorage/Dropbox/org/")
    (IS-LINUX "~/org/")))
 
-(global-set-key (kbd "C-c C-f") #'org-roam-node-find)
-(global-set-key (kbd "C-c r") #'org-roam-dailies-capture-date)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Nothing can shadow org-roam keys ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defvar org-roam-global-keys-mode-map
+  (let ((map (make-sparse-keymap))) map))
+
+(define-minor-mode org-roam-global-keys-mode
+  "A minor mode so that org-roam keys can't get shadowed."
+  :init-value t
+  :lighter " org-roam keys"
+  :keymap org-roam-global-keys-mode-map)
+
+(define-globalized-minor-mode global-org-roam-global-keys-mode
+  org-roam-global-keys-mode org-roam-global-keys-mode
+  :group 'org-roam)
+
+(global-org-roam-global-keys-mode t)
+
+(map! :map org-roam-global-keys-mode-map
+      (:prefix ("C-c C-f" . "Org")
+               "f" #'org-roam-node-find
+               "t" #'org-roam-dailies-goto-today
+               "k" #'khoj
+               "b" #'browser-create-roam-node-for-active-tab))
+;;;;;;
 
 (use-package! org
   :defer t
@@ -54,7 +77,7 @@
 
   (map! :map org-mode-map
         [remap imenu] #'consult-outline
-        "C-c C-f" #'org-roam-node-find
+        "C-c C-f f" #'org-roam-node-find
         "C-c C-i" #'org-roam-node-insert+
 
         ;; tilde insead of backtick
@@ -95,7 +118,7 @@
           "i" #'org-roam-node-insert+
           "l" #'org-roam-buffer-toggle
           :desc "org-roam-ui in xwidget" "w" #'org-roam-toggle-ui-xwidget
-          :desc "org-roam-ui in browser" "W" (cmd! () (browse-url (concat "http://localhost:" (number-to-string org-roam-ui-port))))
+          :desc "org-roam-ui in browser" "W" #'org-roam-ui-browser+
           "f" #'org-roam-node-find
           "F" #'consult-org-roam-forward-links
           "d" #'org-roam-dailies-find-date
@@ -268,6 +291,10 @@
   (advice-add
    #'org-roam-dailies--capture
    :around #'org-roam-capture-dont-create-id-a)
+
+  (defadvice! org-property-lowecase-a (orig-fn pom prop value)
+    :around #'org-entry-put
+    (funcall orig-fn pom (downcase prop) value))
 
   (org-roam-db-autosync-mode +1)
 

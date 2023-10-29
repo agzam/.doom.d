@@ -270,15 +270,16 @@
   (setq completion-ignore-case t
         read-buffer-completion-ignore-case t)
 
-  ;; Prefix current candidate with arrow
-  (advice-add #'vertico--format-candidate :around
-              (lambda (orig cand prefix suffix index _start)
-                (setq cand (funcall orig cand prefix suffix index _start))
-                (concat
-                 (if (= vertico--index index)
-                     (propertize "» " 'face 'vertico-current)
-                   "  ")
-                 cand)))
+  (defadvice! vertico-current-with-arrow-a
+    ;; Prefix current candidate with arrow
+    (orig cand prefix suffix index _start)
+    :around #'vertico--format-candidate
+    (setq cand (funcall orig cand prefix suffix index _start))
+    (concat
+     (if (= vertico--index index)
+         (propertize "» " 'face 'vertico-current)
+       "  ")
+     cand))
 
   (map! :map vertico-map
         "C-'" #'vertico-quick-insert

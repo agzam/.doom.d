@@ -151,3 +151,34 @@ jump to selected tab, activating it in the browser."
               (url (plist-get tab :url)))
     (org-id-get-create)
     (org-roam-ref-add url)))
+
+;;;###autoload
+(defun browser-create-roam-node-for-active-tab ()
+  "Captures new roam node based on info from active tab."
+  (interactive)
+  (require 'org)
+  (require 'org-roam)
+  (when-let* ((tab (browser--get-active-tab))
+              (title (plist-get tab :title))
+              (url (plist-get tab :url))
+              (base (replace-regexp-in-string
+                     "^http[s]?://" "" url)))
+    (if-let ((refs (seq-filter
+                    (lambda (x)
+                      (string-match-p base (car x)))
+                    (org-roam-ref-read--completions))))
+        (org-roam-ref-find base)
+      (org-roam-capture-
+       :node (org-roam-node-create
+              :title title)
+       :info (list :ref url)
+       :goto t))))
+
+;;;###autoload
+(defun browser-copy-tab-link ()
+  "Yanks the url of the active browser tab into kill ring"
+  (interactive)
+  (when-let* ((tab (browser--get-active-tab))
+              (url (plist-get tab :url)))
+    (message url)
+    (kill-new url)))
