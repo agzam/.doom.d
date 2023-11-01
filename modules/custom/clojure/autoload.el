@@ -335,7 +335,7 @@ With ARG, kills all buffers, not only in the current project"
   "Returns a markdown link to line number on GH with a Symbol Name"
   (interactive "P")
   (let* ((git-link-default-branch (when main-branch? (magit-main-branch)))
-         (url (git-link-kill))
+         (url (url-unhex-string (git-link-kill)))
          (symbol (let ((inhibit-message t))
                    (clj-fully-qualified-symbol-at-point))))
     ;; I have to run it within a timer, because

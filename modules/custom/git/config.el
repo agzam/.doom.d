@@ -63,13 +63,13 @@
     '("R" "other..current" +magit-log-other--current))
 
   (transient-append-suffix 'magit-log "l"
-    '("m" "origin/master..current" +magit-log--origin-master))
+    '("m" "origin/main..current" +magit-log--origin-main))
 
   (transient-append-suffix 'magit-diff "d"
     '("R" "Diff range (reversed)" +magit-diff-range-reversed))
 
   (transient-append-suffix 'magit-diff "d"
-    '("m" "origin/master..current" +magit-diff--origin-master))
+    '("m" "origin/main..current" +magit-diff--origin-main))
 
   (transient-append-suffix 'magit-worktree 'magit-worktree-branch
     '("i" "create from issue" +magit-worktree-branch-from-issue))

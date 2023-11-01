@@ -314,7 +314,8 @@
   :after org-roam)
 
 (use-package! org-roam-dailies
-  :commands org-roam-dailies-capture-date)
+  :commands (org-roam-dailies-capture-date
+             org-roam-dailies-find-today))
 
 (use-package! org-roam-ui
   :after org-roam

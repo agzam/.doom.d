@@ -422,6 +422,7 @@
                  :desc "prev color theme" "p" #'colors/cycle-themes-up))
 
       (:prefix ("w" . "windows")
+               "TAB" #'evil-window-prev
                "." #'window-transient
                "c" #'window-cleanup+
                "g" #'golden-ratio

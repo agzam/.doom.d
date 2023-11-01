@@ -42,3 +42,28 @@
       (forward-char 9)
       (when evil-mode
         (evil-insert-state)))))
+
+;;;###autoload
+(defun markdown-wrap-code-generic ()
+  "Wrap region in a collapsible section."
+  (interactive)
+  (when (region-active-p)
+    (let* ((beg (region-beginning))
+           (end (region-end))
+           (content (buffer-substring beg end)))
+      (delete-region beg end)
+      (deactivate-mark)
+      (insert
+       (format "```\n%s\n```\n" content))
+      (search-backward "```" nil :noerror 2)
+      (forward-char 3)
+      (when evil-mode
+        (evil-insert-state)))))
+
+;;;###autoload
+(defun markdown-wrap-code-clojure ()
+  "Wrap region in a collapsible section."
+  (interactive)
+  (funcall 'markdown-wrap-code-generic)
+  (insert "clojure")
+  (search-forward "```" nil :noerror))

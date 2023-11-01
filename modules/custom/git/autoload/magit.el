@@ -162,11 +162,14 @@ i.e.: show only commits that differ between selected (other branch) and current 
    (car (magit-log-arguments)) nil))
 
 ;;;###autoload
-(defun +magit-log--origin-master ()
+(defun +magit-log--origin-main ()
   "Compare log between branches à la GitHub style between current branch and origin/master"
   (interactive)
   (magit-log-other
-   (list (concat  "origin/master.." (magit-get-current-branch)))
+   (list (format
+          "origin/%s..%s"
+          (magit-main-branch)
+          (magit-get-current-branch)))
    (car (magit-log-arguments)) nil))
 
 ;;;###autoload
@@ -176,10 +179,14 @@ i.e.: show only commits that differ between selected (other branch) and current 
   (magit-diff-range (concat rev-or-range ".." (magit-get-current-branch)) args files))
 
 ;;;###autoload
-(defun +magit-diff--origin-master ()
+(defun +magit-diff--origin-main ()
   "Compare log between branches à la GitHub style between current branch and origin/master"
   (interactive)
-  (magit-diff-range (concat "origin/master.." (magit-get-current-branch))))
+  (magit-diff-range
+   (format
+    "origin/%s..%s"
+    (magit-main-branch)
+    (magit-get-current-branch))))
 
 (defun +magit-create-branch-friendly-string (sentence)
   "From a SENTENCE, e.g., GitHub issue title, form a string that can
