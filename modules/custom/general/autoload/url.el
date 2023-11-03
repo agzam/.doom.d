@@ -1,4 +1,5 @@
 ;;; custom/general/autoload/url.el -*- lexical-binding: t; -*-
+(require 'ghub)
 
 ;;;###autoload
 (defun +url-get-link-type ()

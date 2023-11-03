@@ -109,7 +109,10 @@
         :n "q" #'cider-popup-buffer-quit-function)
 
   (map! :map cider-test-report-mode-map
-        :n "q" #'+cider-test-result-buffer-quit)
+        :n "q" #'+cider-test-result-buffer-quit
+        (:localleader
+         (:prefix ("s" . "repl")
+                  "s" #'+cider-test-result-buffer-quit)))
 
   (add-to-list
    'display-buffer-alist

@@ -305,9 +305,7 @@
        :desc "magit file" "f" #'magit-file-dispatch
        :desc "jump list" "j" #'evil-show-jumps
        :desc "git status" "s" #'magit-status
-       :desc "blame" "b" (cmd!
-                          (call-interactively #'magit-blame-addition)
-                          (magit-blame-cycle-style))
+       :desc "blame" "b" #'magit-blame-addition
        (:prefix ("c" . "consult-gh")
                 "o" #'consult-gh-orgs
                 "r" #'consult-gh-search-repos
@@ -417,9 +415,10 @@
        :desc "Dired side" "d" #'dired-sidebar-toggle-sidebar)
 
       (:prefix ("T" . "toggle global")
-               (:when (modulep! :custom colors)
-                 :desc "next color theme" "n" #'colors/cycle-themes-down
-                 :desc "prev color theme" "p" #'colors/cycle-themes-up))
+       :desc "numbers" "N" #'global-display-line-numbers-mode
+       (:when (modulep! :custom colors)
+         :desc "next color theme" "n" #'colors/cycle-themes-down
+         :desc "prev color theme" "p" #'colors/cycle-themes-up))
 
       (:prefix ("w" . "windows")
                "TAB" #'evil-window-prev

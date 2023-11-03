@@ -76,22 +76,24 @@ set so that it clears the whole REPL buffer, not just the output."
       (comint-clear-buffer))))
 
 ;;;###autoload
-(defun clj-fully-qualified-symbol-at-point (&optional for-req)
+(defun clj-fully-qualified-symbol-at-point (&optional for-req callback)
   "Gets fully qualified Clojure symbol at point. If FOR-REQ argument passed
 gets the name suitable for :require of ns declaration."
   (interactive "P")
   (let* ((use-results (lambda (x)
-                        (message x)
-                        (kill-new x)
-                        x))
+                        (if callback
+                            (funcall callback x)
+                          (progn
+                            (message x)
+                            (kill-new x)
+                            x))))
          (sym (cond ((cider-connected-p)
                      (let ((cb (lambda (x)
                                  (when-let ((v (nrepl-dict-get x "value"))
                                             (s (string-trim
                                                 (replace-regexp-in-string "[()]" "" v))))
-                                   (message s)
-                                   (kill-new s)
-                                   (setq sym s)))))
+                                   (setq sym s)
+                                   (funcall use-results s)))))
                        (cider-interactive-eval
                         (format "`(%s)" (cider-symbol-at-point t))
                         cb
@@ -121,8 +123,8 @@ gets the name suitable for :require of ns declaration."
                                (projectile-project-root))))))
               (if-let* ((m (string-match "\\[.*\\]" grepped))
                         (res (match-string 0 grepped)))
-                  (run-with-timer 0.03 nil use-results res)
-                (run-with-timer 0.03 nil use-results (format "[%s :as ]" suffix))))
+                  (run-with-timer 0.04 nil use-results res)
+                (run-with-timer 0.04 nil use-results (format "[%s :as ]" suffix))))
           (funcall use-results sym))
       (funcall use-results sym))))
 
@@ -338,16 +340,14 @@ With ARG, kills all buffers, not only in the current project"
          (url (url-unhex-string (git-link-kill)))
          (symbol (let ((inhibit-message t))
                    (clj-fully-qualified-symbol-at-point))))
-    ;; I have to run it within a timer, because
-    ;; clj-fully-qualified-symbol-at-point has a timer
-    ;; that sucks, even though works
-    (run-with-timer
-     0.06 nil
-     (lambda ()
-       (let ((link (format "[%s](%s)" symbol url)))
-         (message link)
-         (kill-new link)
-         link)))))
+    (let ((inhibit-message t))
+      (clj-fully-qualified-symbol-at-point
+       nil
+       (lambda (sym)
+         (let ((link (format "[%s](%s)" sym url)))
+           (message link)
+           (kill-new link)
+           link))))))
 
 ;;;###autoload
 (defun clj-dev-tool-profile+ ()
