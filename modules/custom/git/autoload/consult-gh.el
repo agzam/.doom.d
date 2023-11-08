@@ -16,12 +16,15 @@
                  (seq-map
                   (lambda (k)
                     (when-let ((x (plist-get (cdr cand) k)))
-                      (substring-no-properties x))))
+                      (replace-regexp-in-string
+                       " -- .*" ""
+                       (substring-no-properties x)))))
                  (apply
                   (lambda (repo issue pr)
                     (format
                      "https://github.com/%s/%s/%s"
                      repo (if issue "issues" "pull")
                      (or issue pr)))))))
-    (funcall-interactively
-     #'forge-visit-topic-via-url url)))
+    (forge-visit-topic-via-url url)))
+
+

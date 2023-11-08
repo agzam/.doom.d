@@ -303,9 +303,18 @@ With ARG, kills all buffers, not only in the current project"
   "Hacky way to get imenu for root-level keywords. Useful in edn files."
   (when (string= "edn" (file-name-extension (or (buffer-file-name) "")))
     (add-to-list 'imenu-generic-expression '(nil "^.?.?\\(:[^ ]+\\).*$" 1) t)))
+
+
 ;;;###autoload
 (defun cider-completion-styles-h ()
-  (setq-local completion-styles '(cider orderless partial-completion))
+  (setq-local completion-styles '(cider
+                                  ;; orderless
+                                  ;; partial-completion
+                                  ))
+  (defalias 'cape-cider-lsp
+    (cape-capf-super #'cider-complete-at-point
+                     #'+lsp-completion-at-point))
+
   (add-to-list 'completion-at-point-functions #'cape-cider-lsp)
   (cape-completion-at-point-functions-h))
 
@@ -379,3 +388,13 @@ With ARG, kills all buffers, not only in the current project"
                 car)))
          (shell-command
           (format "open \"file:///%s\"" latest-file)))))))
+
+
+;;;###autoload
+(defun cider-storm-switch-to-gui+ ()
+  (interactive)
+  ;; calling shell-command synchronously is very slow
+  ;; this works much faster, but I need to suppress the output since I don't care about it
+  (let ((display-buffer-alist
+         (list (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))))
+    (async-shell-command "hs -c 'hs.application.find(\"Flowstorm debugger\"):focus()'")))

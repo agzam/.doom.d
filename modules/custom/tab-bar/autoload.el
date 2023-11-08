@@ -15,6 +15,7 @@
                    (hack-dir-local-variables-non-file-buffer)
                    (when-let ((recent (projectile-recentf-files)))
                      (find-file (car (seq-remove (lambda (x) (equal x "./")) recent)))))))
+    ("c" "chat-gpt" (chatgpt-shell))
     ("gn" "gh-notify" (gh-notify))
     ("ef" "elfeed" (elfeed))
     ("no" "notmuch" (notmuch))

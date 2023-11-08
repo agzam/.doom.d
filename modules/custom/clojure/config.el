@@ -11,9 +11,9 @@
    '("Clojure Docs" "https://clojuredocs.org/search?q=%s"))
 
   (add-hook!
-    (clojure-mode-local-vars
-     clojurec-mode-local-vars
-     clojurescript-mode-local-vars
+    (clojure-mode
+     clojurec-mode
+     clojurescript-mode
      lsp-mode)
     #'+clojure-mode-lookup-handlers
     #'lsp!
@@ -40,9 +40,7 @@
   :after clojure-mode
   :hook (clojure-mode-local-vars . cider-mode)
   :config
-  (defalias 'cape-cider-lsp
-    (cape-super-capf #'cider-complete-at-point
-                     #'+lsp-completion-at-point))
+
 
   (add-hook! cider-mode
              #'+clojure-mode-lookup-handlers
@@ -163,12 +161,16 @@
           (clojure-sort-ns)))))
 
   (map! (:localleader
-         (:map (clojure-mode-map clojurescript-mode-map)
+         (:map (clojure-mode-map
+                clojurescript-mode-map
+                cider-repl-mode-map)
                ","  #'clj-fully-qualified-symbol-at-point
                ";" #'clojure-toggle-ignore
                "m"  #'cider-macroexpand-1
                "M"  #'cider-macroexpand-all
                (:prefix ("d" . "debug")
+                        "d" #'cider-storm-switch-to-gui+
+                        "D" #'cider-storm-storm-start-gui
                         "f" #'cider-debug-defun-at-point)
                (:prefix ("f" . "format")
                         "l" #'clojure-align

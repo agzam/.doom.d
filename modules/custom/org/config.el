@@ -29,7 +29,7 @@
 (map! :map org-roam-global-keys-mode-map
       (:prefix ("C-c C-f" . "Org")
                "f" #'org-roam-node-find
-               "t" #'org-roam-dailies-goto-today
+               "t" (cmd! (funcall-interactively #'org-roam-dailies-goto-today '("w")))
                "k" #'khoj
                "b" #'browser-create-roam-node-for-active-tab))
 ;;;;;;
@@ -184,10 +184,10 @@
 
 (use-package! org-roam
   :commands (org-roam-buffer-toggle-display
-             org-roam-dailies-find-date
-             org-roam-dailies-find-today
-             org-roam-dailies-find-tomorrow
-             org-roam-dailies-find-yesterday)
+             org-roam-dailies-goto-date
+             org-roam-dailies-goto-today
+             org-roam-dailies-goto-tomorrow
+             org-roam-dailies-goto-yesterday)
   :after org org-capture
   :init
   (setq
@@ -315,7 +315,7 @@
 
 (use-package! org-roam-dailies
   :commands (org-roam-dailies-capture-date
-             org-roam-dailies-find-today))
+             org-roam-dailies-goto-today))
 
 (use-package! org-roam-ui
   :after org-roam

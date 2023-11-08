@@ -98,13 +98,11 @@
   :after corfu
   :init
   (map! [remap dabbrev-expand] 'cape-dabbrev)
-  (add-hook! 'latex-mode-hook
+  (add-hook! latex-mode
     (defun +corfu--latex-set-capfs ()
       (add-to-list 'completion-at-point-functions #'cape-tex)))
 
-
-  (add-hook! ('text-mode-hook
-              'prog-mode-hook)
+  (add-hook! (text-mode prog-mode)
     (defun cape-completion-at-point-functions-h ()
       (add-to-list 'completion-at-point-functions #'cape-file :append)
       (add-to-list 'completion-at-point-functions #'cape-keyword :append)
@@ -112,11 +110,11 @@
       (add-to-list 'completion-at-point-functions #'cape-abbrev :append)
       (add-to-list 'completion-at-point-functions #'cape-dict :append)))
 
-  (add-hook! 'emacs-lisp-mode-hook
+  (add-hook! emacs-lisp-mode
     (defun +cape-completion-at-point-elisp-h ()
       (add-to-list 'completion-at-point-functions #'cape-symbol)))
 
-  (add-hook! '(org-mode-hook markdown-mode-hook)
+  (add-hook! (org-mode markdown-mode)
     (defun +cape-completion-at-point-org-md-h ()
       (add-to-list 'completion-at-point-functions #'cape-elisp-block)))
 
@@ -553,7 +551,7 @@ The first element is the docset's name second the docset's archive url."
         :n "b" #'browse-url)
 
   (defun +consult-dash-doc (term)
-    (consult-dash term))
+    (funcall-interactively #'consult-dash term))
 
   (set-lookup-handlers! 'lsp-mode
     :definition #'+lsp-lookup-definition-handler
