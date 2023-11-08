@@ -550,18 +550,12 @@ The first element is the docset's name second the docset's archive url."
   (map! :map consult-dash-embark-keymap
         :n "b" #'browse-url)
 
-  (defun +consult-dash-doc (term)
-    (funcall-interactively #'consult-dash term))
-
   (set-lookup-handlers! 'lsp-mode
     :definition #'+lsp-lookup-definition-handler
     :references #'+lsp-lookup-references-handler
     :documentation #'+consult-dash-doc
     :implementations '(lsp-find-implementation :async t)
     :type-definition #'lsp-find-type-definition)
-
-  (add-hook! (clojure-mode clojurec-mode clojurescript-mode)
-    (dash-docs-activate-docset "ClojureDocs"))
 
   ;; (add-hook! 'lsp-mode-hook :append
   ;;   (defun override-js-lookup-handlers-h ()

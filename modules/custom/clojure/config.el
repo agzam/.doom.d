@@ -10,15 +10,13 @@
    '+lookup-provider-url-alist
    '("Clojure Docs" "https://clojuredocs.org/search?q=%s"))
 
-  (add-hook!
-    (clojure-mode
-     clojurec-mode
-     clojurescript-mode
-     lsp-mode)
-    #'+clojure-mode-lookup-handlers
-    #'lsp!
-    (defun +clojure-disable-lsp-indentation-h ()
-      (setq-local lsp-enable-indentation nil)))
+  (add-hook! (clojure-mode clojurec-mode clojurescript-mode lsp-mode)
+             #'+clojure-mode-lookup-handlers
+             #'lsp!
+             (defun +clojure-disable-lsp-indentation-h ()
+               (setq-local lsp-enable-indentation nil))
+             (defun activate-clojure-dash-docsets-h ()
+               (dash-docs-activate-docset "ClojureDocs")))
 
   (after! lsp-clojure
     (dolist (m '(clojure-mode

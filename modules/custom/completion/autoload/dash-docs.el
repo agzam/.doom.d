@@ -25,3 +25,7 @@
          ;; (eww-readable)
          (pop-to-buffer eww-buf))))
    url))
+
+;;;###autoload
+(defun +consult-dash-doc (term)
+  (funcall-interactively #'consult-dash term))
