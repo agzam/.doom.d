@@ -512,7 +512,8 @@
 (use-package! dash-docs
   :defer t
   :config
-  (setq dash-docs-browser-func #'+browse-dash-doc)
+  (setq dash-docs-browser-func #'+browse-dash-doc
+        dash-docs-enable-debugging nil)
 
   ;;; overriding internal implementation fns for the time being
   ;;; https://github.com/dash-docs-el/dash-docs/issues/23

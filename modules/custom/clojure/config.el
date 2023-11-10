@@ -6,6 +6,8 @@
 (use-package! clojure-mode
   :defer t
   :config
+  (setq clojure-toplevel-inside-comment-form t)
+
   (add-to-list
    '+lookup-provider-url-alist
    '("Clojure Docs" "https://clojuredocs.org/search?q=%s"))
@@ -99,7 +101,9 @@
         (:map cider-mode-map
               "C-c C-f" nil
               "C-c r" nil
-              "C-c C-n" #'clj-edit-ns-header))
+              "C-c C-n" #'clj-edit-ns-header)
+        (:map cider-clojure-interaction-mode-map
+              :i "C-j" #'cider-eval-last-sexp))
 
   (map! :map cider-popup-buffer-mode-map
         :n "q" #'cider-popup-buffer-quit-function)

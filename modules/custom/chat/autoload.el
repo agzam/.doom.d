@@ -21,7 +21,7 @@
   (insert replacement))
 
 (defvar chatgpt-improve-text-hist
-  '("Improve this text, don't be too formal:"
+  '("Improve this text, don't be too formal, don't overuse words like 'However':"
     "Improve this code:"
     "Add comments to the following code snippet:"
     "Improve and make it witty:"
@@ -39,7 +39,12 @@
                  (buffer-substring-no-properties
                   (point-min)
                   (point-max))))
-         (default-prompt "Fix possible mistakes in the following text, improve it only if you find necessary. Do nothing if there's nothing to fix.:\n")
+         (default-prompt
+          (concat
+           "Fix possible mistakes in the following text, "
+           "improve it only if you find necessary. "
+           "Don't overuse words like 'However', keep it simple and easy to read. "
+           "Return nothing if no changes required.:\n\n"))
          (prompt (if prompt-str
                      (read-string "Prompt to use: "
                                   default-prompt

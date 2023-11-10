@@ -22,10 +22,22 @@
                            :url))))
                   (buffer-list))))
        (with-current-buffer eww-buf
+         (when-let* ((url (plist-get (buffer-local-value 'eww-data eww-buf) :url))
+                     (clojure? (string-match-p "ClojureDocs" url)))
+           (clojure-mode))
          ;; (eww-readable)
          (pop-to-buffer eww-buf))))
    url))
 
 ;;;###autoload
 (defun +consult-dash-doc (term)
-  (funcall-interactively #'consult-dash term))
+  (condition-case err
+      (if (cider-connected-p)
+          (cider-clojuredocs-lookup
+           (cider-fqn-symbol-at-point))
+        (consult-dash term))
+    (error
+     (if (string-match-p
+          "Wrong type argument: .*"
+          (error-message-string err))
+         (lsp-signature-toggle-full-docs)))))

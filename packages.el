@@ -67,6 +67,7 @@
 (package! evil-visualstar :disable t)
 (package! exato :disable t)
 (package! evil-quick-diff :disable t)
+(package! evil-nerd-commenter :disable t)
 
 ;; :tools eval module
 (package! quickrun :disable t)
@@ -83,4 +84,3 @@
 
 (package! ligature)
 
-(unpin! evil-nerd-commenter)
