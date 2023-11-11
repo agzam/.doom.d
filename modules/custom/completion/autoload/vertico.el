@@ -51,8 +51,11 @@ transparent. Bind in vertico-map."
 
 ;;;###autoload
 (defun vertico-jump-to-home-dir-on~  ()
+  "Puts you in home dir initial location in find-file"
   (interactive)
   (when (eq 'file (vertico--metadata-get 'category))
     (vertico-directory-up 1000)
-    (when (string-blank-p (minibuffer-contents))
-      (insert "~"))))
+    (unless (string-match-p "^~.*" (minibuffer-contents))
+      (beginning-of-line)
+      (insert "~")
+      (end-of-line))))

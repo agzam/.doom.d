@@ -267,8 +267,10 @@
       :desc "M-x" "SPC" #'execute-extended-command
       "TAB"   #'alternate-buffer
       "v"     #'er/expand-region
-      :desc "(un)comment" ";" #'evilnc-comment-or-uncomment-lines
-
+      :nv   ";" (cmd! (call-interactively
+                       (if (region-active-p)
+                           #'comment-or-uncomment-region
+                         #'comment-line)))
       (:when (modulep! :custom shell)
         :desc "pop shell" "'" #'shell-pop
         :desc "choose shell" "\"" #'shell-pop-choose)
