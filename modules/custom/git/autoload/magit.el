@@ -253,3 +253,13 @@ be used as a git branch name."
                      branch (magit--expand-worktree path)
                      (magit-main-branch)))
     (magit-diff-visit-directory path)))
+
+
+;;;###autoload
+(defun +magit-rebase-origin-main ()
+  "Fetch latest of main and rebase current branch on it"
+  (interactive)
+  (let* ((main (magit-main-branch))
+         (remote (magit-get-remote main)))
+   (magit-fetch-branch remote main nil)
+   (magit-rebase-branch (format "%s/%s" remote main) nil)))

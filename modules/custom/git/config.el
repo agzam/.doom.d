@@ -11,7 +11,7 @@
   :config
   (map! :map magit-blame-read-only-mode-map
         :n "RET" #'magit-show-commit)
-  (add-hook! 'magit-blame-mode-hook
+  (add-hook! magit-blame-mode
     (defun turn-off-evil-org-mode ()
       (evil-org-mode -1)))
 
@@ -73,6 +73,9 @@
 
   (transient-append-suffix 'magit-worktree 'magit-worktree-branch
     '("i" "create from issue" +magit-worktree-branch-from-issue))
+
+  (transient-append-suffix 'magit-rebase 'magit-rebase-subset
+    '("O" "rebase on origin/main" +magit-rebase-origin-main))
 
   ;; Center the target file, because it's poor UX to have it at the bottom of
   ;; the window after invoking `magit-status-here'.
@@ -321,8 +324,9 @@
   (setq diff-add-log-use-relative-names t))
 
 (use-package! consult-gh
-  :defer t
-  :commands (consult-gh-orgs consult-gh-find-file consult-gh-search-repos consult-gh-issue-list)
+  :after (forge)
+  :commands (consult-gh-orgs consult-gh-find-file consult-gh-search-repos
+                             consult-gh-issue-list consult-gh-pr-list)
   :config
   (require 'consult-gh-embark)
   (setq consult-gh-defaul-clone-directory "~/sandbox"
@@ -337,7 +341,9 @@
                                  (interactive)
                                  (consult-gh--repo-view-action
                                   (car x)))
-        consult-gh-prioritize-local-folder t)
+        consult-gh-prioritize-local-folder t
+        consult-gh-prs-state-to-show 'all
+        consult-gh-issues-state-to-show 'all)
 
   (dolist (repo '("agzam" "zerocmd"))
     (add-to-list 'consult-gh-default-orgs-list repo))
@@ -348,9 +354,10 @@
   (map! :map consult-gh-embark-orgs-actions-map
         "k" #'consult-gh-remove-org+)
 
-  ;; there's always a default project when looking up issues and PRs
   (defadvice! consult-gh-issue-list-a (orig-fn &optional initial noaction)
     :around #'consult-gh-issue-list
     :around #'consult-gh-pr-list
-    (if initial (fn initial noaction)
-     (funcall orig-fn "zerocmd/aegis"))))
+    (if initial
+        (fn initial noaction)
+      (let ((repo (consult-gh--get-repo-from-directory)))
+        (funcall orig-fn (format "%s#" repo))))))
