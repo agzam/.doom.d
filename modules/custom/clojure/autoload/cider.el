@@ -70,10 +70,12 @@ set so that it clears the whole REPL buffer, not just the output."
 (defun cider-fqn-symbol-at-point ()
   "Return fully qualified symbol at point"
   (when (cider-connected-p)
-    (let* ((sym (cider-symbol-at-point t))
+    (let* ((ns (cider-current-ns))
+           (_ (cider-sync-tooling-eval
+               (format "(require '%s)" ns)))
+           (sym (cider-symbol-at-point t))
            (res (cider-sync-tooling-eval
-             (format "`(%s)" sym)
-             (cider-current-ns))))
+                 (format "`(%s)" sym) ns)))
       (when res
         (string-trim
          (replace-regexp-in-string

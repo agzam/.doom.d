@@ -20,6 +20,8 @@
              (defun activate-clojure-dash-docsets-h ()
                (dash-docs-activate-docset "ClojureDocs")))
 
+  (+clojure-mode-lookup-handlers)
+
   (after! lsp-clojure
     (dolist (m '(clojure-mode
                  clojurec-mode

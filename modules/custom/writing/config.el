@@ -267,7 +267,7 @@
   (map! :map (markdown-mode-map
               chatgpt-shell-mode-map)
         (:localleader
-         (:prefix ("w" . "wrap")
+         (:prefix ("s" . "wrap")
                   "<" #'markdown-wrap-collapsible
                   "C" #'markdown-wrap-code-clojure
                   "c" #'markdown-wrap-code-generic))))

@@ -518,3 +518,9 @@
                                        "<+>" "<=" "<==" "<=>" "<=<" "<>" "<<" "<<-" "<<=" "<<<"
                                        "<~" "<~~" "</" "</>" "~@" "~-" "~>" "~~" "~~>" "%%"))
   (global-ligature-mode 't))
+
+(after! undo-fu
+  (setq undo-limit 80000000 ; 80Mb
+        undo-strong-limit 120000000 ; 120Mb
+        ;; 400Mb
+        undo-outer-limit 400000000))

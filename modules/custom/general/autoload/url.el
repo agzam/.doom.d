@@ -210,16 +210,10 @@ anything like: RFC 123, rfc-123, RFC123 or rfc123."
   (interactive)
   (let* ((url (or (thing-at-point-url-at-point) ""))
          (bounds (bounds-of-thing-at-point 'url))
-         (link (cond
-                ((string-match-p ".*https://github.com.*" url)
-                 (let-plist (bisect-github-url url)
-                   (format "[%s %s/%s#%s](%s)" (if .issue "Issue" "PR")
-                           .org .repo (if .issue .issue .pull) url)))
-
-                (t (if-let ((title (or (get-gh-item-title url)
-                                       (org-cliplink-retrieve-title-synchronously url))))
-                       (format "[%s](%s)" title url)
-                     (format "<%s>" url))))))
+         (link (if-let ((title (or (get-gh-item-title url)
+                                   (org-cliplink-retrieve-title-synchronously url))))
+                   (format "[%s](%s)" title url)
+                 (format "<%s>" url))))
     (delete-region (car bounds) (cdr bounds))
     (insert link)))
 

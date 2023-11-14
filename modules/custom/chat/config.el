@@ -90,7 +90,7 @@
             :i
             "C-c C-l" #'chatgpt-shell-clear-buffer
             (:localleader
-             "s" #'chatgpt-shell-swap-system-prompt)
+             "p" #'chatgpt-shell-swap-system-prompt)
             :map comint-mode-map
             "C-c C-l" #'comint-clear-buffer))
     #'jinx-mode)
