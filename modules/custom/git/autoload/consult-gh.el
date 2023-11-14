@@ -10,6 +10,7 @@
 ;;;###autoload
 (defun consult-gh--view-action+ (cand)
   (interactive)
+  (require 'forge)
   (when-let* ((url
                (thread-last
                  '(:repo :issue :pr)

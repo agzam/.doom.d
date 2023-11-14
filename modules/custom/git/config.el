@@ -216,8 +216,8 @@
   (map! :map gh-notify-mode-map
         :n "RET" #'gh-notify-visit-notification
         :n "q" #'kill-buffer-and-window
-        ;; (:after code-review
-        ;;  :n "s-r" #'gh-notify-code-review-forge-pr-at-point)
+        (:after code-review
+         :n "s-r" #'gh-notify-code-review-forge-pr-at-point)
         )
 
   (map! :map gh-notify-mode-map
@@ -280,11 +280,11 @@
   :after (magit forge)
   :init
   (setq code-review-db-database-file
-        (concat doom-etc-dir "code-review-db-file.sqlite"))
+        (concat doom-data-dir "code-review-db-file.sqlite"))
   :config
   (after! (magit forge gh-notify)
     (map! :map (magit-status-mode-map
-                forge-topic-mode-map)
+                forge-pullreq-mode-map)
           :n "s-r" #'code-review-forge-pr-at-point))
 
   (after! 'evil-escape
@@ -314,17 +314,15 @@
   (map! :map bug-reference-map
         "C-c C-o" #'bug-reference-push-button)
 
-  (add-hook! 'bug-reference-mode-hook #'init-bug-reference-mode-settings)
+  (add-hook! bug-reference-mode #'init-bug-reference-mode-settings)
 
-  (add-hook!
-   '(org-mode-hook markdown-mode-hook)
-   #'bug-reference-mode))
+  (add-hook! (org-mode markdown-mode) #'bug-reference-mode))
 
 (after! diff-mode
   (setq diff-add-log-use-relative-names t))
 
 (use-package! consult-gh
-  :after (forge)
+  :defer t
   :commands (consult-gh-orgs consult-gh-find-file consult-gh-search-repos
                              consult-gh-issue-list consult-gh-pr-list)
   :config
