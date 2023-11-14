@@ -61,8 +61,8 @@ anything like: RFC 123, rfc-123, RFC123 or rfc123."
               (label (nth 2 (markdown-link-at-pos (point))))
               (link (format "[[%s][%s]]" url
                             (if label label
-                             (or (get-gh-item-title url)
-                                 (org-cliplink-retrieve-title-synchronously url))))))
+                              (or (get-gh-item-title url)
+                                  (org-cliplink-retrieve-title-synchronously url))))))
     (delete-region (car bounds) (cdr bounds))
     (insert link)))
 
@@ -88,6 +88,16 @@ anything like: RFC 123, rfc-123, RFC123 or rfc123."
               (url (nth 3 (markdown-link-at-pos (point)))))
     (delete-region (car bounds) (cdr bounds))
     (insert url)))
+
+;;;###autoload
+(defun +link-markdown->just-text ()
+  "Convert markdown link to simple text."
+  (interactive)
+  (when-let* ((ref (+embark-target-markdown-link-at-point))
+              (bounds (nthcdr 2 ref))
+              (desc (nth 2 (markdown-link-at-pos (point)))))
+    (delete-region (car bounds) (cdr bounds))
+    (insert desc)))
 
 ;;;###autoload
 (defun +link-org->link-markdown ()
@@ -134,8 +144,8 @@ anything like: RFC 123, rfc-123, RFC123 or rfc123."
               (end (org-element-property :end ctx))
               (url (org-element-property :raw-link ctx)))
     (save-excursion
-     (delete-region beg end)
-     (insert url))))
+      (delete-region beg end)
+      (insert url))))
 
 (defun +link-org->just-text ()
   "Convert link to simple text."

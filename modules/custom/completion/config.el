@@ -382,6 +382,7 @@
           ("c" . "convert")
           :desc "org-mode link" "o" #'+link-markdown->link-org-mode
           :desc "plain" "p" #'+link-markdown->link-plain
+          :desc "strip" "s" #'+link-markdown->just-text
           :desc "bug-reference" "b" #'+link-markdown->link-bug-reference))
 
    (:map embark-org-link-map
