@@ -116,5 +116,5 @@
                         "/usr/X11/man"
                         "/Library/Apple/usr/share/man")))
 
-(use-package! elisp-autofmt
+(use-package! elisp-format
   :after elisp-mode)

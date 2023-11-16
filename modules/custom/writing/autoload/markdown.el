@@ -6,10 +6,14 @@
   (interactive)
   (let* ((_ (unless (executable-find "pandoc")
               (user-error "pandoc not found")))
-         (region-content
-          (buffer-substring-no-properties
-           (region-beginning)
-           (region-end)))
+         (beg (if evil-mode
+                  (marker-position evil-visual-beginning)
+                (region-beginning)))
+         (end (if evil-mode
+                  (marker-position evil-visual-end)
+                (region-end)))
+         (region-content (buffer-substring-no-properties beg end))
+         (_ (print region-content))
          (converted-content
           (with-temp-buffer
             (insert region-content)
@@ -26,7 +30,8 @@
   "Advice function to convert marked region to org before yanking."
   (let ((modes '(chatgpt-shell-mode)))
     (if (and (not current-prefix-arg)
-             (apply 'derived-mode-p modes))
+             (apply 'derived-mode-p modes)
+             (use-region-p))
         (yank-as-org)
       (funcall
        orig-fun

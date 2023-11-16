@@ -182,16 +182,14 @@
         "l" #'evil-forward-char
         "h" #'evil-backward-char
         "w" #'evil-forward-word-begin
-        "b" #'evil-backward-word-begin)
+        "b" #'evil-backward-word-begin
+        (:localleader
+         "l" #'forge-copy-url-at-point-as-kill))
 
   ;; forge-topic uses markdown to display images, sometimes they get too big on the screen
   (setq markdown-max-image-size '(700 . nil))
 
-  (after! forge-topic
-    (map!
-     :map forge-topic-mode-map
-     :localleader
-     "l" #'forge-copy-url-at-point-as-kill)))
+  )
 
 (use-package! gist
   :defer t
@@ -284,7 +282,8 @@
   :config
   (after! (magit forge gh-notify)
     (map! :map (magit-status-mode-map
-                forge-pullreq-mode-map)
+                forge-pullreq-mode-map
+                forge-topic-mode-map)
           :n "s-r" #'code-review-forge-pr-at-point))
 
   (after! 'evil-escape
@@ -357,5 +356,8 @@
     :around #'consult-gh-pr-list
     (if initial
         (fn initial noaction)
-      (let ((repo (consult-gh--get-repo-from-directory)))
+      (let ((repo (or (consult-gh--get-repo-from-directory)
+                      (replace-regexp-in-string
+                       "#" ""
+                       (car consult-gh--known-repos-list)))))
         (funcall orig-fn (format "%s#" repo))))))
