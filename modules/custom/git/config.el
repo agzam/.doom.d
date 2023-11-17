@@ -184,7 +184,9 @@
         "w" #'evil-forward-word-begin
         "b" #'evil-backward-word-begin
         (:localleader
-         "l" #'forge-copy-url-at-point-as-kill))
+         "l" #'forge-copy-url-at-point-as-kill
+         (:prefix ("y" . "yank")
+                  "y" #'git-link-forge-topic)))
 
   ;; forge-topic uses markdown to display images, sometimes they get too big on the screen
   (setq markdown-max-image-size '(700 . nil))

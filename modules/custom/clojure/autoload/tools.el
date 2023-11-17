@@ -88,3 +88,23 @@
      (concat
       "loaded:\n"
       (nrepl-dict-get (cider-sync-tooling-eval clj) "value")))))
+
+;;;###autoload
+(defun cider-load-clojure-lib+ (&optional lib-coords)
+  "Load a Clojure library into current cider repl session.
+If LIB-COORDS string passed:
+e.g., \"hiccup/hiccup {:mvn/version \"2.0.0-RC2\"}\"
+it loads that, otherwise runs neil to choose a library."
+  (interactive)
+  (unless (cider-connected-p)
+    (user-error "CIDER not connected"))
+  (when-let* ((selected-lib (or lib-coords
+                                (call-interactively #'neil-find-clojure-package)))
+              (clj-form (format "(add-libs '{%s})"
+                                selected-lib)))
+    (print
+     (concat
+      "loaded: "
+      (nrepl-dict-get
+       (cider-sync-tooling-eval clj-form) "value"))
+     nil)))

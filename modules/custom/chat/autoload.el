@@ -41,10 +41,8 @@
                   (point-max))))
          (default-prompt
           (concat
-           "Fix possible mistakes in the following text, "
-           "Only make changes if absolutely necessary, "
-           "while retaining the original text as possible, "
-           "and don't overuse words like 'However', keep changes simple and easy to read. "
+           "Only correct mistakes, do not alter the text, "
+           "don't overuse words like 'However', keep it simple and easy to read. "
            "Don't report when no changes are required, "
            "as this prompt is used in automation and any output "
            "would always replace the original text."
