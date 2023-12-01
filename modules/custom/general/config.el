@@ -146,18 +146,17 @@
 
 (use-package! ibuffer-sidebar
   :defer t
-  :commands (ibuffer-siderbar-toggle-sidebar)
+  :commands (ibuffer-siderbar-toggle-sidebar ibuffer-sidebar-jump)
   :config
-  (add-hook!
-   'ibuffer-sidebar-mode-hook
-   (defun ibuffer-sidebar-h ()
-     (ibuffer-vc-set-filter-groups-by-vc-root)
-     (ibuffer-do-sort-by-recency)
-     (call-interactively #'ibuffer-filter-by-non-special-buffers)))
+  (add-hook! ibuffer-sidebar-mode
+    (defun ibuffer-sidebar-h ()
+      (ibuffer-vc-set-filter-groups-by-vc-root)
+      (ibuffer-do-sort-by-recency)
+      (call-interactively #'ibuffer-filter-by-non-special-buffers)))
 
   (setq ibuffer-sidebar-use-custom-font t
         ibuffer-sidebar-face `(:height 0.9)
-        ibuffer-sidebar-width 20
+        ibuffer-sidebar-width 30
         ibuffer-sidebar-pop-to-sidebar-on-toggle-open nil))
 
 (use-package! which-key-posframe

@@ -30,6 +30,7 @@
       (:prefix ("C-c C-f" . "Org")
                "f" #'org-roam-node-find
                "t" (cmd! (funcall-interactively #'org-roam-dailies-goto-today '("w")))
+               "T" (cmd! (funcall-interactively #'org-roam-dailies-goto-today '("j")))
                "k" #'khoj
                "b" #'browser-create-roam-node-for-active-tab))
 ;;;;;;

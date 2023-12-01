@@ -25,28 +25,29 @@
    lsp-lens-enable t
    lsp-enable-indentation t)
 
-  (map! :localleader
-        :map lsp-mode-map
-        "ge" #'lsp-ui-flycheck-list+
-        (:prefix ("a" . "code actions")
-         "a" #'lsp-execute-code-action)
-        (:prefix ("g" . "goto")
-         "d" #'xref-find-definitions
-         "D" #'xref-find-definitions-other-window
-         "r" #'xref-find-references)
-        (:prefix ("f" . "format")
-         "b" #'lsp-format-buffer
-         "r" #'lsp-format-region
-         "i" #'lsp-organize-imports)
-        (:prefix ("h" . "help")
-         "h" #'lsp-describe-thing-at-point)
-        (:prefix ("t". "toggle")
-         "h" #'lsp--document-highlight
-         "L" #'lsp-lens-mode
-         "f" #'file-notify-rm-all-watches)
-        (:prefix ("x" . "text/code")
-         "l" #'lsp-lens-show
-         "L" #'lsp-lens-hide))
+  (map! :map lsp-mode-map
+        [remap imenu] #'consult-lsp-file-symbols
+        (:localleader
+         "ge" #'lsp-ui-flycheck-list+
+         (:prefix ("a" . "code actions")
+                  "a" #'lsp-execute-code-action)
+         (:prefix ("g" . "goto")
+                  "d" #'xref-find-definitions
+                  "D" #'xref-find-definitions-other-window
+                  "r" #'xref-find-references)
+         (:prefix ("f" . "format")
+                  "b" #'lsp-format-buffer
+                  "r" #'lsp-format-region
+                  "i" #'lsp-organize-imports)
+         (:prefix ("h" . "help")
+                  "h" #'lsp-describe-thing-at-point)
+         (:prefix ("t". "toggle")
+                  "h" #'lsp--document-highlight
+                  "L" #'lsp-lens-mode
+                  "f" #'file-notify-rm-all-watches)
+         (:prefix ("x" . "text/code")
+                  "l" #'lsp-lens-show
+                  "L" #'lsp-lens-hide)))
 
   (map! :map lsp-ui-flycheck-list-mode-map
         :nv "q" #'kill-buffer-and-window)

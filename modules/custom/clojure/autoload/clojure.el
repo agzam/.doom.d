@@ -5,7 +5,8 @@
   (set-lookup-handlers! '(clojure-mode
                           clojurec-mode
                           clojurescript-mode
-                          cider-clojure-interaction-mode)
+                          cider-clojure-interaction-mode
+                          cider-repl-mode)
     :definition #'+lsp-lookup-definition-handler
     :references #'+lsp-lookup-references-handler
     :implementations '(lsp-find-implementation :async t)
