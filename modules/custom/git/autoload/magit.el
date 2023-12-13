@@ -196,7 +196,9 @@ be used as a git branch name."
        (seq-map
         (-compose
          (-rpartial #'string-trim "_\\|-" "_\\|-")
-         (lambda (x) (replace-regexp-in-string "_+\\|\\-+" "_" x))
+         ;; remove the ticket number
+         (lambda (x) (replace-regexp-in-string "#\\([0-9]+\\)" "" x))
+         (lambda (x) (replace-regexp-in-string "_+\\|\\-+\\|'" "_" x))
          #'downcase
          (lambda (x) (replace-regexp-in-string "?\\|@\\|~\\|\\^\\|\\/\\|\\\\" "-" x)))
         it)
@@ -209,18 +211,10 @@ be used as a git branch name."
   (let* ((repo (forge-get-repository t))
          (repo-id (oref repo id))
          (_ (when repo-id (forge-pull repo)))
-         (issues-list
-          (forge-sql [:select [title number] :from issue :where (and (= repository $s2)
-                                                                     (= state 'open))
-                      :order-by [(desc updated)]]
-                     (forge--tablist-columns-vector)
-                     repo-id))
-         (get-issue-num (lambda (issue-str)
-                          (nth 1 (seq-find
-                                  (lambda (x) (string-equal issue-str (car x)))
-                                  issues-list))))
-         (completion-extra-properties
-          (list :annotation-function (-compose (-partial #'format "\t\t#%s") get-issue-num)))
+         (issues-list (mapcar #'forge--format-topic-choice
+                              (forge-ls-issues repo)))
+         (get-issue-num (lambda (s)
+                          (cadr (s-match "#\\([0-9]+\\)" s))))
          (sel (completing-read "Choose an issue: " issues-list)))
     (list sel (funcall get-issue-num sel))))
 
@@ -230,10 +224,11 @@ be used as a git branch name."
   (interactive)
   (let* ((sel-issue (+forge-select-issue))
          (w-tree (format
-                  "%s__#%s"
-                  (+magit-create-branch-friendly-string (car sel-issue))
-                  (nth 1 sel-issue)))
-         (def-dir (if (magit-inside-worktree-p)
+                  "%s__%s"
+                  (nth 1 sel-issue)
+                  (+magit-create-branch-friendly-string (car sel-issue))))
+         (worktree? (not (string-suffix-p ".bare" (magit-rev-parse "--git-dir"))))
+         (def-dir (if worktree?
                       (thread-last
                         default-directory
                         (file-name-split)

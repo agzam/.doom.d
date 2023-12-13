@@ -174,7 +174,10 @@
          (branch (when (or buf-fname
                            (eq major-mode 'dired-mode))
                    (magit-get-current-branch)))
-         (check-fn (lambda (opt) (thread-first opt (magit-rev-parse) (or "") (substring -4) (string= ".git"))))
+         (check-fn (lambda (opt)
+                     (let ((rev-parse-res (or (magit-rev-parse opt) "")))
+                       (if (string= rev-parse-res ".") t
+                         (string= ".git" (substring rev-parse-res -4))))))
          (worktree? (and branch
                          (not (and (funcall check-fn "--git-dir")
                                    (funcall check-fn "--git-common-dir")))))
