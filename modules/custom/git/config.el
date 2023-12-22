@@ -74,6 +74,12 @@
   (transient-append-suffix 'magit-worktree 'magit-worktree-branch
     '("i" "create from issue" +magit-worktree-branch-from-issue))
 
+  (transient-append-suffix 'magit-worktree '(0 1 -1)
+    '("f m" "move file to worktree" +magit-worktree-move-file))
+
+  (transient-append-suffix 'magit-file-dispatch ", c"
+    '(", m" "move to worktree" +magit-worktree-move-file))
+
   (transient-append-suffix 'magit-rebase 'magit-rebase-subset
     '("O" "rebase on origin/main" +magit-rebase-origin-main))
 

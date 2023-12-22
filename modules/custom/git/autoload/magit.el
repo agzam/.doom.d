@@ -256,5 +256,43 @@ be used as a git branch name."
   (interactive)
   (let* ((main (magit-main-branch))
          (remote (magit-get-remote main)))
-   (magit-fetch-branch remote main nil)
-   (magit-rebase-branch (format "%s/%s" remote main) nil)))
+    (magit-fetch-branch remote main nil)
+    (magit-rebase-branch (format "%s/%s" remote main) nil)))
+
+
+;;;###autoload
+(defun +magit-worktree-move-file (file worktree)
+  "Move FILE to another WORKTREE preserving its relative path."
+  (interactive
+   (let* ((file (magit-read-file "Move file"))
+          (path (expand-file-name file (magit-toplevel))))
+     (list path (magit-completing-read
+                 "Select worktree to move the file"
+                 (thread-last
+                   (magit-list-worktrees)
+                   (seq-remove
+                    (lambda (x)
+                      (or (null (cadr x))
+                          (file-equal-p
+                           (car x)
+                           (expand-file-name (directory-file-name (magit-toplevel))))))))))))
+  (let* ((relname (file-relative-name file (magit-toplevel)))
+         (dest (expand-file-name relname worktree))
+         (status-buf (get-buffer
+                      (format
+                       "magit: %s"
+                       (file-name-nondirectory
+                        (directory-file-name worktree))))))
+    (if (file-exists-p dest)
+        (user-error "Already exists: %s" dest)
+      (progn
+        (make-directory (file-name-directory dest) :parents)
+        (rename-file file dest)
+        (magit-refresh)
+        (if (and status-buf (get-buffer-window status-buf))
+            (switch-to-buffer-other-window status-buf)
+          (progn
+            (split-window-right)
+            (other-window 1)
+            (magit-worktree-status worktree)))
+        (magit-refresh)))))
