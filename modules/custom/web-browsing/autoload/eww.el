@@ -85,9 +85,10 @@ consider whole buffer."
       (recenter))))
 
 ;;;###autoload
-(defun +eww-open-in-other-window (url)
+(defun +eww-open-in-other-window (url &rest args)
   "Use `eww-open-in-new-buffer' in another window."
-  (interactive (list (car (eww-suggested-uris))))
+  (interactive (browse-url-interactive-arg "URL: "))
+  ;; (interactive (list (car (eww-suggested-uris))))
   (other-window-prefix)  ; For emacs28 -- it's a hack, but why not?
   (eww url :new-buffer))
 

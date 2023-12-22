@@ -579,5 +579,7 @@
 (use-package! khoj
   :after (org org-roam)
   :config
-  (setq khoj-org-directories (list org-default-folder))
+  (setq
+   khoj-server-url "http://localhost:42110"
+   khoj-org-directories (list org-default-folder))
   (add-hook! org-roam-mode #'khoj--server-start))
