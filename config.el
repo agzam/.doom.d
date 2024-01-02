@@ -226,7 +226,9 @@
        "f" #'next-error-follow-minor-mode))
 
 ;; disable nonsensical keys
-(dolist (key '("s-n" "s-p" "s-q" "s-m" "C-x C-c"))
+(dolist (key '("s-n" "s-p" "s-q" "s-m" "s-,"
+               "C-x C-c"
+               "C-<tab>" "C-S-<tab>" ))
   (global-set-key (kbd key) nil))
 
 ;;; Globals

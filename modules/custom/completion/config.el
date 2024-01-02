@@ -112,7 +112,7 @@
 
   (add-hook! emacs-lisp-mode
     (defun +cape-completion-at-point-elisp-h ()
-      (add-to-list 'completion-at-point-functions #'cape-symbol)))
+      (add-to-list 'completion-at-point-functions #'cape-elisp-symbol)))
 
   (add-hook! (org-mode markdown-mode)
     (defun +cape-completion-at-point-org-md-h ()
