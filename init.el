@@ -213,4 +213,5 @@
        chat
        nix
        golang
+       lua
        )

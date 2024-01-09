@@ -286,16 +286,6 @@
   :config
   (setq neil-prompt-for-version-p t))
 
-(use-package! fennel-mode
-  :mode "\\.fnl$"
-  :defer t
-  :config
-  (set-lookup-handlers! 'fennel-mode
-    :documentation #'+consult-dash-doc)
-  (add-hook! fennel-mode
-    (defun fennel-mode-h ()
-     (dash-docs-activate-docset "Hammerspoon"))))
-
 (after! separedit
   ;; edit Clojure (str) multiline blocks
   (add-to-list

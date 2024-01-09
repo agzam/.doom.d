@@ -84,3 +84,4 @@
 
 (package! ligature)
 
+(unpin! evil-collection)

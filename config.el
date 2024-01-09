@@ -27,8 +27,9 @@
 ;; `load-theme' function. This is the default:
 (setq
  doom-font (font-spec :family "Fira Code" :size 16)
- doom-variable-pitch-font (font-spec :family "Verdana" :size 18)
- doom-unicode-font (font-spec :family "Apple Color Emoji" :size 18))
+ doom-variable-pitch-font (font-spec :family "Noto Sans" :size 18)
+ ;; doom-unicode-font (font-spec :family "Apple Color Emoji" :size 18)
+ )
 
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
@@ -122,11 +123,12 @@
 
       (when (fboundp 'pixel-scroll-precision-mode)
         (pixel-scroll-precision-mode +1))
-      (run-with-timer
-       1.5 nil
-       (lambda ()
-         (toggle-frame-full-height)
-         (place-frame-at-display-spot '(0 0 0.664 1.0)))))))
+      ;; (run-with-timer
+      ;;  1.5 nil
+      ;;  (lambda ()
+      ;;    (toggle-frame-full-height)
+      ;;    (place-frame-at-display-spot '(0 0 0.664 1.0))))
+      )))
 
 (after! custom
   ;; in customize dialogs keep the elisp names

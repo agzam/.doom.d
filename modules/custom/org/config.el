@@ -6,7 +6,7 @@
 (defvar org-default-folder
   (cond
    (IS-MAC "/Users/ag/Library/CloudStorage/Dropbox/org/")
-   (IS-LINUX "~/org/")))
+   (IS-LINUX "/home/ag/Dropbox/org/")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Nothing can shadow org-roam keys ;;

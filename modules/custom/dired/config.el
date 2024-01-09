@@ -104,6 +104,7 @@
         :n "s" #'dired-sort-toggle-or-edit)
 
   (setq dired-use-ls-dired t
+        dired-listing-switches "-al --group-directories-first"
         dired-dwim-target t
         dired-kill-when-opening-new-dired-buffer nil
         dired-do-revert-buffer t
