@@ -8,7 +8,8 @@
     ("Info" . "Emacs Lisp")
     ("lisp-data" . "Emacs Lisp")
     ("helpful" . "Emacs Lisp")
-    ("js" . "JavaScript"))
+    ("js" . "JavaScript")
+    ("fennel" . "Fennel"))
   "Associates current mode with a language in Github terms"
   :type 'alist
   :group 'engine)
