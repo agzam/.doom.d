@@ -49,7 +49,7 @@ With a prefix, re-installs it."
   "Clone & install fennel-ls executable.
 With a prefix, re-installs it."
   (interactive "P")
-  (let ((repo-url "https://git.sr.ht/~technomancy/fennel-ls")
+  (let ((repo-url "https://git.sr.ht/~xerool/fennel-ls")
         (dir "/tmp/fennel-ls")
         (buf-name "install fennel-ls"))
     (when (and (executable-find "fennel-ls")

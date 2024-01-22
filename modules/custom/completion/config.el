@@ -76,8 +76,12 @@
         "M-9" (cmd! () (+corfu-insert-indexed 8)))
 
   (after! evil
-    (advice-add 'corfu--setup :after 'evil-normalize-keymaps)
-    (advice-add 'corfu--teardown :after 'evil-normalize-keymaps)
+    ;; (defadvice! evil-normalize-keymaps-corfu-setup-a (_beg _end _table _pred)
+    ;;   :after 'corfu--setup
+    ;;   (evil-normalize-keymaps))
+    ;; (defadvice! evil-normalize-keymaps-corfu-teardown-a (&rest _)
+    ;;   :after 'corfu--teardown
+    ;;   (evil-normalize-keymaps))
     (evil-make-overriding-map corfu-map)
     (advice-add 'evil-escape-func :after 'corfu-quit))
 

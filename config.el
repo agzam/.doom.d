@@ -27,6 +27,7 @@
 ;; `load-theme' function. This is the default:
 (setq
  doom-font (font-spec :family "Fira Code" :size 16)
+ doom-serif-font (font-spec :family "Fira Code" :size 16)
  doom-variable-pitch-font (font-spec :family "Noto Sans" :size 18)
  ;; doom-unicode-font (font-spec :family "Apple Color Emoji" :size 18)
  )
@@ -175,6 +176,11 @@
   ;; (map! :leader "!" flycheck-command-map)
 
   (global-flycheck-mode -1)  ; I don't know why Doom enables is by default
+
+  (add-hook! flycheck-mode
+    (defun disable-flycheck-popup-buffer ()
+      (setq flycheck-display-errors-function #'ignore)))
+  (add-to-list 'flycheck-disabled-checkers 'emacs-lisp-package)
   )
 
 (after! grep
@@ -305,7 +311,9 @@
                "e" nil
                (:prefix ("e" . "doom/emacs")
                 :desc "doom.d" "d" #'find-in-doom-dir
-                :desc "doom init dir" "i" (cmd! (dired doom-emacs-dir))))
+                :desc "doom init dir" "i" (cmd! (dired doom-emacs-dir))
+                (:when IS-LINUX
+                  :desc "awesomewm config" "a" (cmd! (dired "~/.config/awesome/")))))
 
       (:prefix ("g" . "goto/git")
        :desc "magit file" "f" #'magit-file-dispatch
