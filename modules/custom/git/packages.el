@@ -27,3 +27,5 @@
 (package! closql)
 
 (package! consult-gh :recipe (:host github :repo "armindarvish/consult-gh"))
+
+(package! git-auto-commit-mode)

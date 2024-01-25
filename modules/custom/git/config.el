@@ -369,3 +369,6 @@
                        "#" ""
                        (car consult-gh--known-repos-list)))))
         (funcall orig-fn (format "%s#" repo))))))
+
+(use-package! git-auto-commit-mode
+  :defer t)

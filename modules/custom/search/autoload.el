@@ -28,32 +28,22 @@
     (engine/search-github search-term)))
 
 ;;;###autoload
-(defun +fasd-find (search-type &optional query)
-  "Use fasd to open a file, or a directory with dired.
-SEARCH-TYPE can be files, dirs, or both"
+(defun +zoxide-find (&optional query)
+  "Use zoxide to open a directory with dired."
   (interactive "P")
-  (if (not (executable-find "fasd"))
-      (error "Fasd executable cannot be found.  It is required by `fasd.el'.  Cannot use `fasd-find-file'")
-    ;; (unless query (setq query (read-from-minibuffer "Fasd query: ")))
-
-
-    (let* ((fasd-items (split-string
-                        (shell-command-to-string
-                         (format "fasd -lR%s"
-                                 (pcase search-type
-                                   ('files "f")
-                                   ('dirs "d")
-                                   ('both "a"))))))
-
-           (path (completing-read "Choose: " fasd-items)))
+  (if (not (executable-find "zoxide"))
+      (error "zoxide executable cannot be found")
+    (let* ((items (split-string
+                   (shell-command-to-string "zoxide query --list")))
+           (path (completing-read "Choose: " items)))
       (find-file path))))
 
 ;;;###autoload
-(defun +add-to-fasd-cache ()
+(defun +add-to-zoxide-cache ()
   (let ((file (if (string= major-mode "dired-mode")
                   dired-directory
-                (buffer-file-name))))
+                (file-name-directory (buffer-file-name)))))
     (when (and file
                (stringp file)
                (file-readable-p file))
-      (start-process "*fasd*" nil "fasd" "--add" file))))
+      (start-process "*zoxide*" nil "zoxide" "add" file))))

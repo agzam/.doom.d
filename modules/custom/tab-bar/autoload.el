@@ -24,12 +24,9 @@
                      (call-interactively #'projectile-find-dir)))
     ("ei" "emacs.d" (dired (file-name-directory doom-emacs-dir)))
     ("p" "projects" (switch-to-buffer
-                       (find-file-noselect
-                        (completing-read "choose project: " projectile-known-projects))))
-    ("SPC" "fasd history"
-     (switch-to-buffer
-      (find-file-noselect
-       (completing-read "choose dir:" (split-string (shell-command-to-string "fasd -lRd")))))))
+                     (find-file-noselect
+                      (completing-read "choose project: " projectile-known-projects))))
+    ("SPC" "zoxide history" (+zoxide-find)))
   "List of built-in templates for new tabs
  For user-customizable templates use `tab-bar-custom-templates'")
 

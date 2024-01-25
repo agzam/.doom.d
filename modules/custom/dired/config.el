@@ -104,7 +104,7 @@
         :n "s" #'dired-sort-toggle-or-edit)
 
   (setq dired-use-ls-dired t
-        dired-listing-switches "-al --group-directories-first"
+        dired-listing-switches "-alh --group-directories-first"
         dired-dwim-target t
         dired-kill-when-opening-new-dired-buffer nil
         dired-do-revert-buffer t
@@ -134,7 +134,7 @@
       :desc "ace-action" :n "a" #'dired-ace-action)))
 
   (when (modulep! :custom search)
-    (add-hook 'dired-after-readin-hook #'+add-to-fasd-cache)))
+    (add-hook! dired-after-readin #'+add-to-zoxide-cache)))
 
 (use-package! dired-sidebar
   :defer t

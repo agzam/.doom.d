@@ -302,9 +302,7 @@
 
       (:prefix ("f" . "files")
                (:when (modulep! :custom search)
-                 :desc "fasd dir" "ad" (cmd! (+fasd-find 'dirs))
-                 :desc "fasd file" "af" (cmd! (+fasd-find 'files))
-                 :desc "fasd any" "aa" (cmd! (+fasd-find 'both)))
+                 :desc "zoxide dir" "d" (cmd! (+zoxide-find)))
                :desc "dired" "j" #'dired-jump
                (:when IS-MAC
                  :desc "open in app" "O" #'+macos/open-in-default-program)
