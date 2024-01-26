@@ -300,7 +300,7 @@
                '(jinx grid (vertico-grid-annotate . 20)))
   (vertico-multiform-mode 1)
 
-  (setq jinx-languages "en_US ru_RU")
+  (setq jinx-languages "en_US ru_RU es_MX")
 
   (map! :map (org-mode-map
               markdown-mode-map

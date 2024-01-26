@@ -23,7 +23,7 @@ temporarily toggle it off. Bind in vertico-map."
 
 ;;;###autoload
 (defun vertico-posframe-briefly-transparent ()
- "When posframe obstructing text, you can temporarily make it
+  "When posframe obstructing text, you can temporarily make it
 transparent. Bind in vertico-map."
   (interactive)
   (let* ((frame-alpha-lower-limit 10)
@@ -59,3 +59,21 @@ transparent. Bind in vertico-map."
       (beginning-of-line)
       (insert "~")
       (end-of-line))))
+
+;;;###autoload
+(defun vertico-jump-root  ()
+  "Puts you in root dir initial location in find-file"
+  (interactive)
+  (when (eq 'file (vertico--metadata-get 'category))
+    (vertico-directory-up 1000)
+    (vertico-directory-up 1000)))
+
+;;;###autoload
+(defun vertico-jump-sudo  ()
+  "Puts you in /sudo::/ initial location in find-file"
+  (interactive)
+  (when (eq 'file (vertico--metadata-get 'category))
+    (vertico-directory-up 1000)
+    (vertico-directory-up 1000)
+    (insert "sudo::/")
+    (end-of-line)))

@@ -55,4 +55,9 @@
   (set-lookup-handlers! 'lua-mode :documentation 'lua-search-documentation))
 
 
-(defalias 'awesomewm-repl 'friar)
+(use-package! friar
+  :defer t
+  :init
+  (defalias 'awesomewm-repl 'friar)
+  :config
+  (setq friar-fennel-file-path "fennel"))

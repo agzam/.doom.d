@@ -424,7 +424,8 @@
        :desc "v-line nav" "w" #'+toggle-visual-line-navigation
        :desc "minor modes" "m" #'consult-minor-mode-menu
        :desc "iBuffer side" "i" #'ibuffer-sidebar-toggle-sidebar
-       :desc "Dired side" "d" #'dired-sidebar-toggle-sidebar)
+       :desc "Dired side" "d" #'dired-sidebar-toggle-sidebar
+       :desc "line numbers" "l" #'display-line-numbers-mode)
 
       (:prefix ("T" . "toggle global")
        :desc "numbers" "N" #'global-display-line-numbers-mode

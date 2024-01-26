@@ -296,6 +296,8 @@
         "]" #'vertico-next-group
         "[" #'vertico-previous-group
         "~" #'vertico-jump-to-home-dir-on~
+        "C-/" #'vertico-jump-root
+        "C-?" #'vertico-jump-sudo
         "M-m" #'embark-select))
 
 (after! consult
