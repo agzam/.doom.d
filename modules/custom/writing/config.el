@@ -233,13 +233,20 @@
   ;;  ispell-dictionary "american"
   ;;  )
 
-  (defadvice! change-dict-after-toggle-input (fn _arg _interactive)
+  (defadvice! change-dict-after-toggle-input (fn arg interactive)
     :around #'toggle-input-method
-    (funcall fn)
-    (ispell-change-dictionary
-     (if (string= current-input-method "russian-computer")
-         "ru"
-       nil))))
+    :around #'set-input-method
+    (funcall fn arg interactive)
+    (let ((dic+lan (pcase current-input-method
+                     ("russian-computer" '("ru_RU" "russian"))
+                     ((or "spanish-keyboard"
+                          "spanish-prefix"
+                          "spanish-postfix")
+                      '("es_MX" "spanish"))
+                     (_ '("en_US" "american-english")))))
+      (setq ispell-alternate-dictionary
+            (format "/usr/share/dict/%s" (cadr dic+lan)))
+      (ispell-change-dictionary (car dic+lan)))))
 
 
 (after! quail
