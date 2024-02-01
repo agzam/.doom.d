@@ -22,6 +22,7 @@
         (set-face-attribute 'ansi-color-blue nil :foreground "#00bfff"))))
 
   (map! :map shell-mode-map
+        "C-j" nil
         "C-c C-l" #'comint-clear-buffer
         :localleader
         "c" #'comint-clear-buffer))

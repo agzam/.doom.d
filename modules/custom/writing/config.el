@@ -233,7 +233,7 @@
   ;;  ispell-dictionary "american"
   ;;  )
 
-  (defadvice! change-dict-after-toggle-input (fn arg interactive)
+  (defadvice! change-dict-after-toggle-input (fn &optional arg interactive)
     :around #'toggle-input-method
     :around #'set-input-method
     (funcall fn arg interactive)
@@ -247,7 +247,6 @@
       (setq ispell-alternate-dictionary
             (format "/usr/share/dict/%s" (cadr dic+lan)))
       (ispell-change-dictionary (car dic+lan)))))
-
 
 (after! quail
   (quail-define-package

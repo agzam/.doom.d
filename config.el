@@ -406,7 +406,8 @@
                (:when (modulep! :custom shell)
                  :desc "project shell" "'" #'shell-pop-in-project-root))
 
-      (:prefix ("r" . "reset/resume/ring")
+      (:prefix ("r" . "reset/resume/ring/roam")
+       "r" #'org-roam-node-find
        :desc "yank from kill-ring" "y" #'consult-yank-from-kill-ring
        (:after vertico
         :desc "vertico repeat" "l" #'vertico-repeat-last)

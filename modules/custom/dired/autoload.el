@@ -90,8 +90,13 @@
              (let* ((file (dired-get-filename nil t))
                     (icon (if (file-directory-p file)
                               treemacs-icon-dir-closed
-                            (treemacs-icon-for-file file))))
-               (insert icon))
+                            (treemacs-icon-for-file file)))
+                    ;; check if there's already an icon in the current line
+                    (icon? (save-excursion
+                             (goto-char (line-end-position))
+                             (re-search-backward "  \\s-*" (line-beginning-position) t)
+                             (get-text-property (point) 'display))))
+               (unless icon? (insert icon)))
            (treemacs-return nil))
          (forward-line 1))))))
 
