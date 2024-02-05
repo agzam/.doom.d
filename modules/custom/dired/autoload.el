@@ -109,5 +109,5 @@
     (vterm-send-string
      (concat
       "mplayer -af scaletempo=scale=1.3:speed=tempo -volume 80 -speed 1.3 "
-      "\"" filename "\""))
+      "\"" (expand-file-name filename) "\""))
     (vterm-send-return)))

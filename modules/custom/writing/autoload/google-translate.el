@@ -43,7 +43,7 @@ For instance pass En as source for English."
           (not (= 0 (call-process
                      "node" nil t nil "-e"
                      "try{require('number-to-words')}catch(e){process.exit(1)}"))))
-    (shell-command "npm install number-to-words"))
+    (shell-command "npm -g install number-to-words"))
   (let ((output
          (shell-command-to-string
           (format

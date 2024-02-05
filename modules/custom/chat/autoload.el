@@ -31,7 +31,6 @@
 (defun +chatgpt-shell-improve-text (prompt-str)
   "Send given text to chat-gpt for given PROMPT-STR."
   (interactive "P")
-  (message "beep-bop... checking your crap...")
   (let* ((text (if (region-active-p)
                    (buffer-substring-no-properties
                     (region-beginning)
@@ -52,6 +51,7 @@
                                   default-prompt
                                   'chatgpt-improve-text-hist)
                    default-prompt))
+         (_ (message "beep-bop... checking your crap..."))
          (new-text (chatgpt-shell-post-prompt
                     (format "%s\n%s" prompt text)))
          (fst-buf (with-current-buffer (generate-new-buffer " * chat-gpt text 1 *")
@@ -78,6 +78,16 @@
     (kill-buffer fst-buf)
     (kill-buffer snd-buf)))
 
+;;;###autoload
+(defun +chatgpt-shell-improve-text--embark (&optional _args)
+  "Simple wrapper to call the command from Embark map."
+  ;; need to give embark some breathing room or
+  ;; the consequent calls to (read-string) won't work properly
+  (run-with-timer
+   0.1 nil
+   (lambda ()
+     (let ((current-prefix-arg 2))
+       (call-interactively #'+chatgpt-shell-improve-text)))))
 
 (defun +reduce-buffer-content-to (max-words)
   "Trim current buffer content to contain no more than `MAX-WORDS'."
