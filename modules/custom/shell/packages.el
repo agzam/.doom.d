@@ -3,3 +3,4 @@
 
 (package! shell-pop)
 (package! vimrc-mode)
+(package! system-packages)

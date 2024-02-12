@@ -328,16 +328,26 @@
   (add-hook! 'consult-after-jump-hook 'recenter))
 
 (after! embark
+  (require 'org)
   (setq embark-cycle-key "C-;"
         embark-help-key "M-h"
         embark-confirm-act-all nil)
 
+  (setq embark-indicators '(embark-which-key-indicator
+                            embark-highlight-indicator
+                            embark-isearch-highlight-indicator))
+
+  (advice-add #'embark-completing-read-prompter
+              :around #'embark-hide-which-key-indicator)
   (map!
    :after embark
    (:map embark-general-map
          "C-<return>" #'embark-dwim
          "m" #'embark-select
-         "/" #'+embark-project-search)
+         "/" #'+embark-project-search
+         (:prefix
+          ("x" . "text")
+          "p" #'awesome-switch-to-prev-app-and-type))
    (:map embark-file-map
          "x" #'embark-open-externally+
          "o" nil

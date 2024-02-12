@@ -206,9 +206,10 @@ anything like: RFC 123, rfc-123, RFC123 or rfc123."
   (interactive)
   (when-let* ((url (or (thing-at-point-url-at-point) ""))
               (bounds (bounds-of-thing-at-point 'url))
-              ;; TODO: do the GitHub stuff - ticket description, etc.
-              (link (if-let ((title (or (get-gh-item-title url)
-                                        (org-cliplink-retrieve-title-synchronously url))))
+              (gh-title (get-gh-item-title url))
+              (link (if-let ((title (if (or (not gh-title) (string= gh-title url))
+                                        (org-cliplink-retrieve-title-synchronously url)
+                                      gh-title)))
                         (format "[[%s][%s]]" url title)
                       (format "[[%s]]" url))))
     (delete-region (car bounds) (cdr bounds))

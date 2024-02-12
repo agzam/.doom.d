@@ -193,7 +193,7 @@
   )
 
 (after! grip-mode
-  (setq grip-preview-use-webkit nil)
+  (setq grip-preview-use-webkit t)
   (setq grip-github-user "agzam")
   (setf grip-github-password (auth-source-pick-first-password :host "api.github.com")))
 
@@ -390,7 +390,8 @@
        "r" nil
        (:prefix ("r" . "roam")
         "r" #'org-roam-node-find
-        "t" #'org-roam-dailies-find-today
+        "t" (cmd! (funcall-interactively #'org-roam-dailies-goto-today '("w")))
+        "T" (cmd! (funcall-interactively #'org-roam-dailies-goto-today '("j")))
         :desc "org-roam-ui in xwidget" "w" #'org-roam-toggle-ui-xwidget
         :desc "org-roam-ui in browser" "W" #'org-roam-ui-browser+
         "b" #'browser-create-roam-node-for-active-tab))

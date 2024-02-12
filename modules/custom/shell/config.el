@@ -42,3 +42,10 @@
 
 (use-package! vimrc-mode
   :mode "\\.vim\\(rc\\)?\\'")
+
+(use-package! system-packages
+  :defer t
+  :config
+  (setq system-packages-use-sudo t)
+  (when IS-LINUX
+   (setq system-packages-package-manager 'pacman)))

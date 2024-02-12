@@ -20,6 +20,10 @@
   ;; original is on unreliable codeberg.org
   :recipe (:host github :repo "emacsmirror/undo-fu"))
 
+(unpin! undo-fu)
+
 (package! undo-fu-session
   ;; original is on unreliable codeberg.org
   :recipe (:host github :repo "emacsmirror/undo-fu-session"))
+
+(unpin! undo-fu-session)

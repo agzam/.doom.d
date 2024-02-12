@@ -76,65 +76,67 @@
 
   (setq org-link-make-description-function #'+org-link-make-description-function)
 
-  (map! :map org-mode-map
-        [remap imenu] #'consult-outline
-        "C-c C-f f" #'org-roam-node-find
-        "C-c C-i" #'org-roam-node-insert+
+  (add-hook! org-mode
+    (defun org-init-keybinds-h ()
+      (map! :map org-mode-map
+            [remap imenu] #'consult-outline
+            "C-c C-f f" #'org-roam-node-find
+            "C-c C-i" #'org-roam-node-insert+
 
-        ;; tilde insead of backtick
-        :iv "`" (cmd! (self-insert-command 1 126))
+            ;; tilde insead of backtick
+            :iv "`" (cmd! (self-insert-command 1 126))
 
-        (:localleader
-         (:when (modulep! :completion vertico)
-           "." #'consult-org-heading)
-         (:prefix ("b" . "babel")
-                  "k" #'org-babel-remove-result)
-         (:prefix ("d" . "date")
-                  "t" #'+org-goto-datetree-date)
-         (:prefix ("g" . "goto")
-          :desc "final heading" "L" #'+org-goto-bottommost-heading)
-         (:prefix ("i" . "insert")
-                  "l" #'org-insert-link
-                  "L" #'org-cliplink)
-         (:prefix ("l" . "links")
-                  "i" #'org-id-store-link
-                  "n" #'org-next-link
-                  "p" #'org-previous-link)
-         (:prefix ("n" . "noter")
-                  "a" #'org-noter-anchor-to-current-page+
-                  "i" #'org-noter-insert-note
-                  "j" #'org-noter-pdf-scroll-down
-                  "k" #'org-noter-pdf-scroll-up
-                  "N" #'org-noter
-                  "n" #'org-noter-sync-current-note
-                  "gg" #'org-noter-top-of-the-page
-                  "G" #'org-noter-bottom-of-the-page
-                  "C-j" #'org-noter-pdf-next-page
-                  "C-k" #'org-noter-pdf-prev-page)
-         (:prefix ("o" . "open/Org")
-                  "l" #'org-id-store-link
-                  "L" #'org-store-link-id-optional)
-         (:prefix ("r" . "roam")
-          "b" #'consult-org-roam-backlinks
-          "i" #'org-roam-node-insert+
-          "l" #'org-roam-buffer-toggle
-          :desc "org-roam-ui in xwidget" "w" #'org-roam-toggle-ui-xwidget
-          :desc "org-roam-ui in browser" "W" #'org-roam-ui-browser+
-          "f" #'org-roam-node-find
-          "F" #'consult-org-roam-forward-links
-          "d" #'org-roam-dailies-find-date
-          (:prefix ("r" . "refile")
-                   "n" #'org-roam-refile-to-node))
-         (:prefix ("s" . "tree/subtree")
-                  "a" #'org-toggle-archive-tag
-                  "A" #'org-archive-subtree
-                  "j" #'consult-org-heading
-                  "n" #'org-narrow-to-subtree
-                  "N" #'widen
-                  "S" #'org-sort
-                  "x" #'org-cut-subtree)
-         (:prefix ("t" . "toggle")
-                  "l" #'org-toggle-link-display)))
+            (:localleader
+             (:when (modulep! :completion vertico)
+               "." #'consult-org-heading)
+             (:prefix ("b" . "babel")
+                      "k" #'org-babel-remove-result)
+             (:prefix ("d" . "date")
+                      "t" #'+org-goto-datetree-date)
+             (:prefix ("g" . "goto")
+              :desc "final heading" "L" #'+org-goto-bottommost-heading)
+             (:prefix ("i" . "insert")
+                      "l" #'org-insert-link
+                      "L" #'org-cliplink)
+             (:prefix ("l" . "links")
+                      "i" #'org-id-store-link
+                      "n" #'org-next-link
+                      "p" #'org-previous-link)
+             (:prefix ("n" . "noter")
+                      "a" #'org-noter-anchor-to-current-page+
+                      "i" #'org-noter-insert-note
+                      "j" #'org-noter-pdf-scroll-down
+                      "k" #'org-noter-pdf-scroll-up
+                      "N" #'org-noter
+                      "n" #'org-noter-sync-current-note
+                      "gg" #'org-noter-top-of-the-page
+                      "G" #'org-noter-bottom-of-the-page
+                      "C-j" #'org-noter-pdf-next-page
+                      "C-k" #'org-noter-pdf-prev-page)
+             (:prefix ("o" . "open/Org")
+                      "l" #'org-id-store-link
+                      "L" #'org-store-link-id-optional)
+             (:prefix ("r" . "roam")
+              "b" #'consult-org-roam-backlinks
+              "i" #'org-roam-node-insert+
+              "l" #'org-roam-buffer-toggle
+              :desc "org-roam-ui in xwidget" "w" #'org-roam-toggle-ui-xwidget
+              :desc "org-roam-ui in browser" "W" #'org-roam-ui-browser+
+              "f" #'org-roam-node-find
+              "F" #'consult-org-roam-forward-links
+              "d" #'org-roam-dailies-find-date
+              (:prefix ("r" . "refile")
+                       "n" #'org-roam-refile-to-node))
+             (:prefix ("s" . "tree/subtree")
+                      "a" #'org-toggle-archive-tag
+                      "A" #'org-archive-subtree
+                      "j" #'consult-org-heading
+                      "n" #'org-narrow-to-subtree
+                      "N" #'widen
+                      "S" #'org-sort
+                      "x" #'org-cut-subtree)
+             (:prefix ("t" . "toggle")
+                      "l" #'org-toggle-link-display)))))
 
   (map! :map org-agenda-mode-map
         :n "RET" #'org-agenda-switch-to)
