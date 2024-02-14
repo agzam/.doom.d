@@ -304,13 +304,13 @@
                (:when (modulep! :custom search)
                  :desc "zoxide dir" "d" (cmd! (+zoxide-find)))
                :desc "dired" "j" #'dired-jump
-               (:when IS-MAC
+               (:when (featurep :system 'macos)
                  :desc "open in app" "O" #'+macos/open-in-default-program)
                "e" nil
                (:prefix ("e" . "doom/emacs")
                 :desc "doom.d" "d" #'find-in-doom-dir
                 :desc "doom init dir" "i" (cmd! (dired doom-emacs-dir))
-                (:when IS-LINUX
+                (:when (featurep :system 'linux)
                   :desc "awesomewm config" "a" (cmd! (dired "~/.config/awesome/")))))
 
       (:prefix ("g" . "goto/git")

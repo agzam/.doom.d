@@ -163,7 +163,8 @@ in that prop."
   "Based on given GitHub URI for pull-request or issue,
   return the title of that pull-request or issue."
   (cond
-   ((string-match "\\(github.com\\).*\\(issues\\|pull\\)" uri) ; either PR or issue
+   (;; either PR or issue
+    (string-match "\\(github.com\\).*\\(issues\\|pull\\)" uri)
     (pcase-let*
         ((`(_ _ ,owner ,repo ,type ,number) (remove "" (split-string uri "/")))
          (gh-resource (format "/repos/%s/%s/%s/%s"
@@ -177,7 +178,21 @@ in that prop."
           (format
            "%s/%s#%s — %s" owner repo number .title)))))
 
-   ((string-match "\\(github.com\\).*" uri) ; just a link to a repo or file in a branch
+   ;; just a link to a repo
+   ((string-match "\\(github.com\\)/[[:graph:]]+/[[:graph:]]+$" uri)
+    (pcase-let* ((uri* (->> (split-string uri "/\\|\\?")
+                            (remove "")
+                            (-non-nil)))
+                 (`(_ _ ,owner ,repo) uri*)
+                 (gh-resource (format "/repos/%s/%s" owner repo))
+                 (resp (ghub-get gh-resource nil :auth 'forge)))
+      (when resp
+        (let-alist resp
+          (format
+           "%s/%s — %s" owner repo .description)))))
+
+   (;; link to a file in a branch
+    (string-match "\\(github.com\\).*" uri)
     (pcase-let* ((uri* (->> (split-string uri "/\\|\\?")
                             (remove "")
                             (-non-nil)))

@@ -5,8 +5,8 @@
 
 (defvar org-default-folder
   (cond
-   (IS-MAC "/Users/ag/Library/CloudStorage/Dropbox/org/")
-   (IS-LINUX "/home/ag/Dropbox/org/")))
+   ((featurep :system 'macos) "/Users/ag/Library/CloudStorage/Dropbox/org/")
+   ((featurep :system 'linux) "/home/ag/Dropbox/org/")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Nothing can shadow org-roam keys ;;
