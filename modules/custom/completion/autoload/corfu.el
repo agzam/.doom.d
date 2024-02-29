@@ -53,8 +53,12 @@ See `+dict--words' for extra words, and `+dict-file' for a wordslist source "
 ;;;###autoload
 (defun +corfu-move-to-minibuffer ()
   (interactive)
-  (let (completion-cycle-threshold completion-cycling)
-    (apply #'consult-completion-in-region completion-in-region--data)))
+  ;; https://github.com/minad/corfu?tab=readme-ov-file#transfer-completion-to-the-minibuffer
+  (pcase completion-in-region--data
+    (`(,beg ,end ,table ,pred ,extras)
+     (let ((completion-extra-properties extras)
+           completion-cycle-threshold completion-cycling)
+       (consult-completion-in-region beg end table pred)))))
 
 ;;;###autoload
 (defun +corfu-kill-frames ()
