@@ -582,6 +582,8 @@
   :after (org org-roam)
   :config
   (setq
-   khoj-server-url "http://localhost:42110"
-   khoj-index-directories (list org-default-folder))
+   khoj-index-directories (list org-default-folder)
+   khoj-index-files nil
+   khoj-server-url "http://127.0.0.1:42110"
+   khoj-api-key "kk-YHHGSBPVyL0n7zX8tVhMBCiiICWaL0ZtMNyfKp1wGIE")
   (add-hook! org-roam-mode #'khoj--server-start))

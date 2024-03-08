@@ -214,4 +214,5 @@
        nix
        golang
        lua
+       tree-sitter
        )

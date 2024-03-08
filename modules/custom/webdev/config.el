@@ -1,5 +1,7 @@
 ;;; custom/webdev/config.el -*- lexical-binding: t; -*-
 
+(add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescript-mode))
+
 (use-package! rjsx-mode
   :mode "\\.[mc]?js\\'"
   :mode "\\.es6\\'"
