@@ -63,7 +63,7 @@
 (defun +dired-jump-find-in-project ()
   "Buffer file in subtree relative to projects root."
   (interactive)
-  (let* ((root (projectile-acquire-root))
+  (let* ((root (or (projectile-project-root) default-directory))
          (fname buffer-file-name)
          (parts (when fname (split-string (string-replace root "" fname) "/"))))
     (dired root)

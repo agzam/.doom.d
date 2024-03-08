@@ -4,10 +4,12 @@
   :defer t
   :hook (telega-chat . jinx-mode)
   :config
-  (setq telega-server-libs-prefix (if (featurep :system 'macos)
-                                      "/opt/homebrew/opt/tdlib"
-                                    "/usr")
-        telega-completing-read-function 'completing-read-default)
+  (when (featurep :system 'macos)
+    (setq telega-server-libs-prefix "/opt/homebrew/opt/tdlib"))
+
+  (setq telega-completing-read-function 'completing-read-default
+        ;; telega-use-docker t
+        )
 
   (map! :map telega-root-mode-map [remap imenu] #'telega-chat-with)
 

@@ -34,7 +34,8 @@
   (if (not (executable-find "zoxide"))
       (error "zoxide executable cannot be found")
     (let* ((items (split-string
-                   (shell-command-to-string "zoxide query --list")))
+                   (shell-command-to-string "zoxide query --list")
+                   "\n"))
            (path (completing-read "Choose: " items)))
       (find-file path))))
 
@@ -46,4 +47,5 @@
     (when (and file
                (stringp file)
                (file-readable-p file))
-      (start-process "*zoxide*" nil "zoxide" "add" file))))
+      (call-process-shell-command
+       (format "zoxide add \"%s\"" file)))))
