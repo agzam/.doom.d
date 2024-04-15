@@ -131,17 +131,26 @@ jump to selected tab, activating it in the browser."
 (defun browser-insert-link-from-active-tab ()
   "Insert link to currently active tab in the browser."
   (interactive)
-  (when-let* ((tab (browser--get-active-tab))
-              (url (plist-get tab :url))
-              (title (replace-regexp-in-string
-                      "\\(^\\(([0-9]+)\\)\\s-*\\)" ""
-                      (plist-get tab :title))))
+  (cond
+   ((featurep :system 'linux)
+    (browser-copy-tab-link)
+    (print (car kill-ring))
     (cond
-     ((eq major-mode 'markdown-mode)
-      (insert (format "[%s](%s)" title url)))
      ((eq major-mode 'org-mode)
-      (insert (format "[[%s][%s]]" url title)))
-     (t (insert url)))))
+      (org-cliplink))
+     (t (insert (car kill-ring)))))
+   ((featurep :system 'macos)
+    (when-let* ((tab (browser--get-active-tab))
+                (url (plist-get tab :url))
+                (title (replace-regexp-in-string
+                        "\\(^\\(([0-9]+)\\)\\s-*\\)" ""
+                        (plist-get tab :title))))
+      (cond
+       ((eq major-mode 'markdown-mode)
+        (insert (format "[%s](%s)" title url)))
+       ((eq major-mode 'org-mode)
+        (insert (format "[[%s][%s]]" url title)))
+       (t (insert url)))))))
 
 ;;;###autoload
 (defun add-roam-ref-for-active-tab ()
@@ -174,11 +183,39 @@ jump to selected tab, activating it in the browser."
        :info (list :ref url)
        :goto t))))
 
+(defun browser-get-default ()
+  "Determine default browser class."
+  (cond ((featurep :system 'linux)
+         (if-let* ((xdg-setttins (executable-find "xdg-settings"))
+                   (browser-class (thread-last
+                                    (shell-command-to-string
+                                     (concat xdg-setttins " get default-web-browser"))
+                                    (replace-regexp-in-string "\\(\n\\|\\.desktop\\)" ""))))
+             browser-class
+           (user-error "Err. xdg-settings failed to determine the browser")))
+
+        (t (user-error "This function is implemented only for Linux."))))
+
 ;;;###autoload
 (defun browser-copy-tab-link ()
   "Yanks the url of the active browser tab into kill ring"
   (interactive)
-  (when-let* ((tab (browser--get-active-tab))
-              (url (plist-get tab :url)))
-    (message url)
-    (kill-new url)))
+  (cond
+   ((featurep :system 'linux)
+    (when-let ((browser-class (browser-get-default))
+               (xdotool (executable-find "xdotool")))
+      (let* ((script (format "cur_win_id=$(%1$s getactivewindow);
+                                %1$s search --onlyvisible --class %2$s windowactivate --sync key --clearmodifiers ctrl+l keyup ctrl+l;
+                                %1$s key --clearmodifiers ctrl+c sleep 0.2 keyup ctrl+c keyup shift;
+                                %1$s windowactivate $cur_win_id"
+                             xdotool browser-class)))
+        (with-temp-buffer
+          (call-process "/bin/sh" nil (current-buffer) nil "-c" script)
+          (when-let ((content (shell-command-to-string "xclip -o")))
+            (kill-new content)
+            content)))))
+   ((featurep :system 'macos)
+    (when-let* ((tab (browser--get-active-tab))
+                (url (plist-get tab :url)))
+      (message url)
+      (kill-new url)))))

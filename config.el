@@ -285,7 +285,7 @@
         :desc "pop shell" "'" #'shell-pop
         :desc "choose shell" "\"" #'shell-pop-choose)
 
-      (:prefix ("b" . "buffers")
+      (:prefix ("b" . "buffers/browser")
        :desc "scratch" "s" #'doom/switch-to-scratch-buffer
        :desc "Messages" "m" #'switch-to-messages-buffer
        :desc "kill" "d" #'kill-this-buffer
@@ -295,7 +295,8 @@
        (:when (modulep! :custom web-browsing)
          :desc "browser history" "h" #'browser-hist-search
          :desc "browser tabs" "t" #'browser-goto-tab
-         :desc "browser copy link" "l" #'browser-copy-tab-link))
+         :desc "browser copy link" "l" #'browser-copy-tab-link
+         :desc "insert url" "I" #'browser-insert-link-from-active-tab))
 
       (:prefix ("e" . "edit")
        :desc "edit indirect" "i" #'edit-indirect-region)

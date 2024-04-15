@@ -1,15 +1,17 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; custom/git/packages.el
 
-(package! magit)
-(package! compat)
+(package! magit
+  :recipe (:host github :repo "magit/magit"))
+(package! compat
+  :recipe (:host github :repo "emacs-compat/compat"))
+
 ;; (package! emacsql-sqlite-builtin)
-(package! forge)
-(package! gh-notify
-  :recipe (:host github
-           ;; until PR anticomputer/gh-notify#14 gets merged
-	   :repo "benthamite/gh-notify"
-           :branch "fix/update-forge-functions"))
+(package! forge :recipe (:host github :repo "magit/forge")
+  :pin "716bc8fffba81d57e4d349680e94892352cb6175")
+(package! transient :recipe (:host github :repo "magit/transient" ))
+
+(package! gh-notify :recipe (:host github :repo "anticomputer/gh-notify"))
 
 (package! git-link)
 ;; (package! code-review :recipe (:host github :repo "wandersoncferreira/code-review")
@@ -18,11 +20,14 @@
 ;; @tarsius broke Code-Review: https://github.com/wandersoncferreira/code-review/issues/245
 (package! code-review :recipe (:host github :repo "phelrine/code-review" :branch "fix/closql-update"))
 
-(package! gist)
+;; (package! gist)
 
-(package! transient :recipe (:host github :repo "magit/transient" ))
 
-(unpin! magit forge compat)
+(unpin!
+ ;; magit
+ ;; forge
+ ;; compat
+ )
 
 (package! closql)
 

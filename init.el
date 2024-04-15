@@ -207,7 +207,7 @@
        pdf
        notmuch
        webdev
-       osx
+       (when (featurep :system 'macos) osx)
        web-browsing
        flutter
        chat

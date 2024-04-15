@@ -94,7 +94,7 @@
 
 (use-package! orderless
   :config
-  (setq completion-styles '(orderless partial-completion)
+  (setq completion-styles '(orderless partial-completion basic)
         completion-category-defaults nil
         completion-category-overrides '((file (styles . (partial-completion))))))
 

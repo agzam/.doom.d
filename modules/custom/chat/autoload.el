@@ -40,17 +40,23 @@
                   (point-max))))
          (default-prompt
           (concat
-           "Only correct mistakes, do not alter the text, "
-           "don't overuse words like 'However', keep it simple and easy to read. "
-           "Don't report when no changes are required, "
-           "as this prompt is used in automation and any output "
-           "would always replace the original text."
-           "\n\n"))
+           "Only correct mistakes, do not alter the text unless critical. "
+           "When improving, keep it simple and easy to read. "
+           "Do not report when no changes are required, "
+           "as this prompt is used in automation.\n"))
          (prompt (if prompt-str
-                     (read-string "Prompt to use: "
-                                  default-prompt
-                                  'chatgpt-improve-text-hist)
+                     (completing-read
+                      "Prompt to use: "
+                      chatgpt-improve-text-hist)
                    default-prompt))
+         ;; persist the history
+         (_ (progn
+              (add-to-list 'chatgpt-improve-text-hist prompt)
+              (add-hook! 'kill-emacs-hook
+                (defun persist-chatgpt-improve-text-hist ()
+                  (customize-save-variable
+                   'chatgpt-improve-text-hist
+                   chatgpt-improve-text-hist)))))
          (_ (message "beep-bop... checking your crap..."))
          (new-text (chatgpt-shell-post-prompt
                     (format "%s\n%s" prompt text)))
