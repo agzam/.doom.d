@@ -276,7 +276,7 @@
 (map! :leader
       :desc "M-x" "SPC" #'execute-extended-command
       "TAB"   #'alternate-buffer
-      "v"     #'er/expand-region
+      "v"     #'expreg-transient
       :nv   ";" (cmd! (call-interactively
                        (if (evil-visual-state-p)
                            #'comment-or-uncomment-region

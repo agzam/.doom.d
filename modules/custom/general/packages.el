@@ -4,7 +4,7 @@
 (package! info+)
 (package! hydra)
 
-(package! expand-region)
+(package! expreg)
 
 (unpin! wgrep)
 
