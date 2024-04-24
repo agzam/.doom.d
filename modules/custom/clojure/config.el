@@ -12,7 +12,8 @@
    '+lookup-provider-url-alist
    '("Clojure Docs" "https://clojuredocs.org/search?q=%s"))
 
-  (add-hook! (clojure-mode clojurec-mode clojurescript-mode lsp-mode)
+  (add-hook! (clojure-mode clojurec-mode clojurescript-mode lsp-mode
+              clojure-ts-mode clojure-ts-clojurec-mode clojure-ts-clojurescript-mode lsp-mode)
              #'+clojure-mode-lookup-handlers
              #'lsp!
              (defun +clojure-disable-lsp-indentation-h ()
@@ -26,12 +27,16 @@
     (dolist (m '(clojure-mode
                  clojurec-mode
                  clojurescript-mode
-                 clojurex-mode))
+                 clojurex-mode
+
+                 clojure-ts-mode
+                 clojure-ts-clojurec-mode
+                 clojure-ts-clojurescript-mode))
       (add-to-list 'lsp-language-id-configuration (cons m "clojure"))))
 
-  (add-hook! clojure-mode #'add-edn-imenu-regexp-h)
+  (add-hook! (clojure-mode clojure-ts-mode) #'add-edn-imenu-regexp-h)
 
-  (add-hook! clojurescript-mode
+  (add-hook! (clojurescript-mode clojure-ts-clojurescript-mode)
     (defun add-reframe-regs-to-imenu ()
       (add-to-list
        'imenu-generic-expression
@@ -247,6 +252,7 @@
                         "t" #'cider-test-run-focused-test)))
 
         (:map cider-repl-mode-map
+         "C-c C-l" #'cider-repl-clear-buffer
          :i [S-return] #'cider-repl-newline-and-indent
          :i [M-return] #'cider-repl-return
          (:localleader

@@ -196,9 +196,16 @@
        modeline
        tab-bar
        elisp
+       (when (featurep :system 'macos) osx)
+
        search
        dired
        writing
+       ai
+       web-browsing
+       chat
+
+       tree-sitter
        lsp
        clojure
        org
@@ -207,12 +214,8 @@
        pdf
        notmuch
        webdev
-       (when (featurep :system 'macos) osx)
-       web-browsing
        flutter
-       chat
        nix
        golang
        lua
-       tree-sitter
        )

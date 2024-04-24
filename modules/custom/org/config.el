@@ -29,8 +29,9 @@
 (map! :map org-roam-global-keys-mode-map
       (:prefix ("C-c C-f" . "Org")
                "f" #'org-roam-node-find
-               "t" (cmd! (funcall-interactively #'org-roam-dailies-goto-today '("w")))
-               "T" (cmd! (funcall-interactively #'org-roam-dailies-goto-today '("j")))
+               :desc "work today" "t" (cmd! (funcall-interactively #'org-roam-dailies-goto-today '("w")))
+               :desc "journal today" "T" (cmd! (funcall-interactively #'org-roam-dailies-goto-today '("j")))
+               :desc "work note" "n" (cmd! (funcall-interactively #'org-roam-dailies-goto-date nil '("w")))
                "k" #'khoj
                "b" #'browser-create-roam-node-for-active-tab))
 ;;;;;;
