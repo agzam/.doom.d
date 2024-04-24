@@ -6,7 +6,11 @@
                           clojurec-mode
                           clojurescript-mode
                           cider-clojure-interaction-mode
-                          cider-repl-mode)
+                          cider-repl-mode
+
+                          clojure-ts-mode
+                          clojure-ts-clojurec-mode
+                          clojure-ts-clojurescript-mode)
     :definition #'+lsp-lookup-definition-handler
     :references #'+lsp-lookup-references-handler
     :implementations '(lsp-find-implementation :async t)

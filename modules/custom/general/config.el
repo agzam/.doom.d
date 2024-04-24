@@ -47,36 +47,19 @@
                  :unless '(:rem sp-point-before-same-p)))
 
 
-(use-package! expand-region
-  :commands (er/contract-region er/mark-symbol er/mark-word)
+(use-package! expreg
+  :commands (expreg-transient)
   :config
-  (global-subword-mode +1)
-  (setq expand-region-contract-fast-key "V"
-        expand-region-reset-fast-key "r"
-        expand-region-subword-enabled t)
-
-  (defun er/add-mode-expansions ()
-    (setq-local er/try-expand-list
-                '(er/mark-word
-                  er/mark-symbol
-                  er/mark-symbol-with-prefix
-                  er/mark-eovl
-                  er/mark-bovl
-                  er/mark-eol
-                  er/mark-bol
-                  er/mark-inside-quotes
-                  er/mark-outside-quotes
-                  er/mark-inside-pairs
-                  er/mark-outside-pairs
-                  er/mark-comment
-                  er/mark-url
-                  er/mark-email
-                  er/mark-defun
-                  er/mark-paragraph)))
-
-  (er/enable-mode-expansions 'text-mode 'er/add-mode-expansions)
-  (er/enable-mode-expansions 'prog-mode 'er/add-mode-expansions))
-
+  (setq-default expreg-functions
+                '(expreg--subword
+                  expreg--word
+                  expreg--sentence
+                  expreg--line
+                  expreg--list
+                  expreg--string
+                  expreg--treesit
+                  expreg--comment
+                  expreg--paragraph-defun)))
 
 (after! ibuf-ext
   (setq
