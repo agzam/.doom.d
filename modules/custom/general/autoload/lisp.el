@@ -4,8 +4,9 @@
 (defun sp-reindent ()
   (interactive)
   (save-mark-and-excursion
-    ;; (let ((expand-region-fast-keys-enabled nil))
-    ;;   (er/expand-region 2))
+    (unless (looking-at "(\\|\\[\\|\{")
+      (up-list -1))
+    (sp-mark-sexp)
     (if (bound-and-true-p lsp-mode)
         (lsp--indent-lines
          (region-beginning)

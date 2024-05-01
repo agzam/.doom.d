@@ -22,7 +22,7 @@
   :after-call doom-first-file-hook
   :config
   (setq beacon-blink-delay 0.1
-        beacon-blink-duration 0.5
+        beacon-blink-duration 0.7
         beacon-size 60
         beacon-color "DarkGoldenrod2"
         beacon-blink-when-window-scrolls nil)

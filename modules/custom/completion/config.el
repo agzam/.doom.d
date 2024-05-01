@@ -96,7 +96,8 @@
   :config
   (setq completion-styles '(orderless partial-completion basic)
         completion-category-defaults nil
-        completion-category-overrides '((file (styles . (partial-completion))))))
+        completion-category-overrides '((file (styles . (partial-completion)))
+                                        (symbol (styles . (partial-completion))))))
 
 (use-package! cape
   :after corfu
@@ -519,6 +520,9 @@
              yas-deactivate-extra-mode
              yas-maybe-expand-abbrev-key-filter)
   :config
+  (map! :map yas-minor-mode-map
+        "M-j" #'yas-next-field
+        "M-k" #'yas-prev-field)
   (add-to-list 'yas-snippet-dirs (concat doom-user-dir "snippets/"))
   (add-to-list 'hippie-expand-try-functions-list 'yas-hippie-try-expand)
   (yas-reload-all)

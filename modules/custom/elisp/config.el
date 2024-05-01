@@ -1,5 +1,11 @@
 ;;; custom/elisp/config.el -*- lexical-binding: t; -*-
 
+(map! :map profiler-report-mode-map
+      "M-l" #'profiler-report-expand-entry
+      "M-h" #'profiler-report-collapse-entry
+      "M-j" #'profiler-report-next-entry
+      "M-k" #'profiler-report-previous-entry)
+
 (use-package! paradox
   :defer t
   :hook (paradox-menu-mode . paradox-menu-mode--set-keys)

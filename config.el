@@ -25,6 +25,8 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
+(setq doom-theme 'ag-themes-spacemacs-light)
+
 (setq
  doom-font (font-spec :family "Fira Code" :size 16)
  doom-serif-font (font-spec :family "Fira Code" :size 16)
@@ -63,7 +65,7 @@
  evil-escape-key-sequence "kj"
  evil-esc-delay 0.3
  messages-buffer-max-lines 10000
- fill-column 120)
+ fill-column 70)
 
 (setq
  doom-localleader-key ","
@@ -236,8 +238,10 @@
 ;; disable nonsensical keys
 (dolist (key '("s-n" "s-p" "s-q" "s-m" "s-,"
                "C-x C-c"
-               "C-<tab>" "C-S-<tab>" ))
+               "C-<tab>" "C-S-<tab>" "<f11>"
+               "M-k" "M-j"))
   (global-set-key (kbd key) nil))
+
 
 ;;; Globals
 (map! :i "M-l" #'sp-forward-slurp-sexp
@@ -255,6 +259,7 @@
       :i "M-/" #'hippie-expand
       :n "gi" #'ibuffer-sidebar-jump
       :i "C-v" #'evil-paste-after
+      :i "TAB" #'completion-at-point
       (:when (featurep :system 'linux)
         :i "C-M-S-s-y" #'nerd-dictation-toggle))
 
@@ -299,7 +304,7 @@
          :desc "browser history" "h" #'browser-hist-search
          :desc "browser tabs" "t" #'browser-goto-tab
          :desc "browser copy link" "l" #'browser-copy-tab-link
-         :desc "insert url" "I" #'browser-insert-link-from-active-tab))
+         :desc "insert url" "y" #'browser-insert-link-from-active-tab))
 
       (:prefix ("e" . "edit")
        :desc "edit indirect" "i" #'edit-indirect-region)
