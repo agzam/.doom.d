@@ -1,10 +1,21 @@
 ;;; custom/clojure/config.el -*- lexical-binding: t; -*-
 
+(defvar clj-modes '(clojure-mode
+                    clojurec-mode
+                    clojurescript-mode
+                    clojure-ts-mode
+                    clojure-ts-clojurec-mode
+                    clojure-ts-clojurescript-mode))
+
 (after! projectile
   (pushnew! projectile-project-root-files "project.clj" "build.boot" "deps.edn"))
 
 (use-package! clojure-mode
   :defer t
+  :init
+  (defadvice! skip-cider--setup-clojure-major-mode-a (_ &rest _)
+    :around 'cider--setup-clojure-major-mode
+    nil)
   :config
   (setq clojure-toplevel-inside-comment-form t)
 
@@ -12,27 +23,22 @@
    '+lookup-provider-url-alist
    '("Clojure Docs" "https://clojuredocs.org/search?q=%s"))
 
-  (add-hook! (clojure-mode clojurec-mode clojurescript-mode lsp-mode
-              clojure-ts-mode clojure-ts-clojurec-mode clojure-ts-clojurescript-mode lsp-mode)
-             #'+clojure-mode-lookup-handlers
-             #'lsp!
-             (defun +clojure-disable-lsp-indentation-h ()
-               (setq-local lsp-enable-indentation nil))
-             (defun activate-clojure-dash-docsets-h ()
-               (dash-docs-activate-docset "ClojureDocs")))
-
-  (+clojure-mode-lookup-handlers)
+  (eval `(add-hook! ,clj-modes
+                    #'+clojure-mode-lookup-handlers
+                    #'lsp!
+                    (defun +clojure-disable-lsp-indentation-h ()
+                      (setq-local lsp-enable-indentation nil))
+                    (defun activate-clojure-dash-docsets-h ()
+                      (dash-docs-activate-docset "ClojureDocs"))))
 
   (after! lsp-clojure
-    (dolist (m '(clojure-mode
-                 clojurec-mode
-                 clojurescript-mode
-                 clojurex-mode
+    (dolist (m clj-modes)
+      (add-to-list 'lsp-language-id-configuration (cons m "clojure")))
 
-                 clojure-ts-mode
-                 clojure-ts-clojurec-mode
-                 clojure-ts-clojurescript-mode))
-      (add-to-list 'lsp-language-id-configuration (cons m "clojure"))))
+    (add-hook! 'lsp-mode-hook
+      (defun clj-clojure-set-completion-at-point-h ()
+        (when (member major-mode clj-modes)
+          (clojure-set-completion-at-point-h)))))
 
   (add-hook! (clojure-mode clojure-ts-mode) #'add-edn-imenu-regexp-h)
 
@@ -47,19 +53,18 @@
   :after clojure-mode
   :hook (clojure-mode-local-vars . cider-mode)
   :config
-
-
   (add-hook! cider-mode
              #'+clojure-mode-lookup-handlers
-             #'cider-completion-styles-h)
+             #'clojure-set-completion-at-point-h)
 
   (add-hook! cider-repl-mode
-             #'cider-completion-styles-h
+             #'clojure-set-completion-at-point-h
              #'hs-minor-mode)
 
   (setq nrepl-hide-special-buffers nil
         nrepl-log-messages nil
         ;; cider-font-lock-dynamically '(macro core function var deprecated)
+        cider-auto-mode nil
         cider-font-lock-dynamically nil
         cider-dynamic-indentation nil
         cider-overlays-use-font-lock nil
@@ -110,7 +115,7 @@
               "C-c r" nil
               "C-c C-n" #'clj-edit-ns-header)
         (:map cider-clojure-interaction-mode-map
-              :i "C-j" #'cider-eval-last-sexp))
+         :i "C-j" #'cider-eval-last-sexp))
 
   (map! :map cider-popup-buffer-mode-map
         :n "q" #'cider-popup-buffer-quit-function)
@@ -171,7 +176,9 @@
 
   (map! (:localleader
          (:map (clojure-mode-map
+                clojure-ts-mode-map
                 clojurescript-mode-map
+                clojure-ts-clojurescript-mode-map
                 cider-repl-mode-map)
                ","  #'clj-fully-qualified-symbol-at-point
                ";" #'clojure-toggle-ignore
@@ -280,7 +287,8 @@
   :hook (clojure-mode . clj-refactor-mode)
   :config
   (setq cljr-magic-requires nil)
-  (map! :map clojure-mode-map
+  (map! :map (clojure-mode-map
+              clojure-ts-mode-map)
         :localleader
         :desc "refactor" "R" #'hydra-cljr-help-menu/body))
 

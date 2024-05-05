@@ -15,7 +15,7 @@
    corfu-on-exact-match 'insert
    corfu-quit-no-match 'separator
    corfu-cycle t
-   corfu-auto-prefix 2
+   corfu-auto-prefix 3
    completion-cycle-threshold 1
    tab-always-indent 'complete
    corfu-count 9)
@@ -61,7 +61,8 @@
                  "w"  #'cape-tex
                  "_"  #'cape-tex
                  "&"  #'cape-sgml
-                 "r"  #'cape-rfc1345))
+                 "r"  #'cape-rfc1345
+                 "y"  #'yasnippet-capf))
   ;; corfu-indexed like in Company, M+number - inserts the thing
   (map! :map corfu-map
         "M-0" (cmd! () (+corfu-insert-indexed 9))
@@ -109,20 +110,24 @@
 
   (add-hook! (text-mode prog-mode)
     (defun cape-completion-at-point-functions-h ()
-      (add-to-list 'completion-at-point-functions #'cape-file :append)
-      (add-to-list 'completion-at-point-functions #'cape-keyword :append)
-      (add-to-list 'completion-at-point-functions #'cape-dabbrev :append)
-      (add-to-list 'completion-at-point-functions #'cape-abbrev :append)
-      (add-to-list 'completion-at-point-functions #'cape-dict :append)))
+      (dolist (cfn '(yasnippet-capf
+                     cape-dabbrev
+                     cape-abbrev
+                     cape-dict
+                     cape-file
+                     cape-keyword))
+        (add-to-list 'completion-at-point-functions cfn :append)
+        (setq-local completion-at-point-functions
+              (remove 'ispell-completion-at-point
+                      completion-at-point-functions)))))
 
   (add-hook! emacs-lisp-mode
     (defun +cape-completion-at-point-elisp-h ()
-      (add-to-list 'completion-at-point-functions #'cape-elisp-symbol)))
+      (add-to-list 'completion-at-point-functions #'cape-elisp-symbol :append)))
 
   (add-hook! (org-mode markdown-mode)
     (defun +cape-completion-at-point-org-md-h ()
-      (add-to-list 'completion-at-point-functions #'cape-elisp-block)))
-
+      (add-to-list 'completion-at-point-functions #'cape-elisp-block :append)))
 
   ;; (add-hook! '(eshell-mode-hook comint-mode-hook minibuffer-setup-hook)
   ;;   (defun +cape-completion-at-point-history-h ()
@@ -526,7 +531,17 @@
   (add-to-list 'yas-snippet-dirs (concat doom-user-dir "snippets/"))
   (add-to-list 'hippie-expand-try-functions-list 'yas-hippie-try-expand)
   (yas-reload-all)
-  (add-hook! 'prog-mode-hook #'yas-minor-mode-on))
+  (yas-global-mode +1)
+
+  (add-hook! 'yas-before-expand-snippet-hook #'temporarily-disable-smart-parens)
+  (advice-add 'yas-completing-prompt :around #'yas-completing-prompt-a))
+
+(use-package yasnippet-capf
+  :after cape
+  :config
+  (add-hook! 'yas-minor-mode-hook :append
+    (defun +corfu-remove-t-in-completion-at-point-functions ()
+      (remove-hook! 'completion-at-point-functions :local 't))))
 
 (use-package! dash-docs
   :defer t
@@ -537,7 +552,8 @@
   ;;; overriding internal implementation fns for the time being
   ;;; https://github.com/dash-docs-el/dash-docs/issues/23
   (defun dash-docs-install-user-docset ()
-    "Download an unofficial docset with specified DOCSET-NAME and move its stuff to docsets-path."
+    "Download an unofficial docset with specified DOCSET-NAME and
+move its stuff to docsets-path."
     (interactive)
     (let* ((docsets (dash-docs-unofficial-docsets))
            (docset-name (dash-docs-read-docset

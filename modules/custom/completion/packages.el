@@ -31,3 +31,5 @@
         posframe
         vertico
         vertico-posframe)
+
+(package! yasnippet-capf :recipe (:host github :repo "elken/yasnippet-capf"))

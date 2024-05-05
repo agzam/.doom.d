@@ -1,0 +1,5 @@
+# name: require
+# key: rq
+# --
+(:require
+  [$1 :as $2])$>

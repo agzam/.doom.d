@@ -212,15 +212,26 @@ With ARG, kills all buffers, not only in the current project"
   )
 
 
-;;;###autoload
-(defun cider-completion-styles-h ()
-  (setq-local completion-styles '(cider
-                                  ;; orderless
-                                  ;; partial-completion
-                                  ))
-  (defalias 'cape-cider-lsp
-    (cape-capf-super #'cider-complete-at-point
-                     #'+lsp-completion-at-point))
+(defun +cider-complete-at-point ()
+  (when (cider-connected-p)
+    (cider-complete-at-point)))
 
-  (add-to-list 'completion-at-point-functions #'cape-cider-lsp)
+;;;###autoload
+(defun clojure-set-completion-at-point-h ()
+  (setq-local completion-styles '(orderless
+                                  partial-completion
+                                  cider))
+
+  (defalias 'cape-cider-lsp-yas
+    (cape-capf-super #'+cider-complete-at-point
+                     #'+lsp-completion-at-point
+                     #'yasnippet-capf))
+
+  (add-to-list 'completion-at-point-functions #'cape-cider-lsp-yas)
+  (setq-local completion-at-point-functions
+              (seq-difference
+               completion-at-point-functions
+               '(lsp-completion-at-point
+                 cider-complete-at-point
+                 yasnippet-capf)))
   (cape-completion-at-point-functions-h))
