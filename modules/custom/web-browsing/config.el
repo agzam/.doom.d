@@ -135,3 +135,28 @@
         (setq rmh-elfeed-org-files (cl-remove-if-not #'file-exists-p files))))))
 
 (use-package! rfc-mode)
+
+;; (add-to-list
+;;  'load-path
+;;  (format "%sstraight/build-%s/consult-web/sources/"
+;;          (file-truename doom-local-dir) emacs-version))
+
+(use-package! consult-web
+  :after consult
+  :config
+  (setq consult-web-sources-modules-to-load
+        '(consult-web-google
+          consult-web-brave
+          consult-web-elfeed
+          consult-web-wikipedia
+          consult-web-gptel))
+  (require 'consult-web-sources)
+  (require 'consult-web-embark)
+
+  (dolist (src '(Wikipedia Brave elfeed Google))
+    (add-to-list 'consult-web-dynamic-sources (symbol-name src)))
+
+  (consult-web--set-api-keys)
+  (setq consult-web-default-count 15
+        consult-web-dynamic-input-debounce 0.8
+        consult-web-dynamic-refresh-delay 0.7))

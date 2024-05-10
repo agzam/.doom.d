@@ -8,3 +8,7 @@
 (package! elfeed-goodies)
 (package! elfeed-org)
 (package! rfc-mode)
+
+(package! consult-web :recipe
+  (:host github :repo "armindarvish/consult-web"
+   :files (:defaults "sources/*.el")))
