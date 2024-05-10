@@ -304,7 +304,8 @@
         "~" #'vertico-jump-to-home-dir-on~
         "C-/" #'vertico-jump-root
         "C-?" #'vertico-jump-sudo
-        "M-m" #'embark-select))
+        "M-m" #'embark-select
+        "C-SPC" #'embark-preview+))
 
 (after! consult
   (consult-customize

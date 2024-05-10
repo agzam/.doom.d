@@ -88,3 +88,30 @@
     ("mp3" (dired-file-to-mplayer file))
     ("m4a" (dired-file-to-mplayer file))
     (_ (embark-open-externally file))))
+;;;###autoload
+(defun embark-preview+ ()
+  "My custom embark preview function."
+  (interactive)
+  (when-let* ((target (car (embark--targets)))
+              (type (plist-get target :type)))
+    (cond
+     ((and (member type '(url consult-web))
+           (string-match-p
+            ;; only match PRs/Issues or individual files
+            "https://github\\.com/\\([^/]+/[^/]+/\\)\\(pull\\|issues\\|blob\\)[^#\n]+"
+            (plist-get target :target)))
+      (cl-labels ((forge-visit-topic-url*
+                    (url &rest _)
+                    (forge-visit-topic-via-url url)))
+        (embark--act #'forge-visit-topic-url* target nil)))
+
+     ((member type '(url consult-web))
+      (cl-labels ((eww-browse-url*
+                    (url &rest _)
+                    (eww-browse-url url)))
+        (embark--act #'eww-browse-url* target nil)))
+
+     ((fboundp 'embark-dwim)
+      (save-selected-window
+        (let (embark-quit-after-action)
+          (embark-dwim)))))))

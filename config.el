@@ -148,14 +148,11 @@
 ;; oddly, that's the way: https://github.com/hlissner/doom-emacs/issues/4206
 (remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
 
-;; this hook has been giving me headaches with Org-Mode
-(remove-hook! 'doom-first-file-hook 'save-place-mode)
-
 (after! evil
   (setq evil-jumps-cross-buffers t
         evil-move-cursor-back nil
         evil-in-single-undo t
-        evil-want-fine-undo t)
+        evil-want-fine-undo 'yes)
   (map! :map 'evil-visual-state-map "u" #'undo))
 
 (after! better-jumper

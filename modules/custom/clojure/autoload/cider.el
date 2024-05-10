@@ -76,11 +76,12 @@ set so that it clears the whole REPL buffer, not just the output."
            (sym (cider-symbol-at-point t))
            (res (cider-sync-tooling-eval
                  (format "`(%s)" sym) ns)))
-      (when res
+      (if res
         (string-trim
          (replace-regexp-in-string
           "[()]" ""
-          (nrepl-dict-get res "value")))))))
+          (nrepl-dict-get res "value")))
+        (error "can't resolve ns")))))
 
 ;;;###autoload
 (defun clj-fully-qualified-symbol-at-point (&optional for-req callback)

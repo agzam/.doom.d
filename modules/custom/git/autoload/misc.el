@@ -99,32 +99,35 @@ If URL is a link to a file, it extracts its raw form and tries to open in a buff
                  (assoc auto-mode-alist #'string-match-p)
                  (cdr))))
     (when path
-      (request raw-url
-        :sync t
-        :headers `(("Authorization"
-                    . ,(format
-                        "Token %s"
-                        (auth-source-pick-first-password
-                         :host "api.github.com"))))
-        :parser 'buffer-string
-        :complete (cl-function
-                   (lambda (&key data &allow-other-keys)
-                     (when data
-                       (with-current-buffer (get-buffer-create bufname)
-                         (erase-buffer)
-                         (insert data)
-                         (funcall mode)
-                         (when-let* ((line (plist-get parts :line))
-                                     (line-num (1- (string-to-number line))))
-                           (goto-char (point-min))
-                           (forward-line line-num))
-                         (switch-to-buffer-other-window
-                          (current-buffer))))))))))
+      (let* ((auth-source-debug nil)
+             (token (format "Token %s"
+                            (auth-source-pick-first-password
+                             :host "api.github.com"))))
+       (request raw-url
+         :sync t
+         :headers `(("Authorization" . ,token))
+         :parser 'buffer-string
+         :complete (cl-function
+                    (lambda (&key data &allow-other-keys)
+                      (when data
+                        (with-current-buffer (get-buffer-create bufname)
+                          (erase-buffer)
+                          (insert data)
+                          (if mode (funcall mode)
+                            ;; for files with mode headers
+                            (hack-local-variables))
+                          (when-let* ((line (plist-get parts :line))
+                                      (line-num (1- (string-to-number line))))
+                            (goto-char (point-min))
+                            (forward-line line-num))
+                          (switch-to-buffer-other-window
+                           (current-buffer)))))))))))
 
 ;;;###autoload
 (defun forge-visit-topic-via-url (&optional url)
   "Opens Forge Topic buffer or the raw file, based on GitHub URL."
   (interactive)
+  (require 'forge)
   (let* ((url (or url
                   ;; basic
                   (thing-at-point-url-at-point)

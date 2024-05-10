@@ -1,3 +1,5 @@
+;;; custom/nix/config.el -*- lexical-binding: t; -*-
+
 (use-package! nix-mode
   :defer t
   :interpreter ("\\(?:cached-\\)?nix-shell" . +nix-shell-init-mode)

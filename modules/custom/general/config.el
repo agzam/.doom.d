@@ -50,6 +50,8 @@
 (use-package! expreg
   :commands (expreg-transient)
   :config
+  (map! :map evil-visual-state-map
+        "v" #'expreg-transient)
   (setq-default expreg-functions
                 '(expreg--subword
                   expreg--word
