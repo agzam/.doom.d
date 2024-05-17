@@ -80,7 +80,9 @@
  doom-font-increment 1
  split-width-threshold 160
  split-height-threshold 80
- switch-to-buffer-obey-display-actions t)
+ switch-to-buffer-obey-display-actions t
+ mouse-autoselect-window t
+ other-window-scroll-default #'get-lru-window)
 
 (after! epa
   (setq epg-pinentry-mode nil))

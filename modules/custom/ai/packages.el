@@ -7,3 +7,4 @@
 ;; (package! openai :recipe (:host github :repo "emacs-openai/openai" :files ("*.el")))
 
 (package! whisper :recipe (:host github :repo "natrys/whisper.el"))
+(package! gptel)

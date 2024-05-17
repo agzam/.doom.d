@@ -5,9 +5,11 @@
         tab-bar-new-tab-group nil
         tab-bar-close-button-show nil
         tab-bar-separator " ❘ "
-        tab-bar-format '(tab-bar-format-history tab-bar-format-tabs tab-bar-separator)
+        tab-bar-format '(tab-bar-format-tabs tab-bar-separator)
         tab-bar-tab-name-function #'+tab-bar-name-fn
         tab-bar-auto-width nil)
+
+  (tab-bar-history-mode +1)
 
   (map!
    "s-[" #'tab-bar-switch-to-prev-tab
@@ -18,7 +20,7 @@
   ;; (add-hook! 'tab-bar-mode-hook #'reset-frame-full-height)
 
   (when (modulep! :custom completion)
-   (add-hook! 'tab-bar-mode-hook #'+corfu-kill-frames))
+    (add-hook! 'tab-bar-mode-hook #'+corfu-kill-frames))
 
   ;; tabs sometimes dissappear from the frame
   ;; I need to make sure they are on when tab switching

@@ -149,7 +149,8 @@
           consult-web-brave
           consult-web-elfeed
           consult-web-wikipedia
-          consult-web-gptel))
+          consult-web-gptel
+          consult-web-youtube))
   (require 'consult-web-sources)
   (require 'consult-web-embark)
 
@@ -157,6 +158,8 @@
     (add-to-list 'consult-web-dynamic-sources (symbol-name src)))
 
   (consult-web--set-api-keys)
-  (setq consult-web-default-count 15
-        consult-web-dynamic-input-debounce 0.8
-        consult-web-dynamic-refresh-delay 0.7))
+  (setq consult-web-default-count 30
+        consult-web-dynamic-input-debounce 0.7
+        consult-web-dynamic-refresh-delay 0.5)
+
+  )

@@ -44,8 +44,8 @@
         :nm "[" #'pdf-history-backward
         :nm "]" #'pdf-history-forward
         :nm "o" #'pdf-outline
-        :nm "C-e" #'evil-collection-pdf-view-next-line-or-next-page
-        :nm "C-y" #'evil-collection-pdf-view-previous-line-or-previous-page
+        :nm "C-e" #'pdf-view-scroll-up-or-next-page
+        :nm "C-y" #'pdf-view-scroll-down-or-previous-page
         :nm "zk" #'pdf-view-enlarge
         :nm "zj" #'pdf-view-shrink
         :localleader

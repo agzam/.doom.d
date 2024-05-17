@@ -69,7 +69,9 @@
     ("l" "select" tab-bar-select-tab-by-name)]
    [("b" "move buffer to tab" +tab-bar-move-buffer-to-tab)
     ("f" "find tab with current buffer" +tab-bar-find-buffer-in-tabs)
-    ("K" "kill project buffers" +tab-bar-kill-project-buffers)]]
+    ("K" "kill project buffers" +tab-bar-kill-project-buffers)]
+   [("[" "history back" tab-bar-history-back :transient t)
+    ("]" "history forward" tab-bar-history-forward :transient t)]]
   [:hide always
    :setup-children
    (lambda (_)

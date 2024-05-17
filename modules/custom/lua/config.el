@@ -60,4 +60,4 @@
   :init
   (defalias 'awesomewm-repl 'friar)
   :config
-  (setq friar-fennel-file-path "fennel"))
+  (setq friar-fennel-file-path "/home/ag/.luarocks/bin/fennel"))

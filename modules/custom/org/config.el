@@ -324,7 +324,7 @@
 (use-package! org-roam-ui
   :after org-roam
   :init
-  (setq org-roam-ui-port 8081
+  (setq org-roam-ui-port 8088
         org-roam-ui-sync-theme t
         org-roam-ui-follow t
         org-roam-ui-update-on-save t
@@ -475,6 +475,7 @@
   (map! "C-x p p" #'org-pomodoro)
   (setq org-pomodoro-start-sound-p t
         org-pomodoro-killed-sound-p t
+        org-pomodoro-audio-player "/usr/bin/mplayer"
         org-pomodoro-start-sound "~/.doom.d/modules/custom/org/pomodoro__race-start.mp3"
         org-pomodoro-short-break-sound "~/.doom.d/modules/custom/org/pomodoro__break-over.mp3")
 
@@ -530,11 +531,6 @@
     :around #'consult--grep
     :around #'compile-goto-error
     (when-let ((pos (apply fn args)))
-      (org-fold-show-entry)))
-
-  (defadvice! org-show-entry-embark-preview-a (fn)
-    :around #'+vertico/embark-preview
-    (when-let ((pos (funcall fn)))
       (org-fold-show-entry))))
 
 (use-package! anki-editor

@@ -204,11 +204,14 @@ jump to selected tab, activating it in the browser."
    ((featurep :system 'linux)
     (when-let ((browser-class (browser-get-default))
                (xdotool (executable-find "xdotool")))
-      (let* ((script (format "cur_win_id=$(%1$s getactivewindow);
-                                %1$s search --onlyvisible --class %2$s windowactivate --sync key --clearmodifiers ctrl+l keyup ctrl+l;
-                                %1$s key --clearmodifiers ctrl+c sleep 0.2 keyup ctrl+c keyup shift;
-                                %1$s windowactivate $cur_win_id"
-                             xdotool browser-class)))
+      (let* ((script (format
+                      (concat
+                       "cur_win_id=$(%1$s getactivewindow);"
+                       "%1$s search --onlyvisible --class %2$s search --role browser windowactivate "
+                       "--sync key --clearmodifiers ctrl+l keyup ctrl+l; "
+                       "%1$s key --clearmodifiers ctrl+c sleep 0.2 keyup ctrl+c keyup shift; "
+                       "%1$s windowactivate $cur_win_id")
+                      xdotool browser-class)))
         (with-temp-buffer
           (call-process "/bin/sh" nil (current-buffer) nil "-c" script)
           (when-let ((content (shell-command-to-string "xclip -o")))

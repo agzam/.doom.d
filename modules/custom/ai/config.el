@@ -6,13 +6,15 @@
   :config
   (require 'ob-chatgpt-shell)
   (ob-chatgpt-shell-setup)
-  (setq chatgpt-shell-model-versions '("gpt-3.5-turbo"
+  (setq chatgpt-shell-model-versions '("gpt-4o"
                                        "gpt-4"
+                                       "gpt-3.5-turbo"
                                        "gpt-4-32k"
                                        "gpt-4-32k-0613"))
 
   (setq chatgpt-shell-openai-key
-        (auth-source-pick-first-password :host "api.openai.com")
+        (lambda ()
+          (auth-source-pick-first-password :host "api.openai.com"))
         chatgpt-shell-request-timeout 180
         chatgpt-shell-welcome-function nil)
 
@@ -94,3 +96,11 @@
         whisper-model "base"
         whisper-language "en"
         ))
+
+(use-package! gptel
+  :commands ()
+  :config
+  (setq gptel-api-key
+        (lambda ()
+          (auth-source-pick-first-password :host "api.openai.com")))
+  )
