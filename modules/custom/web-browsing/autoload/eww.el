@@ -124,3 +124,30 @@ consider whole buffer."
   ["Fonts"
    [("j" "decrease" +eww-decrease-font-size :transient t)
     ("k" "increase" +eww-increase-font-size :transient t)]])
+
+;;;;###autoload
+(defun eww-make-readable-a (fn charset url document point buffer)
+  "Run npm script to extract readable html content."
+  (let* ((tmp-in (make-temp-file "src" nil ".html"))
+         (tmp-out (make-temp-file "dest" nil ".html"))
+         (script-dir (expand-file-name (concat
+                                        doom-user-dir
+                                        "modules/custom/web-browsing/readable")))
+         (script (concat script-dir "/extract.cljs")))
+    (unless (file-directory-p (concat script-dir "/node_modules"))
+      (shell-command "%1$s install -g nbb && %1$s install" (executable-find "npm")))
+    (unwind-protect
+        (progn
+          (write-region (point) (point-max) tmp-in)
+          (shell-command
+           (format
+            "%s %s %s %s"
+            (executable-find "nbb")
+            script tmp-in tmp-out))
+          (with-current-buffer buffer
+            (read-only-mode -1)
+            (erase-buffer)
+            (insert-file-contents tmp-out)
+            (funcall fn charset url document point buffer)))
+      (delete-file tmp-in)
+      (delete-file tmp-out))))

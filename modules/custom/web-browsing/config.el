@@ -5,7 +5,8 @@
   :config
   (setq shr-use-fonts nil
         shr-max-image-proportion 0.5
-        eww-browse-url-new-window-is-tab nil)
+        eww-browse-url-new-window-is-tab nil
+        shr-max-width 80)
 
   (add-hook! 'eww-after-render-hook #'eww--rename-buffer)
   (defadvice! eww-rename-buffer-a ()
@@ -39,7 +40,9 @@
 
          (:prefix ("y" . "copy")
           :desc "copy url" "y" #'+eww-copy-current-url
-          :desc "copy for Org" "o" #'org-eww-copy-for-org-mode))))
+          :desc "copy for Org" "o" #'org-eww-copy-for-org-mode)))
+
+  (advice-add #'eww-display-html :around #'eww-make-readable-a))
 
 (after! xwidget
   (map!
