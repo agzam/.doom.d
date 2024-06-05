@@ -91,7 +91,11 @@
         ;; See https://github.com/clojure-emacs/cider/issues/1872
         cider-repl-pop-to-buffer-on-connect 'display-only
 
-        cider-test-show-report-on-success t)
+        cider-test-show-report-on-success t
+
+        ;; using specialized fn for Polylith compatibility
+        clojure-project-root-function #'clojure-project-root-path+)
+
 
   (setq
    clojure-enable-fancify-symbols nil

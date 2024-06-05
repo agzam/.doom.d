@@ -236,3 +236,12 @@ With ARG, kills all buffers, not only in the current project"
                  cider-complete-at-point
                  yasnippet-capf)))
   (cape-completion-at-point-functions-h))
+
+;;;###autoload
+(defun clojure-project-root-path+ (&optional dir-name)
+  "Extended version of clojure-project-root-path.
+by default cider-jack-in always grabs firs .deps.edn it finds,
+which isn't great for Polylith projects. Let's fix that."
+  (if-let ((poly-root (locate-dominating-file "." "workspace.edn")))
+    (clojure-project-root-path poly-root)
+    (clojure-project-root-path dir-name)))
