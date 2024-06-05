@@ -94,13 +94,23 @@
   :config
   (setq whisper-install-directory "/home/ag/sandbox/"
         whisper-model "base"
-        whisper-language "en"
-        ))
+        whisper-language "en"))
 
 (use-package! gptel
   :commands ()
   :config
-  (setq gptel-api-key
-        (lambda ()
-          (auth-source-pick-first-password :host "api.openai.com")))
-  )
+  (setq
+   gptel-api-key
+   (lambda ()
+     (auth-source-pick-first-password :host "api.openai.com"))
+   gptel-model "gpt-4o")
+
+  (add-hook! 'gptel-mode-hook
+    (defun gptel-mode-set-local-keys ()
+      (map! :map gptel-mode-map
+            :i "s-<return>" #'gptel-send
+            :i "s-RET" #'gptel-send
+            (:localleader
+             "," #'gptel-menu
+             (:prefix ("s" . "session")
+              :desc "clear" "l" #'gptel-clear-buffer+))))))

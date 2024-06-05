@@ -63,7 +63,6 @@
     ("w" "move window to new tab" tab-bar-move-window-to-tab)]
    [("t" "new tab" +tab-bar-add-new-tab)
     ("n" "new tab" +tab-bar-add-new-tab)
-    ("d" "kill tab" +tab-bar-kill-tab)
     ("D" "Duplicate" +tab-bar-duplicate-tab)
     ("r" "rename" +tab-bar-rename-tab)
     ("l" "select" tab-bar-select-tab-by-name)]
@@ -71,7 +70,9 @@
     ("f" "find tab with current buffer" +tab-bar-find-buffer-in-tabs)
     ("K" "kill project buffers" +tab-bar-kill-project-buffers)]
    [("[" "history back" tab-bar-history-back :transient t)
-    ("]" "history forward" tab-bar-history-forward :transient t)]]
+    ("]" "history forward" tab-bar-history-forward :transient t)
+    ("d" "kill tab" +tab-bar-kill-tab)
+    ("u" "undo kill tab" tab-undo)]]
   [:hide always
    :setup-children
    (lambda (_)

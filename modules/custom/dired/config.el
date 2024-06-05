@@ -16,13 +16,24 @@
         treemacs-persist-file (concat doom-cache-dir "treemacs-persist")
         treemacs-last-error-persist-file (concat doom-cache-dir "treemacs-last-error-persist"))
   :config
+  (map! :map evil-treemacs-state-map
+        "o l" #'treemacs-visit-node-horizontal-split)
+
   (after! dired (treemacs-resize-icons 16))
   (treemacs-follow-mode 1)
+  (add-hook! 'treemacs-mode-hook #'hl-line-mode
+    (defun treemacs--dont-ignore-winum-h ()
+      (setq winum-ignored-buffers-regexp
+            (remove (regexp-quote
+                     (format "%sScoped-Buffer-"
+                             treemacs--buffer-name-prefix))
+                    winum-ignored-buffers-regexp))))
 
   (after! winum
     ;; (map! :map winum-keymap
     ;;  [remap winum-select-window-0] #'treemacs-select-window)
-
+    (setq winum-ignored-buffers-regexp
+          (remove ".*Treemacs.*" winum-ignored-buffers-regexp))
     (dolist (wn (seq-map 'number-to-string (number-sequence 0 9)))
       (let ((f (intern (concat "winum-select-window-" wn)))
             (k (concat "s-" wn)))
@@ -62,7 +73,7 @@
   ;; (map! :leader "pt" #'direx/jump-to-project-root-or-current-dir)
 
   (map! :map direx:file-keymap
-        "q" #'kill-this-buffer
+        "q" #'kill-current-buffer
         "R" #'direx:do-rename-file
         "C" #'direx:do-copy-files
         "D" #'direx:do-delete-files
@@ -108,7 +119,8 @@
         dired-dwim-target t
         dired-kill-when-opening-new-dired-buffer nil
         dired-do-revert-buffer t
-        remote-file-name-inhibit-delete-by-moving-to-trash t)
+        remote-file-name-inhibit-delete-by-moving-to-trash t
+        dired-vc-rename-file t)
 
   (put 'dired-find-alternate-file 'disabled nil)
 

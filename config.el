@@ -295,7 +295,7 @@
       (:prefix ("b" . "buffers/browser")
        :desc "scratch" "s" #'doom/switch-to-scratch-buffer
        :desc "Messages" "m" #'switch-to-messages-buffer
-       :desc "kill" "d" #'kill-this-buffer
+       :desc "kill" "d" #'kill-current-buffer
        :desc "kill with window" "k" #'kill-buffer-and-window
        :desc "diff with file" "D" #'diff-current-buffer-with-file
        :desc "kill some buffers" "s-d" #'spacemacs/kill-matching-buffers-rudely
@@ -391,10 +391,10 @@
        (:when (modulep! :custom git)
          (:prefix ("g" . "git")
                   "h" #'gh-notify))
-       (:when (modulep! :custom chat)
-         (:prefix ("c" . "chat")
-                  "g" #'chatgpt-shell
-                  "t" #'telega))
+       (:prefix ("c" . "chat")
+                "t" #'telega
+                (:when (modulep! :custom ai)
+                  :desc "ChatGPT" "g" #'gptel+))
        "r" nil
        (:prefix ("r" . "roam")
         "r" #'org-roam-node-find
@@ -473,9 +473,9 @@
                   :desc "es->en" "s" #'+google-translate-es->en
                   :desc "en->es" "S" #'+google-translate-en->es
                   :desc "translate" "g" #'google-translate-at-point))
-               (:when (modulep! :custom chat)
+               (:when (modulep! :custom ai)
                  (:prefix ("c" . "chatgpt")
-                  :desc "chatgpt" "c" #'chatgpt-shell
+                  :desc "chatgpt" "c" #'gptel+
                   :desc "check text" "e" #'+chatgpt-shell-improve-text
                   :desc "check w.prompt" "E" (cmd!
                                               (let ((current-prefix-arg 2))

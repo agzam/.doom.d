@@ -98,16 +98,20 @@
       [remap next-buffer]     #'+rss/next
       [remap previous-buffer] #'+rss/previous))
 
-  (map! :map elfeed-search-mode-map
-        :n "q" #'elfeed-kill-buffer
-        "C-c C-o" #'elfeed-search-browse-url
-        :n "r" #'elfeed-search-untag-all-unread
-        (:localleader
-         "u" #'elfeed-update
-         "p" #'elfeed-update))
+  (add-hook! 'elfeed-search-mode-hook
+    (defun elfeed-set-search-keys ()
+      (map! :map elfeed-search-mode-map
+            :n "q" #'elfeed-kill-buffer
+            "C-c C-o" #'elfeed-search-browse-url
+            :n "r" #'elfeed-search-untag-all-unread
+            (:localleader
+             "u" #'elfeed-update
+             "p" #'elfeed-update))))
 
-  (map! :map elfeed-show-mode-map
-        :n "yy" #'+rss/copy-link)
+  (add-hook! 'elfeed-show-mode-hook
+    (defun elfeed-set-show-keys ()
+      (map! :map elfeed-show-mode-map
+            :n "yy" #'+rss/copy-link)))
 
   ;; (evil-define-key 'normal elfeed-search-mode-map
   ;;   "q" #'elfeed-kill-buffer

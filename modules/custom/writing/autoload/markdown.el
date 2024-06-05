@@ -28,7 +28,7 @@
 ;;;###autoload
 (defun maybe-yank-as-org-a (orig-fun beg end &optional type register yank-handler)
   "Advice function to convert marked region to org before yanking."
-  (let ((modes '(chatgpt-shell-mode)))
+  (let ((modes '(chatgpt-shell-mode markdown-mode)))
     (if (and current-prefix-arg
              (apply 'derived-mode-p modes)
              (use-region-p))
