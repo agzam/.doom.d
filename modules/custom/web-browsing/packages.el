@@ -7,6 +7,9 @@
 (package! elfeed)
 (package! elfeed-goodies)
 (package! elfeed-org)
+(package! elfeed-tube)
+(package! elfeed-tube-mpv)
+
 (package! rfc-mode)
 
 (package! consult-web :recipe

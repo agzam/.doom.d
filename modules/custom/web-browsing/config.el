@@ -141,6 +141,38 @@
           (message "elfeed-org: ignoring %S because it can't be read" file))
         (setq rmh-elfeed-org-files (cl-remove-if-not #'file-exists-p files))))))
 
+(use-package! elfeed-tube
+  :after elfeed
+  :config
+  (elfeed-tube-setup)
+
+  ;; (map! :map elfeed-show-mode-map
+  ;;       "F" #'elfeed-tube-fetch
+  ;;       [remap save-buffer] #'elfeed-tube-save
+  ;;       :localleader
+  ;;       :desc "Youtube fetch" "f" #'elfeed-tube-fetch
+  ;;       :map elfeed-search-mode-map
+  ;;       "F" #'elfeed-tube-fetch
+  ;;       [remap save-buffer] #'elfeed-tube-save
+  ;;       :localleader
+  ;;       :desc "Youtube fetch" "f" #'elfeed-tube-fetch)
+
+  )
+
+(use-package! elfeed-tube-mpv
+  :config
+  (add-hook! 'elfeed-show-mode-hook
+    (defun elfeed-set-tube-keys ()
+      (map! :map elfeed-show-mode-map
+            :localleader
+            :desc "mpv" "," #'mpv-transient
+            :desc "mpv play" "p" #'elfeed-tube-mpv)))
+
+  (add-to-list
+   'elfeed-tube-mpv-options
+   "--script=~/.config/mpv/scripts/post-load.lua"))
+
+
 (use-package! rfc-mode)
 
 ;; (add-to-list

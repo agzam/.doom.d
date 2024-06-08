@@ -1,17 +1,41 @@
 * Feeds                                                              :elfeed:
-** Blogs :programming:
-*** [[https://hnrss.org/frontpage][HN Front Page]]             :hackernews:
-*** [[https://lobste.rs/rss][lobste.rs]]                         :lobsters:
+** Software                                                    :programming:
+*** [[https://hnrss.org/frontpage][HN Front Page]]                                                      :hn:
+*** [[https://lobste.rs/rss][lobste.rs]]                                                    :lobsters:
 *** [[https://medium.com/feed/@daveford][David Ford]]
-** Emacs :emacs:
-*** [[https://www.reddit.com/r/emacs][r/emacs]]              :reddit:
-*** [[https://www.reddit.com/r/doomemacs][r/doomemacs]]      :reddit:
-*** [[https://www.reddit.com/r/orgmode][r/orgmode]]          :reddit:
-*** [[https://www.reddit.com/r/OrgRoam][r/OrgRoam]]          :reddit:
-** Clojure :clojure:
-*** [[https://www.reddit.com/r/clojure][r/clojure]]        :reddit:
+*** [[https://blog.teamtreehouse.com/feed][Treehouse Blog]]                                              :treehouse:
+*** [[https://planet.lisp.org/rss20.xml][Planet Lisp]]                                                      :lisp:
+** Emacs                                                             :emacs:
+*** [[https://www.reddit.com/r/emacs.rss][r/emacs]]                                                        :reddit:
+*** [[https://www.reddit.com/r/doomemacs.rss][r/doomemacs]]                                                    :reddit:
+*** [[https://www.reddit.com/r/orgmode.rss][r/orgmode]]            :reddit:org-mode:
+*** [[https://www.reddit.com/r/OrgRoam.rss][r/OrgRoam]]            :reddit:org-mode:
+** Clojure                                                         :clojure:
+*** [[https://www.reddit.com/r/clojure.rss][r/clojure]]                                                      :reddit:
+*** [[https://planet.clojure.in/atom.xml][Planet Clojure]]
 ** Science                                                         :science:
 *** [[http://rss.sciam.com/ScientificAmerican-Global][Scientific American]]
 *** [[https://www.wired.com/category/science/feed][Wired Science]]
 *** [[https://scienceblog.com/feed/][ScienceBlog]]
 *** [[https://feeds.feedburner.com/AllDiscovermagazinecomContent][Discover]]
+*** [[https://www.sciencedaily.com/news/computers_math/computer_science/][Computer Science News -- ScienceDaily]]                         :compsci:
+** YouTube :yt:
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCNzszbnvQeFzObW0ghk0Ckw][Dave's Garage]]
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCHnyfMqiRRG1u-2MsSQLbXA][Veritasium]]                                                      :science:
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCS0N5baNlQWJCUrhCEo8WlA][Ben Eater]]                                                       :compsci:
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCEBb1b_L6zDS3xTUrIALZOw][MIT OpenCourseWare]]
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC9-y-6csu5WGm29I7JiwpnA][Computerphile]]
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC8butISFwT-Wl7EV0hUK0BQ][freeCodeCamp.org]]
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCUVahoidFA7F3Asfvamrm7w][CodePulse]]
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCK8XIGR5kRidIw2fWqwyHRA][Reducible]]                                                     :compsci:
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCD8yeTczadqdARzQUp29PJw][WilliamFiset]]                                                    :compsci:
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC3VY6RTXegnoSD_q446oBdg][Easy Theory]]                                                     :compsci:
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC9x0AN7BWHpCDHSm9NiJFJQ][NetworkChuck]]                                                    :compsci:
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCP7WmQ_U4GB3K51Od9QvM0w][David Bombal]]
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCVeW9qkBjo3zosnqUbG7CFw][John Hammond]]                                                   :security:
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCHN1aYRP473xX6Z13H_mxMQ][Chris Greer]]                                                    :security:
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCW6xlqxSY3gGur4PkGPEUeA][Seytonic]]                                                       :security:
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCsBjURrPoezykLs9EqgamOA][Fireship]]
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCJQJ4GjTiq5lmn8czf8oo0Q][PowerCert Animated Videos]]
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UClIFqsmxnwVNNlsvjH1D1Aw][CBT Nuggets]]
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCsUalyRg43M8D60mtHe6YcA][Honeypot]]
