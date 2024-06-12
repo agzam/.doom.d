@@ -51,7 +51,6 @@
    org-log-into-drawer t
    org-log-states-order-reversed nil
    org-cycle-emulate-tab nil
-
    org-edit-src-content-indentation 0
    org-fontify-quote-and-verse-blocks t
 
@@ -154,7 +153,7 @@
 
   (add-hook! 'org-capture-mode-hook #'recenter)
 
-  (setq org-export-with-smart-quotes t
+  (setq org-export-with-smart-quotes nil
         org-html-validation-link nil
         org-latex-prefer-user-labels t
         org-ascii-text-width 900 ; don't wrap text
@@ -531,11 +530,13 @@
     :around #'consult--grep
     :around #'compile-goto-error
     (when-let ((pos (apply fn args)))
-      (org-fold-show-entry))))
+      (when (derived-mode-p 'org-mode)
+        (org-fold-show-entry)))))
 
 (use-package! anki-editor
   :commands (anki-editor-mode anki-editor-push-notes anki-editor-push-tree)
   :config
+  (require 'anki-editor-ui)
   (setq anki-editor-create-decks t      ; Allow anki-editor to create a new deck if it doesn't exist
         anki-editor-org-tags-as-anki-tags t)
 
@@ -546,28 +547,7 @@
         (:prefix ("a" . "anki")
                  "p" #'anki-editor-push-tree))
 
-  (add-to-list 'minor-mode-map-alist '(anki-editor-mode anki-editor-mode-map))
-
-  (after! org-capture
-    (setq org-my-anki-file (concat org-directory "anki_cards.org"))
-    (dolist (template
-             '(("a" "Anki cards")
-               ("ab" "Anki basic"
-                entry
-                (file+headline org-my-anki-file "Dispatch")
-                "* %^{prompt|card %<%Y-%m-%d %H:%M>} %^g%^{ANKI_DECK}p\n:PROPERTIES:\n:ANKI_NOTE_TYPE: Basic\n:END:\n** Front\n%?\n** Back\n%x\n"
-                :jump-to-captured t)
-               ("ar" "Anki basic & reversed"
-                entry
-                (file+headline org-my-anki-file "Dispatch")
-                "* %^{prompt|card %<%Y-%m-%d %H:%M>} %^g%^{ANKI_DECK}p\n:PROPERTIES:\n:ANKI_NOTE_TYPE: Basic (and reversed card)\n:END:\n** Front\n%?\n** Back\n%x\n"
-                :jump-to-captured t)
-               ("ac" "Anki cloze"
-                entry
-                (file+headline org-my-anki-file "Dispatch")
-                "* %^{prompt|card %<%Y-%m-%d %H:%M>} %^g%^{ANKI_DECK}p\n:PROPERTIES:\n:ANKI_NOTE_TYPE: Cloze\n:END:\n** Text\n%?\n** Extra\n%x\n"
-                :jump-to-captured t)))
-      (add-to-list 'org-capture-templates template))))
+  (add-to-list 'minor-mode-map-alist '(anki-editor-mode anki-editor-mode-map)))
 
 (use-package! toc-org
   :after org

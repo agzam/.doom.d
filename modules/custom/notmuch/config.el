@@ -93,6 +93,7 @@ variable accordingly.")
   (map! (:map notmuch-search-mode-map
          :desc "trash" :n "d" #'+notmuch/search-delete
          :desc "mark read" :n "u" #'+notmuch-search-mark-read
+         :desc "read & up" :n "U" (cmd! (+notmuch-search-mark-read t))
          (:localleader
           :desc "trash" "d" #'+notmuch/search-delete
           :desc "->tree"  "t" #'notmuch-tree-from-search-current-query))

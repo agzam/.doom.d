@@ -60,11 +60,13 @@
          (notmuch-tree-tag +notmuch-delete-tags))))))
 
 ;;;###autoload
-(defun +notmuch-search-mark-read ()
-  (interactive)
+(defun +notmuch-search-mark-read (&optional arg)
+  (interactive "P")
   (when (member "unread" (notmuch-search-get-tags))
     (notmuch-search-remove-tag '("-unread")))
-  (evil-next-visual-line))
+  (if arg
+      (evil-previous-visual-line)
+    (evil-next-visual-line)))
 
 ;;;###autoload
 (defvar notmuch-thread-navigation-map

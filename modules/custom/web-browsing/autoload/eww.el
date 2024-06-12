@@ -106,7 +106,8 @@ consider whole buffer."
       (let* ((cur (face-attribute 'shr-text :height nil))
              (cur (if (floatp cur) cur 1.0)))
         (set-face-attribute 'shr-text nil :height (+ cur 0.1)))
-    (text-scale-increase 0.5)))
+    (ignore-errors
+     (text-scale-increase 0.5))))
 
 ;;;###autoload
 (defun +eww-decrease-font-size ()
@@ -125,7 +126,7 @@ consider whole buffer."
    [("j" "decrease" +eww-decrease-font-size :transient t)
     ("k" "increase" +eww-increase-font-size :transient t)]])
 
-;;;;###autoload
+;;;###autoload
 (defun eww-make-readable-a (fn charset url document point buffer)
   "Run npm script to extract readable html content."
   (let* ((tmp-in (make-temp-file "src" nil ".html"))

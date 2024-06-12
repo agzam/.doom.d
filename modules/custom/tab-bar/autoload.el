@@ -33,13 +33,13 @@
 ;;;###autoload
 (defun tab-bar--update-templates ()
   (require 'transient)
-  (transient-define-prefix new-tab-transient ()
+  (transient-define-prefix tab-bar-new-tab-transient ()
     "New Tab"
     ["Choose a template\n"
      [:setup-children
       (lambda (_)
         (transient-parse-suffixes
-         'new-tab-transient
+         'tab-bar-new-tab-transient
          (seq-map
           (lambda (x)
             (pcase-let ((`(,key ,desc ,form) x))
@@ -49,6 +49,8 @@
                              (run-hooks 'tab-bar-tab-added-hook)))))
           tab-bar--templates)))]
      [("d" "kill tab" +tab-bar-kill-tab)]]))
+
+(tab-bar--update-templates)
 
 ;;;###autoload
 (require 'transient)
@@ -72,7 +74,8 @@
    [("[" "history back" tab-bar-history-back :transient t)
     ("]" "history forward" tab-bar-history-forward :transient t)
     ("d" "kill tab" +tab-bar-kill-tab)
-    ("u" "undo kill tab" tab-undo)]]
+    ("u" "undo kill tab" tab-undo)
+    ("o" "tempaltes" tab-bar-new-tab-transient)]]
   [:hide always
    :setup-children
    (lambda (_)
@@ -143,7 +146,7 @@
   (tab-bar--update-templates)
   (tab-bar-new-tab)
   (doom/switch-to-scratch-buffer)
-  (new-tab-transient))
+  (tab-bar-new-tab-transient))
 
 ;;;###autoload
 (defun +tab-bar-kill-tab ()

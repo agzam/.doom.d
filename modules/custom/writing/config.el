@@ -103,23 +103,6 @@
             (google-translate-default-target-language (symbol-name tgt)))
         (funcall-interactively fn override-p))))
 
-  (defadvice! google-translate-query-translate-dwim-a (fn override-p reverse-p)
-    "Overrides google-translate default command with 'dwim' version."
-    :around #'%google-translate-query-translate
-    (let ((text (if (use-region-p)
-                    (buffer-substring-no-properties
-                     (region-beginning) (region-end))
-                  (word-at-point))))
-      (cl-letf (((symbol-function
-                  #'%google-translate-default-ui-read-from-minibuffer)
-                 (lambda (src tgt)
-                   (read-from-minibuffer
-                    (format "Translate from %s to %s: "
-                            (google-translate-language-display-name src)
-                            (google-translate-language-display-name tgt))
-                    text))))
-        (funcall fn override-p reverse-p))))
-
   ;; to use 'listen' feature of google-translate, on Mac:
   ;; brew install mplayer-osx-extended
   ;; ln -s '/Applications/MPlayer OSX Extended.app/Contents/Resources/Binaries/mpextended.mpBinaries/Contents/MacOS/mplayer' /opt/homebrew/bin/mplayer

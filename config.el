@@ -259,6 +259,7 @@
       :n "gi" #'ibuffer-sidebar-jump
       :i "C-v" #'evil-paste-after
       :i "TAB" #'completion-at-point
+      "C-x m" #'mpv-transient
       (:when (featurep :system 'linux)
         :i "C-M-S-s-y" #'nerd-dictation-toggle))
 
@@ -341,6 +342,8 @@
                "a" #'helpful-at-point
                "f" #'helpful-function
                "h" #'helpful-symbol
+               "c" #'consult-info
+               "C" #'describe-key-briefly
                "p" nil
                (:prefix ("p" . "packages")
                         "l" #'list-packages

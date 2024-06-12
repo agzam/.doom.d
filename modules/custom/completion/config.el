@@ -384,7 +384,7 @@
    (:map
     embark-org-heading-map
     (:prefix ("r" . "roam")
-     :desc "add ref" "u" #'add-roam-ref-for-active-tab))
+     :desc "add ref" "u" #'roam-ref-add-for-active-tab))
 
    (:map
     embark-url-map

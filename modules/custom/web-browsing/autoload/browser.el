@@ -153,13 +153,18 @@ jump to selected tab, activating it in the browser."
        (t (insert url)))))))
 
 ;;;###autoload
-(defun add-roam-ref-for-active-tab ()
-  "Adds a roam_ref property for current heading in org mode, using url from active browser tab."
+(defun roam-ref-add-for-active-tab ()
+  "Add roam_ref prop for heading with url of active browser tab."
   (interactive)
-  (when-let* ((tab (browser--get-active-tab))
-              (url (plist-get tab :url)))
-    (org-id-get-create)
-    (org-roam-ref-add url)))
+  (org-id-get-create)
+  (cond
+   ((featurep :system 'linux)
+    (browser-copy-tab-link)
+    (org-roam-ref-add (car kill-ring)))
+   ((featurep :system 'macos)
+    (when-let* ((tab (browser--get-active-tab))
+                (url (plist-get tab :url)))
+      (org-roam-ref-add url)))))
 
 ;;;###autoload
 (defun browser-create-roam-node-for-active-tab ()
