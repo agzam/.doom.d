@@ -8,7 +8,7 @@
     (set-buffer-modified-p nil)
     (markdown-mode)
     (setq-local spacehammer--caller-pid pid)
-    (evil-insert +1)))
+    (evil-insert-state)))
 
 ;;;###autoload
 (defun spacehammer-before-finish-edit-with-emacs-h (bufname pid)

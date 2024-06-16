@@ -195,7 +195,7 @@
     (progn
       (erase-buffer)
       (insert "### ")
-      (evil-insert nil))))
+      (evil-insert-state))))
 
 ;;;###autoload
 (defun gptel+ (&optional arg)
@@ -215,5 +215,5 @@
                          (apply #'max)
                          (funcall (lambda (n) (+ n (if (zerop n) 2 1)))))))
         (switch-to-buffer (gptel (format "*ChatGPT-%s*" next-sufx)))
-        (evil-insert 1))
+        (evil-insert-state))
     (switch-to-buffer (gptel "*ChatGPT*"))))

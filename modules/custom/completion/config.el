@@ -534,7 +534,9 @@
   (yas-reload-all)
   (yas-global-mode +1)
 
-  (add-hook! 'yas-before-expand-snippet-hook #'temporarily-disable-smart-parens)
+  (add-hook! 'yas-before-expand-snippet-hook
+             #'temporarily-disable-smart-parens
+             #'evil-insert-state)
   (advice-add 'yas-completing-prompt :around #'yas-completing-prompt-a))
 
 (use-package yasnippet-capf
@@ -543,6 +545,11 @@
   (add-hook! 'yas-minor-mode-hook :append
     (defun +corfu-remove-t-in-completion-at-point-functions ()
       (remove-hook! 'completion-at-point-functions :local 't))))
+
+(use-package consult-yasnippet
+  :after (consult yasnippet)
+  :config
+  (setq consult-yasnippet-use-thing-at-point t))
 
 (use-package! dash-docs
   :defer t

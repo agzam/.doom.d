@@ -353,6 +353,9 @@
                "v" #'helpful-variable
                "j" #'info-display-manual)
 
+      (:prefix ("i" . "insert")
+       :desc "snippet" "s" #'consult-yasnippet)
+
       (:prefix ("j" . "jump")
        "j" #'avy-goto-char-timer
        :desc "xwidget" "x" #'xwidget-webkit-url-get-create)

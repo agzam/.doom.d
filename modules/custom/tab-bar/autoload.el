@@ -75,7 +75,7 @@
     ("]" "history forward" tab-bar-history-forward :transient t)
     ("d" "kill tab" +tab-bar-kill-tab)
     ("u" "undo kill tab" tab-undo)
-    ("o" "tempaltes" tab-bar-new-tab-transient)]]
+    ("o" "templates" tab-bar-new-tab-transient)]]
   [:hide always
    :setup-children
    (lambda (_)

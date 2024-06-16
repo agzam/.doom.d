@@ -70,10 +70,6 @@
         elfeed-search-title-max-width 80
         shr-max-image-proportion 0.8)
 
-  (set-popup-rule! "^\\*elfeed-entry"
-                   :size 0.75 :actions '(display-buffer-below-selected)
-                   :select t :quit nil :ttl t)
-
   (make-directory elfeed-db-directory t)
 
   ;; Ensure elfeed buffers are treated as real
@@ -152,6 +148,9 @@
   ;;       :desc "Youtube fetch" "f" #'elfeed-tube-fetch)
 
   )
+
+(after! mpv
+  (setq mpv-volume-step 1.1))
 
 (use-package! elfeed-tube-mpv
   :config

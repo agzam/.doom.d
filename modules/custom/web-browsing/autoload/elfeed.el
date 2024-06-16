@@ -155,21 +155,3 @@ e.g., you may want to open HN entries in eww."
       #'ignore)
      (_
       (+eww-open-in-other-window url)))))
-
-(defun mpv-speed-reset ()
-  (interactive)
-  (mpv-speed-set 1))
-
-;;;;###autoload
-(transient-define-prefix mpv-transient ()
-  "mpv"
-  ["mpv"
-   [("f" "follow" elfeed-tube-mpv-follow-mode)
-    ("w" "where" elfeed-tube-mpv-where)]
-   [("k" "vol up" mpv-volume-increase :transient t)
-    ("j" "vol down" mpv-volume-decrease :transient t)]
-   [("," "slower" mpv-speed-decrease :transient t)
-    ("." "faster" mpv-speed-increase :transient t)
-    ("0" "reset" mpv-speed-reset)]
-   [("SPC" "pause" mpv-pause :transient t)
-    ("Q" "quit" mpv-kill)]])

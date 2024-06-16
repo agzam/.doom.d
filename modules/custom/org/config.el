@@ -536,7 +536,6 @@
 (use-package! anki-editor
   :commands (anki-editor-mode anki-editor-push-notes anki-editor-push-tree)
   :config
-  (require 'anki-editor-ui)
   (setq anki-editor-create-decks t      ; Allow anki-editor to create a new deck if it doesn't exist
         anki-editor-org-tags-as-anki-tags t)
 
@@ -548,6 +547,9 @@
                  "p" #'anki-editor-push-tree))
 
   (add-to-list 'minor-mode-map-alist '(anki-editor-mode anki-editor-mode-map)))
+
+(use-package! anki-editor-ui
+  :after anki-editor)
 
 (use-package! toc-org
   :after org

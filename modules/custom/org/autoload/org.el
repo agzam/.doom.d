@@ -84,7 +84,7 @@
       (org-show-hidden-entry))
     (when (and (bound-and-true-p evil-local-mode)
                (not (evil-emacs-state-p)))
-      (evil-insert 1))))
+      (evil-insert-state))))
 
 ;;;###autoload
 (defun +org-get-todo-keywords-for (&optional keyword)

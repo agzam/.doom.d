@@ -20,6 +20,7 @@
 
 (package! consult-projectile)
 (package! yasnippet)
+(package! consult-yasnippet)
 
 (package! dash-docs)
 (package! consult-dash)

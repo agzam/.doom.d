@@ -105,6 +105,11 @@
      (auth-source-pick-first-password :host "api.openai.com"))
    gptel-model "gpt-4o")
 
+  (setf
+   (cdr (assoc 'programming gptel-directives))
+   "You are a large language model and a software engineer. Respond concisely. Prioritize theory, don't provide code snippets until instructed.")
+
+
   (add-hook! 'gptel-mode-hook
     (defun gptel-mode-set-local-keys ()
       (map! :map gptel-mode-map
