@@ -8,10 +8,20 @@
 ;;;###autoload
 (defun mpv-open+ (&optional path)
   (interactive)
-  (cond
-   ((eq major-mode 'dired-mode)
-    (mpv-play (dired-get-file-for-visit)))
-   (t (mpv-play path))))
+  (let* ((url-regex "\\`https?://")
+         (path (or path
+                   (cond
+                    ((and (car kill-ring)
+                          (string-match url-regex (car kill-ring)))
+                     (car kill-ring))
+
+                    ((and (thing-at-point 'word)
+                          (string-match url-regex (thing-at-point 'word)))
+                     (thing-at-point 'word))))))
+    (cond
+     ((eq major-mode 'dired-mode)
+      (mpv-play (dired-get-file-for-visit)))
+     (t (mpv-play-url (read-string "Play: " path))))))
 
 (defvar osc-style "auto")
 

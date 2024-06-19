@@ -14,4 +14,5 @@
 
 (package! consult-web :recipe
   (:host github :repo "armindarvish/consult-web"
+   :branch "async"
    :files (:defaults "sources/*.el")))

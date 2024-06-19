@@ -23,6 +23,8 @@ It's safer to use a function rather than the concrete value of a key"
               (fn (nth 2 k)))
           (set (intern (symbol-name key))
                (lambda ()
-                 (when-let ((ps (auth-source-pick-first-password :host host)))
+                 (when-let ((ps
+                             (with-temp-message ""
+                              (auth-source-pick-first-password :host host))))
                    (if fn (funcall fn ps)
                      ps)))))))))

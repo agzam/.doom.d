@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: useState
+# key: rusestate
+# --
+
+const [$1, set$1$2] = userState($3);

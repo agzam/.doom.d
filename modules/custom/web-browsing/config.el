@@ -168,30 +168,42 @@
 
 (use-package! rfc-mode)
 
-;; (add-to-list
-;;  'load-path
-;;  (format "%sstraight/build-%s/consult-web/sources/"
-;;          (file-truename doom-local-dir) emacs-version))
+(add-to-list
+ 'load-path
+ (format "%sstraight/build-%s/consult-web/sources/"
+         (file-truename doom-local-dir) emacs-version))
 
 (use-package! consult-web
-  :after consult
+  :commands (consult-web-multi)
   :config
-  (setq consult-web-sources-modules-to-load
-        '(consult-web-google
-          consult-web-brave
-          consult-web-elfeed
-          consult-web-wikipedia
-          consult-web-gptel
-          consult-web-youtube))
-  (require 'consult-web-sources)
-  (require 'consult-web-embark)
+  (dolist (m '(consult-web-brave
+               consult-web-browser-history
+               consult-web-duckduckgo
+               consult-web-elfeed
+               consult-web-gh
+               consult-web-google
+               consult-web-gptel
+               consult-web-invidious
+               consult-web-line-multi
+               consult-web-notmuch
+               consult-web-wikipedia
+               consult-web-youtube))
+    (require m nil t))
 
-  (dolist (src '(Wikipedia Brave elfeed Google))
-    (add-to-list 'consult-web-dynamic-sources (symbol-name src)))
-
+  (setq consult-web-dynamic-sources '("DuckDuckGo API"
+                                      "Google"
+                                      "Brave"
+                                      "Wikipedia"
+                                      "Browser History"
+                                      "gptel"
+                                      "GitHub"
+                                      "elfeed"
+                                      "notmuch"
+                                      "YouTube"))
   (consult-web--set-api-keys)
+
   (setq consult-web-default-count 30
         consult-web-dynamic-input-debounce 0.7
-        consult-web-dynamic-refresh-delay 0.5)
+        consult-web-dynamic-refresh-delay 0.5))
 
-  )
+
