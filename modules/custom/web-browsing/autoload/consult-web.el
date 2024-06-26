@@ -28,3 +28,43 @@ It's safer to use a function rather than the concrete value of a key"
                               (auth-source-pick-first-password :host host))))
                    (if fn (funcall fn ps)
                      ps)))))))))
+
+;;;###autoload
+(defun consult-web-multi-dwim ()
+  (interactive)
+  (let ((initial (if (use-region-p)
+                     (buffer-substring-no-properties (region-beginning) (region-end))
+                   (word-at-point))))
+    (consult-web-multi initial)))
+
+
+;;;###autoload
+(defun consult-web-load-sources+ ()
+  (dolist (m '(consult-web-brave
+               consult-web-browser-history
+               consult-web-duckduckgo
+               consult-web-elfeed
+               consult-web-gh
+               consult-web-google
+               consult-web-gptel
+               consult-web-invidious
+               consult-web-line-multi
+               consult-web-notmuch
+               consult-web-wikipedia
+               consult-web-youtube))
+    (require m nil t)))
+
+;;;###autoload
+(transient-define-prefix consult-web-transient ()
+  ["consult-web"
+   [("/" "multi" consult-web-multi-dwim)
+    ("go" "google" consult-web-google)
+    ("w" "wiki" consult-web-wikipedia)
+    ("y" "youtube" consult-web-youtube)
+    ("gh" "github" consult-web-github)]
+   [("bh" "browser-hist" consult-web-browser-history)
+    ("el" "elfeed" consult-web-elfeed)
+    ("no" "notmuch" consult-web-notmuch)
+    ("gp" "gptel" consult-web-gptel)]])
+
+(advice-add 'consult-web-transient :before #'consult-web-load-sources+)

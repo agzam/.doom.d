@@ -8,17 +8,12 @@
 
 ;;;###autoload
 (defvar tab-bar--templates
-  '(("o" "Org" (progn
-                 (require 'org)
-                 (let ((default-directory (file-name-directory org-directory)))
-                   (find-file default-directory)
-                   (hack-dir-local-variables-non-file-buffer)
-                   (when-let ((recent (projectile-recentf-files)))
-                     (find-file (car (seq-remove (lambda (x) (equal x "./")) recent)))))))
-    ("c" "chat-gpt" (chatgpt-shell))
+  '(("o" "Org" (org-roam-node-find))
+    ("c" "chat-gpt" (gptel+))
     ("gn" "gh-notify" (gh-notify))
     ("ef" "elfeed" (elfeed))
     ("no" "notmuch" (notmuch))
+    ("t" "telega" (telega))
     ("ed" "doom.d" (progn
                      (doom/goto-private-config-file)
                      (call-interactively #'projectile-find-dir)))

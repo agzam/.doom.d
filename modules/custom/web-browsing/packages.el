@@ -5,12 +5,15 @@
 (package! browser-hist :recipe (:local-repo "browser-hist"))
 
 (package! elfeed)
-(package! elfeed-goodies)
+;; (package! elfeed-goodies)
 (package! elfeed-org)
 (package! elfeed-tube)
 (package! elfeed-tube-mpv)
 
 (package! rfc-mode)
+
+(package! yeetube
+  :recipe (:type git :repo "https://git.thanosapollo.org/yeetube"))
 
 (package! consult-web :recipe
   (:host github :repo "armindarvish/consult-web"

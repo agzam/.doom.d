@@ -431,7 +431,7 @@
         :desc "corfu reset" "c" #'+corfu-kill-frames))
 
       (:prefix ("s" . "search/symbol")
-       :desc "search" "/" #'consult-web-multi
+       :desc "search" "/" #'consult-web-transient
        :desc "eww search" "e" #'eww-search-words
        :desc "find-name-dired" "f" #'find-name-dired
        :desc "GitHub" "g" #'engine/search-github-with-lang

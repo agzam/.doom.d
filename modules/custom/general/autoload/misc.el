@@ -93,7 +93,7 @@ narrowed to."
 (defun +yank-advised-indent-function (beg end)
   "Do indentation, as long as the region isn't too large."
   (if (<= (- end beg) +doom-yank-indent-threshold)
-      (sp-reindent)
+      (ignore-errors (sp-reindent))
     (indent-region beg end nil)))
 
 
