@@ -155,6 +155,7 @@
         yeetube-results-limit 100)
   (map! :map yeetube-mode-map
         [remap evil-ret] #'yeetube-play
+        "C-c C-o" #'yeetube-browse-url
         :localleader
         "s" #'yeetube-search))
 
@@ -228,7 +229,7 @@
             (add-text-properties
              0 (length s)
              `(:url ,(format
-                      "https://google.com?query=%s"
+                      "https://google.com/search?query=%s"
                       (replace-regexp-in-string "#" "" s))
                ;; :source "Google"
                ;; :title s

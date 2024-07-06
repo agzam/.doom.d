@@ -7,7 +7,7 @@
 (package! treemacs-icons-dired)
 (package! treemacs-projectile)
 (package! lsp-treemacs)
-(package! direx :recipe (:host github :repo "agzam/direx-el" :files ("*.el")))
 (package! dired-imenu)
 (package! dired-subtree)
 (package! dired-sidebar)
+(package! dired-narrow)

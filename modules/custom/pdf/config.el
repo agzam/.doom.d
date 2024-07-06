@@ -122,6 +122,9 @@
             (setq notes-window (org-noter--get-notes-window 'start))
             (org-noter--set-notes-scroll notes-window))))))
 
+  (defadvice! org-noter--set-notes-scroll-ignore-a (&rest args)
+    :override #'org-noter--set-notes-scroll)
+
   (defadvice! org-noter--create-session-a (orig-fn &rest args)
     :around #'org-noter--create-session
     (cl-letf (((symbol-function

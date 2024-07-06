@@ -123,3 +123,7 @@ Useful for clean up before running `doom -up`."
         chosen
       (nth (or (cl-position chosen formatted-choices :test #'string=) 0)
            choices))))
+
+;;;###autoload
+(defun auth-host->pass (host)
+  (auth-source-pick-first-password :host host))

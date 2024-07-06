@@ -195,8 +195,9 @@
 
 (after! grip-mode
   (setq grip-preview-use-webkit t)
+  (setq grip-preview-use-webkit nil)
   (setq grip-github-user "agzam")
-  (setf grip-github-password (auth-source-pick-first-password :host "api.github.com")))
+  (setf grip-github-password (auth-host->pass "api.github.com")))
 
 (add-hook! 'prog-mode-hook
            #'hs-minor-mode
@@ -426,7 +427,8 @@
        "r" #'org-roam-node-find
        :desc "yank from kill-ring" "y" #'consult-yank-from-kill-ring
        (:after vertico
-        :desc "vertico repeat" "l" #'vertico-repeat-last)
+        :desc "vertico repeat" "l" #'vertico-repeat-last
+        :desc "vertico history" "L" #'vertico-repeat-select)
        (:after corfu
         :desc "corfu reset" "c" #'+corfu-kill-frames))
 

@@ -13,8 +13,7 @@
                                        "gpt-4-32k-0613"))
 
   (setq chatgpt-shell-openai-key
-        (lambda ()
-          (auth-source-pick-first-password :host "api.openai.com"))
+        (auth-host->pass "api.openai.com")
         chatgpt-shell-request-timeout 180
         chatgpt-shell-welcome-function nil)
 
@@ -73,23 +72,6 @@
 
   (add-hook! comint-mode #'cape-completion-at-point-functions-h))
 
-
-(use-package! dall-e-shell
-  :defer t
-  :commands (dall-e-shell)
-  :config
-  (require 'ob-dall-e-shell)
-  (ob-dall-e-shell-setup)
-  (setq dall-e-shell-openai-key
-        (auth-source-pick-first-password :host "api.openai.com")))
-
-
-(use-package! openai
-  :defer t
-  :config
-  (setq openai-key #'openai-key-auth-source))
-
-
 (use-package! whisper
   :config
   (setq whisper-install-directory "/home/ag/sandbox/"
@@ -99,16 +81,15 @@
 (use-package! gptel
   :commands ()
   :config
-  (setq
-   gptel-api-key
-   (lambda ()
-     (auth-source-pick-first-password :host "api.openai.com"))
-   gptel-model "gpt-4o")
+  (setq gptel-api-key (auth-host->pass "api.openai.com"))
 
   (setf
    (cdr (assoc 'programming gptel-directives))
    "You are a large language model and a software engineer. Respond concisely. Prioritize theory, don't provide code snippets until instructed.")
 
+  (gptel-make-anthropic "Claude"
+    :stream t
+    :key (auth-host->pass "antropic.com"))
 
   (add-hook! 'gptel-mode-hook
     (defun gptel-mode-set-local-keys ()

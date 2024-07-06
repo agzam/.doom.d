@@ -1,15 +1,24 @@
 ;;; custom/git/autoload/bug-reference.el -*- lexical-binding: t; -*-
 
-(defvar bug-reference-default-org "zerocmd")
+;; (defvar bug-reference-default-org "zerocmd")
 
 ;;;###autoload
 (defun init-bug-reference-mode-settings ()
+  ;; (setq bug-reference-bug-regexp
+  ;;       (concat "\\(\\b\\(PR \\|[Bb]ug \\|[Ii]ssue \\|\\)" ; type
+  ;;               "\\(\\([A-z]+\\/\\)\\|\\)" ; org
+  ;;               "\\([A-z -]+\\)" ; project
+  ;;               "#\\([0-9]+\\)\\)" ; ticket No
+  ;;               ))
   (setq bug-reference-bug-regexp
-        (concat "\\(\\b\\(PR \\|[Bb]ug \\|[Ii]ssue \\|\\)" ; type
-                "\\(\\([A-z]+\\/\\)\\|\\)" ; org
-                "\\([A-z -]+\\)" ; project
-                "#\\([0-9]+\\)\\)" ; ticket No
-                ))
+        (concat
+        "\\b\\(PR\\|[Ii]ssue\\|[Bb]ug\\)" ; type
+        "[ ]"                               ; space separator
+        "\\([A-Za-z0-9]+\\)"               ; org
+        "/"                                 ; slash
+        "\\([A-Za-z0-9]+\\)"               ; repo
+        "#\\([0-9]+\\)"                    ; hash prefixed ticket number
+        ))
   (setq bug-reference-url-format #'bug-reference-url-format-fn))
 
 ;;;###autoload

@@ -61,39 +61,6 @@
 (use-package! lsp-treemacs
   :after (treemacs lsp))
 
-(use-package! direx
-  :after dired
-  :init
-  (require 'direx-project)
-  :config
-
-  ;; Direx completely got broken in Emacs 29.
-  ;; I don't think it's worth trying to fix it and needs to be rewritten
-  ;;
-  ;; (map! :leader "pt" #'direx/jump-to-project-root-or-current-dir)
-
-  (map! :map direx:file-keymap
-        "q" #'kill-current-buffer
-        "R" #'direx:do-rename-file
-        "C" #'direx:do-copy-files
-        "D" #'direx:do-delete-files
-        "+" #'direx:create-directory
-        "T" #'direx:do-touch
-        "j" #'direx:next-item
-        "J" #'direx:next-sibling-item
-        "k" #'direx:previous-item
-        "K" #'direx:previous-sibling-item
-        "h" #'direx:collapse-item
-        "H" #'direx:collapse-item-recursively
-        "l" #'direx:expand-item
-        "L" #'direx:expand-item-recursively
-        "RET" #'direx:maybe-find-item
-        "a" #'direx:find-item
-        "r" #'direx:refresh-whole-tree
-        "O" #'direx:find-item-other-window
-        "|" #'direx:fit-window
-        "<C-return>" #'direx:set-root
-        "^" #'direx:expand-root-to-parent))
 
 (use-package! dired-imenu
   :after dired)
@@ -154,3 +121,11 @@
   :config
   (setq dired-sidebar-should-follow-file t
         dired-sidebar-window-fixed nil))
+
+(use-package! dired-narrow
+ :after dired
+ :config
+ (map! :map dired-mode-map
+       (:localleader
+        "n" #'dired-narrow-fuzzy
+        "s" #'dired-sort-toggle-or-edit)))

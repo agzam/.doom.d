@@ -100,9 +100,7 @@ If URL is a link to a file, it extracts its raw form and tries to open in a buff
                  (cdr))))
     (when path
       (let* ((auth-source-debug nil)
-             (token (format "Token %s"
-                            (auth-source-pick-first-password
-                             :host "api.github.com"))))
+             (token (format "Token %s" (auth-host->pass "api.github.com"))))
        (request raw-url
          :sync t
          :headers `(("Authorization" . ,token))

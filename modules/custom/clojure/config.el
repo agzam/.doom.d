@@ -61,6 +61,8 @@
              #'clojure-set-completion-at-point-h
              #'hs-minor-mode)
 
+  (setq cider-clojure-cli-aliases ":dbg")
+
   (setq nrepl-hide-special-buffers nil
         nrepl-log-messages nil
         ;; cider-font-lock-dynamically '(macro core function var deprecated)

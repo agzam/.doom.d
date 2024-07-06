@@ -70,7 +70,7 @@
     ("]" "history forward" tab-bar-history-forward :transient t)
     ("d" "kill tab" +tab-bar-kill-tab)
     ("u" "undo kill tab" tab-undo)
-    ("o" "templates" tab-bar-new-tab-transient)]]
+    ("SPC" "templates" tab-bar-new-tab-transient)]]
   [:hide always
    :setup-children
    (lambda (_)
