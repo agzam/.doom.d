@@ -38,4 +38,18 @@
          ("C-;" "embark-action" embark-act)
          (">" "indent" indent-rigidly)
          ("~" "invert" evil-invert-char)
-         ("SPC" "space" (lambda () (interactive) (funcall (general-simulate-key "SPC"))))])
+         ("SPC" "space" (lambda () (interactive) (funcall (general-simulate-key "SPC"))))]
+  [:if (lambda () (derived-mode-p 'org-mode))
+      :hide always
+      ("*" "bold" (lambda () (interactive) (org-emphasize ?*)))
+      ("/" "italic" (lambda () (interactive) (org-emphasize ?\/)))
+      ("_" "underline" (lambda () (interactive) (org-emphasize ?_)))
+      ("=" "verbatim" (lambda () (interactive) (org-emphasize ?=)))
+      ("`" "code" (lambda () (interactive) (org-emphasize ?~)))
+      ("+" "strikethrough" (lambda () (interactive) (org-emphasize ?+)))]
+  [:if (lambda () (derived-mode-p 'markdown-mode))
+      :hide always
+      ("*" "bold" markdown-insert-bold)
+      ("/" "italic" markdown-insert-italic)
+      ("`" "code" markdown-insert-code)
+      ("+" "strikethrough" markdown-insert-strike-through)])

@@ -125,7 +125,9 @@
 (use-package! dired-narrow
  :after dired
  :config
- (map! :map dired-mode-map
-       (:localleader
-        "n" #'dired-narrow-fuzzy
-        "s" #'dired-sort-toggle-or-edit)))
+ (add-hook! 'dired-mode-hook
+   (defun dired-narrow-keys-h ()
+     (map! :map dired-mode-map
+           (:localleader
+            "n" #'dired-narrow-fuzzy
+            "s" #'dired-sort-toggle-or-edit)))))
