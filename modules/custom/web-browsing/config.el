@@ -180,61 +180,48 @@
 
 (add-to-list
  'load-path
- (format "%sstraight/build-%s/consult-web/sources/"
+ (format "%sstraight/build-%s/consult-omni/sources/"
          (file-truename doom-local-dir) emacs-version))
 
-(use-package! consult-web
+(use-package! consult-omni
   :after (consult-gh)
-  :commands (consult-web-transient consult-web-multi)
+  :commands (consult-omni-transient consult-omni-multi)
   :config
-  (require 'consult-web-embark)
-  (setq consult-web-dynamic-sources '("DuckDuckGo API"
-                                      "Google"
-                                      "Brave"
-                                      "Wikipedia"
-                                      "Browser History"
-                                      "gptel"
-                                      "GitHub"
-                                      "elfeed"
-                                      ;; "notmuch"
-                                      "YouTube"))
-  (consult-web--set-api-keys)
-  (setq consult-web-default-count 30
-        consult-web-dynamic-input-debounce 0.7
-        consult-web-dynamic-refresh-delay 0.5)
+  (require 'consult-omni-embark)
+  (setq consult-omni-multi-sources '(
+                                     ;; "DuckDuckGo AP/"
+                                     "Google"
+                                     "Brave"
+                                     "Wikipedia"
+                                     "Browser History"
+                                     "gptel"
+                                     "GitHub"
+                                     "elfeed"
+                                     ;; "notmuch"
+                                     "YouTube"))
+  (consult-omni--set-api-keys)
+  (setq consult-omni-default-count 30
+        consult-omni-dynamic-input-debounce 0.7
+        consult-omni-dynamic-refresh-delay 0.5)
 
-  (defadvice! consult-web-use-thing-at-point-a
+  (defadvice! consult-omni-use-thing-at-point-a
     (fn &optional initial no-cb &rest args)
-    :around #'consult-web-google
-    :around #'consult-web-wikipedia
-    :around #'consult-web-youtube
-    :around #'consult-web-github
-    :around #'consult-web-gptel
-    :around #'consult-web-browser-history
-    :around #'consult-web-notmuch
-    :around #'consult-web-elfeed
+    :around #'consult-omni-multi
+    :around #'consult-omni-google
+    :around #'consult-omni-wikipedia
+    :around #'consult-omni-youtube
+    :around #'consult-omni-github
+    :around #'consult-omni-gptel
+    :around #'consult-omni-browser-history
+    :around #'consult-omni-notmuch
+    :around #'consult-omni-elfeed
     (let ((init (or initial
                     (if (use-region-p)
                         (buffer-substring (region-beginning) (region-end))
                       (thing-at-point 'word :no-props)))))
       (apply fn init no-cb args)))
 
-  ;; (advice-remove #'consult-web--multi-dynamic #'consult-web--multi-dynamic-no-selection-a)
-  (defadvice! consult-web--multi-dynamic-no-selection-a (ret-val)
-    "Temporary hack until Issue armindarvish/consult-web#31 gets sorted out."
-    :filter-return #'consult-web--multi-dynamic
-    (let ((s (car ret-val)))
-      (if (null (get-text-property 0 :url s))
-          (progn
-            (add-text-properties
-             0 (length s)
-             `(:url ,(format
-                      "https://google.com/search?query=%s"
-                      (replace-regexp-in-string "#" "" s))
-               ;; :source "Google"
-               ;; :title s
-               )
-             s)
-            (setf (car ret-val) s)
-            ret-val)
-        ret-val))))
+  (defadvice! consult-omni--multi-dynamic-no-match-a (orig-fn &rest args)
+    "Require no match for omni searches."
+    :around #'consult-omni--multi-dynamic
+    (apply orig-fn (plist-put args :require-match nil))))

@@ -128,7 +128,7 @@ targets."
   (when-let* ((target (car (embark--targets)))
               (type (plist-get target :type)))
     (cond
-     ((and (member type '(url consult-web))
+     ((and (member type '(url consult-omni))
            (string-match-p
             ;; only match PRs/Issues or individual files
             "https://github\\.com/\\([^/]+/[^/]+/\\)\\(pull\\|issues\\|blob\\)[^#\n]+"
@@ -138,7 +138,7 @@ targets."
                     (forge-visit-topic-via-url url)))
         (embark--act #'forge-visit-topic-url* target nil)))
 
-     ((member type '(url consult-web))
+     ((member type '(url consult-omni))
       (cl-labels ((eww-browse-url*
                     (url &rest _)
                     (eww-browse-url url)))

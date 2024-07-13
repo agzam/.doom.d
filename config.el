@@ -194,7 +194,6 @@
   )
 
 (after! grip-mode
-  (setq grip-preview-use-webkit t)
   (setq grip-preview-use-webkit nil)
   (setq grip-github-user "agzam")
   (setf grip-github-password (auth-host->pass "api.github.com")))
@@ -435,7 +434,7 @@
         :desc "corfu reset" "c" #'+corfu-kill-frames))
 
       (:prefix ("s" . "search/symbol")
-       :desc "search" "/" #'consult-web-transient
+       :desc "search" "/" #'consult-omni-transient
        :desc "eww search" "e" #'eww-search-words
        :desc "find-name-dired" "f" #'find-name-dired
        :desc "GitHub" "g" #'engine/search-github-with-lang

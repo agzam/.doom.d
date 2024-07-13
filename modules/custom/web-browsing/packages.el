@@ -15,7 +15,7 @@
 (package! yeetube
   :recipe (:type git :repo "https://git.thanosapollo.org/yeetube"))
 
-(package! consult-web :recipe
-  (:host github :repo "armindarvish/consult-web"
-   :branch "async"
+(package! consult-omni :recipe
+  (:host github :repo "armindarvish/consult-omni"
+   :branch "develop"
    :files (:defaults "sources/*.el")))
