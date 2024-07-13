@@ -6,6 +6,10 @@
       "M-j" #'profiler-report-next-entry
       "M-k" #'profiler-report-previous-entry)
 
+(add-hook! 'profiler-report-mode-hook
+  (defun yas-minor-mode-off ()
+      (yas-minor-mode -1)))
+
 (use-package! paradox
   :defer t
   :hook (paradox-menu-mode . paradox-menu-mode--set-keys)
