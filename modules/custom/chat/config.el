@@ -4,8 +4,10 @@
   :defer t
   :hook (telega-chat . jinx-mode)
   :config
-  (when (featurep :system 'macos)
-    (setq telega-server-libs-prefix "/opt/homebrew/opt/tdlib"))
+  (setq telega-server-libs-prefix
+        (cond
+         ((featurep :system 'macos) "/opt/homebrew/opt/tdlib")
+         ((featurep :system 'linux) "/usr")))
 
   (setq telega-completing-read-function 'completing-read-default
         ;; telega-use-docker t

@@ -12,7 +12,8 @@
    calendar-latitude 33.16
    calendar-longitude -96.93
    circadian-themes '(("6:00" . ag-themes-spacemacs-light)
-			("21:00" . ag-themes-base16-ocean))))
+                      ("21:00" . ag-themes-base16-tokyo-night-light)
+                      ("00:30" . ag-themes-base16-ocean))))
 
 (use-package! rainbow-mode
   :defer t)

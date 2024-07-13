@@ -5,8 +5,12 @@
 *** [[https://medium.com/feed/@daveford][David Ford]]
 *** [[https://blog.teamtreehouse.com/feed][Treehouse Blog]]                                              :treehouse:
 *** [[https://planet.lisp.org/rss20.xml][Planet Lisp]]                                                      :lisp:
+** System Design                                             :system_design:
+*** [[https://highscalability.com/rss][highscalability.com]]
+*** [[https://aws.amazon.com/blogs/aws/feed/][AWS News Blog]]
+*** [[https://aws.amazon.com/blogs/architecture/feed/][AWS Architecture Blog]]
 ** Emacs                                                             :emacs:
-*** [[https://www.reddit.com/r/emacs.rss][r/emacs]]                                                        :reddit:
+*** [[https://www.reddit.com/r/emacs.rss][r/emacs]]                :reddit:
 *** [[https://www.reddit.com/r/doomemacs.rss][r/doomemacs]]                                                    :reddit:
 *** [[https://www.reddit.com/r/orgmode.rss][r/orgmode]]            :reddit:org-mode:
 *** [[https://www.reddit.com/r/OrgRoam.rss][r/OrgRoam]]            :reddit:org-mode:
