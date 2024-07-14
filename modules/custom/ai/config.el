@@ -99,4 +99,8 @@
             (:localleader
              "," #'gptel-menu
              (:prefix ("s" . "session")
-              :desc "clear" "l" #'gptel-clear-buffer+))))))
+              :desc "clear" "l" #'gptel-clear-buffer+)))))
+
+  (add-hook! 'kill-emacs-hook
+    (defun persist-gptel-model ()
+      (customize-save-variable 'gptel-model gptel-model))))
