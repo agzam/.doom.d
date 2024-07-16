@@ -485,11 +485,8 @@
                (:when (modulep! :custom ai)
                  (:prefix ("c" . "chatgpt")
                   :desc "chatgpt" "c" #'gptel+
-                  :desc "check text" "e" #'+chatgpt-shell-improve-text
-                  :desc "check w.prompt" "E" (cmd!
-                                              (let ((current-prefix-arg 2))
-                                                (call-interactively #'+chatgpt-shell-improve-text)))
-                  :desc "region" "r" #'chatgpt-shell-send-and-review-region)))
+                  :desc "check text" "e" #'+gptel-improve-text-transient
+                  )))
 
       (:prefix ("z" . "zoom")
        :desc "frame" "f" #'frame-zoom-transient))

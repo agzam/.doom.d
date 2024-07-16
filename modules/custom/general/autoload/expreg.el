@@ -46,10 +46,18 @@
       ("_" "underline" (lambda () (interactive) (org-emphasize ?_)))
       ("=" "verbatim" (lambda () (interactive) (org-emphasize ?=)))
       ("`" "code" (lambda () (interactive) (org-emphasize ?~)))
-      ("+" "strikethrough" (lambda () (interactive) (org-emphasize ?+)))]
+      ("+" "strikethrough" (lambda () (interactive) (org-emphasize ?+)))
+      ("C-c l" "insert link" org-insert-link)
+      ("C-c L" "insert browser url" (lambda ()
+                                      (interactive)
+                                      (let ((url (browser-copy-tab-link)))
+                                        (when (url-p url)
+                                          (push (list url) org-stored-links)))
+                                      (call-interactively #'org-insert-link)))]
   [:if (lambda () (derived-mode-p 'markdown-mode))
       :hide always
       ("*" "bold" markdown-insert-bold)
       ("/" "italic" markdown-insert-italic)
       ("`" "code" markdown-insert-code)
-      ("+" "strikethrough" markdown-insert-strike-through)])
+      ("+" "strikethrough" markdown-insert-strike-through)
+      ("C-c l" "insert link" markdown-insert-link)])

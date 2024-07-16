@@ -63,12 +63,17 @@
   (interactive "P")
   (unless (region-active-p)
     (user-error "no selection"))
+  (setq +gptel-improve-text-prompt (or +gptel-improve-text-prompt
+                                       (car +gptel-improve-text-prompts-history)))
   (let ((text (buffer-substring-no-properties
                (region-beginning)
                (region-end))))
     (message "beep-bop... checking your crap with %s" gptel-model)
     (gptel-request text
-      :system +gptel-improve-text-prompt
+      :system (concat
+               +gptel-improve-text-prompt
+               " Exclude any explanations - response must contain ONLY the altered text,"
+               " or nothing if there were no changes.")
       :callback
       (lambda (resp info)
         (let* ((model (let-plist info .data.model))
@@ -83,7 +88,8 @@
               (switch-to-buffer-other-window (current-buffer))))
 
            (t
-            (let* ((fst-buf (with-current-buffer (generate-new-buffer (format "* %s 1 *" model))
+            (let* ((_ (+replace-region-with-string resp))
+                   (fst-buf (with-current-buffer (generate-new-buffer (format "* %s 1 *" model))
                               (insert text)
                               (current-buffer)))
                    (snd-buf (with-current-buffer (generate-new-buffer (format "* %s 2 *" model))
@@ -102,8 +108,6 @@
                   (re-search-forward r nil :noerror)
                   (replace-match ""))
                 (visual-line-mode))
-
-              (+replace-region-with-string resp)
               (kill-buffer fst-buf)
               (kill-buffer snd-buf)))))))))
 

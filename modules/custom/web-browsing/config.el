@@ -218,7 +218,7 @@
     (let ((init (or initial
                     (if (use-region-p)
                         (buffer-substring (region-beginning) (region-end))
-                      (thing-at-point 'word :no-props)))))
+                      (thing-at-point 'symbol :no-props)))))
       (apply fn init no-cb args)))
 
   (defadvice! consult-omni--multi-dynamic-no-match-a (orig-fn &rest args)

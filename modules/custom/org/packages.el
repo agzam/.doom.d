@@ -46,7 +46,7 @@
 (package! orgit)
 (package! orgit-forge)
 (package! org-download)
-(package! org-appear :recipe (:host github :repo "awth13/org-appear"))
+(package! org-appear :recipe (:host github :repo "awth13/org-appear" :branch "org-9.7-fixes"))
 (package! org-superstar)
 
 (package! org-roam :recipe (:host github :repo "org-roam/org-roam" :files ("*.el" "extensions")))
