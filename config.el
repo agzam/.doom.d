@@ -83,6 +83,12 @@
  switch-to-buffer-obey-display-actions t
  mouse-autoselect-window t
  other-window-scroll-default #'get-lru-window)
+ other-window-scroll-default #'get-lru-window
+
+ ;; per https://github.com/emacs-lsp/lsp-mode#performance
+ read-process-output-max (* 10 1024 1024) ;; 10mb
+ gc-cons-threshold 200000000)
+
 
 (after! epa
   (setq epg-pinentry-mode nil))

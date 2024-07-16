@@ -2,14 +2,39 @@
 (defvar +gptel-improve-text-prompt nil)
 
 (defvar +gptel-improve-text-prompts-history
-  `("Only correct mistakes, do not alter the text"
-    "Fix mistakes and flag factual inaccuracies, do not alter the text structure"
-    ,(concat
-      "Provide 3 different improved variations of the given text, separating each variation with:"
-      "\n\n---\n\n"
-      "Do not include any explanations, titles, headers or bullet points - ONLY plain text of variants, nothing else!")
-    "Explain the code snippet"
-    "Add comments to the code snippet"))
+  (list
+   (concat "You are a spelling corrector and text improver. "
+           "Only correct mistakes, do not alter the text structure unless stylistic, "
+           "orthographic, morphologic and other linguistic errors found. "
+           "Exclude any explanations - response must contain ONLY the altered text "
+           "or nothing if there were no changes.")
+
+   (concat "You are a fact-checker and text enhancer. "
+           "Fix mistakes and flag factual inaccuracies, do not alter the text structure "
+           "unless it is absolutely necessary. "
+           "Exclude any explanations - response must contain ONLY the altered text "
+           "or nothing if there were no changes.")
+
+   (concat "You are spelling corrector and text enhancer. "
+           "Provide 3 different improved variations of the given text, "
+           "separating each variant with: "
+           "\n\n---\n\n"
+           "Do not include any explanations, titles, headers or bullet points "
+           "- ONLY plain text of variants, nothing else!")
+
+   (concat "You are an experienced software developer. Explain the given code snippet, "
+           "diving into technical details for better understanding. "
+           "Suggest a better approach if necessary. "
+           "Strive for concise code that is easy-to-reason about. "
+           "Optionally, recommend libraries, tools and literature for better "
+           "understanding the problem and improving upon it.")
+
+   (concat "You are a great software developer. "
+           "You strive for simplicity in your code "
+           "that is both concise and easy-to-reason about. "
+           "Add comments to the provide code snippet, without changing the code itself."
+           "Do not include any headers, titles or explanations outside of the snippet, "
+           "keep the three ticks with the language designator (markdown code markup).")))
 
 (defun +replace-region-with-string (replacement)
   "Replace region or buffer content with REPLACEMENT."
@@ -70,24 +95,15 @@
                (region-end))))
     (message "beep-bop... checking your crap with %s" gptel-model)
     (gptel-request text
-      :system (concat
-               +gptel-improve-text-prompt
-               " Exclude any explanations - response must contain ONLY the altered text,"
-               " or nothing if there were no changes.")
+      :system +gptel-improve-text-prompt
       :callback
       (lambda (resp info)
         (let* ((model (let-plist info .data.model))
-               (multi? (string-match-p
-                        "variations\\|versions"
-                        +gptel-improve-text-prompt)))
+               (in-place? (string-match-p
+                           "fix mistakes\\|correct mistakes"
+                           +gptel-improve-text-prompt)))
           (cond
-           (multi?
-            (with-current-buffer (generate-new-buffer (format " * %s *" model))
-              (markdown-mode)
-              (insert resp)
-              (switch-to-buffer-other-window (current-buffer))))
-
-           (t
+           (in-place?
             (let* ((_ (+replace-region-with-string resp))
                    (fst-buf (with-current-buffer (generate-new-buffer (format "* %s 1 *" model))
                               (insert text)
@@ -109,7 +125,14 @@
                   (replace-match ""))
                 (visual-line-mode))
               (kill-buffer fst-buf)
-              (kill-buffer snd-buf)))))))))
+              (kill-buffer snd-buf)))
+
+           (t
+            (let ((buf (generate-new-buffer (format "* %s *" model))))
+              (with-current-buffer buf
+                (markdown-mode)
+                (insert resp))
+              (switch-to-buffer-other-window buf)))))))))
 
 ;;;###autoload
 (defun gptel-clear-buffer+ ()

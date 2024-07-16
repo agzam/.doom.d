@@ -103,4 +103,5 @@
 
   (add-hook! 'kill-emacs-hook
     (defun persist-gptel-model ()
+      (customize-save-variable 'gptel-backend gptel-backend)
       (customize-save-variable 'gptel-model gptel-model))))

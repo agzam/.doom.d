@@ -13,6 +13,7 @@
    corfu-auto-delay 0.5
    corfu-preview-current nil ; Disable current candidate preview
    corfu-on-exact-match 'insert
+   corfu-preview-current 'insert
    corfu-quit-no-match 'separator
    corfu-cycle t
    corfu-auto-prefix 3
