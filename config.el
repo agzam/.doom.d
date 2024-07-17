@@ -82,7 +82,6 @@
  split-height-threshold 80
  switch-to-buffer-obey-display-actions t
  mouse-autoselect-window t
- other-window-scroll-default #'get-lru-window)
  other-window-scroll-default #'get-lru-window
 
  ;; per https://github.com/emacs-lsp/lsp-mode#performance
@@ -443,7 +442,7 @@
        :desc "search" "/" #'consult-omni-transient
        :desc "eww search" "e" #'eww-search-words
        :desc "find-name-dired" "f" #'find-name-dired
-       :desc "GitHub" "g" #'engine/search-github-with-lang
+       :desc "GitHub" "g" #'+search-github-with-lang
        :desc "imenu" "j" #'imenu)
 
       (:prefix ("t" . "toggle yo")

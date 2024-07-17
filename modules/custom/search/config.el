@@ -1,71 +1,50 @@
 ;;; custom/search/config.el -*- lexical-binding: t; -*-
 
-(use-package! engine-mode
-  :defer t
-  :commands engine/execute-search
-  :init
-  (progn
-    (defvar search-engine-config-list nil
-      "Set additional search engines")
+(add-to-list
+ 'load-path
+ (format "%sstraight/build-%s/consult-omni/sources/"
+         (file-truename doom-local-dir) emacs-version))
 
-    (setq search-engine-alist
-          `((amazon
-             :name "Amazon"
-             :url (concat "https://www.amazon."
-                          search-engine-amazon-tld
-                          "/s/ref=nb_sb_noss?url=search-alias%%3Daps&field-keywords=%s"))
-            (duck-duck-go
-             :name "Duck Duck Go"
-             :url "https://duckduckgo.com/?q=%s")
-            (google
-             :name "Google"
-             :url "https://www.google.com/search?ie=utf-8&oe=utf-8&q=%s")
-            (google-images
-             :name "Google Images"
-             :url "https://www.google.com/images?hl=en&source=hp&biw=1440&bih=795&gbv=2&aq=f&aqi=&aql=&oq=&q=%s")
-            (github
-             :name "GitHub"
-             :url "https://github.com/search?ref=simplesearch&q=%s")
-            (google-maps
-             :name "Google Maps"
-             :url "https://maps.google.com/maps?q=%s")
-            (twitter
-             :name "Twitter"
-             :url "https://twitter.com/search?q=%s")
-            (youtube
-             :name "YouTube"
-             :url "https://www.youtube.com/results?aq=f&oq=&search_query=%s")
-            (wikipedia
-             :name "Wikipedia"
-             :url "https://www.wikipedia.org/search-redirect.php?language=en&go=Go&search=%s")
-            (maven
-             :name "Maven Central"
-             :url "https://central.sonatype.com/search?q=%s")
-            (npm
-             :name "Npmjs")
-            (clojure
-             :name "Clojure Docs"
-             :url "https://clojuredocs.org/search?q=%s")
-            (wolfram-alpha
-             :name "Wolfram Alpha"
-             :url "https://www.wolframalpha.com/input/?i=%s")
-            (hackernews
-             :name "HackerNews"
-             :url "https://hn.algolia.com/?q=%s")
-            ,@search-engine-config-list))
-    (dolist (engine search-engine-alist)
-      (let ((func (intern (format "engine/search-%S" (car engine)))))
-        (autoload func "engine-mode" nil 'interactive))))
-
+(use-package! consult-omni
+  :after (consult-gh)
+  :commands (consult-omni-transient consult-omni-multi)
   :config
-  (engine-mode +1)
-  (dolist (engine search-engine-alist)
-    (let* ((cur-engine (car engine))
-           (engine-url (plist-get (cdr engine) :url))
-           (engine-keywords (plist-get (cdr engine) :keywords)))
-      (eval `(defengine ,cur-engine ,engine-url ,@engine-keywords))))
+  (require 'consult-omni-embark)
+  (setq consult-omni-multi-sources '(
+                                     ;; "DuckDuckGo AP/"
+                                     "Google"
+                                     "Brave"
+                                     "Wikipedia"
+                                     "Browser History"
+                                     "gptel"
+                                     "GitHub"
+                                     "elfeed"
+                                     ;; "notmuch"
+                                     "YouTube"))
+  (consult-omni--set-api-keys)
+  (setq consult-omni-default-count 30
+        consult-omni-dynamic-input-debounce 0.7
+        consult-omni-dynamic-refresh-delay 0.5)
 
-  (defadvice! engine-always-use-external-browser-a (fn &rest args)
-    :around 'engine/execute-search
-    (let ((engine/browser-function #'browse-url-default-browser))
-      (apply fn args))))
+  (defadvice! consult-omni-use-thing-at-point-a
+    (fn &optional initial no-cb &rest args)
+    :around #'consult-omni-multi
+    :around #'consult-omni-google
+    :around #'consult-omni-wikipedia
+    :around #'consult-omni-youtube
+    :around #'consult-omni-github
+    :around #'consult-omni-gptel
+    :around #'consult-omni-browser-history
+    :around #'consult-omni-notmuch
+    :around #'consult-omni-elfeed
+    (let ((init (or initial
+                    (if (use-region-p)
+                        (buffer-substring (region-beginning) (region-end))
+                      (thing-at-point 'symbol :no-props)))))
+      (apply fn init no-cb args)))
+
+  ;; (defadvice! consult-omni--multi-dynamic-no-match-a (orig-fn &rest args)
+  ;;   "Require no match for omni searches."
+  ;;   :around #'consult-omni--multi-dynamic
+  ;;   (apply orig-fn (plist-put args :require-match nil)))
+  )

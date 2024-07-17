@@ -20,7 +20,8 @@ It's safer to use a function rather than the concrete value of a key"
       (dolist (k keys-list)
         (let ((key (car k))
               (host (nth 1 k))
-              (fn (nth 2 k)))
+              (fn (nth 2 k))
+              (auth-source-debug nil))
           (set (intern (symbol-name key))
                (lambda ()
                  (when-let ((ps
@@ -52,7 +53,8 @@ It's safer to use a function rather than the concrete value of a key"
     ("go" "google" consult-omni-google)
     ("w" "wiki" consult-omni-wikipedia)
     ("y" "youtube" consult-omni-youtube)
-    ("gh" "github" consult-omni-github)]
+    ("gh" "code search" +search-github-with-lang)
+    ("gH" "github" consult-omni-github)]
    [("bh" "browser-hist" consult-omni-browser-history)
     ("el" "elfeed" consult-omni-elfeed)
     ("no" "notmuch" consult-omni-notmuch)
