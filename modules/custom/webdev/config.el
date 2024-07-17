@@ -1,89 +1,99 @@
 ;;; custom/webdev/config.el -*- lexical-binding: t; -*-
 
-(add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescript-mode))
+;; (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescript-mode))
 
-(use-package! rjsx-mode
-  :mode "\\.[mc]?js\\'"
-  :mode "\\.es6\\'"
-  :mode "\\.pac\\'"
-  :interpreter "node"
-  :hook (rjsx-mode . rainbow-delimiters-mode)
-  :hook (rjsx-mode . lsp!)
-  :init
-  ;; Parse node stack traces in the compilation buffer
-  (after! compilation
-    (add-to-list 'compilation-error-regexp-alist 'node)
-    (add-to-list 'compilation-error-regexp-alist-alist
-                 '(node "^[[:blank:]]*at \\(.*(\\|\\)\\(.+?\\):\\([[:digit:]]+\\):\\([[:digit:]]+\\)"
-                   2 3 4)))
-  :config
-  ;; (set-repl-handler! 'rjsx-mode #'+javascript/open-repl)
-  (set-electric! 'rjsx-mode :chars '(?\} ?\) ?. ?:))
 
-  (setq js-chain-indent t
-        ;; These have become standard in the JS community
-        js2-basic-offset 2
-        ;; Don't mishighlight shebang lines
-        js2-skip-preprocessor-directives t
-        ;; let flycheck handle this
-        js2-mode-show-parse-errors nil
-        js2-mode-show-strict-warnings nil
-        ;; Flycheck provides these features, so disable them: conflicting with
-        ;; the eslint settings.
-        js2-strict-missing-semi-warning nil
-        ;; maximum fontification
-        js2-highlight-level 3
-        js2-idle-timer-delay 0.15)
+;; (use-package! rjsx-mode
+;;   :mode "\\.[mc]?js\\'"
+;;   :mode "\\.es6\\'"
+;;   :mode "\\.pac\\'"
+;;   :interpreter "node"
+;;   :hook (rjsx-mode . rainbow-delimiters-mode)
+;;   :hook (rjsx-mode . lsp!)
+;;   :init
+;;   ;; Parse node stack traces in the compilation buffer
+;;   (after! compilation
+;;     (add-to-list 'compilation-error-regexp-alist 'node)
+;;     (add-to-list 'compilation-error-regexp-alist-alist
+;;                  '(node "^[[:blank:]]*at \\(.*(\\|\\)\\(.+?\\):\\([[:digit:]]+\\):\\([[:digit:]]+\\)"
+;;                    2 3 4)))
+;;   :config
+;;   ;; (set-repl-handler! 'rjsx-mode #'+javascript/open-repl)
+;;   (set-electric! 'rjsx-mode :chars '(?\} ?\) ?. ?:))
 
-  (setq-hook! 'rjsx-mode-hook
-    ;; Indent switch-case another step
-    js-switch-indent-offset js2-basic-offset)
+;;   (setq js-chain-indent t
+;;         ;; These have become standard in the JS community
+;;         js2-basic-offset 2
+;;         ;; Don't mishighlight shebang lines
+;;         js2-skip-preprocessor-directives t
+;;         ;; let flycheck handle this
+;;         js2-mode-show-parse-errors nil
+;;         js2-mode-show-strict-warnings nil
+;;         ;; Flycheck provides these features, so disable them: conflicting with
+;;         ;; the eslint settings.
+;;         js2-strict-missing-semi-warning nil
+;;         ;; maximum fontification
+;;         js2-highlight-level 3
+;;         js2-idle-timer-delay 0.15)
 
-  (use-package! xref-js2
-    :when (modulep! :tools lookup)
-    :init
-    (setq xref-js2-search-program 'rg)
-    (set-lookup-handlers! 'rjsx-mode
-      :xref-backend #'xref-js2-xref-backend
-      :documentation #'+consult-dash-doc)))
+;;   (setq-hook! 'rjsx-mode-hook
+;;     ;; Indent switch-case another step
+;;     js-switch-indent-offset js2-basic-offset)
 
-(use-package! tide
-  :hook (tide-mode . tide-hl-identifier-mode)
-  :config
-  ;; navigation
-  (set-lookup-handlers! 'tide-mode :async t
-    :xref-backend #'xref-tide-xref-backend
-    :documentation #'tide-documentation-at-point)
+;;   (use-package! xref-js2
+;;     :when (modulep! :tools lookup)
+;;     :init
+;;     (setq xref-js2-search-program 'rg)
+;;     (set-lookup-handlers! 'rjsx-mode
+;;       :xref-backend #'xref-js2-xref-backend
+;;       :documentation #'+consult-dash-doc)))
 
-  (setq tide-completion-detailed nil
-        tide-always-show-documentation nil
-        ;; Fix #1792: by default, tide ignores payloads larger than 100kb. This
-        ;; is too small for larger projects that produce long completion lists,
-        ;; so we up it to 512kb.
-        tide-server-max-response-length 524288
-        ;; We'll handle it
-        tide-completion-setup-company-backend nil)
+;; (use-package! tide
+;;   :hook (tide-mode . tide-hl-identifier-mode)
+;;   :config
+;;   ;; navigation
+;;   (set-lookup-handlers! 'tide-mode :async t
+;;     :xref-backend #'xref-tide-xref-backend
+;;     :documentation #'tide-documentation-at-point)
 
-  ;; Resolve to `doom-project-root' if `tide-project-root' fails
-  (advice-add #'tide-project-root :override #'+javascript-tide-project-root-a)
+;;   (setq tide-completion-detailed nil
+;;         tide-always-show-documentation nil
+;;         ;; Fix #1792: by default, tide ignores payloads larger than 100kb. This
+;;         ;; is too small for larger projects that produce long completion lists,
+;;         ;; so we up it to 512kb.
+;;         tide-server-max-response-length 524288
+;;         ;; We'll handle it
+;;         tide-completion-setup-company-backend nil)
 
-  ;; Cleanup tsserver when no tide buffers are left
-  (add-hook! 'tide-mode-hook
-    (add-hook 'kill-buffer-hook #'+javascript-cleanup-tide-processes-h
-              nil 'local))
+;;   ;; Resolve to `doom-project-root' if `tide-project-root' fails
+;;   (advice-add #'tide-project-root :override #'+javascript-tide-project-root-a)
 
-  ;; Eldoc is activated too soon and disables itself, thinking there is no eldoc
-  ;; support in the current buffer, so we must re-enable it later once eldoc
-  ;; support exists. It is set *after* tide-mode is enabled, so enabling it on
-  ;; `tide-mode-hook' is too early, so...
-  (advice-add #'tide-setup :after #'eldoc-mode)
+;;   ;; Cleanup tsserver when no tide buffers are left
+;;   (add-hook! 'tide-mode-hook
+;;     (add-hook 'kill-buffer-hook #'+javascript-cleanup-tide-processes-h
+;;               nil 'local))
 
-  (map! :localleader
-        :map tide-mode-map
-        "R"   #'tide-restart-server
-        "f"   #'tide-format
-        "rrs" #'tide-rename-symbol
-        "roi" #'tide-organize-imports))
+;;   ;; Eldoc is activated too soon and disables itself, thinking there is no eldoc
+;;   ;; support in the current buffer, so we must re-enable it later once eldoc
+;;   ;; support exists. It is set *after* tide-mode is enabled, so enabling it on
+;;   ;; `tide-mode-hook' is too early, so...
+;;   (advice-add #'tide-setup :after #'eldoc-mode)
+
+;;   (map! :localleader
+;;         :map tide-mode-map
+;;         "R"   #'tide-restart-server
+;;         "f"   #'tide-format
+;;         "rrs" #'tide-rename-symbol
+;;         "roi" #'tide-organize-imports))
+
+
+(add-hook! (typescript-ts-mode
+            jtsx-tsx-mode)
+           #'+typescript-mode-lookup-handlers
+           #'activate-ts-dash-docsets-h)
+
+(add-hook! (jtsx-tsx-mode)
+           #'emmet-mode)
 
 (use-package! emmet-mode
   :preface (defvar emmet-mode-keymap (make-sparse-keymap))
@@ -124,3 +134,15 @@
 
 (use-package! js-comint
   :defer t)
+
+(use-package! lsp-eslint
+  :demand t
+  :after lsp-mode)
+
+(use-package! jtsx
+  :mode (("\\.jsx?\\'" . jtsx-jsx-mode)
+         ("\\.tsx\\'" . jtsx-tsx-mode)
+         ("\\.ts\\'" . jtsx-typescript-mode))
+  :commands jtsx-install-treesit-language
+  :config
+  (setq jtsx-enable-jsx-element-tags-auto-sync t))

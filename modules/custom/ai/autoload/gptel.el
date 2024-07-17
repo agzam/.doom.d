@@ -105,6 +105,7 @@
           (cond
            (in-place?
             (let* ((_ (+replace-region-with-string resp))
+                   (_ (message "¡Ahí está!"))
                    (fst-buf (with-current-buffer (generate-new-buffer (format "* %s 1 *" model))
                               (insert text)
                               (current-buffer)))

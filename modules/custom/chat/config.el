@@ -24,9 +24,11 @@
       (with-telega-root-buffer
        (hl-line-highlight))))
 
-  ;; (add-hook! 'telega-chat-mode-hook
-  ;;   (defun telega-chat-mode-h ()
-  ;;     (setq line-spacing 9)))
+  (add-hook! 'telega-chat-mode-hook
+    (defun telega-chat-mode-h ()
+      (jinx-mode)
+      ;; (setq line-spacing 9)
+      ))
 
   (add-hook! 'telega-root-mode-hook
     (defun lg-telega-root-mode-h ()

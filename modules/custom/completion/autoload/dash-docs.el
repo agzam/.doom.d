@@ -32,7 +32,8 @@
 ;;;###autoload
 (defun +consult-dash-doc (term)
   (condition-case err
-      (if (cider-connected-p)
+      (if (and (featurep 'cider)
+               (cider-connected-p))
           (cider-clojuredocs-lookup
            (cider-fqn-symbol-at-point))
         (consult-dash term))
