@@ -48,6 +48,7 @@
 (package! org-download)
 (package! org-appear :recipe (:host github :repo "awth13/org-appear" :branch "org-9.7-fixes"))
 (package! org-superstar)
+(package! org-modern-indent :recipe (:host github :repo "jdtsmith/org-modern-indent"))
 
 (package! org-roam :recipe (:host github :repo "org-roam/org-roam" :files ("*.el" "extensions")))
 (package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")))

@@ -28,12 +28,17 @@
 (setq doom-theme 'ag-themes-spacemacs-light)
 
 (setq
- doom-font (font-spec :family "Fira Code" :size 16)
- doom-serif-font (font-spec :family "Fira Code" :size 16)
- doom-variable-pitch-font (font-spec :family "Noto Sans" :size 18)
+ doom-font (font-spec :family "Fira Code")
+ doom-serif-font (font-spec :family "Fira Code")
+ doom-variable-pitch-font (font-spec :family "Noto Sans")
  ;; doom-unicode-font (font-spec :family "Apple Color Emoji" :size 18)
  )
 
+(add-hook! 'doom-load-theme-hook
+  (defun reset-fixed-pitch-height-h ()
+    "I don't know what exactly Doom is doing, but it's setting
+     fixed-pitch number to absolute unit, should be relative"
+    (set-face-attribute 'fixed-pitch nil :height 1.0)))
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -58,7 +63,7 @@
 ;; they are implemented.
 
 (setq-default
- line-spacing 6
+ line-spacing 0.3
  garbage-collection-messages nil
  left-fringe-width 6
  right-fringe-width 0
@@ -88,6 +93,9 @@
  read-process-output-max (* 10 1024 1024) ;; 10mb
  gc-cons-threshold 200000000)
 
+
+;; (add-to-list 'evil-collection-key-blacklist ",")
+;; (add-to-list 'evil-collection-key-blacklist "C-,")
 
 (after! epa
   (setq epg-pinentry-mode nil))
@@ -183,9 +191,9 @@
 
   (global-flycheck-mode -1)  ; I don't know why Doom enables is by default
 
-  (add-hook! flycheck-mode
-    (defun disable-flycheck-popup-buffer ()
-      (setq flycheck-display-errors-function #'ignore)))
+  ;; (add-hook! flycheck-mode
+  ;;   (defun disable-flycheck-popup-buffer ()
+  ;;     (setq flycheck-display-errors-function #'ignore)))
   (add-to-list 'flycheck-disabled-checkers 'emacs-lisp-package)
   )
 

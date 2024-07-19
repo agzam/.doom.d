@@ -428,7 +428,8 @@
         org-appear-autolinks t
         org-appear-autoemphasis t
         org-appear-autosubmarkers t
-        org-fold-core-style 'text-properties)
+        ;; org-fold-core-style 'text-properties
+        )
 
   ;; appear in evil normal state
   ;; (add-hook! 'org-mode-hook
@@ -557,11 +558,15 @@
   :config
   (setq toc-org-hrefify-default "gh"))
 
-(use-package! khoj
-  :after (org org-roam)
+(use-package! org-modern-indent
   :config
-  (setq
-   khoj-index-directories (list org-default-folder)
-   khoj-index-files nil
-   khoj-server-url "http://127.0.0.1:42110")
-  (add-hook! org-roam-mode #'khoj--server-start))
+  (add-hook! org-mode #'org-modern-indent-mode))
+
+;; (use-package! khoj
+;;   :after (org org-roam)
+;;   :config
+;;   (setq
+;;    khoj-index-directories (list org-default-folder)
+;;    khoj-index-files nil
+;;    khoj-server-url "http://127.0.0.1:42110")
+;;   (add-hook! org-roam-mode #'khoj--server-start))
