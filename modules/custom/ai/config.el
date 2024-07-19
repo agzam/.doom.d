@@ -91,6 +91,11 @@
     :stream t
     :key (auth-host->pass "antropic.com"))
 
+  (gptel-make-ollama "Ollama"
+    :host "localhost:11434"
+    :stream nil
+    :models '("llama3:latest"))
+
   (add-hook! 'gptel-mode-hook
     (defun gptel-mode-set-local-keys ()
       (map! :map gptel-mode-map

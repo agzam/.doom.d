@@ -447,6 +447,9 @@
             (:prefix ("D" . "debug")
                      "f" #'+edebug-instrument-symbol
                      "F" #'edebug-remove-instrumentation)))
+   (:map embark-region-map
+         ;; otherwise, this shit opens another instance of Emacs
+         "b" (cmd! (browse-url (buffer-substring-no-properties (region-beginning) (region-end)))))
    (:map
     (embark-identifier-map
      embark-region-map

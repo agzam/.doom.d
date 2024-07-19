@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: startup
+# key: startup
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))
+# --
+#+startup: ${1:$$(yas-choose-value '(overview content showall show2levels show3levels show4levels show5levels showeverything))}
+$0

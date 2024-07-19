@@ -117,11 +117,14 @@
               "C-c C-f" nil
               "C-c r" nil)
         (:map cider-mode-map
-              "C-c C-f" nil
-              "C-c r" nil
-              "C-c C-n" #'clj-edit-ns-header)
+         "C-c C-f" nil
+         "C-c r" nil
+         "C-c C-n" #'clj-edit-ns-header
+         :i "C-x C-p" #'cider-pprint-eval-sexp-at-point)
         (:map cider-clojure-interaction-mode-map
-         :i "C-j" #'cider-eval-last-sexp))
+         :i "C-j" #'cider-eval-last-sexp
+         :i "C-x C-e" #'cider-eval-last-sexp
+         :i "C-x C-p" #'cider-pprint-eval-sexp-at-point))
 
   (map! :map cider-popup-buffer-mode-map
         :n "q" #'cider-popup-buffer-quit-function)
