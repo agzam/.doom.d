@@ -36,13 +36,12 @@
            "Do not include any headers, titles or explanations outside of the snippet, "
            "keep the three ticks with the language designator (markdown code markup).")))
 
-(defun +replace-region-with-string (replacement)
+(defun +replace-region-with-string (replacement buffer beg end)
   "Replace region or buffer content with REPLACEMENT."
-  (if (use-region-p)
-      (delete-region (region-beginning) (region-end))
-    (delete-region (point-min) (point-max)))
-  (insert replacement)
-  (insert "\n"))
+  (with-current-buffer buffer
+    (delete-region beg end)
+    (insert replacement)
+    (insert "\n")))
 
 (transient-define-infix +gptel--improve-text-infix-prompt ()
   "Prompt selection for improving text."
@@ -90,21 +89,23 @@
     (user-error "no selection"))
   (setq +gptel-improve-text-prompt (or +gptel-improve-text-prompt
                                        (car +gptel-improve-text-prompts-history)))
-  (let ((text (buffer-substring-no-properties
-               (region-beginning)
-               (region-end))))
+  (let* ((buffer (current-buffer))
+         (beg (region-beginning))
+         (end (region-end))
+         (text (buffer-substring-no-properties beg end))
+         (in-place? (string-match-p
+                     "fix mistakes\\|correct mistakes"
+                     +gptel-improve-text-prompt)))
     (message "beep-bop... checking your crap with %s" gptel-model)
     (gptel-request text
       :system +gptel-improve-text-prompt
+      :buffer buffer
       :callback
       (lambda (resp info)
-        (let* ((model (let-plist info .data.model))
-               (in-place? (string-match-p
-                           "fix mistakes\\|correct mistakes"
-                           +gptel-improve-text-prompt)))
+        (let* ((model (let-plist info .data.model)))
           (cond
            (in-place?
-            (let* ((_ (+replace-region-with-string resp))
+            (let* ((_ (+replace-region-with-string resp buffer beg end))
                    (_ (message "¡Ahí está!"))
                    (fst-buf (with-current-buffer (generate-new-buffer (format "* %s 1 *" model))
                               (insert text)
