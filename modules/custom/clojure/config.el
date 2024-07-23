@@ -72,6 +72,7 @@
         cider-overlays-use-font-lock nil
         cider-prompt-for-symbol nil
 
+        cider-jack-in-default 'babashka
         cider-repl-display-help-banner nil
         cider-repl-history-display-duplicates nil
         cider-repl-history-display-style 'one-line

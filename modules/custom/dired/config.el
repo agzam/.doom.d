@@ -113,7 +113,13 @@
       :desc "ace-action" :n "a" #'dired-ace-action)))
 
   (when (modulep! :custom search)
-    (add-hook! dired-after-readin #'+add-to-zoxide-cache)))
+    (add-hook! dired-after-readin #'+add-to-zoxide-cache))
+
+  (defadvice! dired-do-shell-command-full-paths-a (orig-fn command &optional arg _)
+    "Provide full path for each file in dired-do-shell-command"
+    :around #'dired-do-shell-command
+    (let ((files (dired-get-marked-files nil current-prefix-arg nil nil t)))
+      (funcall orig-fn command arg files))))
 
 (use-package! dired-sidebar
   :defer t

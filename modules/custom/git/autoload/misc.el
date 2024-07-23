@@ -222,3 +222,20 @@ If URL is a link to a file, it extracts its raw form and tries to open in a buff
     (with-current-buffer b
       (insert-buffer-substring-no-properties trans)
       (switch-to-buffer-other-window b))))
+
+(defun straight-install-github-package (&optional url)
+  "Installs a package, fetching it from github."
+  (interactive)
+  (when-let ((name "")
+             (gh-repo (cond
+                       (url (let-plist
+                                (bisect-github-url "https://github.com/agzam/spacehammer")
+                              (setq name .repo)
+                              (format "%s/%s" .org .repo)))
+                       ((featurep 'consult-gh)
+                        (let-plist (cdr (consult-gh-search-repos "" :no-action))
+                          (setq name .package)
+                          .repo))))
+             (name (read-from-minibuffer "package name: " name)))
+    (straight-use-package
+      `(,(intern name) :type git :host github :repo ,gh-repo))))
