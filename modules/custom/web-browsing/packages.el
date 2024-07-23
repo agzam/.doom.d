@@ -13,4 +13,8 @@
 (package! rfc-mode)
 
 (package! yeetube
-  :recipe (:type git :repo "https://git.thanosapollo.org/yeetube"))
+  :recipe
+  ;; (:type git :repo "https://git.thanosapollo.org/yeetube")
+  (:host github :repo "Boruch-Baum/emacs-yeetube.el"))
+
+(package! subed :recipe (:host github :repo "sachac/subed" :files ("subed/*.el")))

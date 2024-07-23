@@ -163,6 +163,7 @@
   (setq mpv-volume-step 1.1))
 
 (use-package! elfeed-tube-mpv
+  :defer t
   :config
   (add-hook! 'elfeed-show-mode-hook
     (defun elfeed-set-tube-keys ()
@@ -178,3 +179,15 @@
 
 (use-package! rfc-mode)
 
+(use-package! subed
+  :defer t
+  :config
+  (add-hook! 'subed-mode-hook
+             #'subed-enable-pause-while-typing
+             #'subed-enable-sync-player-to-point
+             #'subed-enable-sync-point-to-player)
+  (map! :map subed-mode-map
+        :localleader
+        (:prefix ("t" . "toggle")
+                 "t" #'subed-toggle-srt-metadata)
+        "p" #'subed-mpv-play-from-file+))
