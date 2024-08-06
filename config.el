@@ -28,7 +28,7 @@
 (setq doom-theme 'ag-themes-spacemacs-light)
 
 (setq
- doom-font (font-spec :family "Fira Code")
+ doom-font (font-spec :family "Fira Code" :size 16)
  doom-serif-font (font-spec :family "Fira Code")
  doom-variable-pitch-font (font-spec :family "Noto Sans")
  ;; doom-unicode-font (font-spec :family "Apple Color Emoji" :size 18)
@@ -207,7 +207,7 @@
   )
 
 (after! grip-mode
-  (setq grip-preview-use-webkit nil)
+  (setq grip-preview-use-webkit (featurep :system 'macos))
   (setq grip-github-user "agzam")
   (setf grip-github-password (auth-host->pass "api.github.com")))
 

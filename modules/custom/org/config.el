@@ -5,7 +5,7 @@
 
 (defvar org-default-folder
   (cond
-   ((featurep :system 'macos) "/Users/ag/Library/CloudStorage/Dropbox/org/")
+   ((featurep :system 'macos) (expand-file-name "~/Sync/org/"))
    ((featurep :system 'linux) "/home/ag/Dropbox/org/")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

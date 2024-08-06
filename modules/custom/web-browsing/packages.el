@@ -4,7 +4,7 @@
 (package! eww :built-in t)
 (package! browser-hist :recipe (:local-repo "browser-hist"))
 
-(package! elfeed)
+(package! elfeed :recipe (:host github :repo "SohumB/elfeed" :branch "bugfix/consolidate-doesnt-preserve-shape"))
 ;; (package! elfeed-goodies)
 (package! elfeed-org)
 (package! elfeed-tube)

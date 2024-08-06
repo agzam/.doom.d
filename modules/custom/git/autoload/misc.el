@@ -223,6 +223,7 @@ If URL is a link to a file, it extracts its raw form and tries to open in a buff
       (insert-buffer-substring-no-properties trans)
       (switch-to-buffer-other-window b))))
 
+;;;###autoload
 (defun straight-install-github-package (&optional url)
   "Installs a package, fetching it from github."
   (interactive)
