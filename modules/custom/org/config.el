@@ -196,7 +196,7 @@
   (setq
    org-roam-v2-ack t
    org-roam-directory org-default-folder
-   org-roam-db-location (concat org-default-folder "org-roam.db")
+   org-roam-db-location (concat doom-local-dir "org-roam.db")
    org-roam-dailies-directory "daily/"
 
    ;; org-mode doesn't know how to properly export with roam links
