@@ -29,8 +29,8 @@
 
 (setq
  doom-font (font-spec :family "Fira Code" :size 16)
- doom-serif-font (font-spec :family "Fira Code")
- doom-variable-pitch-font (font-spec :family "Noto Sans")
+ doom-serif-font (font-spec :family "Fira Code" :size 16)
+ doom-variable-pitch-font (font-spec :family "Noto Sans" :size 16)
  ;; doom-unicode-font (font-spec :family "Apple Color Emoji" :size 18)
  )
 
@@ -63,7 +63,7 @@
 ;; they are implemented.
 
 (setq-default
- line-spacing 0.3
+ ;; line-spacing 0.3
  garbage-collection-messages nil
  left-fringe-width 6
  right-fringe-width 0
@@ -73,6 +73,7 @@
  fill-column 70)
 
 (setq
+ default-text-properties '(line-height 1.3)
  doom-localleader-key ","
  doom-localleader-alt-key "C-,"
  chemacs-current-emacs-profile "doom"
