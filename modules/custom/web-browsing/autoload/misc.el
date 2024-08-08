@@ -5,7 +5,7 @@
   "To be called when an external process sends a URL to Emacs."
   (pcase url
     ((pred (string-match-p "https\\:\\/\\/www.youtube.com\\/watch"))
-     (youtube-sub-extractor-extract-subs url))
+     (elfeed-tube-fetch url))
     ((pred (and (string-match-p "https\\:\\/\\/github.com.*" url)
                 (modulep! :custom git)))
      (forge-visit-topic-via-url url))
