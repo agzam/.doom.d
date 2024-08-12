@@ -93,7 +93,8 @@ ago. With a prefix argument opens `jinx-correct-word' dialog."
    ;; so we use 'default char' #x1F436 which represents 🐶
    ((char-equal ?\s (or (char-before) #x1F436))
     (progn
-      (re-search-backward "\\>") ; find the previous word boundary
+      ;; find the previous word boundary while ignoring spaces
+      (skip-syntax-backward " ")
       (insert ",")
       (forward-char)))
    ((char-equal ?\s (or (char-after) #x1F436))

@@ -291,10 +291,7 @@
 
   (setq jinx-languages "en_US ru_RU es_MX")
 
-  (map! :map (org-mode-map
-              markdown-mode-map
-              text-mode-map
-              chatgpt-shell-mode-map)
+  (map! :map jinx-mode-map
         :i ", SPC" #'insert-comma
         :i ",," #'jinx-autocorrect-last+
         :i ",." (cmd! (jinx-autocorrect-last+ :prompt)))

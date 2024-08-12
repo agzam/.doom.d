@@ -42,7 +42,8 @@
           :desc "copy url" "y" #'+eww-copy-current-url
           :desc "copy for Org" "o" #'org-eww-copy-for-org-mode)))
 
-  (advice-add #'eww-display-html :around #'eww-make-readable-a))
+  ;; (advice-add #'eww-display-html :around #'eww-make-readable-a)
+  )
 
 (after! xwidget
   (map!
