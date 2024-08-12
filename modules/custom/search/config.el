@@ -43,8 +43,14 @@
                       (thing-at-point 'symbol :no-props)))))
       (apply fn init no-cb args)))
 
-  ;; (defadvice! consult-omni--multi-dynamic-no-match-a (orig-fn &rest args)
-  ;;   "Require no match for omni searches."
-  ;;   :around #'consult-omni--multi-dynamic
-  ;;   (apply orig-fn (plist-put args :require-match nil)))
-  )
+  (defadvice! consult-omni--multi-dynamic-no-match-a (orig-fn &rest args)
+    "Require no match for omni searches."
+    :around #'consult-omni--multi-dynamic
+    (apply orig-fn (plist-put args :require-match nil)))
+
+  (defun consult-omni-embark-video-process (cand)
+    (if-let* ((url (and (stringp cand) (get-text-property 0 :url cand))))
+        (+process-external-url url)))
+
+  (map! :map consult-omni-embark-video-actions-map
+        "e" #'consult-omni-embark-video-process))

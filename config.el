@@ -30,7 +30,7 @@
 (setq
  doom-font (font-spec :family "Fira Code" :size 16)
  doom-serif-font (font-spec :family "Fira Code" :size 16)
- doom-variable-pitch-font (font-spec :family "Noto Sans" :size 16)
+ doom-variable-pitch-font (font-spec :family "Noto Sans" :size 18)
  ;; doom-unicode-font (font-spec :family "Apple Color Emoji" :size 18)
  )
 
@@ -73,7 +73,7 @@
  fill-column 70)
 
 (setq
- default-text-properties '(line-height 1.3)
+ default-text-properties '(line-height 1.4)
  doom-localleader-key ","
  doom-localleader-alt-key "C-,"
  chemacs-current-emacs-profile "doom"

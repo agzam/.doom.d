@@ -1,10 +1,11 @@
 ;;; custom/web-browsing/autoload/misc.el -*- lexical-binding: t; -*-
 
 ;;;###autoload
-(defun +process-external-url (url)
+(defun +process-external-url (&optional url)
   "To be called when an external process sends a URL to Emacs."
+  (interactive (list (read-string "Enter URL: ")))
   (pcase url
-    ((pred (string-match-p "https\\:\\/\\/www.youtube.com\\/watch"))
+    ((pred (string-match-p "https\\:\\/\\/www.youtube.com\\/watch.*"))
      (elfeed-tube-fetch url))
     ((pred (and (string-match-p "https\\:\\/\\/github.com.*" url)
                 (modulep! :custom git)))

@@ -10,7 +10,7 @@
 *** [[https://aws.amazon.com/blogs/aws/feed/][AWS News Blog]]
 *** [[https://aws.amazon.com/blogs/architecture/feed/][AWS Architecture Blog]]
 ** Emacs                                                             :emacs:
-*** [[https://www.reddit.com/r/emacs.rss][r/emacs]]                :reddit:
+*** [[https://www.reddit.com/r/emacs.rss][r/emacs]]                                                        :reddit:
 *** [[https://www.reddit.com/r/doomemacs.rss][r/doomemacs]]                                                    :reddit:
 *** [[https://www.reddit.com/r/orgmode.rss][r/orgmode]]            :reddit:org-mode:
 *** [[https://www.reddit.com/r/OrgRoam.rss][r/OrgRoam]]            :reddit:org-mode:
@@ -43,3 +43,5 @@
 *** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCJQJ4GjTiq5lmn8czf8oo0Q][PowerCert Animated Videos]]
 *** [[https://www.youtube.com/feeds/videos.xml?channel_id=UClIFqsmxnwVNNlsvjH1D1Aw][CBT Nuggets]]
 *** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCsUalyRg43M8D60mtHe6YcA][Honeypot]]
+** Archive
+*** [[https://www.reddit.com/user/ilemming.rss?limit=100000][My Reddit comments]] :archive:
