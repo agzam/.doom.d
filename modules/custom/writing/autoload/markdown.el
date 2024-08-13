@@ -26,13 +26,41 @@
     (message "yanked Markdown as Org")))
 
 ;;;###autoload
-(defun maybe-yank-as-org-a (orig-fun beg end &optional type register yank-handler)
+(defun yank-as-markdown ()
+  "Convert region of Org-mode to markdown while yanking."
+  (interactive)
+  (let* ((_ (unless (executable-find "pandoc")
+              (user-error "pandoc not found")))
+         (beg (if evil-mode
+                  (marker-position evil-visual-beginning)
+                (region-beginning)))
+         (end (if evil-mode
+                  (marker-position evil-visual-end)
+                (region-end)))
+         (region-content (buffer-substring-no-properties beg end))
+         (_ (print region-content))
+         (converted-content
+          (with-temp-buffer
+            (insert region-content)
+            (shell-command-on-region
+             (point-min)
+             (point-max)
+             "pandoc --wrap=none -f org -t markdown_strict" nil t)
+            (buffer-string))))
+    (kill-new converted-content)
+    (message "yanked Org as Markdown")))
+
+;;;###autoload
+(defun maybe-yank-and-convert-a (orig-fun beg end &optional type register yank-handler)
   "Advice function to convert marked region to org before yanking."
-  (let ((modes '(chatgpt-shell-mode markdown-mode)))
-    (if (and current-prefix-arg
-             (apply 'derived-mode-p modes)
-             (use-region-p))
-        (yank-as-org)
+  (let ((yank-fn (cond
+                  ((derived-mode-p 'markdown-mode)
+                   #'yank-as-org)
+                  ((derived-mode-p 'org-mode)
+                   #'yank-as-markdown))))
+    (if (and current-prefix-arg (use-region-p)
+             yank-fn)
+        (funcall yank-fn)
       (funcall
        orig-fun
        beg end type register

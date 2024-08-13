@@ -252,7 +252,6 @@
 
 (after! (:or markdown-mode chatgpt-shell-mode)
   (require 'lsp-marksman)
-  (advice-add 'evil-yank :around #'maybe-yank-as-org-a)
   (map! :map (markdown-mode-map
               chatgpt-shell-mode-map)
         (:localleader
