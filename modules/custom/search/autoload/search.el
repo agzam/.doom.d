@@ -1,7 +1,7 @@
 ;;; custom/search/autoload/search.el -*- lexical-binding: t; -*-
 
 (defvar +search--github-mode->lang
-  '(((clojurescript clojure) . "Clojure")
+  '(((clojurescript clojure cider-clojure-interaction) . "Clojure")
     ((emacs-lisp Info lisp-data helpful) . "Emacs Lisp")
     ((tsx-ts) . "TypeScript")
     ((js) . "JavaScript")

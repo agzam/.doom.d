@@ -105,9 +105,12 @@ gets the name suitable for :require of ns declaration."
                                          (lsp--text-document-position-params))
                                         (lsp--send-request)
                                         (lsp:hover-contents)))
-                                 (s (gethash "value" cnt)))
-                       (string-match "\\(```.*\n\\)\\(\\([[:word:]]\\|[[:graph:]]\\)*\\)" s)
-                       (string-trim (match-string 2 s))))
+                                 ;; I think with native-comp it comes as a hash,
+                                 ;; otherwise as cons
+                                 (s (or (plist-get cnt :value)
+                                        (gethash "value" cnt))))
+                       (string-match "```clojure\n\\([[:graph:]]+/[[:graph:]]+\\)" s)
+                       (string-trim (match-string 1 s))))
 
                     (t (message "Neither lsp nor cider are connected")))))
     (if for-req  ; want ns header name, e.g.: "[foo.core :as foo]"
