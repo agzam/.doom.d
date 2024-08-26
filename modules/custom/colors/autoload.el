@@ -33,24 +33,23 @@
     (load-theme theme :no-confirm)
     theme))
 
-;;;###autoload (autoload 'colors/cycle-themes/body "custom/colors/autoload" nil t)
-(defhydra colors/cycle-themes (:hint nil :color red)
-  "
-     Load theme _n_:next, _p_:previous, _l_:list themes
-"
-  ("n" colors/load-next-theme "next")
-  ("p" colors/load-prev-theme "previous")
-  ("l" consult-theme "list themes" :exit t))
+;;;###autoload
+(transient-define-prefix colors/cycle-themes ()
+  "toggle theme"
+  ["Load theme"
+   [("n" "next" colors/load-next-theme :transient t)
+    ("p" "previous" colors/load-prev-theme :transient t)
+    ("l" "list themes" consult-theme)]])
 
 ;;;###autoload
 (defun colors/cycle-themes-up ()
   (interactive)
   (colors/load-prev-theme)
   (circadian-setup)
-  (colors/cycle-themes/body))
+  (colors/cycle-themes))
 
 ;;;###autoload
 (defun colors/cycle-themes-down ()
   (interactive)
   (colors/load-next-theme)
-  (colors/cycle-themes/body))
+  (colors/cycle-themes))
