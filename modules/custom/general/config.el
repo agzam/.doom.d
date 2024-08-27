@@ -191,4 +191,5 @@
               which-key-min-display-lines 6
               which-key-max-description-length 35))))
 
-  (which-key-posframe-mode +1))
+  (when (display-graphic-p)
+    (which-key-posframe-mode +1)))

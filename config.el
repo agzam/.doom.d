@@ -25,7 +25,18 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
+
 (setq doom-theme 'ag-themes-spacemacs-light)
+
+(unless (display-graphic-p)
+  (setq doom-theme nil)
+  ;; forcing thin cursor in insert mode
+  (add-hook 'evil-insert-state-entry-hook
+            (lambda () (send-string-to-terminal "\033[5 q")))
+  (add-hook 'evil-normal-state-entry-hook
+            (lambda () (send-string-to-terminal "\033[0 q")))
+  (doom-disable-show-paren-mode-h))
+
 
 (setq
  doom-font (font-spec :family "Fira Code" :size 16)

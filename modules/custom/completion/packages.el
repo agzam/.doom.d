@@ -3,6 +3,10 @@
 
 (package! corfu
   :recipe (:files (:defaults "extensions/*.el")))
+
+(package! corfu-terminal
+  :recipe (:type git :repo "https://codeberg.org/akib/emacs-corfu-terminal.git"))
+
 (when (modulep! +icons)
   (package! kind-icon))
 (package! orderless)

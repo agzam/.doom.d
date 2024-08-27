@@ -11,7 +11,10 @@
    ;; North of TX
    calendar-latitude 33.16
    calendar-longitude -96.93
-   circadian-themes '(("6:00" . ag-themes-spacemacs-light)
+   circadian-themes `(("6:00" .
+                       ,(if (display-graphic-p)
+                            ag-themes-spacemacs-light
+                          base16-solarized-light))
                       ("21:00" . ag-themes-base16-tokyo-night-light)
                       ("00:30" . ag-themes-base16-ocean))))
 
@@ -26,4 +29,5 @@
         beacon-size 60
         beacon-color "DarkGoldenrod2"
         beacon-blink-when-window-scrolls nil)
-  (beacon-mode +1))
+  (when (display-graphic-p)
+   (beacon-mode +1)))

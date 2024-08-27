@@ -87,11 +87,6 @@
     (evil-make-overriding-map corfu-map)
     (advice-add 'evil-escape-func :after 'corfu-quit))
 
-  ;; TODO: check how to deal with Daemon/Client workflow with that
-  (unless (display-graphic-p)
-    (corfu-doc-terminal-mode)
-    (corfu-terminal-mode))
-
   (setq dabbrev-ignored-buffer-modes '(pdf-view-mode dired-mode vterm-mode)))
 
 (use-package! orderless
@@ -100,6 +95,10 @@
         completion-category-defaults nil
         completion-category-overrides '((file (styles . (partial-completion)))
                                         (symbol (styles . (partial-completion))))))
+
+(use-package! corfu-terminal
+  :when (not (display-graphic-p))
+  :hook ((corfu-mode . corfu-terminal-mode)))
 
 (use-package! cape
   :after corfu
