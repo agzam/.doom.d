@@ -202,7 +202,7 @@
        modeline
        tab-bar
        elisp
-       (when (featurep :system 'macos) osx)
+       (:if (featurep :system 'macos) osx)
 
        search
        dired
