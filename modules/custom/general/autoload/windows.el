@@ -1,7 +1,5 @@
 ;;; custom/general/autoload/windows.el -*- lexical-binding: t; -*-
 
-(require 'hydra)
-
 (defun delete-other-windows-horizontally ()
   "Delete all windows to the left and right of the current
 window."
