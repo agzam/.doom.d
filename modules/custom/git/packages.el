@@ -31,6 +31,6 @@
 
 (package! closql)
 
-(package! consult-gh :recipe (:host github :repo "armindarvish/consult-gh"))
+(package! consult-gh :recipe (:host github :repo "armindarvish/consult-gh" :files ("*.el")))
 
 (package! git-auto-commit-mode)

@@ -6,7 +6,7 @@
          (file-truename doom-local-dir) emacs-version))
 
 (use-package! consult-omni
-  :after (consult-gh)
+  :after (consult-gh consult-gh-embark)
   :commands (consult-omni-transient consult-omni-multi)
   :config
   (require 'consult-omni-embark)
