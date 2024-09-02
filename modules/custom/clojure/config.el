@@ -168,22 +168,6 @@
   (after! ob-clojure
     (setq! org-babel-clojure-backend 'cider))
 
-  (after! edit-indirect
-    (add-hook! 'edit-indirect-before-commit-hook
-      (defun clj-sort-ns-after-edit-ns-header-h ()
-        (when (string-match-p "clojure" (format "%s" major-mode))
-          ;; fix dangling paren
-          (goto-char (point-max))
-          (search-backward ":require" nil :noerror)
-          (sp-end-of-sexp)
-          (let ((pos (point)))
-            (search-backward "]" nil :noerror)
-            (funcall-interactively
-             #'replace-regexp
-             "\n\\| " "" nil (point) pos))
-          (sp-reindent)
-          (clojure-sort-ns)))))
-
   (map! (:localleader
          (:map (clojure-mode-map
                 clojure-ts-mode-map
@@ -324,8 +308,8 @@
      :delimiter-restore-fn separedit--restore-clj-str-delimeters
      :edit-mode markdown-mode))
 
-  (defadvice! fix-separadit-region-for-clj-a (block-info-fn &optional)
-    "Fix separadit block for Clojure (str) multi-line."
+  (defadvice! fix-separedit-region-for-clj-a (block-info-fn &optional)
+    "Fix separedit block for Clojure (str) multi-line."
     :around #'separedit--block-info
     (let ((block-info (funcall block-info-fn)))
       (when-let* ((_ (member 'clojure-mode
@@ -342,6 +326,11 @@
         (forward-char)
         (plist-put block-info :end (point)))
       block-info))
+
+  (add-hook! 'edit-indirect-after-commit-functions
+    (defun edit-indirect-after-commit-functions-h (beg end)
+      (when (derived-mode-p 'lisp-mode 'emacs-lisp-mode 'clojure-mode 'scheme-mode)
+        (sp-reindent))))
 
   (add-hook! 'separedit-buffer-creation-hook
     (defun separedit-set-fill-column-h ()

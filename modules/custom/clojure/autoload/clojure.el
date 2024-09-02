@@ -95,9 +95,19 @@ convert from JSON."
 ;;;###autoload
 (defun separedit--restore-clj-str-delimeters (&optional _)
   (save-excursion
+    ;; remove additional indents
+    ;; wrongfully added by edit-indirect--commit
+    (replace-regexp-in-region "^\\ +" "" (point-min))
+    ;; empty lines containing only whitespace get replaced with line-breaks
     (replace-regexp-in-region "^\\s-*$" "\\\\n" (point-min))
+    ;; a quote gets inserted at the beginning of each line
     (replace-regexp-in-region "^" "\"" (point-min))
-    (replace-regexp-in-region ".$" "\\& \"" (point-min))))
+    ;; adds a space and double quote at the end of each line
+    (replace-regexp-in-region ".$" "\\& \"" (point-min))
+    ;; and we don't want a trailing space on the last line
+    (goto-char (point-max))
+    (when (re-search-backward " \"\\'" nil t)
+      (replace-match "\""))))
 
 
 ;;;###autoload
@@ -117,7 +127,20 @@ convert from JSON."
           (newline-and-indent)
           (evil-insert-state)
           (keymap-local-set "C-c C-k" #'edit-indirect-abort)
-          (keymap-local-set "C-c C-c" #'edit-indirect-commit))))))
+          (keymap-local-set "C-c C-c" #'edit-indirect-commit))
+        (add-transient-hook! 'edit-indirect-before-commit-hook
+          (when (string-match-p "clojure" (format "%s" major-mode))
+            ;; fix dangling paren
+            (goto-char (point-max))
+            (search-backward ":require" nil :noerror)
+            (sp-end-of-sexp)
+            (let ((pos (point)))
+              (search-backward "]" nil :noerror)
+              (funcall-interactively
+               #'replace-regexp
+               "\n\\| " "" nil (point) pos))
+            (sp-reindent)
+            (clojure-sort-ns)))))))
 
 
 ;;;###autoload
