@@ -4,35 +4,23 @@
 
 ;;;###autoload
 (defun init-bug-reference-mode-settings ()
-  ;; (setq bug-reference-bug-regexp
-  ;;       (concat "\\(\\b\\(PR \\|[Bb]ug \\|[Ii]ssue \\|\\)" ; type
-  ;;               "\\(\\([A-z]+\\/\\)\\|\\)" ; org
-  ;;               "\\([A-z -]+\\)" ; project
-  ;;               "#\\([0-9]+\\)\\)" ; ticket No
-  ;;               ))
-  (setq bug-reference-bug-regexp
-        (concat
-        "\\b\\(PR\\|[Ii]ssue\\|[Bb]ug\\)" ; type
-        "[ ]"                               ; space separator
-        "\\([A-Za-z0-9]+\\)"               ; org
-        "/"                                 ; slash
-        "\\([A-Za-z0-9]+\\)"               ; repo
-        "#\\([0-9]+\\)"                    ; hash prefixed ticket number
-        ))
+  (setq
+   bug-reference-bug-regexp
+   (concat
+    "\\b\\(\\"
+    "([A-Za-z0-9]+\\)"    ; org
+    "/"                   ; slash
+    "\\([A-Za-z0-9]+\\)"  ; repo
+    "#\\([0-9]+\\)"       ; hash prefixed ticket number
+    "\\)"))
   (setq bug-reference-url-format #'bug-reference-url-format-fn))
 
 ;;;###autoload
 (defun bug-reference-url-format-fn ()
-  (let* ((type (pcase (match-string-no-properties 2)
-                 ("PR " "pull")
-                 ((or "Bug " "bug " "Issue " "issue ") "issues")
-                 ("" "issues")))
-         (org (match-string-no-properties 4))
-         (project (match-string-no-properties 5))
-         (ticket (match-string-no-properties 6))
-         (org (if (not (or (null org)
-                           (string-blank-p org)))
-                  (substring org 0 -1)
-                bug-reference-default-org)))
-    (if type (format "https://github.com/%s/%s/%s/%s" org project type ticket)
-      (format "https://github.com/%s/%s/search?q=%s" org project ticket))))
+  (let* ((org (match-string-no-properties 2))
+         (project (match-string-no-properties 3))
+         (ticket (match-string-no-properties 4))
+         (org (if (or (null org) (string-blank-p org))
+                  bug-reference-default-org
+                org)))
+    (format "https://github.com/%s/%s/issues/%s" org project ticket)))

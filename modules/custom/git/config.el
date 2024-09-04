@@ -318,6 +318,7 @@
         "," #'code-review-transient-api))
 
 (after! bug-reference
+  (setq bug-reference-default-org "agzam")
   (map! :map bug-reference-map
         "C-c C-o" #'bug-reference-push-button)
 
