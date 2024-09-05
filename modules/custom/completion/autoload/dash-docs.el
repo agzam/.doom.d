@@ -34,8 +34,10 @@
   (condition-case err
       (if (and (featurep 'cider)
                (cider-connected-p))
-          (cider-clojuredocs-lookup
-           (cider-fqn-symbol-at-point))
+          (condition-case nil
+              (cider-clojuredocs-lookup
+               (cider-fqn-symbol-at-point))
+            (user-error (consult-dash term)))
         (consult-dash term))
     (error
      (if (string-match-p

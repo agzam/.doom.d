@@ -5,7 +5,8 @@
                     clojurescript-mode
                     clojure-ts-mode
                     clojure-ts-clojurec-mode
-                    clojure-ts-clojurescript-mode))
+                    clojure-ts-clojurescript-mode
+                    cider-clojure-interaction-mode))
 
 (after! projectile
   (pushnew! projectile-project-root-files "project.clj" "build.boot" "deps.edn"))
