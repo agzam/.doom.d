@@ -7,8 +7,7 @@
   :recipe (:host github :repo "emacs-compat/compat"))
 
 ;; (package! emacsql-sqlite-builtin)
-(package! forge :recipe (:host github :repo "magit/forge")
-  :pin "716bc8fffba81d57e4d349680e94892352cb6175")
+(package! forge :recipe (:host github :repo "magit/forge"))
 (package! transient :recipe (:host github :repo "magit/transient" ))
 
 (package! gh-notify :recipe (:host github :repo "anticomputer/gh-notify"))
