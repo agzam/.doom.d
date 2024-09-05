@@ -5,11 +5,17 @@
   "To be called when an external process sends a URL to Emacs."
   (interactive (list (read-string "Enter URL: ")))
   (pcase url
+    ((pred (string-match-p bug-reference-bug-regexp))
+     (cl-letf (((symbol-function 'browse-url) #'forge-visit-topic-via-url))
+       (call-interactively #'bug-reference-push-button)))
+
     ((pred (string-match-p "https\\:\\/\\/www.youtube.com\\/watch.*"))
      (elfeed-tube-fetch url))
+
     ((pred (and (string-match-p "https\\:\\/\\/github.com.*" url)
                 (modulep! :custom git)))
      (forge-visit-topic-via-url url))
+
     (_
      (+eww-open-in-other-window url))))
 

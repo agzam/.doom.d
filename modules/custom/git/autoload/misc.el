@@ -139,47 +139,55 @@ If URL is a link to a file, it extracts its raw form and tries to open in a buff
                   (when-let* ((o (car (overlays-at (point)))))
                     (overlay-get o 'bug-reference-url))))
          (parts (bisect-github-url url))
-         (issue (plist-get parts :issue))
-         (pr (plist-get parts :pull))
+         (topic-num (string-to-number
+                     (or (plist-get parts :issue) (plist-get parts :pull))))
          (owner (plist-get parts :org))
          (repo-name (plist-get parts :repo))
          (ext (plist-get parts :ext)))
     (cond
-     ((or issue pr)
-      (let* ((topic-num (string-to-number (or issue pr "")))
-             (repo-url (format "%s/%s/%s" (plist-get parts :forge) owner repo-name))
+     (topic-num
+      (let* ((repo-url (format "%s/%s/%s" (plist-get parts :forge) owner repo-name))
              (repo (or (ignore-errors (forge-get-repository repo-url t t))
                        (forge-get-repository repo-url nil 'create)))
+             ;; let's try getting the topic from the forge db
              (topic
-              ;; This one is tricky:
-              ;; - first, it tries to find the topic in forge db
-              ;; - if that fails, it fetches the topic and updates the db
-              ;;  - and then grabs the topic from the db
-              ;;
-              ;; Since fetching fns are async with a callback, have to wrap it into a deferred
               (or
+               ;; This one is tricky:
+               ;; First, it tries to find the topic in forge db,
+               ;; that may fail if the topic too new and never fetched into the db.
+               ;; Then, we try to update the db.
+               ;; Since at this point we don't know if it's an issue or PR:
+               ;; first we try to find an issue with the topic-num,
+               ;; otherwise we try to find the PR
+               ;; if found, we update the db and then grab the topic from it.
+               ;; Fetching functions are async, have to wrap it into a deferred
                (forge-get-topic repo topic-num)
                (deferred:sync!
                 (deferred:$
                  (deferred:next
                   (lambda ()
-                    (let* ((d (deferred:new #'identity))
-                           (fetch-fn (if issue 'ghub-fetch-issue
-                                       'ghub-fetch-pullreq))
-                           (update-fn (if issue 'forge--update-issue
-                                        'forge--update-pullreq)))
-                      (funcall
-                       fetch-fn
+                    (let* ((d (deferred:new #'identity)))
+                      (ghub-fetch-issue
                        owner repo-name topic-num
-                       (lambda (data)
-                         (funcall update-fn repo data nil)
-                         (deferred:callback-post
-                          d
-                          (forge-get-topic repo topic-num))))
+                       (lambda (issue-data)
+                         (forge--update-issue repo issue-data nil)
+                         (deferred:callback-post d (forge-get-topic repo topic-num)))
+                       nil
+                       :errorback
+                       (lambda (&rest _args)
+                         (ghub-fetch-pullreq
+                          owner repo-name topic-num
+                          (lambda (pr-data)
+                            (forge--update-pullreq repo pr-data nil)
+                            (deferred:callback-post d (forge-get-topic repo topic-num)))
+                          nil
+                          :errorback
+                          (lambda (&rest _args)
+                            (message "Can't seem to locate issue/PR for %s" url)))))
                       d))))))))
 
-        ;; otherwise it complains for not running inside a git repo
-        (cl-letf (((symbol-function #'magit-toplevel)
+        (cl-letf (;; otherwise it complains for not running inside a git repo
+                  ((symbol-function #'magit-toplevel)
                    (lambda () default-directory))
                   (magit-display-buffer-function
                    (lambda (buf)
