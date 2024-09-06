@@ -108,26 +108,7 @@
         [tab] #'+web/indent-or-yas-or-emmet-expand
         "M-E" #'emmet-expand-line))
 
-(use-package! prettier-js
-  ;; :hook (rjsx-mode js2-mode)
-  :config
-  (setq prettier-js-args '())
-
-  (defadvice! prettier-set-file-a (&rest args)
-    "Make prettier work in src blocks."
-    :before 'prettier-js
-    (unless buffer-file-name
-      (let ((major major-mode)
-            (org-src org-src-mode))
-        (set-visited-file-name
-         (format
-          "/tmp/%s.js"
-          ;; sanitize the string for filename
-          (replace-regexp-in-string "\\W" "" (buffer-name))))
-        (set-buffer-modified-p nil)
-        (funcall major)
-        (when org-src
-          (org-src-mode 1))))))
+(use-package! prettier)
 
 (use-package! html-to-hiccup
   :defer t)
