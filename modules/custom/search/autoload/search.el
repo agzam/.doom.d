@@ -4,7 +4,7 @@
   '(((clojurescript clojure cider-clojure-interaction) . "Clojure")
     ((emacs-lisp Info lisp-data helpful) . "Emacs Lisp")
     ((tsx-ts) . "TypeScript")
-    ((js) . "JavaScript")
+    ((js jtsx-jsx) . "JavaScript")
     ((fennel) . "Fennel"))
   "Associates current mode with a language in Github terms")
 

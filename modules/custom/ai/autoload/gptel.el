@@ -139,12 +139,15 @@
 ;;;###autoload
 (defun gptel-clear-buffer+ ()
   (interactive)
-  (if (use-region-p)
-      (delete-region (region-beginning) (region-end))
-    (progn
-      (erase-buffer)
-      (insert "### ")
-      (evil-insert-state))))
+  (let ((keep-line (save-excursion
+                     (goto-char (point-max))
+                     (when (re-search-backward "^###" nil t)
+                       (unless (save-excursion
+                                 (forward-line)
+                                 (re-search-forward "^###" nil t))
+                         (point))))))
+    (delete-region (point-min) keep-line)
+    (evil-insert-state)))
 
 ;;;###autoload
 (defun gptel+ (&optional arg)

@@ -126,6 +126,7 @@
 
   (map! (:map magit-mode-map
          :nv "z" #'magit-stash
+         :nv "W" #'magit-worktree
          :nv "q" #'+magit/quit
          :nv "Q" #'+magit/quit-all
          :nv "gr" #'magit-refresh

@@ -15,11 +15,10 @@
          (repo (forge-get-repository forge-obj))
          (topic (forge-get-topic repo (gh-notify-notification-topic notification)))
          (gh-notify-redraw-on-visit nil)
-         (_ (gh-notify-mark-notification-read notification)))
+         (_ (gh-notify-set-notification-status notification 'done)))
     (setf (cl-struct-slot-value
            'gh-notify-notification
            'unread notification) nil)
-    (forge-topic-mark-read repo topic)
     (with-current-buffer (current-buffer)
       (read-only-mode -1)
       (kill-whole-line)
