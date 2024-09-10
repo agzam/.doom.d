@@ -13,7 +13,7 @@
              (json-mode . json-ts-mode)
              (js-json-mode . json-ts-mode)
              ;; (clojure-mode . clojure-ts-mode)
-             ))
+             (dockerfile-mode . dockerfile-ts-mode)))
     (add-to-list 'major-mode-remap-alist mapping))
   :config
   (tree-sitter-init+))
