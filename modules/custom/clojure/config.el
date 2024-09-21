@@ -123,7 +123,8 @@
          "C-c r" nil
          "C-c C-n" #'clj-edit-ns-header
          :i "C-x C-p" #'cider-pprint-eval-sexp-at-point)
-        (:map cider-clojure-interaction-mode-map
+        (:map (cider-clojure-interaction-mode-map
+               clojurescript-mode-map)
          :i "C-j" #'cider-eval-last-sexp
          :i "C-x C-e" #'cider-eval-last-sexp
          :i "C-x C-p" #'cider-pprint-eval-sexp-at-point))

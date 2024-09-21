@@ -6,7 +6,7 @@
 (defvar org-default-folder
   (cond
    ((featurep :system 'macos) (expand-file-name "~/Sync/org/"))
-   ((featurep :system 'linux) "/home/ag/Dropbox/org/")))
+   ((featurep :system 'linux) "~/Sync/org/")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Nothing can shadow org-roam keys ;;
