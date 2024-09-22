@@ -84,8 +84,8 @@
   (setq gptel-api-key (auth-host->pass "api.openai.com"))
 
   (setf
-   (cdr (assoc 'programming gptel-directives))
-   "You are a large language model and a software engineer. Respond concisely. Prioritize theory, don't provide code snippets until instructed.")
+   (cdr (assoc 'default gptel-directives))
+   "You are a large language model and an experienced software engineer. Respond concisely. Prioritize theory, don't provide code snippets until instructed. Do not repeat entire body of code (unless explicitly asked for it), only specific part(s). Do not explain the code unless explicitly asked for it.")
 
   (gptel-make-anthropic "Claude"
     :stream t

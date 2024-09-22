@@ -7,16 +7,15 @@
 (use-package! circadian
   :hook (window-setup . circadian-setup)
   :config
-  (setq
-   ;; North of TX
-   calendar-latitude 33.16
-   calendar-longitude -96.93
-   circadian-themes `(("6:00" .
-                       ,(if (display-graphic-p)
-                            ag-themes-spacemacs-light
-                          base16-solarized-light))
-                      ("21:00" . ag-themes-base16-tokyo-night-light)
-                      ("00:30" . ag-themes-base16-ocean))))
+  ;; North of TX
+  (setq calendar-latitude 33.16
+        calendar-longitude -96.93)
+  (setf circadian-themes
+        `(("6:00" . ,(if (display-graphic-p)
+                         'ag-themes-spacemacs-light
+                       'base16-solarized-light))
+          ("21:00" . ag-themes-base16-tokyo-night-light)
+          ("00:30" . ag-themes-base16-ocean))))
 
 (use-package! rainbow-mode
   :defer t)

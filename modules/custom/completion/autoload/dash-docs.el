@@ -44,3 +44,13 @@
           "Wrong type argument: .*"
           (error-message-string err))
          (lsp-signature-toggle-full-docs)))))
+
+;;;###autoload
+(defun dash-docs-activate-docset-a (orig-fn &optional docset)
+  (if (and docset (not (member docset (dash-docs-installed-docsets))))
+      (cond ((member docset (mapcar 'car (dash-docs-unofficial-docsets)))
+             (dash-docs-install-user-docset docset))
+
+          ((member docset (dash-docs-official-docsets))
+           (dash-docs-install-docset docset))))
+  (funcall orig-fn docset))

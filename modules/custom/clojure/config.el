@@ -24,6 +24,10 @@
    '+lookup-provider-url-alist
    '("Clojure Docs" "https://clojuredocs.org/search?q=%s"))
 
+  (add-hook! (clojurescript-mode clojure-ts-clojurescript-mode)
+    (defun activate-cljourescript-dash-docset-h ()
+      (dash-docs-activate-docset "ClojureScript")))
+
   (eval `(add-hook! ,clj-modes
                     #'+clojure-mode-lookup-handlers
                     #'lsp!

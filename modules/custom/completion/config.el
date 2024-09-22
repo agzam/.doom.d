@@ -560,16 +560,20 @@
   (setq dash-docs-browser-func #'+browse-dash-doc
         dash-docs-enable-debugging nil)
 
+  ;; a check, before activation of a docset to install it if needed
+  (advice-add 'dash-docs-activate-docset :around #'dash-docs-activate-docset-a)
+
   ;;; overriding internal implementation fns for the time being
   ;;; https://github.com/dash-docs-el/dash-docs/issues/23
-  (defun dash-docs-install-user-docset ()
+  (defun dash-docs-install-user-docset (docset)
     "Download an unofficial docset with specified DOCSET-NAME and
 move its stuff to docsets-path."
     (interactive)
     (let* ((docsets (dash-docs-unofficial-docsets))
-           (docset-name (dash-docs-read-docset
-                         "Install docset"
-                         (mapcar 'car docsets)))
+           (docset-name (or docset
+                            (dash-docs-read-docset
+                             "Install docset"
+                             (mapcar 'car docsets))))
            (docset (assoc-default docset-name docsets)))
       (when (dash-docs--ensure-created-docsets-path (dash-docs-docsets-path))
         (let ((url
