@@ -453,7 +453,7 @@
        "r" #'org-roam-node-find
        :desc "yank from kill-ring" "y" #'consult-yank-from-kill-ring
        (:after vertico
-        :desc "vertico repeat" "l" #'vertico-repeat-last
+        :desc "vertico repeat" "l" #'vertico-repeat
         :desc "vertico history" "L" #'vertico-repeat-select)
        (:after corfu
         :desc "corfu reset" "c" #'+corfu-kill-frames))

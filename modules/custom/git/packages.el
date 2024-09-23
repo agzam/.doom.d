@@ -8,7 +8,8 @@
 
 ;; (package! emacsql-sqlite-builtin)
 (package! forge :recipe (:host github :repo "magit/forge"))
-(package! transient :recipe (:host github :repo "magit/transient" ))
+(package! transient :recipe (:host github :repo "magit/transient")
+  :pin "3430943eaa3222cd2a487d4c102ec51e10e7e3c9")
 
 (package! gh-notify :recipe (:host github :repo "anticomputer/gh-notify"))
 
