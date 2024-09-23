@@ -7,11 +7,12 @@
   (setq
    bug-reference-bug-regexp
    (concat
-    "\\b\\(\\"
-    "([A-Za-z0-9]+\\)"    ; org
-    "/"                   ; slash
-    "\\([A-Za-z0-9]+\\)"  ; repo
-    "#\\([0-9]+\\)"       ; hash prefixed ticket number
+    "\\b"
+    "\\("
+    "\\([A-Za-z0-9_.-]+\\)"  ; org
+    "/"                      ; slash
+    "\\([A-Za-z0-9_.-]+\\)"  ; repo
+    "#\\([0-9]+\\)"          ; hash prefixed ticket number
     "\\)"))
   (setq bug-reference-url-format #'bug-reference-url-format-fn))
 
