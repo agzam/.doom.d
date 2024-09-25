@@ -34,12 +34,14 @@
     theme))
 
 ;;;###autoload
-(transient-define-prefix colors/cycle-themes ()
-  "toggle theme"
-  ["Load theme"
-   [("n" "next" colors/load-next-theme :transient t)
-    ("p" "previous" colors/load-prev-theme :transient t)
-    ("l" "list themes" consult-theme)]])
+(progn
+  (require 'transient)
+  (transient-define-prefix colors/cycle-themes ()
+    "toggle theme"
+    ["Load theme"
+     [("n" "next" colors/load-next-theme :transient t)
+      ("p" "previous" colors/load-prev-theme :transient t)
+      ("l" "list themes" consult-theme)]]))
 
 ;;;###autoload
 (defun colors/cycle-themes-up ()

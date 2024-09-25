@@ -1,5 +1,8 @@
 ;; -*- no-byte-compile: t; -*-
 
+(package! transient :recipe (:host github :repo "magit/transient")
+  :pin "3430943eaa3222cd2a487d4c102ec51e10e7e3c9")
+
 (package! winum)
 (package! info+)
 
