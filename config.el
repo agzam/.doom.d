@@ -511,7 +511,7 @@
                  (:prefix ("c" . "chatgpt")
                   :desc "chatgpt" "c" #'gptel+
                   :desc "check text" "e" #'+gptel-improve-text-transient
-                  )))
+                   "s" #'gptel-send)))
 
       (:prefix ("z" . "zoom")
        :desc "frame" "f" #'frame-zoom-transient))
