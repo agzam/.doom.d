@@ -79,9 +79,8 @@ ago. With a prefix argument opens `jinx-correct-word' dialog."
               (setq jinx-autocorrect--suggestions
                     (ring-convert-sequence-to-ring sugs))
               (setq jinx-autocorrect--ts (current-time))
-              (setq jinx-autocorrect--pos pos-beg)))
-          (when (featurep 'beacon)
-            (beacon-blink))
+              (setq jinx-autocorrect--pos pos-beg)
+              (pulse-momentary-highlight-region pos-beg (point))))
           (undo-auto-amalgamate))))))
 
 ;;;###autoload

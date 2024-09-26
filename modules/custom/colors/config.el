@@ -1,5 +1,7 @@
 ;;; custom/colors/config.el -*- lexical-binding: t; -*-
 
+(setq pulse-delay 0.05)
+
 (use-package! ag-themes
   :after-call doom-init-ui-h
   :config)
