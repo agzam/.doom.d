@@ -9,19 +9,11 @@
     (add-to-list 'lsp-language-id-configuration
                  '(fennel-mode . "fennel"))
 
-    (defun fennel-ls-init-options ()
-      (let* ((lsp-cfg-dir (concat (projectile-project-root) "/.lsp/"))
-             (cfg-file (expand-file-name "fennel-ls.json" lsp-cfg-dir))
-             (json-object-type 'plist))
-        (when (file-exists-p cfg-file)
-          (json-read-file cfg-file))))
-
     (lsp-register-client
      (make-lsp-client
       :new-connection (lsp-stdio-connection "fennel-ls")
       :activation-fn (lsp-activate-on "fennel")
-      :server-id 'fennel-ls
-      :initialization-options #'fennel-ls-init-options))
+      :server-id 'fennel-ls))
 
     (add-hook! lsp-mode
       (defun lsp-mode-bindings-override-h ()
