@@ -74,8 +74,7 @@ anything like: RFC 123, rfc-123, RFC123 or rfc123."
               (bounds (nthcdr 2 ref))
               (url (nth 3 (markdown-link-at-pos (point))))
               (bug-ref (let-plist (bisect-github-url url)
-                         (format "%s %s/%s#%s" (if .pull "PR" "Issue")
-                                 .org .repo (if .pull .pull .issue)))))
+                         (format "%s/%s#%s" .org .repo (or .pull .issue)))))
     (delete-region (car bounds) (cdr bounds))
     (insert bug-ref)))
 
@@ -130,8 +129,7 @@ anything like: RFC 123, rfc-123, RFC123 or rfc123."
               (end (org-element-property :end ctx))
               (url (org-element-property :raw-link ctx))
               (bug-ref (let-plist (bisect-github-url url)
-                         (format "%s %s/%s#%s" (if .pull "PR" "Issue")
-                                 .org .repo (if .pull .pull .issue)))))
+                         (format "%s/%s#%s" .org .repo (or .pull .issue)))))
     (delete-region beg end)
     (insert bug-ref)))
 
