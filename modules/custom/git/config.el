@@ -336,9 +336,9 @@
                              consult-gh-issue-list consult-gh-pr-list)
   :config
   (require 'consult-gh-embark)
-  (setq consult-gh-defaul-clone-directory "~/sandbox"
+  (setq consult-gh-defaul-clone-directory "~/GitHub"
         consult-gh-show-preview t
-        consult-gh-preview-buffer-mode 'org-mode
+        consult-gh-repo-preview-mode 'org-mode
         consult-gh-confirm-before-clone t
         consult-gh-ask-for-path-before-save t
         consult-gh-file-action #'consult-gh--files-view-action
@@ -352,7 +352,7 @@
         consult-gh-prs-state-to-show 'all
         consult-gh-issues-state-to-show 'all)
 
-  (dolist (repo '("agzam" "zerocmd"))
+  (dolist (repo '("agzam" "stitchdata" "qlik-trial"))
     (add-to-list 'consult-gh-default-orgs-list repo))
 
   (add-to-list 'savehist-additional-variables 'consult-gh--known-orgs-list)
