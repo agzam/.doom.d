@@ -1,5 +1,6 @@
 #+TITLE:  My Doom Emacs config
 #+STARTUP: inlineimages nofold
+#+OPTIONS: f:t
 
 Doom Emacs config and custom modules
 
@@ -7,3 +8,9 @@ Doom Emacs config and custom modules
 git clone git@github.com:agzam/.doom.d.git
 git submodule update --init --recursive
 #+end_src
+
+* Compatibility note
+
+I've been using this config mostly with the latest versions of Emacs - 29-31. On Mac I prefer using emacs-plus [[https://github.com/d12frosted/homebrew-emacs-plus][homebrew formulae]], i.e. GNU Emacs instead of [[https://github.com/railwaycat/homebrew-emacsmacport][Mitsuharu Yamamoto's mac]] port [fn:1] , because some custom commands I wrote for frame manipulation don't work with it, among some other things. Note that emacs-mac can handle OSX's built-in Dictation, whereas GNU Emacs doesn't. Also you can build it ~--with-metal~ flag that supposedly improves performance on Macs, especially on newer Mx chips. In my personal experience, I have not noticed any significant improvements. For me, ~--with-native-comp~ flag alone feels quite good already.
+
+/[fn:1] emacs-mac is not considered official GNU Emacs. It's a third-party distribution that includes additional features and optimizations specifically for macOS. While it's based on GNU Emacs, it contains modifications that are not part of the official GNU Emacs distribution. The official GNU Emacs does have macOS support, but Mitsuharu's port offers some Mac-specific enhancements that aren't found in the standard version./
