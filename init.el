@@ -224,4 +224,4 @@
        nix
        golang
        lua
-       )
+       (:if (featurep :system 'macos) jira))
