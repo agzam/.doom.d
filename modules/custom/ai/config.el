@@ -81,7 +81,11 @@
 (use-package! gptel
   :commands ()
   :config
-  (setq gptel-api-key (auth-host->pass "api.openai.com"))
+  (setq
+   gptel-default-mode 'org-mode
+   gptel-api-key (auth-host->pass "api.openai.com"))
+
+  (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "* ")
 
   (setf
    (cdr (assoc 'default gptel-directives))

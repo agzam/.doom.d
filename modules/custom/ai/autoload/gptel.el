@@ -139,13 +139,14 @@
 ;;;###autoload
 (defun gptel-clear-buffer+ ()
   (interactive)
-  (let ((keep-line (save-excursion
-                     (goto-char (point-max))
-                     (when (re-search-backward "^###" nil t)
-                       (unless (save-excursion
-                                 (forward-line)
-                                 (re-search-forward "^###" nil t))
-                         (point))))))
+  (let* ((beg-marker (concat "^" (alist-get gptel-default-mode gptel-prompt-prefix-alist)))
+         (keep-line (save-excursion
+                      (goto-char (point-max))
+                      (when (re-search-backward beg-marker nil t)
+                        (unless (save-excursion
+                                  (forward-line)
+                                  (re-search-forward beg-marker nil t))
+                          (point))))))
     (delete-region (point-min) keep-line)
     (evil-insert-state)))
 
