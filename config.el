@@ -577,3 +577,5 @@
         undo-strong-limit 120000000 ; 120Mb
         ;; 400Mb
         undo-outer-limit 400000000))
+
+(setq warning-suppress-log-types '((org-element)))
