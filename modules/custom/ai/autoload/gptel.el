@@ -153,20 +153,28 @@
 ;;;###autoload
 (defun gptel+ (&optional arg)
   (interactive "P")
-  (if arg
-      ;; with an argument it tries to create "next" ChatGPT buffer
-      ;; containing numerical suffix in the name
-      (let ((next-sufx (thread-last
-                         (buffer-list)
-                         (seq-filter (lambda (b) (string-match-p "^\\*ChatGPT" (buffer-name b))))
-                         (seq-map (lambda (b)
-                                    (let ((bname (buffer-name b)))
-                                      (string-match "^\\*ChatGPT\\(-\\([0-9]+\\)\\)?\\*$" bname)
-                                      (if-let ((num-str (match-string 2 bname)))
-                                          (string-to-number num-str)
-                                        0))))
-                         (apply #'max)
-                         (funcall (lambda (n) (+ n (if (zerop n) 2 1)))))))
-        (switch-to-buffer (gptel (format "*ChatGPT-%s*" next-sufx)))
-        (evil-insert-state))
-    (switch-to-buffer (gptel "*ChatGPT*"))))
+  (let ((last-b (thread-last
+                  (buffer-list)
+                  (seq-filter
+                   (lambda (buf)
+                     (buffer-local-value 'gptel-mode buf)))
+                  (seq-sort
+                   (lambda (a b)
+                     (string> (buffer-name a) (buffer-name b))))
+                  (seq-first))))
+    (if (or arg (null last-b))
+        (call-interactively #'gptel)
+      (if (get-buffer-window last-b 'visible)
+          (switch-to-buffer-other-window last-b)
+        (switch-to-buffer last-b)))))
+
+(defun gptel-persist-history ()
+  "Save buffer to disk when starting gptel"
+  (unless (buffer-file-name (current-buffer))
+    (let ((suffix (format-time-string "%Y-%m-%d-%T" (current-time)))
+          (chat-dir (concat org-default-folder "/gptel"))
+          (ext (replace-regexp-in-string "-mode$" "" (symbol-name gptel-default-mode))))
+      (unless (file-directory-p chat-dir)
+        (make-directory chat-dir :parents))
+      (write-file
+       (expand-file-name (concat "gptel-" suffix "." ext) chat-dir)))))

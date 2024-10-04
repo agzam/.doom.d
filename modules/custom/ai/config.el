@@ -113,4 +113,6 @@
   (add-hook! 'kill-emacs-hook
     (defun persist-gptel-model ()
       (customize-save-variable 'gptel-backend gptel-backend)
-      (customize-save-variable 'gptel-model gptel-model))))
+      (customize-save-variable 'gptel-model gptel-model)))
+
+  (add-hook! 'gptel-post-stream-hook #'gptel-persist-history))
