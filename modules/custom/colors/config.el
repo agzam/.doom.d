@@ -30,5 +30,6 @@
         beacon-size 60
         beacon-color "DarkGoldenrod2"
         beacon-blink-when-window-scrolls nil)
-  (when (display-graphic-p)
+  (when (and (display-graphic-p)
+             (not (featurep :system 'macos)))
    (beacon-mode +1)))
