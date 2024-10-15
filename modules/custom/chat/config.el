@@ -15,7 +15,8 @@
 
   (map! :map telega-root-mode-map [remap imenu] #'telega-chat-with)
   (map! :map telega-chat-mode-map
-        "C-l" #'recenter)
+        "C-l" #'recenter
+        :i "s-<return>" #'telega-chatbuf-input-send)
 
   (map! :map telega-msg-button-map "SPC" nil)
 

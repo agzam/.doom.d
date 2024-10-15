@@ -168,6 +168,7 @@
           (switch-to-buffer-other-window last-b)
         (switch-to-buffer last-b)))))
 
+;;;###autoload
 (defun gptel-persist-history ()
   "Save buffer to disk when starting gptel"
   (unless (buffer-file-name (current-buffer))
