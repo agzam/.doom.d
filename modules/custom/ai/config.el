@@ -82,10 +82,10 @@
   :commands ()
   :config
   (setq
-   gptel-default-mode 'markdown-mode
+   gptel-default-mode 'org-mode
    gptel-api-key (auth-host->pass "api.openai.com"))
 
-  ;; (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "* ")
+  (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "* ")
 
   (setf
    (cdr (assoc 'default gptel-directives))

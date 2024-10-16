@@ -37,13 +37,16 @@
         (user-error res)
       (string-trim res))))
 
+
 ;;;###autoload
-(defun jira-ticket->org-link (&optional ticket)
+(defun jira-ticket->link (&optional ticket)
   "Converts TICKET number at point to org-mode link."
   (interactive)
   (let* ((satp (thing-at-point 'symbol t))
          (ticket-at-point (when (and satp (string-match "\\b[A-Z]+-[0-9]+\\b" satp))
                             satp))
+         (_ (unless (string-match-p "^[A-Z]\\{3,5\\}-[0-9]+$" ticket-at-point)
+              (user-error "not a ticket number")))
          (ticket (or ticket ticket-at-point))
          (j (executable-find "jira"))
          (jq (executable-find "jq"))
@@ -61,7 +64,9 @@
              (parsed (json-read-from-string res))
              (summary (gethash 'summary parsed))
              (url (gethash 'url parsed))
-             (result (format "[[%s][%s: %s]]" url ticket summary)))
+             (result (if (eq major-mode 'org-mode)
+                         (format "[[%s][%s: %s]]" url ticket summary)
+                       (format "[%s: %s](%s)" ticket summary url))))
         (if ticket-at-point
             (let ((bounds (bounds-of-thing-at-point 'symbol)))
               (delete-region (car bounds) (cdr bounds))

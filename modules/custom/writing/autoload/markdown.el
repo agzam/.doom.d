@@ -45,7 +45,7 @@
             (shell-command-on-region
              (point-min)
              (point-max)
-             "pandoc --wrap=none -f org -t markdown_strict" nil t)
+             "pandoc --wrap=none -f org -t gfm" nil t)
             (buffer-string))))
     (kill-new converted-content)
     (message "yanked Org as Markdown")))
