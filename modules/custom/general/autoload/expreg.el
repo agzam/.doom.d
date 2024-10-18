@@ -55,11 +55,16 @@
                                         (let ((url (browser-copy-tab-link)))
                                           (when (url-p url)
                                             (push (list url) org-stored-links)))
-                                        (call-interactively #'org-insert-link)))]
+                                        (call-interactively #'org-insert-link)))
+        ("C-c Q" "wrap in quote block"
+         (lambda () (interactive) (org-wrap-in-block 'quote)))
+        ("C-c s" "wrap in source block"
+         (lambda () (interactive) (org-wrap-in-block 'src)))]
     [:if (lambda () (derived-mode-p 'markdown-mode))
         :hide always
         ("*" "bold" markdown-insert-bold)
         ("/" "italic" markdown-insert-italic)
         ("`" "code" markdown-insert-code)
         ("+" "strikethrough" markdown-insert-strike-through)
-        ("C-c l" "insert link" markdown-insert-link)]))
+        ("C-c l" "insert link" markdown-insert-link)
+        ("C-c s" "wrap in code block" markdown-wrap-code-generic)]))

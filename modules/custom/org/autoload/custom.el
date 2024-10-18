@@ -340,3 +340,26 @@ carry a meaningful context (to which I have to extend a relation) for me."
                        pom property value org-entry-put-orig))
                   org-entry-put-orig)))
       (apply org-roam-capture-fn time goto keys))))
+
+
+;;;###autoload
+(defun org-wrap-in-block (block-type)
+  "Wrap selected region in an org-mode block of BLOCK-TYPE."
+  (interactive
+   (list (completing-read "Block type: " '("src" "example" "quote" "center" "verse"))))
+  (let ((start (if (region-active-p) (region-beginning)
+                 (save-excursion (backward-paragraph) (forward-char) (point))))
+        (end (if (region-active-p) (1- (region-end))
+               (save-excursion (forward-paragraph) (backward-char) (point))))
+        (block-start (format "#+begin_%s" block-type))
+        (block-end (format "#+end_%s" block-type)))
+    (save-excursion
+      (goto-char end)
+      (insert "\n" block-end)
+      (goto-char start)
+      (insert block-start "\n"))
+    (when (string= block-type "src")
+      (goto-char start)
+      (end-of-line)
+      (insert " ")
+      (evil-insert-state))))
