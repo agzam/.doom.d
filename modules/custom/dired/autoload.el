@@ -98,7 +98,8 @@
                              (get-text-property (point) 'display))))
                (unless icon? (insert icon)))
            (treemacs-return nil))
-         (forward-line 1))))))
+         (forward-line 1))
+       (set-buffer-modified-p nil)))))
 
 ;;;###autoload
 (defun dired-file-to-mplayer (&optional filename)
