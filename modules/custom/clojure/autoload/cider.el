@@ -55,11 +55,12 @@ set so that it clears the whole REPL buffer, not just the output."
   "Clears both repl and nrepl output"
   (interactive)
   (let ((origin-buf (current-buffer))
+        (orig-mode major-mode)
         (cider-buf (cider-current-repl nil 'ensure)))
     (switch-to-buffer cider-buf)
     (cider-repl-clear-buffer)
     (when (not (eq origin-buf cider-buf))
-      (cider-switch-to-last-clojure-buffer))
+      (select-window (get-buffer-window origin-buf)))
     (when-let ((nrepl-buf (nrepl-make-buffer-name
                            (nrepl--make-hidden-name nrepl-server-buffer-name-template)
                            nil :no-dup)))
