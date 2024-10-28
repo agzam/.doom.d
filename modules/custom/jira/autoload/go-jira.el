@@ -74,9 +74,23 @@
           result)))))
 
 
-(defun jira-view (ticket)
+(defun jira-view-simple (ticket)
   "View the TICKET in a buffer."
+  (interactive "sJira ticket number: ")
+  (let* ((j (executable-find "jira"))
+         (buf (get-buffer-create (format "%s" ticket)))
+         (cmd (format "%s view %s" j ticket))
+         (output (ansi-color-apply (shell-command-to-string cmd))))
+    (with-current-buffer buf
+      (erase-buffer)
+      (insert (replace-regexp-in-string "\r" "" output))
+      (markdown-mode)
+      (goto-char (point-min)))
+    (display-buffer buf)
+    (select-window (get-buffer-window buf)))
+  ;; TODO: C-c C-o to browse
   )
+
 
 (defun jira-search (query)
   "Search through tickets."
