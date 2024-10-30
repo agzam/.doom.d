@@ -56,7 +56,7 @@
                                           (when (url-p url)
                                             (push (list url) org-stored-links)))
                                         (call-interactively #'org-insert-link)))
-        ("C-c Q" "wrap in quote block"
+        ("C-c t" "wrap in quote block"
          (lambda () (interactive) (org-wrap-in-block 'quote)))
         ("C-c s" "wrap in source block"
          (lambda () (interactive) (org-wrap-in-block 'src)))]

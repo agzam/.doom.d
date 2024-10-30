@@ -18,18 +18,29 @@
 ;;  Helper functions to work with go-jira: https://github.com/go-jira/jira
 ;;; Code:
 
+(defcustom jira-default-search-query ""
+  "Default query for search."
+  :type 'string
+  :group 'jira)
+
+(defun jira--find-exe (&optional exe)
+  "Find and return executable EXE or throw a message."
+  (if-let ((ex (executable-find (or exe "jira"))))
+      ex
+    (error "ERROR: Could not locate %s" exe)))
+
 (defun jira-summary (ticket)
   "Retrieves the summary of TICKET number."
   (interactive)
-  (let ((j (executable-find "jira")))
+  (let ((j (jira--find-exe)))
     (string-trim
      (shell-command-to-string
       (format "%s view %s --gjq 'fields.summary'" j ticket)))))
 
 (defun jira-ticket->url (ticket)
   "Extracts browsable url for the TICKET number."
-  (let* ((j (executable-find "jira"))
-         (jq (executable-find "jq"))
+  (let* ((j (jira--find-exe))
+         (jq (jira--find-exe "jq"))
          (cmd (format "%s view %s --template json | %s -r '\"\\(.self | split(\"/rest\")[0])/browse/\\(.key)\"'"
                       j ticket jq))
          (res (shell-command-to-string cmd)))
@@ -48,8 +59,8 @@
          (_ (unless (string-match-p "^[A-Z]\\{3,5\\}-[0-9]+$" ticket-at-point)
               (user-error "not a ticket number")))
          (ticket (or ticket ticket-at-point))
-         (j (executable-find "jira"))
-         (jq (executable-find "jq"))
+         (j (jira--find-exe))
+         (jq (jira--find-exe "jq"))
          (cmd (format (concat
                        "%s view %s --template json | %s -r '{"
                        "summary: .fields.summary,"
@@ -73,11 +84,11 @@
               (insert result))
           result)))))
 
-
+;;;###autoload
 (defun jira-view-simple (ticket)
   "View the TICKET in a buffer."
   (interactive "sJira ticket number: ")
-  (let* ((j (executable-find "jira"))
+  (let* ((j (jira--find-exe))
          (buf (get-buffer-create (format "%s" ticket)))
          (cmd (format "%s view %s" j ticket))
          (output (ansi-color-apply (shell-command-to-string cmd))))
@@ -91,9 +102,13 @@
   ;; TODO: C-c C-o to browse
   )
 
-
-(defun jira-search (query)
-  "Search through tickets."
+(defvar jira--search-cache
   )
+
+(defun jira-search (&optional query)
+  "Search through tickets using QUERY."
+  (let ((j (jira--find-exe))
+        (q (or query jira-default-query)))
+    ))
 
 ;;; go-jira.el ends here

@@ -349,7 +349,7 @@ carry a meaningful context (to which I have to extend a relation) for me."
    (list (completing-read "Block type: " '("src" "example" "quote" "center" "verse"))))
   (let ((start (if (region-active-p) (region-beginning)
                  (save-excursion (backward-paragraph) (forward-char) (point))))
-        (end (if (region-active-p) (1- (region-end))
+        (end (if (region-active-p) (region-end)
                (save-excursion (forward-paragraph) (backward-char) (point))))
         (block-start (format "#+begin_%s" block-type))
         (block-end (format "#+end_%s" block-type)))
