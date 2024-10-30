@@ -28,6 +28,7 @@
   (add-hook! 'telega-chat-mode-hook
     (defun telega-chat-mode-h ()
       (jinx-mode)
+      (emojify-mode)
       ;; (setq line-spacing 9)
       ))
 
