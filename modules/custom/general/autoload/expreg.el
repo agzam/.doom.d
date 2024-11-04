@@ -12,8 +12,6 @@
       `((line . ,(cons beg end))))))
 
 ;;;###autoload
-(progn
-  (require 'transient)
   (transient-define-prefix expreg-transient ()
     "expand/contract"
     [[("v" "expand" expreg-expand :transient t)]
@@ -67,4 +65,4 @@
         ("`" "code" markdown-insert-code)
         ("+" "strikethrough" markdown-insert-strike-through)
         ("C-c l" "insert link" markdown-insert-link)
-        ("C-c s" "wrap in code block" markdown-wrap-code-generic)]))
+        ("C-c s" "wrap in code block" markdown-wrap-code-generic)])
