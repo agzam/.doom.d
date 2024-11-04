@@ -565,7 +565,7 @@
 
   ;;; overriding internal implementation fns for the time being
   ;;; https://github.com/dash-docs-el/dash-docs/issues/23
-  (defun dash-docs-install-user-docset (docset)
+  (defun dash-docs-install-user-docset (&optional docset)
     "Download an unofficial docset with specified DOCSET-NAME and
 move its stuff to docsets-path."
     (interactive)
