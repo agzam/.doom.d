@@ -289,11 +289,10 @@
   (setq code-review-db-database-file
         (concat doom-data-dir "code-review-db-file.sqlite"))
   :config
-  (after! (magit forge gh-notify)
-    (map! :map (magit-status-mode-map
-                forge-pullreq-mode-map
-                forge-topic-mode-map)
-          :n "s-r" #'code-review-forge-pr-at-point))
+  (map! :map (magit-status-mode-map
+              forge-pullreq-mode-map
+              forge-topic-mode-map)
+        :n "s-r" #'code-review-forge-pr-at-point)
 
   (after! 'evil-escape
     (add-to-list 'evil-escape-excluded-major-modes 'code-review-mode))

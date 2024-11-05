@@ -115,4 +115,16 @@
       (customize-save-variable 'gptel-backend gptel-backend)
       (customize-save-variable 'gptel-model gptel-model)))
 
-  (add-hook! 'gptel-post-stream-hook #'gptel-persist-history))
+  (add-hook! 'gptel-post-stream-hook #'gptel-persist-history)
+
+  (add-to-list
+   'display-buffer-alist
+   `(,(rx bos (or "*Claude" "*ChatGPT"))
+     (display-buffer-reuse-window
+      display-buffer-window-equal-width
+      display-buffer-reuse-mode-window
+      display-buffer-in-direction)
+     (direction . right)
+     (window . root)
+     (dedicated . nil)))
+  )
