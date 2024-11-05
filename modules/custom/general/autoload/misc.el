@@ -85,7 +85,7 @@ narrowed to."
 ;;;###autoload
 (defun find-in-doom-dir ()
   (interactive)
-  (doom/goto-private-config-file)
+  (find-file doom-user-dir)
   (projectile-find-dir))
 
 ;; indent on paste
