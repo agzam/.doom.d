@@ -354,6 +354,7 @@
        :desc "jump list" "j" #'evil-show-jumps
        :desc "git status" "s" #'magit-status
        :desc "blame" "b" #'magit-blame-addition
+       :desc "clone" "C" #'+git-clone
        (:prefix ("c" . "consult-gh")
                 "o" #'consult-gh-orgs
                 "r" #'consult-gh-search-repos

@@ -27,6 +27,14 @@ Signals an error if there is no current project."
           (hack-local-variables-apply))))))
 
 ;;;###autoload
+(defun parse-git-url (url)
+  "Parse git URL."
+  (when (string-match "\\(?:git@\\|https?://\\)?\\(?:www\\.\\)?\\([^:/]+\\)[:/]\\([^/]+\\)/\\(.+?\\)\\(?:\\.git\\)?$" url)
+    (list :host (match-string 1 url)
+          :org (match-string 2 url)
+          :repo (match-string 3 url))))
+
+;;;###autoload
 (defun bisect-github-url (url)
   "Returns plist with parts of GitHub URL."
   ;; different kinds of GH links, for future reference:
@@ -248,3 +256,29 @@ If URL is a link to a file, it extracts its raw form and tries to open in a buff
              (name (read-from-minibuffer "package name: " name)))
     (straight-use-package
       `(,(intern name) :type git :host github :repo ,gh-repo))))
+
+
+(defun make-path (&rest parts)
+  (expand-file-name (mapconcat #'identity parts "/")))
+
+;;;###autoload
+(defun +git-clone ()
+  "Simplify cloning using org-name/repo-name dir structure."
+  (interactive)
+  (let* ((orig-fn (symbol-function 'magit-clone-read-args))
+         (adv-fn (lambda (_)
+                   (let* ((repo (magit-clone-read-repository))
+                          (dir
+                           (read-directory-name
+                            "Clone to: "
+                            (let-plist (parse-git-url repo)
+                              (make-path
+                               (or magit-clone-default-directory
+                                   "~/GitHub/")
+                               .org .repo)))))
+                     (setf (symbol-function 'magit-clone-read-args)
+                          orig-fn)
+                     (list repo dir (transient-args 'magit-clone))))))
+   (advice-add 'magit-clone-read-args :around adv-fn))
+  (funcall-interactively #'magit-clone :transient))
+
