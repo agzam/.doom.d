@@ -18,8 +18,8 @@
 ;;  Helper functions to work with go-jira: https://github.com/go-jira/jira
 ;;; Code:
 
-(defcustom jira-default-search-query ""
-  "Default query for search."
+(defcustom jira-default-search-format-string "text ~ \"%s\""
+  "Default, initial format string for search."
   :type 'string
   :group 'jira)
 
@@ -102,13 +102,24 @@
   ;; TODO: C-c C-o to browse
   )
 
-(defvar jira--search-cache
-  )
-
 (defun jira-search (&optional query)
-  "Search through tickets using QUERY."
-  (let ((j (jira--find-exe))
-        (q (or query jira-default-query)))
-    ))
+  (interactive)
+  (minibuffer-with-setup-hook
+      (lambda ()
+        ;; place cursor between the quotes
+        (search-backward "\""))
+    (consult--read
+     (consult--async-command
+         (lambda (input)
+           (when (not (string-match-p "\"\"" input)) ; query has no empty quote blocks
+             (list "jira" "list" "--query" input)))
+       :throttle 0.5)
+     :initial (or query (format jira-default-search-format-string ""))
+     :state (lambda (action cand)
+              (when (and cand (member action '(preview return)))
+                (when-let ((ticket (progn (string-match "^[^:]+" cand)
+                                          (match-string 0 cand))))
+                  (jira-view-simple ticket)))))))
+
 
 ;;; go-jira.el ends here
