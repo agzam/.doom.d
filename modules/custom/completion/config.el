@@ -433,6 +433,10 @@
    (:map embark-rfc-number-map
     :desc "browse" "b" #'+browse-rfc-number-at-point)
 
+   (:when (modulep! :custom jira)
+     (:map embark-jira-ticket-map
+      :desc "browse" "b" #'jira-view-simple))
+
    (:map
     embark-collect-mode-map
     :n "[" #'embark-previous-symbol
@@ -492,7 +496,8 @@
 
   (dolist (finder '(+embark-target-markdown-link-at-point
                     +embark-target-bug-reference-link-at-point
-                    +embark-target-RFC-number-at-point))
+                    +embark-target-RFC-number-at-point
+                    +embark-target-jira-ticket-at-point))
     (add-to-list 'embark-target-finders finder))
 
   (defvar-keymap embark-markdown-link-map
@@ -514,7 +519,14 @@
     :parent embark-general-map)
   (add-to-list
    'embark-keymap-alist
-   '(rfc-number embark-rfc-number-map)))
+   '(rfc-number embark-rfc-number-map))
+
+  (defvar-keymap embark-jira-ticket-map
+    :doc "Keymap for Jira ticket actions."
+    :parent embark-general-map)
+  (add-to-list
+   'embark-keymap-alist
+   '(jira-ticket embark-jira-ticket-map)))
 
 (use-package! yasnippet
   :defer-incrementally eldoc easymenu help-mode
