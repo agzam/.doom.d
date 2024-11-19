@@ -174,13 +174,11 @@
                      (string> (buffer-name a) (buffer-name b))))
                   (seq-first))))
     (if (or arg (null last-b))
-        (switch-to-buffer
-         (call-interactively #'gptel)))
-      (switch-to-buffer last-b)
-      ;; (if (get-buffer-window last-b 'visible)
-      ;;     (switch-to-buffer-other-window last-b)
-      ;;   (pop-to-buffer last-b))
-      ))
+        (let ((b (call-interactively #'gptel)))
+          (run-with-timer
+           0.1 nil
+           #'switch-to-buffer b)))
+      (switch-to-buffer last-b)))
 
 ;;;###autoload
 (defun gptel-persist-history ()

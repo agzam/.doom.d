@@ -126,5 +126,4 @@
       display-buffer-in-direction)
      (direction . right)
      (window . root)
-     (dedicated . nil)))
-  )
+     (dedicated . nil))))
