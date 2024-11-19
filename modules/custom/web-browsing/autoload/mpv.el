@@ -17,10 +17,17 @@
 
                     ((and (thing-at-point 'word)
                           (string-match url-regex (thing-at-point 'word)))
-                     (thing-at-point 'word))))))
+                     (thing-at-point 'word))
+
+                    ((eq major-mode 'org-mode)
+                     (org-element-property :path (org-element-context)))))))
     (cond
      ((eq major-mode 'dired-mode)
       (mpv-play (dired-get-file-for-visit)))
+
+     ((and (eq major-mode 'org-mode) path)
+      (mpv-play path))
+
      (t (mpv-play-url (read-string "Play: " path))))))
 
 (defvar osc-style "auto")
