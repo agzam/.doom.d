@@ -49,7 +49,7 @@
   :prompt "Prompt: "
   :variable '+gptel-improve-text-prompt
   :class 'transient-lisp-variable
-  :key "RET"
+  :key "- RET"
   :format "%k %d"
   :reader (lambda (prompt &rest _)
             ;; usual bs to keep the preserve the list order
@@ -67,6 +67,16 @@
                            sel)
               sel)))
 
+(transient-define-infix +gptel--improve-text-write-own-prompt ()
+  "Custom prompt for improving text."
+  :description "Write your own prompt"
+  :prompt "Prompt: "
+  :variable '+gptel-improve-text-prompt
+  :class 'transient-lisp-variable
+  :key "i"
+  :format "%k %d"
+  :reader (lambda (&rest _) (read-string "Prompt: ")))
+
 (require 'gptel-transient)
 
 ;;;###autoload
@@ -78,7 +88,8 @@
       (or +gptel-improve-text-prompt
           (car +gptel-improve-text-prompts-history)) "\n"))
    [(gptel--infix-provider)
-    (+gptel--improve-text-infix-prompt)]
+    (+gptel--improve-text-infix-prompt)
+    (+gptel--improve-text-write-own-prompt)]
    [""
     ("C-<return>" "Let's go" +gptel-improve-text)]])
 
@@ -94,7 +105,7 @@
          (end (region-end))
          (text (buffer-substring-no-properties beg end))
          (in-place? (string-match-p
-                     "fix mistakes\\|correct mistakes"
+                     "fix mistakes\\|correct mistakes\\|improve\\|simplify"
                      +gptel-improve-text-prompt)))
     (message "beep-bop... checking your crap with %s" gptel-model)
     (gptel-request text
