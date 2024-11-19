@@ -98,7 +98,7 @@
   (gptel-make-ollama "Ollama"
     :host "localhost:11434"
     :stream nil
-    :models '("llama3:latest"))
+    :models '("llama3:latest" "solar"))
 
   (add-hook! 'gptel-mode-hook
     (defun gptel-mode-set-local-keys ()

@@ -201,7 +201,7 @@
 
    ;; org-mode doesn't know how to properly export with roam links
    org-export-with-broken-links t
-   )
+   org-roam-file-exclude-regexp '("data/" ".sync/"))
   :config
   (map! :map org-mode-map
         :i "[[" #'org-roam-node-insert+
