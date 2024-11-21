@@ -343,10 +343,7 @@
         consult-gh-file-action #'consult-gh--files-view-action
         consult-gh-issue-action #'consult-gh--view-action+
         consult-gh-pr-action #'consult-gh--view-action+
-        consult-gh-repo-action (lambda (x)
-                                 (interactive)
-                                 (consult-gh--repo-view-action
-                                  (car x)))
+        consult-gh-repo-action #'consult-gh--repo-browse-url-action
         consult-gh-prioritize-local-folder t
         consult-gh-prs-state-to-show 'all
         consult-gh-issues-state-to-show 'all)

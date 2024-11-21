@@ -23,6 +23,20 @@
   :type 'string
   :group 'jira)
 
+(defvar jira-browse-ticket-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-c C-o") #'jira-browse-ticket-url)
+    (define-key map (kbd "q") #'kill-buffer-and-window)
+    map)
+  "Keymap for `jira-browse-ticket-mode' minor mode. ")
+
+(define-minor-mode jira-browse-ticket-mode
+  "Minor mode for buffer with jira ticket content."
+  :group 'jira
+  :lighter " jira"
+  :init-value nil
+  :keymap jira-browse-ticket-mode-map)
+
 (defun jira--find-exe (&optional exe)
   "Find and return executable EXE or throw a message."
   (if-let ((ex (executable-find (or exe "jira"))))
@@ -94,14 +108,23 @@
          (output (ansi-color-apply (shell-command-to-string cmd))))
     (with-current-buffer buf
       (erase-buffer)
+      (put 'jira--ticket-number 'permanent-local t)
+      (setq-local jira--ticket-number ticket)
       (insert (replace-regexp-in-string "\r" "" output))
       (markdown-mode)
+      (jira-browse-ticket-mode)
       (goto-char (point-min)))
     (display-buffer buf)
-    (select-window (get-buffer-window buf)))
-  ;; TODO: C-c C-o to browse
-  )
+    (select-window (get-buffer-window buf))))
 
+(defun jira-browse-ticket-url (&optional ticket)
+  (interactive)
+  (let ((j (jira--find-exe))
+        (ticket (or ticket
+                    (buffer-local-value 'jira--ticket-number (current-buffer)))))
+    (shell-command-to-string (format "%s browse %s" j ticket))))
+
+;;;###autoload
 (defun jira-search (&optional query)
   (interactive)
   (minibuffer-with-setup-hook

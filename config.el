@@ -170,6 +170,7 @@
 (advice-remove 'newline-and-indent #'+default--newline-indent-and-continue-comments-a)
 
 (defalias 'elisp-mode 'emacs-lisp-mode)
+(defalias 'clj-mode 'clojure-mode)
 
 ;; disable global-hl-line
 ;; oddly, that's the way: https://github.com/hlissner/doom-emacs/issues/4206
