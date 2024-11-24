@@ -127,3 +127,10 @@
      (direction . right)
      (window . root)
      (dedicated . nil))))
+
+(use-package! gptel-quick
+  :commands (gptel-quick)
+  :config
+  (map! :n "C-k" #'gptel-quick)
+  (map! :map visual-line-mode-map
+        "C-k" #'gptel-quick))
