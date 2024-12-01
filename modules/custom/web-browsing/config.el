@@ -137,6 +137,10 @@
   :config
   (elfeed-tube-setup)
 
+  (map! :map elfeed-show-mode-map
+        (:localleader
+         "f" #'elfeed-tube-mpv-follow-mode))
+
   ;; (map! :map elfeed-show-mode-map
   ;;       "F" #'elfeed-tube-fetch
   ;;       [remap save-buffer] #'elfeed-tube-save
