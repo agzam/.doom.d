@@ -105,7 +105,7 @@
          (end (region-end))
          (text (buffer-substring-no-properties beg end))
          (in-place? (string-match-p
-                     "fix mistakes\\|correct mistakes\\|improve\\|simplify"
+                     "fix mistakes\\|correct mistakes\\|simplify"
                      +gptel-improve-text-prompt)))
     (message "beep-bop... checking your crap with %s" gptel-model)
     (gptel-request text

@@ -281,6 +281,7 @@
             "%<%Y-%m>-work-notes.org"
             'day)
            :jump-to-captured t
+           :immediate-finish t
            :unnarrowed t)
           ("j" "journal" plain
            "%(org-roam-capture-dailies--set-node-props \"journal\")**** %?"

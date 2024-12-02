@@ -8,7 +8,7 @@
 
 ;;;###autoload
 (defvar tab-bar--templates
-  '(("o" "Org" (org-roam-node-find))
+  '(("o" "Org" (org-roam-dailies-goto-today '("w")))
     ("c" "chat-gpt" (gptel+))
     ("gn" "gh-notify" (gh-notify))
     ("ef" "elfeed" (elfeed))
