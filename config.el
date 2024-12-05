@@ -452,6 +452,7 @@
                  :desc "project shell" "'" #'shell-pop-in-project-root))
 
       (:prefix ("r" . "reset/resume/ring/roam")
+       "d" #'redraw-display
        "r" #'org-roam-node-find
        :desc "yank from kill-ring" "y" #'consult-yank-from-kill-ring
        (:after vertico

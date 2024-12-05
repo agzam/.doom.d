@@ -149,7 +149,8 @@
    'org-mode-hook
    #'org-indent-mode
    (defun flycheck-disable-h () (flycheck-mode -1))
-   #'yas-minor-mode-on)
+   #'yas-minor-mode-on
+   #'org-roam-count-overlay-mode)
 
   (add-hook! 'org-capture-mode-hook #'recenter)
 

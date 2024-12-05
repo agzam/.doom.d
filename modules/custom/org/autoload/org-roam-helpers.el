@@ -65,3 +65,56 @@
   (browse-url
    (concat "http://localhost:"
            (number-to-string org-roam-ui-port))))
+
+
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ;; Org-roam-count-overlays                                   ;;
+ ;; idea borrowed from https://hieuphay.com/doom-emacs-config ;;
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defface org-roam-count-overlay-face
+  '((t :inherit org-list-dt :height 0.7 :underline nil :weight light))
+  "Face for Org Roam count overlay.")
+
+(defun org-roam--count-overlay-make (pos count)
+  (let* ((overlay-value (propertize
+                         (format "│%d│" count)
+                         'face 'org-roam-count-overlay-face 'display '(raise 0.3)))
+         (ov (make-overlay pos pos (current-buffer) nil t)))
+    (overlay-put ov 'roam-backlinks-count count)
+    (overlay-put ov 'priority 1)
+    (overlay-put ov 'after-string overlay-value)))
+
+(defun org-roam--count-overlay-remove-all ()
+  (dolist (ov (overlays-in (point-min) (point-max)))
+    (when (overlay-get ov 'roam-backlinks-count)
+      (delete-overlay ov))))
+
+(defun org-roam--count-overlay-make-all ()
+  (org-roam--count-overlay-remove-all)
+  (org-element-map (org-element-parse-buffer) 'link
+    (lambda (elem)
+      (when (string-equal (org-element-property :type elem) "id")
+        (let* ((id (org-element-property :path elem))
+               (count (caar
+                       (org-roam-db-query
+                        [:select (funcall count source)
+                         :from links
+                         :where (= dest $s1)
+                         :and (= type "id")]
+                        id))))
+          (when (< 0 count)
+            (org-roam--count-overlay-make
+             (org-element-property :contents-end elem)
+             count)))))))
+
+;;;###autoload
+(define-minor-mode org-roam-count-overlay-mode
+  "Display backlink count for org-roam links."
+  :after-hook
+  (if org-roam-count-overlay-mode
+      (progn
+        (org-roam--count-overlay-make-all)
+        (add-hook 'after-save-hook #'org-roam--count-overlay-make-all nil t))
+    (org-roam--count-overlay-remove-all)
+    (remove-hook 'after-save-hook #'org-roam--count-overlay-remove-all t)))
