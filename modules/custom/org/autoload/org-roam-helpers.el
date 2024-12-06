@@ -67,19 +67,19 @@
            (number-to-string org-roam-ui-port))))
 
 
- ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
- ;; Org-roam-count-overlays                                   ;;
- ;; idea borrowed from https://hieuphay.com/doom-emacs-config ;;
- ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Org-roam-count-overlays  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defface org-roam-count-overlay-face
-  '((t :inherit org-list-dt :height 0.7 :underline nil :weight light))
+  '((t :inherit org-list-dt :height 0.6 :underline nil :weight light))
   "Face for Org Roam count overlay.")
 
 (defun org-roam--count-overlay-make (pos count)
   (let* ((overlay-value (propertize
-                         (format "│%d│" count)
-                         'face 'org-roam-count-overlay-face 'display '(raise 0.3)))
+                         (format "│%d│ " count)
+                         'face 'org-roam-count-overlay-face
+                         'display '(raise 0.3)))
          (ov (make-overlay pos pos (current-buffer) nil t)))
     (overlay-put ov 'roam-backlinks-count count)
     (overlay-put ov 'priority 1)
@@ -91,22 +91,21 @@
       (delete-overlay ov))))
 
 (defun org-roam--count-overlay-make-all ()
-  (org-roam--count-overlay-remove-all)
-  (org-element-map (org-element-parse-buffer) 'link
-    (lambda (elem)
-      (when (string-equal (org-element-property :type elem) "id")
-        (let* ((id (org-element-property :path elem))
-               (count (caar
-                       (org-roam-db-query
-                        [:select (funcall count source)
-                         :from links
-                         :where (= dest $s1)
-                         :and (= type "id")]
-                        id))))
-          (when (< 0 count)
-            (org-roam--count-overlay-make
-             (org-element-property :contents-end elem)
-             count)))))))
+  (save-excursion
+    (goto-char (point-min))
+    (org-roam--count-overlay-remove-all)
+    (while (re-search-forward "^\\(*+ \\)\\(.*$\\)\n\\(:properties:\\)\n\\(?:.*\n\\)*?:id:\\s-+\\([^[:space:]\n]+\\)" nil :no-error)
+      (when-let* ((pos (match-beginning 2))
+                  (id (string-trim (substring-no-properties (match-string 4))))
+                  (count (caar
+                          (org-roam-db-query
+                           [:select (funcall count source)
+                            :from links
+                            :where (= dest $s1)
+                            :and (= type "id")]
+                           id))))
+        (when (< 0 count)
+          (org-roam--count-overlay-make pos count))))))
 
 ;;;###autoload
 (define-minor-mode org-roam-count-overlay-mode
