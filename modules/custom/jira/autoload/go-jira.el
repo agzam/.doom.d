@@ -138,6 +138,7 @@
              (list "jira" "list" "--query" input)))
        :throttle 0.5)
      :initial (or query (format jira-default-search-format-string ""))
+     :sort nil ; records must be of the exact order as the go-jira app output
      :state (lambda (action cand)
               (when (and cand (member action '(preview return)))
                 (when-let ((ticket (progn (string-match "^[^:]+" cand)
