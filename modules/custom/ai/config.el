@@ -105,7 +105,6 @@
       (map! :map gptel-mode-map
             :i "s-<return>" #'gptel-send
             :i "s-RET" #'gptel-send
-            :i ",m" #'gptel-menu
             (:localleader
              "m" #'gptel-menu
              "," #'gptel-menu

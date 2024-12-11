@@ -177,6 +177,7 @@
      (python . t)
      (clojure . t)
      (sql . t)
+     (sqlite . t)
      ;; (ditaa . t)
      ;; (ruby . t)
      )))

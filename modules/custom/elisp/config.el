@@ -54,6 +54,7 @@
                  "v" #'find-variable
                  "l" #'elisp-fully-qualified-symbol-with-gh-link
                  "d" #'xref-find-definitions
+                 "r" #'xref-find-references
                  "D" #'xref-find-definitions-other-window)
         (:prefix  ("h" . "help")
                   "h" #'helpful-at-point)
