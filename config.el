@@ -346,7 +346,7 @@
                "e" nil
                (:prefix ("e" . "doom/emacs")
                 :desc "doom.d" "d" #'find-in-doom-dir
-                :desc "doom init dir" "i" (cmd! (dired doom-emacs-dir))
+                :desc "doom init dir" "i" (cmd! (dired (concat doom-emacs-dir "straight/")))
                 (:when (featurep :system 'linux)
                   :desc "awesomewm config" "a" (cmd! (dired "~/.config/awesome/")))))
 
@@ -452,7 +452,7 @@
                  :desc "project shell" "'" #'shell-pop-in-project-root))
 
       (:prefix ("r" . "reset/resume/ring/roam")
-       "d" #'redraw-display
+       "d" (cmd! (call-interactively #'redraw-display))
        "r" #'org-roam-node-find
        :desc "yank from kill-ring" "y" #'consult-yank-from-kill-ring
        (:after vertico
