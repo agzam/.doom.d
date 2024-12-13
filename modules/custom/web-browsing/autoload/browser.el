@@ -226,4 +226,5 @@ jump to selected tab, activating it in the browser."
     (when-let* ((tab (browser--get-active-tab))
                 (url (plist-get tab :url)))
       (message url)
-      (kill-new url)))))
+      (kill-new url)
+      url))))
