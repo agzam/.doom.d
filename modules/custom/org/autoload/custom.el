@@ -293,7 +293,8 @@ and if it is set to nil, then it would forcefully create the ID."
   "Returns a person record with name-based id. To be used in capture template."
   (interactive)
   (let* ((name-parts (thread-last
-                       (gui-get-selection 'CLIPBOARD)
+                       (or (org-capture-get ':initial)
+                           (gui-get-selection 'CLIPBOARD))
                        (read-from-minibuffer "Name: ")
                        (split-string)
                        (seq-map 's-trim)
@@ -303,7 +304,6 @@ and if it is set to nil, then it would forcefully create the ID."
                        (substring (cadr name-parts) 0 1)))
          (full-name (mapconcat 'identity name-parts " ")))
     (format "%s\n:PROPERTIES:\n:ID: %s\n:roam_aliases: \"%s\"\n:END:" name id full-name)))
-
 
 ;;;###autoload
 (defun org-roam-capture-dont-create-id-a (org-roam-capture-fn time &optional goto keys)
