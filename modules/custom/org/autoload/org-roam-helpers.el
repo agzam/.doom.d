@@ -117,3 +117,36 @@
         (add-hook 'after-save-hook #'org-roam--count-overlay-make-all nil t))
     (org-roam--count-overlay-remove-all)
     (remove-hook 'after-save-hook #'org-roam--count-overlay-remove-all t)))
+
+
+;;;###autoload
+(defun consult-org-roam-backlinks* (&optional other-window)
+  "Select from list of all notes that link to
+the current note with precise positions."
+  ;; this is an attempt to fix: jgru/consult-org-roam#38
+  (interactive current-prefix-arg)
+  (let* ((node (org-roam-node-at-point))
+         (backlinks (org-roam-db-query
+                     [:select [source pos]
+                      :from links
+                      :where (= dest $s1)
+                      :and (= type "id")]
+                     (if node
+                         (org-roam-node-id (org-roam-node-at-point))
+                       (user-error "Buffer does not contain org-roam-nodes"))))
+         (source-ids (mapcar #'car backlinks))
+         (pos-map (make-hash-table :test 'equal))
+         (_ (dolist (link backlinks)
+              (puthash (car link) (cadr link) pos-map)))
+         (chosen-node-or-str (if source-ids
+                                 (consult-org-roam-node-read ""
+                                                             (lambda (n)
+                                                               (if (org-roam-node-p n)
+                                                                   (if (member (org-roam-node-id n) source-ids)
+                                                                       t
+                                                                     nil))))
+                               (user-error "No backlinks found"))))
+    (when chosen-node-or-str
+      (org-roam-node-visit chosen-node-or-str other-window)
+      (goto-char (gethash (org-roam-node-id chosen-node-or-str) pos-map))
+      (org-reveal))))

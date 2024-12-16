@@ -346,7 +346,7 @@
                "e" nil
                (:prefix ("e" . "doom/emacs")
                 :desc "doom.d" "d" #'find-in-doom-dir
-                :desc "doom init dir" "i" (cmd! (dired (concat doom-emacs-dir "straight/")))
+                :desc "doom init dir" "i" (cmd! (dired (concat doom-emacs-dir ".local/straight/")))
                 (:when (featurep :system 'linux)
                   :desc "awesomewm config" "a" (cmd! (dired "~/.config/awesome/")))))
 

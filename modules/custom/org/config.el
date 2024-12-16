@@ -298,6 +298,10 @@
    #'org-roam-dailies--capture
    :around #'org-roam-capture-dont-create-id-a)
 
+  (advice-add
+   #'consult-org-roam-backlinks
+   :override #'consult-org-roam-backlinks*)
+
   (defadvice! org-property-lowecase-a (orig-fn pom prop value)
     :around #'org-entry-put
     (funcall orig-fn pom (downcase prop) value))
