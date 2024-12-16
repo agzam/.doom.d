@@ -29,3 +29,8 @@
   (interactive)
   (eshell/clear-scrollback)
   (eshell-send-input))
+
+;;;###autoload
+(defun eshell/b* (buffer-or-name)
+  "Return specified buffer as a string."
+  (with-current-buffer buffer-or-name (buffer-string)))
