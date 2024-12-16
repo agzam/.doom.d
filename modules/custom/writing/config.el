@@ -153,28 +153,6 @@
      (window . root)
      (window-width . 0.25))))
 
-;; (use-package! flyspell
-;;   :defer t
-;;   :config
-;;   (setq flyspell-issue-welcome-flag nil
-;;         flyspell-issue-message-flag nil)
-;;   (map! :map flyspell-mode-map "C-;" nil) ; release the key for embark-act
-;;   (map! :map flyspell-mode-map
-;;         :i ",," (cmd! () (flyspell-auto-correct-previous-word (line-beginning-position)))
-;;         :i ", SPC" #'comma-smart-insert
-;;         :i "s-." #'flyspell-correct-previous))
-
-;; (use-package! flyspell-correct
-;;   :defer t)
-
-;; (use-package! flyspell-lazy
-;;   :after flyspell
-;;   :config
-;;   (setq flyspell-lazy-idle-seconds 0.5
-;;         flyspell-lazy-window-idle-seconds 3)
-;;   ;; (flyspell-lazy-mode +1)
-;;   )
-
 (use-package! separedit
   :defer t
   :commands separedit separedit-dwim
