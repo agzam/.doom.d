@@ -106,6 +106,7 @@
             :i "s-<return>" #'gptel-send
             :i "s-RET" #'gptel-send
             :i ", m" #'gptel-menu
+            :i ", SPC" #'insert-comma
             (:localleader
              "m" #'gptel-menu
              "," #'gptel-menu

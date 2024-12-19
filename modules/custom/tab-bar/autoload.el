@@ -16,6 +16,7 @@
     ("t" "telega" (telega))
     ("ed" "doom.d" (find-in-doom-dir))
     ("ei" "emacs.d" (dired (file-name-directory doom-emacs-dir)))
+    ("D" "dotfile.org" (find-file "~/dotfile.org/dotfile.org"))
     ("p" "projects" (switch-to-buffer
                      (find-file-noselect
                       (completing-read "choose project: " projectile-known-projects))))

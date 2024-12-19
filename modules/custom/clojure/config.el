@@ -171,7 +171,8 @@
               :nv "h" nil :n "j" nil :n "l" nil :n "o" nil :n "p" nil :n "i" nil)))
 
     (advice-add 'cider-eval-sexp-at-point :around #'cider-eval-sexp-at-point-a)
-    (advice-add 'cider-pprint-eval-last-sexp-to-comment :around #'cider-eval-sexp-at-point-a))
+    (advice-add 'cider-pprint-eval-last-sexp-to-comment :around #'cider-eval-sexp-at-point-a)
+    (advice-add 'org-edit-special :around #'org-edit-special-for-clojure-a))
 
   (after! ob-clojure
     (setq! org-babel-clojure-backend 'cider))

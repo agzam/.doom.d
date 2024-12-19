@@ -349,7 +349,7 @@
         consult-gh-issues-state-to-show 'all)
 
   (dolist (repo '("agzam" "stitchdata" "qlik-trial"))
-    (add-to-list 'consult-gh-default-orgs-list repo))
+    (add-to-list 'consult-gh-favorite-orgs-list repo))
 
   (add-to-list 'savehist-additional-variables 'consult-gh--known-orgs-list)
   (add-to-list 'savehist-additional-variables 'consult-gh--known-repos-list)

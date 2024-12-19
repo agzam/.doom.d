@@ -247,5 +247,33 @@ With ARG, kills all buffers, not only in the current project"
 by default cider-jack-in always grabs firs .deps.edn it finds,
 which isn't great for Polylith projects. Let's fix that."
   (if-let ((poly-root (locate-dominating-file "." "workspace.edn")))
-    (clojure-project-root-path poly-root)
+      (clojure-project-root-path poly-root)
     (clojure-project-root-path dir-name)))
+
+
+;;;###autoload
+(defun org-edit-special-for-clojure-a (ofn &optional arg)
+  "Advising function for editing clojure blocks that respect :nrepl-host header."
+  (let ((find-matching-session
+         (lambda (host port sessions)
+           (let ((rx (format ".*\\:%s\\:%s" host port)))
+             (seq-find (lambda (x)
+                         (string-match-p rx (car x)))
+                       sessions)))))
+    (if-let* ((el (org-element-at-point))
+              (src-p (eq 'src-block (org-element-type (org-element-context el))))
+              (clj-p (string= "clojure" (org-element-property :language el)))
+              (nrepl (alist-get
+                      :nrepl-host
+                      (nth 2 (org-babel-get-src-block-info))))
+              (_ (string-match "\\(.*\\):\\([0-9]+\\)" nrepl))
+              (host (match-string 1 nrepl))
+              (port (match-string 2 nrepl)))
+        (progn
+          (funcall ofn arg)
+          (if-let* ((ses (funcall find-matching-session
+                                  host port
+                                  (sesman-sessions (sesman--system)))))
+              (sesman-link-with-buffer nil ses)
+            (cider-connect-clj (list :host host
+                                     :port (string-to-number port))))))))
