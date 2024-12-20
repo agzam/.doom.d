@@ -203,8 +203,7 @@ With ARG, kills all buffers, not only in the current project"
   (save-excursion
     (when (or (evil-normal-state-p) (evil-motion-state-p))
       (sp-end-of-sexp)
-      (unless (thing-at-point 'sexp)
-        (forward-char)))
+      (forward-char))
     (apply fn args))
 
   ;; (save-excursion
