@@ -92,17 +92,6 @@
         google-translate-default-source-language "ru"
         google-translate-default-target-language "en")
 
-  (defadvice! google-translate-at-point--set-lang-auto (fn &optional override-p)
-    :around #'google-translate-at-point
-    (pcase-let ((`(,src ,tgt)
-                 (alist-get current-input-method
-                            '((nil . (en ru))
-                              ("russian-computer" . (ru en)))
-                            nil nil #'string-equal)))
-      (let ((google-translate-default-source-language (symbol-name src))
-            (google-translate-default-target-language (symbol-name tgt)))
-        (funcall-interactively fn override-p))))
-
   ;; to use 'listen' feature of google-translate, on Mac:
   ;; brew install mplayer-osx-extended
   ;; ln -s '/Applications/MPlayer OSX Extended.app/Contents/Resources/Binaries/mpextended.mpBinaries/Contents/MacOS/mplayer' /opt/homebrew/bin/mplayer

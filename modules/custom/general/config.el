@@ -52,6 +52,14 @@
   :config
   (map! :map evil-visual-state-map
         "v" #'expreg-transient)
+
+  (defadvice! evil-select-block-a (ofn &rest args)
+    :around #'evil-select-block
+    :around #'evil-select-quote
+    :around #'evil-select-paren
+    (expreg-transient)
+    (apply ofn args))
+
   (setq-default expreg-functions
                 '(expreg--subword
                   expreg--word

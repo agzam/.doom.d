@@ -71,3 +71,56 @@ text like: \"2023 was a better year than 2021\" would translate to:
                   text)))
         (funcall orig-fn src-lang tgt-lang txt output-dest))
     (funcall orig-fn src-lang tgt-lang text output-dest)))
+
+(defun +translate--set-lang (type lang)
+  (interactive)
+  (set (if (eq type :source)
+           'google-translate-default-source-language
+         'google-translate-default-target-language)
+       lang)
+
+  (setq google-translate-default-target-language
+         (if (eq type :source)
+             (pcase lang
+               ("en" "es")
+               ("ru" "en")
+               ("es" "en"))
+           lang)))
+
+(defun +translate--format-str ()
+  (format "%s -> %s. Translate! "
+          google-translate-default-source-language
+          google-translate-default-target-language))
+
+(defvar +translate--last-context nil)
+
+;;;###autoload
+(transient-define-prefix translate-transient ()
+  "Translate"
+  :value (lambda ()
+           (if (string-match-p "ru.*" (or current-input-method ""))
+               (+translate--set-lang :source "ru")
+             (+translate--set-lang :source "en")))
+  [["Source"
+    ("E" "eng" (lambda () (interactive) (+translate--set-lang :source "en")) :transient t)
+    ("S" "spa" (lambda () (interactive) (+translate--set-lang :source "es")) :transient t)
+    ("R" "rus" (lambda () (interactive) (+translate--set-lang :source "ru")) :transient t)]
+   ["Target"
+    ("e" "eng" (lambda () (interactive) (+translate--set-lang :target "en")) :transient t)
+    ("s" "spa" (lambda () (interactive) (+translate--set-lang :target "es")) :transient t)
+    ("r" "rus" (lambda () (interactive) (+translate--set-lang :target "ru")) :transient t)]
+   [""
+    "" ""
+    ("<return>" +translate--format-str
+     (lambda ()
+       (interactive)
+       (let ((content (if (use-region-p)
+                          (buffer-substring
+                           (region-beginning)
+                           (region-end))
+                        (read-from-minibuffer (+translate--format-str)))))
+         (with-temp-buffer
+           (insert content)
+           (setq +translate--last-context
+                 (buffer-substring-no-properties (point-min) (point-max)))
+           (google-translate-buffer)))))]])

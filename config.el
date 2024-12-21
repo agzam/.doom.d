@@ -509,7 +509,7 @@
                   :desc "ru->en" "r" #'google-translate-query-translate
                   :desc "es->en" "s" #'+google-translate-es->en
                   :desc "en->es" "S" #'+google-translate-en->es
-                  :desc "translate" "g" #'google-translate-at-point))
+                  :desc "translate" "g" #'translate-transient))
                (:when (modulep! :custom ai)
                  (:prefix ("c" . "chatgpt")
                   :desc "chatgpt" "c" #'gptel+
