@@ -26,17 +26,30 @@ temporarily toggle it off. Bind in vertico-map."
   "When posframe obstructing text, you can temporarily make it
 transparent. Bind in vertico-map."
   (interactive)
-  (let* ((frame-alpha-lower-limit 10)
+  ;; (print (pp (frame-parameters (car (frame-list-z-order)))))
+  ;; (print (thread-last (frame-list)
+  ;;                     (seq-do (lambda (x) (pp (frame-parameters x))))))
+  (let* ((frame-alpha-lower-limit 0.0)
          (posframe (car (frame-list-z-order)))
          (alpha (frame-parameter posframe 'alpha))
-         (new-alpha (if (eq alpha 100) 0 100)))
+         (new-alpha (if (eql alpha 1.0) 0 1.0)))
     ;; Emacs can't register key-released event, I have to do a trick with a timer
     (when (boundp 'vertico-posframe--reset-alpha-timer)
       (cancel-timer vertico-posframe--reset-alpha-timer))
     (modify-frame-parameters posframe `((alpha . ,new-alpha)))
     (setq vertico-posframe--reset-alpha-timer
           (run-with-timer
-           5 nil (lambda () (modify-frame-parameters posframe `((alpha . 100))))))))
+           5 nil (lambda () (modify-frame-parameters posframe `((alpha . 1.0))))))))
+
+;;;###autoload
+(defun vertico-posframe-briefly-tall ()
+  (interactive)
+  (setq vertico-posframe-height 60
+        vertico-count 100)
+  (add-hook! 'minibuffer-exit-hook
+    (defun vertico-posframe-height-restore-h ()
+      (setq vertico-posframe-height nil
+            vertico-count 15))))
 
 ;;;###autoload
 (defun restore-vertico-posframe-state-h ()

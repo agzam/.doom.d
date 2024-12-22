@@ -219,9 +219,10 @@
   (setq
    vertico-posframe-global t
    vertico-posframe-height nil
-   vertico-count 15
+   ;; vertico-count 15
    vertico-posframe-width 150
-   marginalia-margin-threshold 500)
+   marginalia-margin-threshold 500
+   vertico-posframe-parameters `((alpha . 1.0)))
   (vertico-posframe-mode +1)
 
   ;; disable and restore posframe when emacslient connects in terminal
@@ -247,7 +248,8 @@
   (map! :after vertico
         :map vertico-map
         "C-c C-p"  #'vertico-posframe-briefly-off
-        "C-." #'vertico-posframe-briefly-transparent))
+        "C-c C-." #'vertico-posframe-briefly-transparent
+        "C-c C-\\" #'vertico-posframe-briefly-tall))
 
 (use-package! vertico-repeat
   :after vertico
