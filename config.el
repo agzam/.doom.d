@@ -291,6 +291,12 @@
       (:when (featurep :system 'linux)
         :i "C-M-S-s-y" #'nerd-dictation-toggle))
 
+(map! (:map (prog-mode-map text-mode-map markdown-mode-map)
+       :desc "external browser" "C-c C-o"
+       (cmd!
+        (let ((git-link-extensions-rendered-plain nil))
+          (git-link-kill :browse)))))
+
 (map! (:map minibuffer-mode-map
             "M-l" #'sp-forward-slurp-sexp
             "M-h" #'sp-forward-barf-sexp)

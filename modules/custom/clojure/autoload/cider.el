@@ -275,4 +275,5 @@ which isn't great for Polylith projects. Let's fix that."
                                   (sesman-sessions (sesman--system)))))
               (sesman-link-with-buffer nil ses)
             (cider-connect-clj (list :host host
-                                     :port (string-to-number port))))))))
+                                     :port (string-to-number port)))))
+      (funcall ofn arg))))
