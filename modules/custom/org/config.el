@@ -102,17 +102,7 @@
                       "i" #'org-id-store-link
                       "n" #'org-next-link
                       "p" #'org-previous-link)
-             (:prefix ("n" . "noter")
-                      "a" #'org-noter-anchor-to-current-page+
-                      "i" #'org-noter-insert-note
-                      "j" #'org-noter-pdf-scroll-down
-                      "k" #'org-noter-pdf-scroll-up
-                      "N" #'org-noter
-                      "n" #'org-noter-sync-current-note
-                      "gg" #'org-noter-top-of-the-page
-                      "G" #'org-noter-bottom-of-the-page
-                      "C-j" #'org-noter-pdf-next-page
-                      "C-k" #'org-noter-pdf-prev-page)
+             "n" #'org-noter-transient
              (:prefix ("o" . "open/Org")
                       "l" #'org-id-store-link
                       "L" #'org-store-link-id-optional)

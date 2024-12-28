@@ -66,16 +66,7 @@
                  "k" #'pdf-view-enlarge
                  "j" #'pdf-view-shrink
                  "0" #'pdf-view-scale-reset)
-        (:prefix ("n" . "noter")
-         "N" #'org-noter
-         "n" #'org-noter-sync-current-page-or-chapter
-         "i" #'org-noter-insert-note
-         "j" #'pdf-view-scroll-up-or-next-page
-         "k" #'pdf-view-scroll-down-or-previous-page
-         "C-j" #'pdf-view-next-page
-         "C-k" #'pdf-view-previous-page
-         :n "gg" #'pdf-evil-goto-first-line
-         :n "G"  #'pdf-evil-goto-last-line)))
+        "n" #'org-noter-transient))
 
 (use-package! saveplace-pdf-view
   :after pdf-view)
