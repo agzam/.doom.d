@@ -72,13 +72,12 @@ text like: \"2023 was a better year than 2021\" would translate to:
         (funcall orig-fn src-lang tgt-lang txt output-dest))
     (funcall orig-fn src-lang tgt-lang text output-dest)))
 
-(defun +translate--set-lang (type lang)
+(defun translate--set-lang (type lang)
   (interactive)
   (set (if (eq type :source)
            'google-translate-default-source-language
          'google-translate-default-target-language)
        lang)
-
   (setq google-translate-default-target-language
          (if (eq type :source)
              (pcase lang
@@ -87,40 +86,85 @@ text like: \"2023 was a better year than 2021\" would translate to:
                ("es" "en"))
            lang)))
 
-(defun +translate--format-str ()
-  (format "%s -> %s. Translate! "
-          google-translate-default-source-language
-          google-translate-default-target-language))
+(defvar translate--last-context nil)
+(defvar translate--minibuffer-text nil)
+(defvar translate--langs-src (ring-convert-sequence-to-ring '("en" "es" "ru")))
+(defvar translate--langs-target nil)
 
-(defvar +translate--last-context nil)
+(transient-define-suffix translate--set-source ()
+  :description "source"
+  :key "s"
+  :variable 'google-translate-default-source-language
+  :class 'transient-lisp-variable
+  (interactive)
+  (let* ((cur (oref (transient-suffix-object) value))
+         (nxt (ring-next translate--langs-src cur)))
+    (translate--set-lang :source nxt)
+    (oset (transient-suffix-object) value nxt)
+    (setq translate--langs-target
+          (thread-last
+            translate--langs-src
+            cddr
+            (seq-remove (lambda (x) (string= nxt x)))
+            ring-convert-sequence-to-ring))
+    (translate--set-target google-translate-default-target-language)
+    (transient-reset)))
+
+(transient-define-suffix translate--set-target (&optional explicit-val)
+  :description "target"
+  :key "t"
+  :variable 'google-translate-default-target-language
+  :class 'transient-lisp-variable
+  (interactive)
+  (if explicit-val
+      (oset (transient-suffix-object) value explicit-val)
+    (let* ((cur (oref (transient-suffix-object) value))
+           (nxt (ring-next translate--langs-target cur)))
+      (translate--set-lang :target nxt)
+      (oset (transient-suffix-object) value nxt))))
+
+(transient-define-infix translate--minibuffer ()
+  "Type some text in the minibuffer."
+  :description (lambda ()
+                 (if translate--minibuffer-text
+                     (format "Text: %s" translate--minibuffer-text)
+                   "Type some text"))
+  :variable 'translate--minibuffer-text
+  :class 'transient-lisp-variable
+  :format "%k %d"
+  :key "i"
+  :reader (lambda (&rest _) (read-string
+                             (format
+                              "Translate. %s -> %s: "
+                              google-translate-default-source-language
+                              google-translate-default-target-language))))
+
+(defun translate--translate ()
+  (interactive)
+  (let ((content (cond ((use-region-p)
+                        (buffer-substring
+                         (region-beginning)
+                         (region-end)))
+                       (translate--minibuffer-text
+                        translate--minibuffer-text)
+                       (t (word-at-point)))))
+    (with-temp-buffer
+      (insert content)
+      (setq translate--last-context
+            (buffer-substring-no-properties (point-min) (point-max)))
+      (google-translate-buffer))))
 
 ;;;###autoload
 (transient-define-prefix translate-transient ()
   "Translate"
-  :value (lambda ()
-           (if (string-match-p "ru.*" (or current-input-method ""))
-               (+translate--set-lang :source "ru")
-             (+translate--set-lang :source "en")))
   [["Source"
-    ("E" "eng" (lambda () (interactive) (+translate--set-lang :source "en")) :transient t)
-    ("S" "spa" (lambda () (interactive) (+translate--set-lang :source "es")) :transient t)
-    ("R" "rus" (lambda () (interactive) (+translate--set-lang :source "ru")) :transient t)]
-   ["Target"
-    ("e" "eng" (lambda () (interactive) (+translate--set-lang :target "en")) :transient t)
-    ("s" "spa" (lambda () (interactive) (+translate--set-lang :target "es")) :transient t)
-    ("r" "rus" (lambda () (interactive) (+translate--set-lang :target "ru")) :transient t)]
+    (translate--set-source)
+    (translate--set-target)]
    [""
-    "" ""
-    ("<return>" +translate--format-str
-     (lambda ()
-       (interactive)
-       (let ((content (if (use-region-p)
-                          (buffer-substring
-                           (region-beginning)
-                           (region-end))
-                        (read-from-minibuffer (+translate--format-str)))))
-         (with-temp-buffer
-           (insert content)
-           (setq +translate--last-context
-                 (buffer-substring-no-properties (point-min) (point-max)))
-           (google-translate-buffer)))))]])
+    (translate--minibuffer)
+    ("RET" "Go!" translate--translate)]]
+  [:hide always
+   [("<return>" "Go!" translate--translate)]]
+  (interactive)
+  (setq translate--minibuffer-text nil)
+  (transient-setup 'translate-transient))
