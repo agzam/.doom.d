@@ -71,3 +71,6 @@
         (list-dependencies-of . "yay -Qi")
         (noconfirm . "--noconfirm"))))
     (setq system-packages-package-manager 'yay)))
+
+(use-package! eat
+  :hook ((eshell-load . eat-eshell-mode)))
