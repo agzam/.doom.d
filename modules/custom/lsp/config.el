@@ -32,9 +32,10 @@
          (:prefix ("a" . "code actions")
                   "a" #'lsp-execute-code-action)
          (:prefix ("g" . "goto")
-                  "d" #'xref-find-definitions
-                  "D" #'xref-find-definitions-other-window
-                  "r" #'xref-find-references)
+                  "n" #'lsp-find-declaration
+                  "d" #'lsp-find-definition
+                  "D" #'lsp-find-definition-other-window
+                  "r" #'lsp-find-references)
          (:prefix ("f" . "format")
                   "b" #'lsp-format-buffer
                   "r" #'lsp-format-region

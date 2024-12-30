@@ -60,3 +60,11 @@ keeps wanting to control lsp-diagnostics window"
           (message "Using emacs-lsp-booster for %s!" orig-result)
           (cons "emacs-lsp-booster" orig-result))
       orig-result)))
+
+;;;###autoload
+(defun lsp-find-definition-other-window ()
+  "Find definition in a new vertical split window."
+  (interactive)
+  (split-window-right)
+  (other-window 1)
+  (lsp-find-definition))

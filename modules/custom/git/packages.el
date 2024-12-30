@@ -12,8 +12,6 @@
 (package! gh-notify :recipe (:host github :repo "anticomputer/gh-notify"))
 
 (package! git-link)
-;; (package! code-review :recipe (:host github :repo "wandersoncferreira/code-review")
-;; 	  :pin "26f426e99221a1f9356aabf874513e9105b68140")
 
 ;; @tarsius broke Code-Review: https://github.com/wandersoncferreira/code-review/issues/245
 (package! code-review :recipe (:host github :repo "phelrine/code-review" :branch "fix/closql-update"))
