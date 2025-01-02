@@ -74,7 +74,7 @@ Signals an error if there is no current project."
      :path (match-string 5 url)
      :ext (ignore-errors
             (replace-regexp-in-string
-             ".*\\.\\(.*\\)#.*" "\\1"
+             ".*\\.\\([^.#]+\\)$" "\\1"
              (match-string 5 url)))
      :line (ignore-errors
              (let* ((fname (match-string 5 url))
@@ -147,8 +147,8 @@ If URL is a link to a file, it extracts its raw form and tries to open in a buff
                   (when-let* ((o (car (overlays-at (point)))))
                     (overlay-get o 'bug-reference-url))))
          (parts (bisect-github-url url))
-         (topic-num (string-to-number
-                     (or (plist-get parts :issue) (plist-get parts :pull))))
+         (topic-num (when-let ((tn (or (plist-get parts :issue) (plist-get parts :pull)))
+                               (string-to-number tn))))
          (owner (plist-get parts :org))
          (repo-name (plist-get parts :repo))
          (ext (plist-get parts :ext)))
