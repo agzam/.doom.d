@@ -30,14 +30,25 @@
 
      (t (mpv-play-url (read-string "Play: " path))))))
 
-(defvar osc-style "auto")
+(defvar mpv--osc-style "auto")
+(defvar mpv--subtitle-visible "auto")
 
 ;;;###autoload
 (defun mpv-toggle-osc ()
   (interactive)
   (mpv-run-command
    "script-message" "osc-visibility"
-   (setf osc-style (if (string= osc-style "auto") "always" "auto"))))
+   (setf mpv--osc-style (if (string= mpv--osc-style "auto")
+                            "always" "auto"))))
+
+;;;###autoload
+(defun mpv-toggle-subtitles ()
+  (interactive)
+  (mpv-run-command
+   "set" "sub-visibility"
+   (setq mpv--subtitle-visible
+         (if (string-match-p "yes\\|auto" mpv--subtitle-visible)
+             "no" "yes"))))
 
 ;;;###autoload
 (transient-define-prefix mpv-transient ()
@@ -50,8 +61,9 @@
    [("p" "prev" mpv-playlist-prev :transient t)
     ("n" "next" mpv-playlist-next :transient t)]
    [("h" "<<" mpv-seek-backward :transient t)
-    ("l" ">>" mpv-seek-forward :transient t)
-    ("i" "osc" mpv-toggle-osc :transient t)]
+    ("l" ">>" mpv-seek-forward :transient t)]
+   [("i" "osc" mpv-toggle-osc :transient t)
+    ("c" "subs" mpv-toggle-subtitles :transient t)]
    [("," "slower" mpv-speed-decrease :transient t)
     ("." "faster" mpv-speed-increase :transient t)
     ("0" "reset" mpv-speed-reset)]
