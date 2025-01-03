@@ -18,5 +18,6 @@
       ;; checker
 
       matches selection-info
+      input-method
       buffer-position))
     (doom-modeline-set-modeline 'agcustom))

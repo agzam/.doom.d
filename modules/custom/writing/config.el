@@ -102,6 +102,7 @@
   (setq google-translate-input-method-auto-toggling t
         google-translate-preferable-input-methods-alist
         '((nil . ("en"))
+          (spanish-prefix . ("es"))
           (russian-computer . ("ru"))))
 
   ;; it doesn't pop to the buffer automatically

@@ -133,11 +133,16 @@ text like: \"2023 was a better year than 2021\" would translate to:
   :class 'transient-lisp-variable
   :format "%k %d"
   :key "i"
-  :reader (lambda (&rest _) (read-string
-                             (format
-                              "Translate. %s -> %s: "
-                              google-translate-default-source-language
-                              google-translate-default-target-language))))
+  :reader (lambda (&rest _)
+            (let* ((src google-translate-default-source-language)
+                   (tgt google-translate-default-target-language)
+                   (current-input-method
+                    (symbol-name
+                     (google-translate-find-preferable-input-method
+                      src))))
+              (read-string
+               (format "Translate. %s -> %s: " src tgt)
+               nil nil nil t))))
 
 (defun translate--translate ()
   (interactive)
