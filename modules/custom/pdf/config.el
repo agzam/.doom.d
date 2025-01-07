@@ -122,3 +122,19 @@
                 #'org-noter--set-notes-scroll)
                #'ignore))
       (apply orig-fn args))))
+
+(use-package! calibredb
+  :defer t
+  :config
+  (setq calibredb-root-dir "~/Sync/Calibre/"
+        calibredb-db-dir (expand-file-name "metadata.db" calibredb-root-dir)
+        calibredb-program (if (featurep :system 'macos)
+                              "/opt/homebrew/bin/calibredb"
+                            "/usr/bin/calibredb"))
+
+  (map! :map (calibredb-search-mode-map)
+        :n "q" #'calibredb-search-quit
+        :nm "RET" #'calibredb-find-file
+        (:localleader
+         "et" #'calibredb-set-metadata--title
+         "ea" #'calibredb-set-metadata--authors)))

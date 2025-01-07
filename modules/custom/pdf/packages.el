@@ -19,3 +19,5 @@
 
 (package! saveplace-pdf-view)
 (package! org-noter :recipe (:host github :repo "org-noter/org-noter"))
+
+(package! calibredb)
