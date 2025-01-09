@@ -208,7 +208,7 @@
   ;;   (defun disable-flycheck-popup-buffer ()
   ;;     (setq flycheck-display-errors-function #'ignore)))
   (add-to-list 'flycheck-disabled-checkers 'emacs-lisp-package)
-  )
+  (setq flycheck-temp-prefix "/tmp/.flycheck"))
 
 (after! grep
   (setq grep-program "rg")
@@ -317,6 +317,8 @@
 
 (map! :leader
       :desc "M-x" "SPC" #'execute-extended-command
+      ;; +default/search-project broke in Doom due to https://github.com/minad/consult/commit/ada079d5932700a8819ace622ef4323e73983161
+      "*" (cmd! (consult-ripgrep (projectile-project-root) (symbol-name (symbol-at-point))))
       "TAB"   #'alternate-buffer
       "v"     #'expreg-transient
       :nv   ";" (cmd! (call-interactively
@@ -520,7 +522,7 @@
                  (:prefix ("c" . "chatgpt")
                   :desc "chatgpt" "c" #'gptel+
                   :desc "check text" "e" #'+gptel-improve-text-transient
-                   "s" #'gptel-send)))
+                  "s" #'gptel-send)))
 
       (:prefix ("z" . "zoom")
        :desc "frame" "f" #'frame-zoom-transient))
