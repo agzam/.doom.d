@@ -98,16 +98,15 @@ narrowed to."
 
 
 ;;;###autoload
-(defun +doom-delete-package-artifacts ()
+(defun +doom-remove-package-artifacts ()
   "Remove repo and build file for a selected package.
 Useful for clean up before running `doom -up`."
   (interactive)
-  (let* ((straight-dir (format "%sstraight/" doom-local-dir))
-         (sel-dir (completing-read
+  (let* ((sel-dir (completing-read
                    "Select package repo: "
-                   (directory-files (concat straight-dir "repos"))))
-         (dirs (list (format "%srepos/%s" straight-dir sel-dir)
-                     (format "%s%s/%s" straight-dir straight-build-dir sel-dir))))
+                   (directory-files (straight--dir "repos"))))
+         (dirs (list (straight--dir straight-build-dir sel-dir)
+                     (straight--dir "repos" sel-dir))))
     (dolist (d dirs)
       (delete-directory d :recursive))))
 
