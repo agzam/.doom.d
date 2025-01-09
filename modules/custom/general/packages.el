@@ -28,3 +28,6 @@
   :recipe (:host github :repo "emacsmirror/undo-fu-session"))
 
 (unpin! undo-fu-session)
+
+(package! ultra-scroll :recipe
+  (:host github :repo "jdtsmith/ultra-scroll"))
