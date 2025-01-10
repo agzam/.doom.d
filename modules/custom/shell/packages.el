@@ -3,7 +3,6 @@
 
 (package! shell-pop)
 (package! vimrc-mode)
-(package! system-packages)
 
 (package! eat :recipe
   (:host codeberg

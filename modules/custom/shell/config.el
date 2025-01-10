@@ -28,7 +28,7 @@
         "c" #'comint-clear-buffer))
 
 (after! eshell
-  (cl-defmethod eshell-output-object-to-target :around (object (target marker))
+  (cl-defmethod eshell-output-object-to-target :around (_obj (target marker))
     ;; immediately open the redirected buffer
     (let ((base (cl-call-next-method)))
       (when (buffer-live-p (marker-buffer target))
@@ -38,7 +38,7 @@
       base))
 
  (add-hook! 'eshell-mode-hook
-   (defun set-eshel-keys-h ()
+   (defun set-eshell-keys-h ()
      (map! :map eshell-mode-map
            :desc "clear" "C-c C-l" #'eshell-clear+
            :desc "history" "M-r" #'consult-history
@@ -59,35 +59,6 @@
 
 (use-package! vimrc-mode
   :mode "\\.vim\\(rc\\)?\\'")
-
-(use-package! system-packages
-  :defer t
-  :config
-  (when (featurep :system 'linux)
-    (add-to-list
-     'system-packages-supported-package-managers
-     '(yay .
-       ((default-sudo . nil)
-        (install . "yay -S")
-        (search . "yay -Ss")
-        (uninstall . "yay -Rns")
-        (update . "yay -Syu")
-        (clean-cache . "yay -Sc")
-        (change-log . "yay -Qc")
-        (log . "cat /var/log/pacman.log")
-        (get-info . "yay -Qi")
-        (get-info-remote . "yay -Si")
-        (list-files-provided-by . "yay -qQl")
-        (owning-file . "yay -Qo")
-        (owning-file-remote . "yay -F")
-        (verify-all-packages . "yay -Qkk")
-        (verify-all-dependencies . "yay -Dk")
-        (remove-orphaned . "yay -Rns $(yay -Qtdq)")
-        (list-installed-packages . "yay -Qe")
-        (list-installed-packages-all . "yay -Q")
-        (list-dependencies-of . "yay -Qi")
-        (noconfirm . "--noconfirm"))))
-    (setq system-packages-package-manager 'yay)))
 
 (use-package! eat
   :hook ((eshell-load . eat-eshell-mode)))
