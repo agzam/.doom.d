@@ -21,3 +21,5 @@
 (package! org-noter :recipe (:host github :repo "org-noter/org-noter"))
 
 (package! calibredb)
+
+(package! nov)

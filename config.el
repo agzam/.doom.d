@@ -283,8 +283,8 @@
       :n "s-r" #'+scroll-line-up-other-window
       :n "s-y" #'+scroll-line-up-other-window
       :n "s-u" #'+scroll-line-down-other-window
-      :nm "C-e" (cmd! () (ultra-scroll-down 45))
-      :nm "C-y" (cmd! () (ultra-scroll-up 45))
+      :nv "C-e" (cmd! () (ultra-scroll-down 45))
+      :nv "C-y" (cmd! () (ultra-scroll-up 45))
       :i "M-/" #'hippie-expand
       :n "gi" #'ibuffer-sidebar-jump
       :i "C-v" #'evil-paste-after

@@ -105,6 +105,14 @@
         ;; using specialized fn for Polylith compatibility
         clojure-project-root-function #'clojure-project-root-path+)
 
+  (setq cider--jack-in-cmd-history
+        `(,(concat
+            "clojure -Sdeps '{:deps {nrepl/nrepl {:mvn/version \""
+            cider-injected-nrepl-version
+            "\"} cider/cider-nrepl {:mvn/version \""
+            cider-required-middleware-version
+            "\"}}}' -M -m nrepl.cmdline --middleware \"[cider.nrepl/cider-middleware]\"\n")))
+
 
   (setq
    clojure-enable-fancify-symbols nil

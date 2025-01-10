@@ -138,3 +138,26 @@
         (:localleader
          "et" #'calibredb-set-metadata--title
          "ea" #'calibredb-set-metadata--authors)))
+
+
+(use-package! nov
+  :defer t
+  :mode ("\\.epub\\'" . nov-mode)
+  :hook (nov-mode . variable-pitch-mode)
+  :config
+  (setq nov-text-width 100)
+  (map! :map nov-mode-map
+        :n "q" #'nov-back-or-quit
+        "l" #'evil-forward-char
+        "v" #'evil-visual-char
+        "V" #'evil-visual-line
+        "n" #'evil-ex-search-next
+        "g" nil
+        "SPC" nil)
+  (map! :map nov-button-map
+        "l" #'evil-forward-char
+        "v" #'evil-visual-char
+        "V" #'evil-visual-line
+        "n" #'evil-ex-search-next
+        "g" nil
+        "SPC" nil))

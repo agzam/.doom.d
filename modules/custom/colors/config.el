@@ -16,8 +16,9 @@
         `(("6:00" . ,(if (display-graphic-p)
                          'ag-themes-spacemacs-light
                        'base16-solarized-light))
-          ("21:00" . ag-themes-base16-tokyo-night-light)
-          ("00:30" . ag-themes-base16-ocean))))
+          ("21:00" . ag-themes-base16-ocean)
+          ;; ("" . ag-themes-base16-tokyo-night-light)
+          )))
 
 (use-package! rainbow-mode
   :defer t)
