@@ -25,9 +25,7 @@
       (insert (funcall 'gh-notify-render-notification notification))
       (insert "\n")
       (read-only-mode +1)))
-  (when (or (null (gh-notify-current-notification))
-            (gh-notify-notification-read-p))
-    (forward-line -2)))
+  (forward-line -2))
 
 ;;;###autoload
 (defun gh-notify-code-review-forge-pr-at-point ()
