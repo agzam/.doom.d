@@ -301,11 +301,9 @@
   (add-to-list
    'display-buffer-alist
    '("\\*org-roam\\*"
-     (display-buffer-reuse-window
-      display-buffer-in-direction)
+     (display-buffer-in-quadrant)
      (direction . right)
-     (window . root)
-     (window-width . 0.2)))
+     (window . root)))
 
   (add-to-list 'org-default-properties "roam_aliases")
   (add-to-list 'org-default-properties "roam_refs"))

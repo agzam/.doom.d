@@ -116,9 +116,9 @@
 (add-to-list
  'display-buffer-alist
  `("\\*Backtrace\\*"
-   (display-buffer-reuse-window
-    display-buffer-in-direction)
-   (direction . right)))
+   (display-buffer-in-quadrant)
+   (direction . right)
+   (window . root)))
 
 (after! woman
   (setq woman-manpath '("/Applications/kitty.app/Contents/Resources/man/"

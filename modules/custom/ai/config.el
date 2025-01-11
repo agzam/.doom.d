@@ -123,13 +123,9 @@
   (add-to-list
    'display-buffer-alist
    `(,(rx bos (or "*Claude" "*ChatGPT"))
-     (display-buffer-reuse-window
-      display-buffer-window-equal-width
-      display-buffer-reuse-mode-window
-      display-buffer-in-direction)
+     (display-buffer-in-quadrant)
      (direction . right)
-     (window . root)
-     (dedicated . nil))))
+     (window . root))))
 
 (use-package! gptel-quick
   :commands (gptel-quick)

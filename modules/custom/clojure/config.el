@@ -159,13 +159,9 @@
                   "*cider-test-report*"
                   "*cider-error"
                   "*cider-result"))
-     (display-buffer-reuse-window
-      display-buffer-window-equal-width
-      display-buffer-reuse-mode-window
-      display-buffer-in-direction)
+     (display-buffer-in-quadrant)
      (direction . right)
-     (window . root)
-     (dedicated . nil)))
+     (window . root)))
 
   ;; When in cider-debug-mode, override evil keys to not interfere with debug keys
   (after! evil

@@ -17,11 +17,9 @@
   (add-to-list
    'display-buffer-alist
    '("\\* spacehammer-edit.*"
-     (display-buffer-reuse-window
-      display-buffer-in-direction)
+     (display-buffer-in-quadrant)
      (direction . right)
-     (window . root)
-     (window-width . 0.30))))
+     (window . root))))
 
 ;; (use-package! lsp-grammarly
 ;;   :defer t
@@ -73,11 +71,9 @@
   (add-to-list
    'display-buffer-alist
    `(,sdcv-buffer-name
-     (display-buffer-reuse-window
-      display-buffer-in-direction)
+     (display-buffer-in-quadrant)
      (direction . right)
-     (window . root)
-     (window-width . 0.35))))
+     (window . root))))
 
 (use-package! google-translate
   :defer t
@@ -114,11 +110,9 @@
   (add-to-list
    'display-buffer-alist
    '("\\*Google Translate\\*"
-     (display-buffer-reuse-window
-      display-buffer-in-direction)
+     (display-buffer-in-quadrant)
      (direction . right)
-     (window . root)
-     (window-width . 0.25))))
+     (window . root))))
 
 (use-package! define-it
   :defer t
@@ -137,11 +131,9 @@
   (add-to-list
    'display-buffer-alist
    '("\\*define-it:"
-     (display-buffer-reuse-window
-      display-buffer-in-direction)
+     (display-buffer-in-quadrant)
      (direction . right)
-     (window . root)
-     (window-width . 0.25))))
+     (window . root))))
 
 (use-package! separedit
   :defer t
@@ -243,10 +235,20 @@
     (dolist (state '(normal visual insert))
       (evil-make-intercept-map
        (evil-get-auxiliary-keymap wiktionary-bro-mode-map state t t)
-       state))
-    (evil-define-key '(normal visual insert) wiktionary-bro-mode-map
-      (kbd "RET") #'wiktionary-bro-dwim
-      (kbd "<return>") #'wiktionary-bro-dwim)))
+       state)))
+
+  (map! :map wiktionary-bro-mode-map
+        :nvi  "<return>" #'wiktionary-bro-dwim
+        :n "q" #'kill-current-buffer)
+
+  (add-to-list
+   'display-buffer-alist
+   '((major-mode . wiktionary-bro-mode)
+     (display-buffer-reuse-mode-window
+      display-buffer-in-quadrant)
+     (direction . right)
+     (init-width . 0.15)
+     (window . root))))
 
 (use-package! jinx
   :defer t
@@ -261,8 +263,4 @@
   (map! :map jinx-mode-map
         :i ", SPC" #'insert-comma
         :i ",," #'jinx-autocorrect-last+
-        :i ",." (cmd! (jinx-autocorrect-last+ :prompt)))
-
-  ;; (map! :map jinx-correct-map
-  ;;       "RET"  (cmd! (execute-kbd-macro (kbd "1"))))
-  )
+        :i ",." (cmd! (jinx-autocorrect-last+ :prompt))))

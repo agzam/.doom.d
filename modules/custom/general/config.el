@@ -107,11 +107,9 @@
 (add-to-list
  'display-buffer-alist
  `(,(rx bos (or "*helpful" "*info"))
-   (display-buffer-reuse-window
-    display-buffer-in-direction)
+   (display-buffer-in-quadrant)
    (direction . right)
-   (window . root)
-   (window-width . 0.35)))
+   (window . root)))
 
 (setq +doom-indent-sensitive-modes '())
 (setq +doom-yank-indent-modes '())
@@ -146,9 +144,9 @@
   (add-to-list
    'display-buffer-alist
    `("\\*edit-indirect .*\\*"
-     (display-buffer-reuse-window
-      display-buffer-in-direction)
-     (direction . right))))
+     (display-buffer-in-quadrant)
+     (direction . right)
+     (window . root))))
 
 (after! evil
   (advice-add #'evil-ex-start-word-search :around #'evil-ex-visual-star-search-a)
