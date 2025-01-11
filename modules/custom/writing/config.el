@@ -101,11 +101,15 @@
           (spanish-prefix . ("es"))
           (russian-computer . ("ru"))))
 
-  ;; it doesn't pop to the buffer automatically
-  (defun google-translate--find-buffer (x)
-    (pop-to-buffer "*Google Translate*"))
-
-  (advice-add 'google-translate-buffer-output-translation :after #'google-translate--find-buffer)
+  (defadvice! google-translate-buffer-variable-pitch-a (ofn &rest args)
+    "variable pitch in translate buffer"
+    :around #'google-translate-buffer-output-translation
+    ;; darn. why the fuck this package doesn't have a major-mode?
+    ;; using hooks would be so much simpler
+    (apply ofn args)
+    (when (string= (buffer-name) "*Google Translate*")
+      (variable-pitch-mode +1)
+      (pop-to-buffer "*Google Translate*")))
 
   (add-to-list
    'display-buffer-alist
