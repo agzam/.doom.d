@@ -91,7 +91,25 @@
     (+gptel--improve-text-infix-prompt)
     (+gptel--improve-text-write-own-prompt)]
    [""
-    ("C-<return>" "Let's go" +gptel-improve-text)]])
+    ("C-<return>" "Let's go" +gptel-improve-text)]]
+  [:hide always
+   :setup-children
+   (lambda (_)
+     "easy toggling prompt variations"
+     (transient-parse-suffixes
+      '+gptel-improve-text-transient
+      (thread-last
+        (seq-take +gptel-improve-text-prompts-history 5)
+        (seq-map-indexed
+         (lambda (prompt idx)
+           (let ((n (number-to-string (1+ idx))))
+             (list
+              n (format "Use prompt %s" n)
+              (lambda ()
+                (interactive)
+                (setq +gptel-improve-text-prompt
+                      prompt))
+              :transient t)))))))])
 
 ;;;###autoload
 (defun +gptel-improve-text (&optional arg)
