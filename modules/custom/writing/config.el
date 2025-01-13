@@ -68,6 +68,7 @@
         :n "<backtab>" #'outline-show-all
         :ni "RET" #'sdcv-search-pointer
         :n "a" #'sdcv-search-at-point)
+  (setq sdcv-word-pronounce nil)
   (add-to-list
    'display-buffer-alist
    `(,sdcv-buffer-name

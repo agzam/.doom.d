@@ -51,6 +51,16 @@
      (shell-command-to-string
       (format "%s view %s --gjq 'fields.summary'" j ticket)))))
 
+(defun jira--ticket-arg-or-ticket-at-point (&optional ticket)
+  "Resolves ticket based on argument or symbol-at-point"
+  (let* ((satp (thing-at-point 'symbol t))
+         (ticket-at-point (when (and satp (string-match-p "\\b[A-Z]+-[0-9]+\\b" satp))
+                            satp))
+         (_ (unless (or ticket
+                        (string-match-p "^[A-Z]\\{3,5\\}-[0-9]+$" ticket-at-point))
+              (user-error "not a ticket number"))))
+    (or ticket ticket-at-point)))
+
 (defun jira-ticket->url (ticket)
   "Extracts browsable url for the TICKET number."
   (let* ((j (jira--find-exe))
@@ -62,18 +72,9 @@
         (user-error res)
       (string-trim res))))
 
-
-;;;###autoload
-(defun jira-ticket->link (&optional ticket)
-  "Converts TICKET number at point to org-mode link."
-  (interactive)
-  (let* ((satp (thing-at-point 'symbol t))
-         (ticket-at-point (when (and satp (string-match "\\b[A-Z]+-[0-9]+\\b" satp))
-                            satp))
-         (_ (unless (string-match-p "^[A-Z]\\{3,5\\}-[0-9]+$" ticket-at-point)
-              (user-error "not a ticket number")))
-         (ticket (or ticket ticket-at-point))
-         (j (jira--find-exe))
+(defun jira--summary+url (ticket)
+  "Fetch summary and url for a given TICKET."
+  (let* ((j (jira--find-exe))
          (jq (jira--find-exe "jq"))
          (cmd (format (concat
                        "%s view %s --template json | %s -r '{"
@@ -88,15 +89,47 @@
              (json-array-type 'list)
              (parsed (json-read-from-string res))
              (summary (gethash 'summary parsed))
-             (url (gethash 'url parsed))
-             (result (if (eq major-mode 'org-mode)
-                         (format "[[%s][%s: %s]]" url ticket summary)
-                       (format "[%s: %s](%s)" ticket summary url))))
-        (if ticket-at-point
-            (let ((bounds (bounds-of-thing-at-point 'symbol)))
-              (delete-region (car bounds) (cdr bounds))
-              (insert result))
-          result)))))
+             (url (gethash 'url parsed)))
+        (list :ticket ticket :url url :summary summary)))))
+
+;;;###autoload
+(defun jira-ticket->link (&optional ticket-arg)
+  "Convert the TICKET-ARG number at point to org-mode link."
+  (interactive)
+  (let* ((ticket (jira--ticket-arg-or-ticket-at-point ticket-arg))
+         (sum+url (jira--summary+url ticket))
+         (ticket (plist-get sum+url :ticket))
+         (url (plist-get sum+url :url))
+         (summary (plist-get sum+url :summary))
+         (result (if (eq major-mode 'org-mode)
+                     (format "[[%s][%s: %s]]" url ticket summary)
+                   (format "[%s: %s](%s)" ticket summary url))))
+    (if ticket-arg
+        result
+      (let ((bounds (bounds-of-thing-at-point 'symbol)))
+        (delete-region (car bounds) (cdr bounds))
+        (insert result)))))
+
+;;;###autoload
+(defun jira-ticket->num+description (&optional ticket-arg)
+  "Convert the TICKET-ARG to number and description.
+e.g., XYZ-1234 becomes XYZ-1234 - \='This ticket does nothing\='"
+  (interactive)
+  (let* ((ticket-regex "\\b[A-Z]+-[0-9]+\\b")
+         (ticket (jira--ticket-arg-or-ticket-at-point ticket-arg))
+         (already-desc-p (unless ticket-arg
+                           (save-excursion
+                             (beginning-of-thing 'symbol)
+                             (looking-at-p (concat ticket-regex " - '.*'")))))
+         (sum+url (jira--summary+url ticket))
+         (summary (plist-get sum+url :summary))
+         (result (format "%s - '%s'" ticket summary)))
+    (if ticket-arg
+        result
+      (unless already-desc-p
+        (let ((bounds (bounds-of-thing-at-point 'symbol)))
+          (delete-region (car bounds) (cdr bounds))
+          (insert result))))))
 
 ;;;###autoload
 (defun jira-view-simple (ticket)
