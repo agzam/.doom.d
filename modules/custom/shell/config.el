@@ -37,17 +37,23 @@
           (display-buffer (current-buffer))))
       base))
 
- (add-hook! 'eshell-mode-hook
-   (defun set-eshell-keys-h ()
-     (map! :map eshell-mode-map
-           :desc "clear" "C-c C-l" #'eshell-clear+
-           :desc "history" "M-r" #'consult-history
-           (:localleader
-            :desc "clear" "c" #'eshell-clear+
-            "b" #'eshell-insert-buffer-name))
-     (map! :map eshell-hist-mode-map
-           :desc "clear" "C-c C-l" #'eshell-clear+
-           :desc "history" "M-r" #'consult-history))))
+  (add-hook! 'eshell-mode-hook
+    (defun set-eshell-keys-h ()
+      (map! :map eshell-mode-map
+            :desc "clear" "C-c C-l" #'eshell-clear+
+            :desc "history" "M-r" #'consult-history
+            (:localleader
+             :desc "clear" "c" #'eshell-clear+
+             "b" #'eshell-insert-buffer-name))
+      (map! :map eshell-hist-mode-map
+            :desc "clear" "C-c C-l" #'eshell-clear+
+            :desc "history" "M-r" #'consult-history)))
+
+  ;; fullscreen apps
+  (eshell-vterm-mode)
+  (defalias 'eshell/v 'eshell-exec-visual)
+  (dolist (cmd '(ncdu btop k9s))
+    (add-to-list 'eshell-visual-commands (symbol-name cmd))))
 
 (use-package! shell-pop
   :defer t
@@ -62,8 +68,3 @@
 
 (use-package! eat
   :hook ((eshell-load . eat-eshell-mode)))
-
-(after! eshell (eshell-vterm-mode)
-  (defalias 'eshell/v 'eshell-exec-visual)
-  (dolist (cmd '(ncdu btop))
-    (add-to-list 'eshell-visual-commands (symbol-name cmd))))
