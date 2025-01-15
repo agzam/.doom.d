@@ -63,7 +63,7 @@ text like: \"2023 was a better year than 2021\" would translate to:
   :around #'google-translate-translate
   (if (string= src-lang "en")
       (let ((txt (replace-regexp-in-string
-                  "\\b\\([0-9]\\{4\\}\\)\\b"
+                  "\\b\\([0-9]\\{3,4\\}\\)\\b"
                   (lambda (match)
                     (replace-regexp-in-string
                      ", " " and "
@@ -162,12 +162,19 @@ text like: \"2023 was a better year than 2021\" would translate to:
 ;;;###autoload
 (transient-define-prefix translate-transient ()
   "Translate"
-  [["Source"
+  [["Langs"
     (translate--set-source)
     (translate--set-target)]
    [""
-    (translate--minibuffer)
-    ("RET" "Go!" translate--translate)]]
+    ("r" "reverse" (lambda ()
+                     (interactive)
+                     (cl-rotatef
+                      google-translate-default-target-language
+                      google-translate-default-source-language)
+                     (transient-reset))
+     :transient t)
+    (translate--minibuffer)]
+   ["" ("RET" "Go!" translate--translate)]]
   [:hide always
    [("<return>" "Go!" translate--translate)]]
   (interactive)
