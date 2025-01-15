@@ -2,9 +2,10 @@
 ;;; custom/writing/packages.el
 (package! mw-thesaurus)
 (package! sdcv)
-(package! google-translate)
-;; (package! keytar :recipe (:host github :repo "emacs-grammarly/keytar"))
-;; (package! lsp-grammarly :recipe (:host github :repo "emacs-grammarly/lsp-grammarly"))
+(package! google-translate :recipe
+  (:host github :repo "agzam/google-translate"
+         :branch "major-mode"))
+
 (package! define-it)
 
 (when (eq system-type 'darwin)

@@ -102,21 +102,21 @@
           (spanish-prefix . ("es"))
           (russian-computer . ("ru"))))
 
-  (defadvice! google-translate-buffer-variable-pitch-a (ofn &rest args)
-    "variable pitch in translate buffer"
-    :around #'google-translate-buffer-output-translation
-    ;; darn. why the fuck this package doesn't have a major-mode?
-    ;; using hooks would be so much simpler
-    (apply ofn args)
-    (when (string= (buffer-name) "*Google Translate*")
+  (add-hook! 'google-translate-mode-hook
+    (defun google-translate-mode-h ()
       (variable-pitch-mode +1)
       (pop-to-buffer "*Google Translate*")))
+
+  (map! :map google-translate-mode-map
+        (:localleader
+         "l" #'google-translate-listen-source))
 
   (add-to-list
    'display-buffer-alist
    '("\\*Google Translate\\*"
      (display-buffer-in-quadrant)
      (direction . right)
+     (init-width . 0.3)
      (window . root))))
 
 (use-package! define-it
