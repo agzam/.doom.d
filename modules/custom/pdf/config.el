@@ -153,11 +153,15 @@
         "V" #'evil-visual-line
         "n" #'evil-ex-search-next
         "g" nil
-        "SPC" nil)
+        "SPC" nil
+        :n "i" nil
+        "DEL" nil)
   (map! :map nov-button-map
         "l" #'evil-forward-char
         "v" #'evil-visual-char
         "V" #'evil-visual-line
         "n" #'evil-ex-search-next
         "g" nil
-        "SPC" nil))
+        "SPC" nil
+        :n "i" nil
+        "DEL" nil))

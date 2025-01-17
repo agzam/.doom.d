@@ -18,6 +18,7 @@
                     (ring-extend ring 1)
                     (ring-insert ring doom-theme))
                   (ring-next ring doom-theme))))
+    (setq doom-theme theme)
     (load-theme theme :no-confirm)
     theme))
 
@@ -30,6 +31,7 @@
                     (ring-extend ring 1)
                     (ring-insert ring doom-theme))
                   (ring-previous ring doom-theme))))
+    (setq doom-theme theme)
     (load-theme theme :no-confirm)
     theme))
 
