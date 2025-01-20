@@ -6,7 +6,8 @@
   (setq shr-use-fonts nil
         shr-max-image-proportion 0.5
         eww-browse-url-new-window-is-tab nil
-        shr-max-width 80)
+        shr-max-width 80
+        shr-put-image-function #'shr-put-image*)
 
   (add-hook! 'eww-after-render-hook #'eww--rename-buffer)
   (defadvice! eww-rename-buffer-a ()
