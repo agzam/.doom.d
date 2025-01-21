@@ -32,11 +32,12 @@ It's safer to use a function rather than the concrete value of a key"
 
 ;;;###autoload
 (defun consult-omni-load-sources+ ()
-  (dolist (m '(consult-omni-brave
+  (dolist (m `(consult-omni-brave
                consult-omni-browser-history
                consult-omni-duckduckgo
                consult-omni-elfeed
-               consult-omni-gh
+               ,(if (featurep 'consult-gh)
+                    consult-omni-gh)
                consult-omni-google
                consult-omni-gptel
                consult-omni-invidious
@@ -54,7 +55,7 @@ It's safer to use a function rather than the concrete value of a key"
     ("w" "wiki" consult-omni-wikipedia)
     ("y" "youtube" consult-omni-youtube)
     ("gh" "code search" +search-github-with-lang)
-    ("gH" "github" consult-omni-github)]
+    ("gH" "github" consult-omni-github :if (lambda () (featurep 'consult-gh)))]
    [("bh" "browser-hist" consult-omni-browser-history)
     ("el" "elfeed" consult-omni-elfeed)
     ("no" "notmuch" consult-omni-notmuch)
