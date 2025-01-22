@@ -4,15 +4,24 @@
   "Run given JXA-SCRIPT using osascript."
   (if (not (eq system-type 'darwin))
       (user-error "This function only works on Mac.")
-    (process-lines
-     (executable-find "osascript")
-     "-l" "JavaScript"
-     "-e" jxa-script)))
+    (with-temp-buffer
+      (let* ((exit-code
+              (call-process (executable-find "osascript") nil (list (current-buffer) t) nil
+                            "-l" "JavaScript"
+                            "-e" jxa-script))
+             (output (buffer-string)))
+        (if (= exit-code 0)
+            (split-string output "\n" t)
+          (message "JXA Error (exit code %d): %s" exit-code output)
+          nil)))))
 
 (defun browser-find-default ()
-  ;; in both JXA and AppleScript, when you refer to an application, you're usually pointing directly to its location on
-  ;; disk. For example, `Application('Safari')` works because there's an application named Safari.app in the
-  ;; /Applications folder. So we really need to do some bullshit like this to find out the default browser app on Mac
+  ;; in both JXA and AppleScript, when you refer to an application,
+  ;; you're usually pointing directly to its location on disk. For
+  ;; example, `Application('Safari')` works because there's an
+  ;; application named Safari.app in the /Applications folder. So we
+  ;; really need to do some bullshit like this to find out the default
+  ;; browser app on Mac
   (unless (eq system-type 'darwin) (user-error "This function only works on Mac."))
   (unless (executable-find "jq") (user-error "jq is not found!"))
   (string-trim
@@ -26,22 +35,25 @@
   "Using JXA reads browser tabs."
   (let* ((tabs-script
           (format
-           "const browser = Application(\"%s\");
-            let tabsInfo = [];
-            const activeTabId = browser.windows()[0].activeTab.id();
-            browser.windows().forEach((window, windowIndex) => {
-            window.tabs().forEach((tab, tabIndex) => {
-              let tabInfo = {
+           "
+const browser = Application(\"%s\");
+let tabsInfo = [];
+const activeTabId = browser.windows()[0].activeTab.id();
+browser.windows().forEach(
+    (window, windowIndex) => {
+        window.tabs().forEach((tab, tabIndex) => {
+            let tabInfo = {
                 windowIndex: windowIndex + 1,
                 tabIndex: tabIndex + 1,
                 url: tab.url(),
                 title: tab.name(),
                 active: activeTabId === tab.id() ? true : false
-              };
-              tabsInfo.push(tabInfo);
-            });
-          });
-          JSON.stringify(tabsInfo);"
+            };
+            tabsInfo.push(tabInfo);
+        });
+    });
+JSON.stringify(tabsInfo);
+"
            (browser-find-default)))
          (res (run-jxa tabs-script))
          (json-object-type 'plist))
@@ -51,22 +63,24 @@
   "Activate Browser TAB for WINDOW."
   (let ((script
          (format
-          "const Brave = Application('%s');
-           const winIndex = %s;
-           const tabIndex = %s;
-           const win = Brave.windows()[winIndex - 1];
-           if(win) {
-           const tab = win.tabs()[tabIndex - 1];
-           if(tab) {
-           win.activeTabIndex = tabIndex;
-           win.index = 1;
-           Brave.activate();
-           } else {
-           'Tab index out of range';
-           }
-           } else {
-           'Window index out of range';
-           }"
+"
+const Browser = Application('%s');
+const winIndex = %s;
+const tabIndex = %s;
+const win = Browser.windows()[winIndex - 1];
+if(win) {
+    const tab = win.tabs()[tabIndex - 1];
+  if(tab) {
+    win.activeTabIndex = tabIndex;
+    win.index = 1;
+    Browser.activate();
+  } else {
+   'Tab index out of range';
+   }
+} else {
+  'Window index out of range';
+}
+"
           (browser-find-default)
           window tab)))
     (run-jxa script)))
@@ -98,21 +112,23 @@
   "Lets you select from a list of current tabs in the browser and
 jump to selected tab, activating it in the browser."
   (interactive)
-  (let* ((coll (seq-map
-                (lambda (x)
-                  (let* ((title (plist-get x :title))
-                         (url (plist-get x :url))
-                         (win (number-to-string (plist-get x :windowIndex)))
-                         (tab (number-to-string (plist-get x :tabIndex)))
-                         (row (concat
-                               url "\t"
-                               (propertize title 'invisible t)
-                               "\t"
-                               (propertize
-                                (format "#window:%s #tab:%s" win tab)
-                                'invisible t))))
-                    (cons row x)))
-                (browser-get-tabs)))
+  (let* ((coll (thread-last
+                 (browser-get-tabs)
+                 (seq-map (lambda (x)
+                            (let* ((title (plist-get x :title))
+                                   (url (plist-get x :url))
+                                   (win (number-to-string (plist-get x :windowIndex)))
+                                   (tab (number-to-string (plist-get x :tabIndex)))
+                                   (row (concat
+                                         url "\t"
+                                         (propertize title 'invisible t)
+                                         "\t"
+                                         (propertize
+                                          (format "#window:%s #tab:%s" win tab)
+                                          'invisible t))))
+                              (cons row x))))
+                 (seq-reverse) ; I want the last tab to appear first in the list
+                 ))
          (selected (thread-last
                      (browser--goto-tab-completing-fn coll)
                      (completing-read "Browser tab: ")))
@@ -228,3 +244,33 @@ jump to selected tab, activating it in the browser."
       (message url)
       (kill-new url)
       url))))
+
+;;;###autoload
+(defun browser-active-tab->eww ()
+  "Current tab content in eww."
+  (interactive)
+  (let* ((content-script
+          (format
+           "
+const browser = Application(\"%s\");
+const activeTab = browser.windows()[0].activeTab;
+const script = `document.documentElement.outerHTML`;
+const html = activeTab.execute({javascript: script});
+JSON.stringify({
+    url: activeTab.url(),
+    title: activeTab.name(),
+    content: html
+});
+"
+           (browser-find-default)))
+         (res (run-jxa content-script))
+         (json-object-type 'plist))
+    (when-let* ((res (json-read-from-string (car res)))
+                (html-str (plist-get res :content))
+                (title (plist-get res :title))
+                (url (plist-get res :url))
+                (tmp-file (make-temp-file "eww-" nil ".html")))
+      (with-temp-file tmp-file
+        (insert html-str))
+      (eww-open-file tmp-file)
+      (delete-file tmp-file))))
