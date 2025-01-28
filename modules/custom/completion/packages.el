@@ -22,12 +22,10 @@
 (package! dash-docs)
 (package! consult-dash)
 
-(package! consult
-  :pin "0d0ae4659ecaa3c12927fa3982c49610da573a88" ; until armindarvish/consult-omni#47 is fixed
-  :recipe (:host github :repo "minad/consult")) 
+(package! consult :recipe (:host github :repo "minad/consult"))
 
 (unpin! compat
-        ;; consult
+        consult
         embark
         embark-consult
         posframe

@@ -45,7 +45,7 @@ transparent. Bind in vertico-map."
 (defun vertico-posframe-briefly-tall ()
   (interactive)
   (setq vertico-posframe-height 60
-        vertico-count 100)
+        vertico-count 40)
   (add-hook! 'minibuffer-exit-hook
     (defun vertico-posframe-height-restore-h ()
       (setq vertico-posframe-height nil
