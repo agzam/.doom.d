@@ -198,6 +198,10 @@
                  "t" #'subed-toggle-srt-metadata)
         "p" #'subed-mpv-play-from-file+))
 
+(use-package! hnreader
+  :defer t
+  :config)
+
 (use-package! consult-hn
   :commands (consult-hn)
   :defer t

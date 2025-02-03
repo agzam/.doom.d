@@ -19,4 +19,5 @@
 
 (package! subed :recipe (:host github :repo "sachac/subed" :files ("subed/*.el")))
 
+(package! hnreader :recipe (:host github :repo "thanhvg/emacs-hnreader"))
 (package! consult-hn :recipe (:local-repo "consult-hn"))

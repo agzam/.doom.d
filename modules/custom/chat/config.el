@@ -36,4 +36,3 @@
     (defun lg-telega-root-mode-h ()
       (hl-line-mode 1)
       (setq line-spacing 9))))
-
