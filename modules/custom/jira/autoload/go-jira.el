@@ -165,11 +165,12 @@ e.g., XYZ-1234 becomes XYZ-1234 - \='This ticket does nothing\='"
         ;; place cursor between the quotes
         (search-backward "\""))
     (consult--read
-     (consult--async-command
-         (lambda (input)
-           (when (not (string-match-p "\"\"" input)) ; query has no empty quote blocks
-             (list "jira" "list" "--query" input)))
-       :throttle 0.5)
+     (consult--async-pipeline
+      (consult--async-throttle)
+      (consult--async-process
+       (lambda (input)
+         (when (not (string-match-p "\"\"" input)) ; query has no empty quote blocks
+           (list "jira" "list" "--query" input)))))
      :initial (or query (format jira-default-search-format-string ""))
      :sort nil ; records must be of the exact order as the go-jira app output
      :state (lambda (action cand)
