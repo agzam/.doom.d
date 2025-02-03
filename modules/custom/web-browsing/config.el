@@ -197,3 +197,8 @@
         (:prefix ("t" . "toggle")
                  "t" #'subed-toggle-srt-metadata)
         "p" #'subed-mpv-play-from-file+))
+
+(use-package! consult-hn
+  :commands (consult-hn)
+  :defer t
+  :config)

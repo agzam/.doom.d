@@ -18,3 +18,5 @@
   (:host github :repo "Boruch-Baum/emacs-yeetube.el"))
 
 (package! subed :recipe (:host github :repo "sachac/subed" :files ("subed/*.el")))
+
+(package! consult-hn :recipe (:local-repo "consult-hn"))

@@ -10,3 +10,6 @@
 [submodule "modules/custom/writing/wiktionary-bro"]
 	path = modules/custom/writing/wiktionary-bro
 	url = git@github.com:agzam/wiktionary-bro.el.git
+[submodule "modules/custom/web-browsing/consult-hn"]
+	path = modules/custom/web-browsing/consult-hn
+	url = git@github.com:agzam/consult-hn.git
