@@ -6,6 +6,7 @@
 function that retrieves the API key from ~/.authinfo.gpg.
 
 It's safer to use a function rather than the concrete value of a key"
+  (require 'dash)
   (cl-labels ((split-col (x) (split-string x ":")))
     (let ((keys-list
            `((consult-omni-brave-api-key "api.search.brave.com")
@@ -36,15 +37,16 @@ It's safer to use a function rather than the concrete value of a key"
                consult-omni-browser-history
                consult-omni-duckduckgo
                consult-omni-elfeed
-               ,(if (featurep 'consult-gh)
-                    consult-omni-gh)
+               ,(when (featurep 'consult-gh)
+                    'consult-omni-gh)
                consult-omni-google
                consult-omni-gptel
                consult-omni-invidious
                consult-omni-line-multi
                consult-omni-notmuch
                consult-omni-wikipedia
-               consult-omni-youtube))
+               consult-omni-youtube
+               consult-omni-apps))
     (require m nil t)))
 
 ;;;###autoload
@@ -53,12 +55,13 @@ It's safer to use a function rather than the concrete value of a key"
    [("/" "multi" consult-omni-multi)
     ("go" "google" consult-omni-google)
     ("w" "wiki" consult-omni-wikipedia)
-    ("y" "youtube" consult-omni-youtube)
-    ("gh" "code search" +search-github-with-lang)
-    ("gH" "github" consult-omni-github :if (lambda () (featurep 'consult-gh)))]
+    ("y" "youtube" consult-omni-youtube)]
    [("bh" "browser-hist" consult-omni-browser-history)
     ("el" "elfeed" consult-omni-elfeed)
     ("no" "notmuch" consult-omni-notmuch)
-    ("gp" "gptel" consult-omni-gptel)]])
+    ("gp" "gptel" consult-omni-gptel)]
+   [("a" "apps" consult-omni-apps)
+    ("gh" "code search" +search-github-with-lang)
+    ("gH" "github" consult-omni-github :if (lambda () (featurep 'consult-gh)))]])
 
 (advice-add 'consult-omni-transient :before #'consult-omni-load-sources+)

@@ -6,8 +6,10 @@
          (file-truename doom-local-dir) emacs-version))
 
 (use-package! consult-omni
-  :after (consult-gh consult-gh-embark)
+  ;; :after (consult-gh consult-gh-embark)
   :commands (consult-omni-transient consult-omni-multi)
+  :init
+  (consult-omni--set-api-keys)
   :config
   (require 'consult-omni-embark)
   (setq consult-omni-multi-sources '(
@@ -21,7 +23,6 @@
                                      "elfeed"
                                      ;; "notmuch"
                                      "YouTube"))
-  (consult-omni--set-api-keys)
   (setq consult-omni-default-count 30
         consult-omni-dynamic-input-debounce 0.7
         consult-omni-dynamic-refresh-delay 0.5)
