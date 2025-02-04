@@ -445,12 +445,13 @@
        "r" nil
        (:prefix ("r" . "roam")
         "r" #'org-roam-node-find
+        "b" #'consult-org-roam-backlinks
         :desc "work today" "t" (cmd! (funcall-interactively #'org-roam-dailies-goto-today '("w")))
         :desc "journal today" "T" (cmd! (funcall-interactively #'org-roam-dailies-goto-today '("j")))
         :desc "work note" "n" (cmd! (funcall-interactively #'org-roam-dailies-goto-date nil '("w")))
         :desc "org-roam-ui in xwidget" "w" #'org-roam-toggle-ui-xwidget
         :desc "org-roam-ui in browser" "W" #'org-roam-ui-browser+
-        "b" #'browser-create-roam-node-for-active-tab))
+        "C-b" #'browser-create-roam-node-for-active-tab))
 
       (:prefix ("p" . "projects")
                (:after projectile

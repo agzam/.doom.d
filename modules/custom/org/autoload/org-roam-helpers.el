@@ -125,26 +125,33 @@
 the current note with precise positions."
   ;; this is an attempt to fix: jgru/consult-org-roam#38
   (interactive current-prefix-arg)
-  (let* ((node (org-roam-node-at-point))
+  (let* ((node (if (called-interactively-p 'any)
+                   (or (ignore-errors (and (eq major-mode 'org-mode)
+                                           (org-roam-node-at-point)))
+                       (consult-org-roam-node-read nil nil nil t "Backlinks for the node: "))
+                 (org-roam-node-at-point)))
          (backlinks (org-roam-db-query
                      [:select [source pos]
                       :from links
                       :where (= dest $s1)
                       :and (= type "id")]
                      (if node
-                         (org-roam-node-id (org-roam-node-at-point))
+                         (org-roam-node-id node)
                        (user-error "Buffer does not contain org-roam-nodes"))))
          (source-ids (mapcar #'car backlinks))
          (pos-map (make-hash-table :test 'equal))
          (_ (dolist (link backlinks)
               (puthash (car link) (cadr link) pos-map)))
          (chosen-node-or-str (if source-ids
-                                 (consult-org-roam-node-read ""
-                                                             (lambda (n)
-                                                               (if (org-roam-node-p n)
-                                                                   (if (member (org-roam-node-id n) source-ids)
-                                                                       t
-                                                                     nil))))
+                                 (consult-org-roam-node-read
+                                  nil
+                                  (lambda (n)
+                                    (if (org-roam-node-p n)
+                                        (if (member (org-roam-node-id n) source-ids)
+                                            t
+                                          nil)))
+                                  nil nil
+                                  (format "Go to backlink for '%s' " (oref node title)))
                                (user-error "No backlinks found"))))
     (when chosen-node-or-str
       (org-roam-node-visit chosen-node-or-str other-window)
