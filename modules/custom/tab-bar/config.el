@@ -6,10 +6,10 @@
         tab-bar-close-button-show nil
         tab-bar-separator " ❘ "
         tab-bar-format '(tab-bar-format-tabs tab-bar-separator)
-        tab-bar-tab-name-function #'+tab-bar-name-fn
         tab-bar-auto-width nil)
-
-  (tab-bar-history-mode +1)
+  (unless (featurep :system 'macos)
+    (setq tab-bar-tab-name-function #'+tab-bar-name-fn)
+    (tab-bar-history-mode +1))
 
   (map!
    "s-[" #'tab-bar-switch-to-prev-tab

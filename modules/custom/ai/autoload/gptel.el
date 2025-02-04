@@ -195,7 +195,8 @@
         (let ((b (call-interactively #'gptel)))
           (run-with-timer
            0.1 nil
-           #'switch-to-buffer b)))
+           #'display-buffer b)))
+      (display-buffer last-b)
       (switch-to-buffer last-b)))
 
 ;;;###autoload
