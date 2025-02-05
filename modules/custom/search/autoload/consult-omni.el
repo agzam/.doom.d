@@ -49,6 +49,21 @@ It's safer to use a function rather than the concrete value of a key"
                consult-omni-apps))
     (require m nil t)))
 
+(defun gptel-log-find ()
+  "Grep for things in gptel log files."
+  (interactive)
+  (if-let* ((q (if (use-region-p)
+                   (buffer-substring-no-properties
+                    (region-beginning) (region-end))
+                 (if-let* ((s (symbol-at-point)))
+                     (symbol-name s) "")))
+            (in (concat org-default-folder "/gptel")))
+      (consult--grep
+       "Search in gptel logs: "
+       #'consult--ripgrep-make-builder in q)))
+
+(+vertico-file-search :query "foo" :in (concat org-default-folder "/gptel"))
+
 ;;;###autoload
 (transient-define-prefix consult-omni-transient ()
   ["consult-omni"
@@ -59,7 +74,8 @@ It's safer to use a function rather than the concrete value of a key"
    [("bh" "browser-hist" consult-omni-browser-history)
     ("el" "elfeed" consult-omni-elfeed)
     ("no" "notmuch" consult-omni-notmuch)
-    ("gp" "gptel" consult-omni-gptel)]
+    ("gp" "gptel" consult-omni-gptel)
+    ("gf" "gptel log find" gptel-log-find)]
    [("a" "apps" consult-omni-apps)
     ("gh" "code search" +search-github-with-lang)
     ("gH" "github" consult-omni-github :if (lambda () (featurep 'consult-gh)))]])
