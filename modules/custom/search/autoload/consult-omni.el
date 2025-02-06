@@ -33,12 +33,11 @@ It's safer to use a function rather than the concrete value of a key"
 
 ;;;###autoload
 (defun consult-omni-load-sources+ ()
-  (dolist (m `(consult-omni-brave
+  (dolist (m '(consult-omni-brave
                consult-omni-browser-history
                consult-omni-duckduckgo
                consult-omni-elfeed
-               ,(when (featurep 'consult-gh)
-                    'consult-omni-gh)
+               consult-omni-gh
                consult-omni-google
                consult-omni-gptel
                consult-omni-invidious
@@ -50,19 +49,17 @@ It's safer to use a function rather than the concrete value of a key"
     (require m nil t)))
 
 (defun gptel-log-find ()
-  "Grep for things in gptel log files."
-  (interactive)
-  (if-let* ((q (if (use-region-p)
-                   (buffer-substring-no-properties
-                    (region-beginning) (region-end))
-                 (if-let* ((s (symbol-at-point)))
-                     (symbol-name s) "")))
-            (in (concat org-default-folder "/gptel")))
-      (consult--grep
-       "Search in gptel logs: "
-       #'consult--ripgrep-make-builder in q)))
-
-(+vertico-file-search :query "foo" :in (concat org-default-folder "/gptel"))
+"Grep for things in gptel log files."
+(interactive)
+(if-let* ((q (if (use-region-p)
+                 (buffer-substring-no-properties
+                  (region-beginning) (region-end))
+               (if-let* ((s (symbol-at-point)))
+                   (symbol-name s) "")))
+          (in (concat org-default-folder "/gptel")))
+    (consult--grep
+     "Search in gptel logs: "
+     #'consult--ripgrep-make-builder in q)))
 
 ;;;###autoload
 (transient-define-prefix consult-omni-transient ()

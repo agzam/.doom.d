@@ -517,15 +517,16 @@
                   :desc "sdcv" "l" #'sdcv-search-pointer
                   :desc "Merriam Webster" "m" #'mw-thesaurus-lookup-dwim
                   :desc "wiktionary" "w" #'wiktionary-bro-dwim)
-                 (:prefix ("g" . "translate")
+                 (:prefix ("t" . "translate")
                   :desc "en->ru" "e" #'google-translate-query-translate-reverse
                   :desc "ru->en" "r" #'google-translate-query-translate
                   :desc "es->en" "s" #'+google-translate-es->en
                   :desc "en->es" "S" #'+google-translate-en->es
-                  :desc "translate" "g" #'translate-transient))
+                  :desc "translate" "t" #'translate-transient))
                (:when (modulep! :custom ai)
-                 (:prefix ("c" . "chatgpt")
-                  :desc "chatgpt" "c" #'gptel+
+                 (:prefix ("g" . "chatgpt")
+                  :desc "gptel-menu" "g" #'gptel-menu
+                  :desc "new gptel" "n" #'gptel+
                   :desc "check text" "e" #'+gptel-improve-text-transient
                   "s" #'gptel-send)))
 

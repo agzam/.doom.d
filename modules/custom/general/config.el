@@ -158,7 +158,23 @@
     :before #'evil-window-vsplit
     :before #'evil-window-split
     (when (bound-and-true-p writeroom-mode)
-      (writeroom-mode -1))))
+      (writeroom-mode -1)))
+
+  ;; no evil in transients
+  ;; otherwise, evil prioritizes buffer's major mode keymap
+  ;; for some reason tapping into transient-setup|buffer-hook
+  ;; didn't work for me
+  (defadvice! transient-show-no-evil-a (ofn &rest args)
+    :around #'gptel-menu
+    ;; :around 'transient--init-keymaps
+    (save-mark-and-excursion
+     (evil-emacs-state))
+    (apply ofn args))
+  ;; Go back to evil after transient
+  (add-hook! 'transient-exit-hook
+    (defun transient-exit-evil-normal-h ()
+      (save-mark-and-excursion
+        (evil-normal-state)))))
 
 (use-package! ibuffer-sidebar
   :defer t

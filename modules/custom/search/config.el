@@ -6,7 +6,7 @@
          (file-truename doom-local-dir) emacs-version))
 
 (use-package! consult-omni
-  ;; :after (consult-gh consult-gh-embark)
+  :after (org-mode consult-gh consult-gh-embark)
   :commands (consult-omni-transient consult-omni-multi)
   :init
   (consult-omni--set-api-keys)
