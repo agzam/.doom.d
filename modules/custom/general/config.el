@@ -174,7 +174,8 @@
   (add-hook! 'transient-exit-hook
     (defun transient-exit-evil-normal-h ()
       (save-mark-and-excursion
-        (evil-normal-state)))))
+        (when (evil-emacs-state-p)
+          (evil-normal-state))))))
 
 (use-package! ibuffer-sidebar
   :defer t

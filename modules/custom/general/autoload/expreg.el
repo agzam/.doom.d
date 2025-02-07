@@ -83,4 +83,5 @@
                    (txt (buffer-substring-no-properties rb re)))
          (delete-region rb re)
          (markdown-insert-inline-link txt url))))
-    ("C-c s" "wrap in code block" markdown-wrap-code-generic)]])
+    ("C-c s" "wrap in code block" markdown-wrap-code-generic)
+    ("C-c <" "wrap in collapsible" markdown-wrap-collapsible)]])

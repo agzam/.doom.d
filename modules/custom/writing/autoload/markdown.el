@@ -73,13 +73,16 @@
   (when (region-active-p)
     (let* ((beg (region-beginning))
            (end (region-end))
-           (content (buffer-substring beg end)))
-      (delete-region beg end)
-      (deactivate-mark)
+           (content (delete-and-extract-region beg end))
+           ;; typically content inside collapsible needs indentation
+           (content (with-temp-buffer
+                      (insert content)
+                      (indent-rigidly (point-min) (point-max) 4)
+                      (buffer-substring (point-min) (point-max)))))
       (insert
-       (format "<details>\n  <summary></summary>\n%s\n</details>" content))
-      (search-backward "<summary>")
-      (forward-char 9)
+       (format "<details>\n  <summary></summary>\n\n%s\n\n</details>" content))
+      (goto-char beg)
+      (search-forward "<summary>")
       (when evil-mode
         (evil-insert-state)))))
 
