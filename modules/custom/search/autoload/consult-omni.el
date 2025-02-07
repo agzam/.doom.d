@@ -61,6 +61,17 @@ It's safer to use a function rather than the concrete value of a key"
      "Search in gptel logs: "
      #'consult--ripgrep-make-builder in q)))
 
+(defun search-in-slack ()
+  (interactive)
+  (when-let* ((search-term
+               (read-string "Search in Slack: "
+                            (if (use-region-p)
+                                (buffer-substring (region-beginning) (region-end))
+                              (symbol-name (symbol-at-point))))))
+    (spacehammer--hs-eval-fennel
+     (format "(do (local slack (require :my-slack)) (slack.search \"%s\"))"
+             search-term))))
+
 ;;;###autoload
 (transient-define-prefix consult-omni-transient ()
   ["consult-omni"
@@ -75,6 +86,7 @@ It's safer to use a function rather than the concrete value of a key"
     ("gf" "gptel log find" gptel-log-find)]
    [("a" "apps" consult-omni-apps)
     ("gh" "code search" +search-github-with-lang)
-    ("gH" "github" consult-omni-github :if (lambda () (featurep 'consult-gh)))]])
+    ("gH" "github" consult-omni-github :if (lambda () (featurep 'consult-gh)))
+    ("ss" "slack search" search-in-slack :if (lambda () (featurep :system 'macos)))]])
 
 (advice-add 'consult-omni-transient :before #'consult-omni-load-sources+)

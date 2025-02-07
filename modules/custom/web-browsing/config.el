@@ -206,3 +206,15 @@
   :commands (consult-hn)
   :defer t
   :config)
+
+(use-package! reddigg
+  :defer t
+  :config
+  (setq reddigg-subs '(emacs clojure))
+
+  (defadvice! reddig-expand-all-a ()
+    :after #'reddigg--ensure-modes
+    (org-fold-show-all)
+    (goto-char (point-min))
+    (org-next-visible-heading 1)))
+

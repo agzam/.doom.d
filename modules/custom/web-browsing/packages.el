@@ -21,3 +21,4 @@
 
 (package! hnreader :recipe (:host github :repo "thanhvg/emacs-hnreader"))
 (package! consult-hn :recipe (:local-repo "consult-hn"))
+(package! reddigg :recipe (:host github :repo "thanhvg/emacs-reddigg"))
