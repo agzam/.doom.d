@@ -19,6 +19,6 @@
 
 (package! subed :recipe (:host github :repo "sachac/subed" :files ("subed/*.el")))
 
-(package! hnreader :recipe (:host github :repo "thanhvg/emacs-hnreader"))
+(package! hnreader :recipe (:host github :repo "agzam/emacs-hnreader" :branch "major-mode"))
 (package! consult-hn :recipe (:local-repo "consult-hn"))
-(package! reddigg :recipe (:host github :repo "thanhvg/emacs-reddigg"))
+(package! reddigg :recipe (:host github :repo "agzam/emacs-reddigg" :branch "major-mode"))

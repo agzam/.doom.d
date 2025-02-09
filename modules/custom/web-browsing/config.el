@@ -198,10 +198,6 @@
                  "t" #'subed-toggle-srt-metadata)
         "p" #'subed-mpv-play-from-file+))
 
-(use-package! hnreader
-  :defer t
-  :config)
-
 (use-package! consult-hn
   :commands (consult-hn)
   :defer t
@@ -210,15 +206,24 @@
     (hnreader-comment hn-object-url))
   (setq consult-hn-browse-fn #'consult-hn-reader))
 
+(use-package! hnreader
+  :defer t
+  :config
+  (map! :map hnreader-mode-map
+        "C-c C-o" #'hnreader-browse-nh-story-url
+        :n "yy" #'hnreader-copy-hn-story-url))
+
 (use-package! reddigg
   :defer t
   :config
   (setq reddigg-subs '(emacs clojure))
 
-  (defadvice! reddig-hn-expand-all-a (&rest _)
-    :after #'hnreader--print-comments
-    :after #'reddigg--ensure-modes
-    (org-fold-show-all)
-    (goto-char (point-min))
-    (org-next-visible-heading 1)))
+  (map! :map reddigg-mode-map
+        "C-c C-o" #'reddigg-browse-current-sub-url
+        :n "yy" #'reddigg-copy-current-sub-url)
 
+  (add-hook! (reddigg-mode hnreader-mode)
+    (defun reddigg-hnreader-show-all-h ()
+      (org-fold-show-all)
+      (goto-char (point-min))
+      (org-next-visible-heading 1))))
