@@ -205,14 +205,18 @@
 (use-package! consult-hn
   :commands (consult-hn)
   :defer t
-  :config)
+  :config
+  (cl-defun consult-hn-reader (&key hn-object-url &allow-other-keys)
+    (hnreader-comment hn-object-url))
+  (setq consult-hn-browse-fn #'consult-hn-reader))
 
 (use-package! reddigg
   :defer t
   :config
   (setq reddigg-subs '(emacs clojure))
 
-  (defadvice! reddig-expand-all-a ()
+  (defadvice! reddig-hn-expand-all-a (&rest _)
+    :after #'hnreader--print-comments
     :after #'reddigg--ensure-modes
     (org-fold-show-all)
     (goto-char (point-min))

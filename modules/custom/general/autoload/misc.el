@@ -102,14 +102,14 @@ narrowed to."
   "Remove repo and build file for a selected package.
 Useful for clean up before running `doom -up`."
   (interactive)
-  (require 'straight)
-  (let* ((sel-dir (completing-read
-                   "Select package repo: "
-                   (directory-files (straight--repos-dir ))))
-         (dirs (list (straight--repos-dir sel-dir)
-                     (straight--build-dir sel-dir))))
-    (dolist (d dirs)
-      (delete-directory d :recursive))))
+  (with-eval-after-load 'straight
+    (let* ((sel-dir (completing-read
+                     "Select package repo: "
+                     (directory-files (straight--repos-dir ))))
+           (dirs (list (straight--repos-dir sel-dir)
+                       (straight--build-dir sel-dir))))
+      (dolist (d dirs)
+        (delete-directory d :recursive)))))
 
 ;;;###autoload
 (defun yas-completing-prompt (prompt choices &optional display-fn completion-fn)
