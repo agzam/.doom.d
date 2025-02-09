@@ -1,4 +1,5 @@
 ;;; custom/web-browsing/autoload/misc.el -*- lexical-binding: t; -*-
+(require 'bug-reference)
 
 ;;;###autoload
 (defun +process-external-url (&optional url)
@@ -9,8 +10,17 @@
      (cl-letf (((symbol-function 'browse-url) #'forge-visit-topic-via-url))
        (call-interactively #'bug-reference-push-button)))
 
+    ((pred (string-match-p "https\\:\\/\\/news.ycombinator.com\\/.*"))
+     (hnreader-comment url))
+
+    ((pred (string-match-p "https\\:\\/\\/www.reddit.com\\/.*"))
+     (reddigg-view-comments url))
+
     ((pred (string-match-p "https\\:\\/\\/www.youtube.com\\/watch.*"))
-     (elfeed-tube-fetch url))
+     (progn
+       (message "opening %s" url)
+       (mpv-transient)
+       (mpv-play-url url)))
 
     ((pred (and (string-match-p "https\\:\\/\\/github.com.*" url)
                 (modulep! :custom git)))
