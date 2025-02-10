@@ -84,8 +84,8 @@
   (add-hook! 'elfeed-search-mode-hook
     (add-hook 'kill-buffer-hook #'+rss-cleanup-h nil 'local))
 
-  ;; Large images are annoying to scroll through, because scrolling follows the
-  ;; cursor, so we force shr to insert images in slices.
+  ;; Large images are annoying to scroll through, because scrolling
+  ;; follows the cursor, so we force shr to insert images in slices.
   (setq-hook! 'elfeed-show-mode-hook
     shr-put-image-function #'+rss-put-sliced-image-fn
     shr-external-rendering-functions '((img . +rss-render-image-tag-without-underline-fn)))
@@ -227,3 +227,14 @@
       (org-fold-show-all)
       (goto-char (point-min))
       (org-next-visible-heading 1))))
+
+(after! ol-eww
+  (defadvice! org-eww-open-other-window-a (orig-fun &rest args)
+    "Always open eww links in other window."
+    :around #'org-eww-open
+    (let ((display-buffer-alist
+           '((".*" .
+              (display-buffer-in-side-window
+               (side . right)
+               (window-width . 0.5))))))
+      (apply orig-fun args))))
