@@ -7,47 +7,33 @@
 (defvar tab-bar-tab-removed-hook nil)
 
 ;;;###autoload
-(defvar tab-bar--templates
-  '(("o" "Org" (org-roam-dailies-goto-today '("w")))
-    ("c" "chat-gpt" (gptel+))
-    ("gn" "gh-notify" (gh-notify))
-    ("ef" "elfeed" (elfeed))
-    ("no" "notmuch" (notmuch))
-    ("t" "telega" (telega))
-    ("ed" "doom.d" (find-in-doom-dir))
-    ("ei" "emacs.d" (dired (file-name-directory doom-emacs-dir)))
-    ("D" "dotfile.org" (find-file "~/dotfile.org/dotfile.org"))
-    ("p" "projects" (switch-to-buffer
-                     (find-file-noselect
-                      (completing-read "choose project: " projectile-known-projects))))
-    ("SPC" "zoxide history" (+zoxide-find)))
-  "List of built-in templates for new tabs
- For user-customizable templates use `tab-bar-custom-templates'")
+(transient-define-prefix tab-bar-new-tab-transient ()
+  "New Tab"
+  ["Choose a template"
+   [("o" "Org" (lambda () (interactive) (org-roam-dailies-goto-today '("w"))))
+    ("c" "chat-gpt" gptel+)]
 
-;;;###autoload
-(defun tab-bar--update-templates ()
-  (require 'transient)
-  (transient-define-prefix tab-bar-new-tab-transient ()
-    "New Tab"
-    ["Choose a template\n"
-     [:setup-children
-      (lambda (_)
-        (transient-parse-suffixes
-         'tab-bar-new-tab-transient
-         (seq-map
-          (lambda (x)
-            (pcase-let ((`(,key ,desc ,form) x))
-              `(,key ,desc (lambda ()
-                             (interactive)
-                             ,form
-                             (run-hooks 'tab-bar-tab-added-hook)))))
-          tab-bar--templates)))]
-     [("d" "kill tab" +tab-bar-kill-tab)]]))
+   [("gn" "gh-notify" gh-notify)]
 
-(tab-bar--update-templates)
+   [("ef" "elfeed" elfeed)
+    ("no" "notmuch" notmuch)
+    ("t" "telega" telega)]
 
-;;;###autoload
-(require 'transient)
+   [("ed" "doom.d" find-in-doom-dir)
+    ("ei" "emacs.d" (lambda () (interactive) (dired (file-name-directory doom-emacs-dir))))
+    ("D" "dotfile.org" (lambda () (interactive) (find-file "~/dotfile.org/dotfile.org")))]
+
+   [("hn" "NH" hnreader-news)
+    ("rd" "Reddit" reddigg-view-frontpage)]
+
+   [("p" "projects" (lambda ()
+                      (interactive)
+                      (switch-to-buffer
+                       (find-file-noselect
+                        (completing-read "choose project: " projectile-known-projects)))))
+    ("SPC" "zoxide history" +zoxide-find)]
+   [("d" "kill tab" +tab-bar-kill-tab)]])
+
 ;;;###autoload
 (transient-define-prefix tab-bar-transient ()
   "Layouts"
@@ -137,7 +123,6 @@
 ;;;###autoload
 (defun +tab-bar-add-new-tab ()
   (interactive)
-  (tab-bar--update-templates)
   (tab-bar-new-tab)
   (doom/switch-to-scratch-buffer)
   (tab-bar-new-tab-transient))
