@@ -23,7 +23,7 @@
   (setq consult-omni-default-count 30
         consult-omni-dynamic-input-debounce 0.7
         consult-omni-dynamic-refresh-delay 0.5
-        consult-omni-default-browse-function #'+process-external-url)
+        consult-omni-default-browse-function #'browse-url)
 
   (defadvice! consult-omni-use-thing-at-point-a
     (fn &optional initial no-cb &rest args)

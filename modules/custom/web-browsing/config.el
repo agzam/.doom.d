@@ -4,6 +4,7 @@
   :commands (eww +eww-open-in-other-window)
   :config
   (setq shr-use-fonts nil
+        shr-inhibit-images t
         shr-max-image-proportion 0.5
         eww-browse-url-new-window-is-tab nil
         shr-max-width 80
@@ -208,6 +209,7 @@
 
 (use-package! hnreader
   :defer t
+  :hook (hnreader-mode . reddigg-hnreader-show-all-h)
   :config
   (map! :map hnreader-mode-map
         "C-c C-o" #'hnreader-browse-nh-story-url
@@ -215,23 +217,19 @@
 
 (use-package! reddigg
   :defer t
+  :hook (reddigg-mode . reddigg-hnreader-show-all-h)
   :config
   (setq reddigg-subs '(emacs clojure))
 
   (map! :map reddigg-mode-map
         "C-c C-o" #'reddigg-browse-current-sub-url
-        :n "yy" #'reddigg-copy-current-sub-url)
+        :n "yy" #'reddigg-copy-current-sub-url))
 
-  (add-hook! (reddigg-mode hnreader-mode)
-    (defun reddigg-hnreader-show-all-h ()
-      (org-fold-show-all)
-      (goto-char (point-min))
-      (org-next-visible-heading 1))))
-
-(after! ol-eww
+(after! (ol-eww hnreader)
   (defadvice! org-eww-open-other-window-a (orig-fun &rest args)
     "Always open eww links in other window."
     :around #'org-eww-open
+    :around #'hnreader-comment
     (let ((display-buffer-alist
            '((".*" .
               (display-buffer-in-side-window

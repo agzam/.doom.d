@@ -1,5 +1,6 @@
 ;;; custom/web-browsing/autoload/browser.el -*- lexical-binding: t; -*-
 
+;;;###autoload
 (defun run-jxa (jxa-script)
   "Run given JXA-SCRIPT using osascript."
   (if (not (eq system-type 'darwin))

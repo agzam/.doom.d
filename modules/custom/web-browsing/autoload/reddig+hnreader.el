@@ -51,3 +51,10 @@
   (interactive)
   (when-let* ((url (hnreader-copy-hn-story-url)))
     (browse-url url)))
+
+;;;###autoload
+(defun reddigg-hnreader-show-all-h ()
+  "Expands all the comments."
+  (org-fold-show-all)
+  (goto-char (point-min))
+  (org-next-visible-heading 1))
