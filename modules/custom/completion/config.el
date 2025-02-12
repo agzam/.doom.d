@@ -158,7 +158,8 @@
   :after corfu
   :bind (:map corfu-map
               ("M-q" . corfu-quick-complete)
-              ("C-q" . corfu-quick-insert)))
+              ("C-q" . corfu-quick-insert))
+  :config (setq corfu-quick1 "asdfghjkl;"))
 
 (use-package! kind-icon
   :after corfu
@@ -243,13 +244,7 @@
   (defadvice! vertico-posframe--display-no-evil (fn lines)
     :around #'vertico-posframe--display
     (funcall-interactively fn lines)
-    (evil-local-mode -1))
-
-  (map! :after vertico
-        :map vertico-map
-        "C-c C-p"  #'vertico-posframe-briefly-off
-        "C-c C-." #'vertico-posframe-briefly-transparent
-        "C-c C-\\" #'vertico-posframe-briefly-tall))
+    (evil-local-mode -1)))
 
 (use-package! vertico-repeat
   :after vertico
@@ -292,9 +287,17 @@
      cand))
 
   (map! :map vertico-map
-        "C-'" #'vertico-quick-insert
+        (:prefix ";"
+         "i" #'vertico-quick-insert
+         "g" #'vertico-multiform-grid
+         "b" #'vertico-multiform-buffer
+         "f" #'vertico-multiform-flat
+         "u" #'vertico-multiform-unobtrusive
+         "r" #'vertico-multiform-reverse
+         "t" #'vertico-posframe-briefly-tall
+         "p" #'vertico-multiform-posframe
+         :desc "insert ;" "SPC" (cmd! (insert ";")))
         "C-h" #'vertico-directory-delete-word
-        "C-c C-g" #'vertico-grid-mode
         "M-h" #'vertico-grid-left
         "M-l" #'vertico-grid-right
         "M-j" #'vertico-next

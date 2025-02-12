@@ -454,6 +454,8 @@
         "C-b" #'browser-create-roam-node-for-active-tab))
 
       (:prefix ("p" . "projects")
+               "b" #'consult-projectile
+               "f" #'consult-projectile-find-file
                (:after projectile
                 :desc "Invalidate project cache" "I" #'projectile-invalidate-cache
                 :desc "project IBuffer" "i" #'projectile-ibuffer
