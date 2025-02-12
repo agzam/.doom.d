@@ -17,5 +17,4 @@
   (:host github
    :repo "akermu/emacs-libvterm"))
 
-
 (package! eshell-vterm)

@@ -1,4 +1,4 @@
-;;; custom/shell/autoload.el -*- lexical-binding: t; -*-
+;;; custom/shell/autoload/shell.el -*- lexical-binding: t; -*-
 
 ;;;###autoload
 (defun shell-pop-choose (&optional arg)
@@ -23,4 +23,3 @@
       (projectile-with-default-dir pr
           (shell-pop arg))
     (shell-pop arg)))
-

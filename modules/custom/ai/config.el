@@ -123,7 +123,7 @@
 
   (add-to-list
    'display-buffer-alist
-   `(,(rx bos (or "*Claude" "*ChatGPT"))
+   `(,(rx bos (or "*Claude" "*ChatGPT" "gptel-"))
      (display-buffer-in-quadrant)
      (direction . right)
      (window . root))))

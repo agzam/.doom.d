@@ -295,6 +295,7 @@
          "u" #'vertico-multiform-unobtrusive
          "r" #'vertico-multiform-reverse
          "t" #'vertico-posframe-briefly-tall
+         ";" #'vertico-posframe-briefly-tall
          "p" #'vertico-multiform-posframe
          :desc "insert ;" "SPC" (cmd! (insert ";")))
         "C-h" #'vertico-directory-delete-word
