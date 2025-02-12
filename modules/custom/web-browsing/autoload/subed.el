@@ -9,9 +9,9 @@
       (remove-overlays nil nil 'srt-metadata t)
     (save-excursion
       (goto-char (point-min))
-      (while (re-search-forward "^\\([0-9]+\\)\n\\([0-9:.,-]+ --> [0-9:.,-]+\\)\n\\(.*\\(?:\n.*\\)*?\\)\n\n" nil t)
-        (let ((ov-metadata (make-overlay (match-beginning 1) (match-beginning 3)))
-              (ov-extra-newline (make-overlay (1+ (match-end 3)) (match-end 0))))
+      (while (re-search-forward "^\\(?:[0-9]+\n\\)?\\([0-9:.,-]+ --> [0-9:.,-]+\\)\n\\(.*\\(?:\n.*\\)*?\\)\n\n" nil t)
+        (let ((ov-metadata (make-overlay (match-beginning 1) (match-beginning 2)))
+              (ov-extra-newline (make-overlay (1+ (match-end 2)) (match-end 0))))
           (overlay-put ov-metadata 'invisible t)
           (overlay-put ov-metadata 'srt-metadata t)
           (overlay-put ov-extra-newline 'invisible t)
