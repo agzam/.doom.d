@@ -24,16 +24,3 @@
           (shell-pop arg))
     (shell-pop arg)))
 
-;;;###autoload
-(defun eshell-clear+ ()
-  (interactive)
-  (eshell/clear-scrollback)
-  (eshell-send-input))
-
-;;;###autoload
-(defun eshell/b* (buffer-or-name)
-  "Return specified buffer as a string.
-
-So it is possible to do something like:
-b* #<buffer *Messages*> | grep '^Warning'> #<buffer AllWarnings>"
-  (with-current-buffer buffer-or-name (buffer-string)))
