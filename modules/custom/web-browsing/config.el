@@ -219,7 +219,7 @@
   :defer t
   :hook (reddigg-mode . reddigg-hnreader-show-all-h)
   :config
-  (setq reddigg-subs '(emacs clojure))
+  (setq reddigg-subs '(emacs clojure programming))
 
   (map! :map reddigg-mode-map
         "C-c C-o" #'reddigg-browse-current-sub-url

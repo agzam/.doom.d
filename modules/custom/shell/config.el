@@ -33,12 +33,14 @@
       (map! :map eshell-mode-map
             :desc "clear" "C-c C-l" #'eshell-clear+
             :desc "history" "M-r" #'consult-history
+            :desc "detach" "C-<return>" #'eshell-send-detached-input+
             (:localleader
              :desc "clear" "c" #'eshell-clear+
              "b" #'eshell-insert-buffer-name))
       (map! :map eshell-hist-mode-map
             :desc "clear" "C-c C-l" #'eshell-clear+
-            :desc "history" "M-r" #'consult-history)))
+            :desc "history" "M-r" #'consult-history
+            :desc "output>buf" "C-c C-h" #'eshell-export-output+)))
 
   ;; fullscreen apps
   (eshell-vterm-mode)

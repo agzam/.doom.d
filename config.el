@@ -263,7 +263,7 @@
        "f" #'next-error-follow-minor-mode))
 
 ;; disable nonsensical keys
-(dolist (key '("s-n" "s-p" "s-q" "s-m" "s-,"
+(dolist (key '("s-n" "s-p" "s-q" "s-m" "s-," "s-h"
                "C-x C-c"
                "C-<tab>" "C-S-<tab>" "<f11>"
                "M-k" "M-j"))
@@ -322,7 +322,9 @@
 (map! :leader
       :desc "M-x" "SPC" #'execute-extended-command
       ;; +default/search-project broke in Doom due to https://github.com/minad/consult/commit/ada079d5932700a8819ace622ef4323e73983161
-      "*" (cmd! (consult-ripgrep (projectile-project-root) (symbol-name (symbol-at-point))))
+      "*" (cmd! (consult-ripgrep
+                 (project-root (project-current))
+                 (symbol-name (symbol-at-point))))
       "TAB"   #'alternate-buffer
       "v"     #'expreg-transient
       :nv   ";" (cmd! (call-interactively
