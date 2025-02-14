@@ -215,10 +215,9 @@
 (after! writegood-mode
   (remove-hook! 'org-mode-hook #'writegood-mode))
 
-(after! (:or markdown-mode chatgpt-shell-mode)
+(after! markdown-mode
   (require 'lsp-marksman)
-  (map! :map (markdown-mode-map
-              chatgpt-shell-mode-map)
+  (map! :map (markdown-mode-map)
         (:localleader
          (:prefix ("s" . "wrap")
                   "<" #'markdown-wrap-collapsible

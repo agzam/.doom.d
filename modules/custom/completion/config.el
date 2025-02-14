@@ -473,13 +473,7 @@
         :desc "ru->en" "r" #'google-translate-query-translate
         :desc "es->en" "s" #'+google-translate-es->en
         :desc "en->es" "S" #'+google-translate-en->es
-        :desc "translate" "g" #'google-translate-at-point)
-       (:when (modulep! :custom chat)
-         (:prefix ("c" . "chatgpt")
-          :desc "chatgpt" "c" #'chatgpt-shell
-          :desc "check w.prompt" "E" #'+chatgpt-shell-improve-text--embark
-          :desc "check text" "e" #'+chatgpt-shell-improve-text
-          :desc "region" "r" #'chatgpt-shell-send-and-review-region))))))
+        :desc "translate" "g" #'google-translate-at-point)))))
 
   (add-hook! 'embark-collect-mode-hook
     (defun visual-line-mode-off-h ()
