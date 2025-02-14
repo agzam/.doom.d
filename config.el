@@ -541,6 +541,10 @@
       "SPC" nil
       "h" #'evil-backward-char)
 
+(map! :map comint-mode-map
+      "M-r" #'consult-history
+      "C-c C-l" #'comint-clear-buffer)
+
 (after! (:and evil evil-maps)
   ;; often conflicts with doom-local-leader
   ;; (unbind-key (kbd ",") evil-motion-state-map)

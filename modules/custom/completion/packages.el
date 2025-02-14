@@ -4,15 +4,13 @@
 (package! corfu
   :recipe (:files (:defaults "extensions/*.el")))
 
-(package! corfu-terminal
-  :recipe (:type git :repo "https://codeberg.org/akib/emacs-corfu-terminal.git"))
+(package! corfu-terminal :recipe (:host github :repo "cimisc/emacs-corfu-terminal"))
 
 (when (modulep! +icons)
   (package! kind-icon))
 (package! orderless)
 (package! cape)
-(package! popon
-  :recipe (:type git :repo "https://codeberg.org/akib/emacs-popon"))
+(package! popon :recipe (:host github :repo "cimisc/emacs-popon"))
 (package! compat)
 
 (package! consult-projectile)
