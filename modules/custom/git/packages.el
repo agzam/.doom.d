@@ -9,7 +9,8 @@
 ;; (package! emacsql-sqlite-builtin)
 (package! forge :recipe (:host github :repo "magit/forge"))
 
-(package! gh-notify :recipe (:host github :repo "anticomputer/gh-notify"))
+;; (package! gh-notify :recipe (:host github :repo "anticomputer/gh-notify"))
+(package! gh-notify :recipe (:host github :repo "agzam/gh-notify" :branch "replace-dash-functions"))
 
 (package! git-link)
 

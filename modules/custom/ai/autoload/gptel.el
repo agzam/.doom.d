@@ -182,22 +182,22 @@
 ;;;###autoload
 (defun gptel+ (&optional arg)
   (interactive "P")
-  (let ((last-b (thread-last
-                  (buffer-list)
-                  (seq-filter
-                   (lambda (buf)
-                     (buffer-local-value 'gptel-mode buf)))
-                  (seq-sort
-                   (lambda (a b)
-                     (string> (buffer-name a) (buffer-name b))))
-                  (seq-first))))
-    (if (or arg (null last-b))
-        (let ((b (call-interactively #'gptel)))
-          (run-with-timer
-           0.1 nil
-           #'display-buffer b)))
-      (display-buffer last-b)
-      (switch-to-buffer last-b)))
+  (let* ((last-b (unless arg
+                   (thread-last
+                     (buffer-list)
+                     (seq-filter
+                      (lambda (buf)
+                        (buffer-local-value 'gptel-mode buf)))
+                     (seq-sort
+                      (lambda (a b)
+                        (string> (buffer-name a) (buffer-name b))))
+                     (seq-first))))
+         (last-b (or last-b
+                     (funcall-interactively
+                      #'gptel
+                      (format "*%s*" (gptel-backend-name (default-value 'gptel-backend)))))))
+    (display-buffer last-b)
+    (switch-to-buffer last-b)))
 
 ;;;###autoload
 (defun gptel-persist-history ()

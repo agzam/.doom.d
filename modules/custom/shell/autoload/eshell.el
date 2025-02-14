@@ -86,6 +86,7 @@ With prefix ARG, also copy the prompt and input."
     (pop-to-buffer buffer)))
 
 ;;From https://github.com/nbarrientos/dotfiles/.emacs.d/init.el
+;;;###autoload
 (defun eshell-send-detached-input+ (&optional arg)
   "Send the current Eshell input to a compilation buffer.
 With universal prefix argument bury the compilation buffer and
