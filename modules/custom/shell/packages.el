@@ -18,3 +18,5 @@
    :repo "akermu/emacs-libvterm"))
 
 (package! eshell-vterm)
+
+(package! eshell-atuin)

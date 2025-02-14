@@ -32,7 +32,6 @@
     (defun set-eshell-keys-h ()
       (map! :map eshell-mode-map
             :desc "clear" "C-c C-l" #'eshell-clear+
-            :desc "history" "M-r" #'consult-history
             :desc "detach" "C-<return>" #'eshell-send-detached-input+
             (:localleader
              :desc "clear" "c" #'eshell-clear+
@@ -40,7 +39,11 @@
       (map! :map eshell-hist-mode-map
             :desc "clear" "C-c C-l" #'eshell-clear+
             :desc "history" "M-r" #'consult-history
-            :desc "output>buf" "C-c C-h" #'eshell-export-output+)))
+            :desc "output>buf" "C-c C-h" #'eshell-export-output+
+            (:unless (featurep 'eshell-atuin)
+              :desc "history" "M-r" #'consult-history)
+            (:when (featurep 'eshell-atuin)
+              :desc "history" "M-r" #'eshell-atuin-history))))
 
   ;; fullscreen apps
   (eshell-vterm-mode)
@@ -61,3 +64,19 @@
 
 (use-package! eat
   :hook ((eshell-load . eat-eshell-mode)))
+
+(use-package! eshell-atuin
+  :when (executable-find "atuin")
+  :after eshell
+  :init (eshell-atuin-mode)
+  :config
+  (setopt
+   eshell-atuin-search-fields '(time duration command directory relativetime)
+   eshell-atuin-history-format "%-70c %>10r %-40i "
+   eshell-atuin-filter-mode 'global
+   eshell-atuin-search-options nil)
+
+  (defadvice! eshell-atuin-history-fix-sorting-a (ofn &optional arg)
+    :around #'eshell-atuin-history
+    (let* ((vertico-sort-function nil))
+      (funcall ofn arg))))
