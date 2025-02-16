@@ -231,8 +231,9 @@
     :around #'org-eww-open
     :around #'hnreader-comment
     (let ((display-buffer-alist
-           '((".*" .
-              (display-buffer-in-side-window
-               (side . right)
-               (window-width . 0.5))))))
+           '((".*"
+              (display-buffer-in-quadrant)
+              (direction . right)
+              (init-width . 0.5)
+              (window . root)))))
       (apply orig-fun args))))
