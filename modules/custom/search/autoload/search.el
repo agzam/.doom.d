@@ -32,11 +32,21 @@
   (interactive "P")
   (if (not (executable-find "zoxide"))
       (error "zoxide executable cannot be found")
-    (let* ((items (split-string
-                   (shell-command-to-string "zoxide query --list")
-                   "\n"))
-           (path (completing-read "Choose: " items)))
-      (find-file path))))
+    (let* ((items (thread-last
+                    (or query "")
+                    (format "zoxide query --list '%s'")
+                    shell-command-to-string
+                    ((lambda (s) (split-string s "\n")))
+                    (seq-remove #'string-blank-p)))
+           (path (or (and (length= items 1) (car-safe items))
+                     (consult--read
+                      items
+                      :prompt "Choose: "
+                      :sort nil
+                      :initial query))))
+      (if (eq major-mode 'eshell-mode)
+          path
+        (find-file path)))))
 
 ;;;###autoload
 (defun +add-to-zoxide-cache ()

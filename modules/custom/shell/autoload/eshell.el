@@ -43,22 +43,9 @@
   (dolist (f files)
     (eshell-print (+eshell-file-contents f))))
 
-
 (defun eshell/z (&optional regexp)
   "Navigate to a previously visited directory in eshell."
-  (let ((eshell-dirs (delete-dups (mapcar 'abbreviate-file-name
-                                          (ring-elements eshell-last-dir-ring)))))
-    (cond
-     ((and (not regexp) (featurep 'consult-dir))
-      (let* ((consult-dir--source-eshell `(:name "Eshell"
-                                           :narrow ?e
-                                           :category file
-                                           :face consult-file
-                                           :items ,eshell-dirs))
-             (consult-dir-sources (cons consult-dir--source-eshell consult-dir-sources)))
-        (eshell/cd (substring-no-properties (consult-dir--pick "Switch directory: ")))))
-     (t (eshell/cd (if regexp (eshell-find-previous-directory regexp)
-                     (completing-read "cd: " eshell-dirs)))))))
+  (eshell/cd (+zoxide-find regexp)))
 
 ;; From https://protesilaos.com/dotemacs
 (defun eshell-export-output+ (&optional arg)
