@@ -9,13 +9,12 @@
 ;; (package! emacsql-sqlite-builtin)
 (package! forge :recipe (:host github :repo "magit/forge"))
 
-;; (package! gh-notify :recipe (:host github :repo "anticomputer/gh-notify"))
-(package! gh-notify :recipe (:host github :repo "agzam/gh-notify" :branch "replace-dash-functions"))
+(package! gh-notify :recipe (:host github :repo "anticomputer/gh-notify"))
 
 (package! git-link)
 
 ;; @tarsius broke Code-Review: https://github.com/wandersoncferreira/code-review/issues/245
-(package! code-review :recipe (:host github :repo "phelrine/code-review" :branch "fix/closql-update"))
+(package! code-review :recipe (:host github :repo "EGmux/code-review"))
 
 ;; (package! gist)
 

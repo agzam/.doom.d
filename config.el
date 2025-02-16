@@ -183,7 +183,16 @@
         evil-move-cursor-back nil
         evil-in-single-undo t
         evil-want-fine-undo 'yes)
-  (map! :map 'evil-visual-state-map "u" #'undo))
+  (map! :map 'evil-visual-state-map "u" #'undo)
+
+  (defadvice! fwd-o-bkwd-paragraph-o-heading-recenter-a (&rest _args)
+    :after #'org-forward-paragraph
+    :after #'org-backward-paragraph
+    :after #'evil-forward-paragraph
+    :after #'evil-backward-paragraph
+    :after #'org-previous-visible-heading
+    :after #'org-next-visible-heading
+    (recenter)))
 
 (after! better-jumper
   (setq better-jumper-context 'window))

@@ -79,8 +79,8 @@
   (add-hook! org-mode
     (defun org-init-keybinds-h ()
       (map! :map org-mode-map
-            :n "[[" (cmd! (outline-previous-visible-heading 1) (recenter))
-            :n "]]" (cmd! (outline-next-visible-heading 1) (recenter))
+            :n "[[" #'org-previous-visible-heading
+            :n "]]" #'org-next-visible-heading
             [remap imenu] #'consult-outline
             "C-c C-f f" #'org-roam-node-find
             "C-c C-i" #'org-roam-node-insert+
