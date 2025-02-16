@@ -3,12 +3,13 @@
   "The list of extracted videos,
 where each item is a k/v pair of the url and filepath.")
 
+;;;###autoload
 (defun yt-extract-video-y-entonces (url &optional callback)
   "Extracts video from URL with yt-dlp and runs CALLBACK fn.
 
 Passes the filepath as the param to CALLBACK."
   (interactive "sVideo URL: ")
-  (let* ((default-directory "~/Movies/")
+  (let* ((default-directory "~/Downloads/")
          (pbuf "*yt-dlp*")
          (process (async-shell-command
                    (format "yt-dlp --verbose --restrict-filenames '%s'" url) pbuf)))
