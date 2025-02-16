@@ -314,7 +314,11 @@
             "M-l" #'sp-forward-slurp-sexp
             "M-h" #'sp-forward-barf-sexp)
       (:map minibuffer-local-map
-            "C-c C-s" #'embark-collect))
+            "C-c C-s" #'embark-collect
+            (:prefix
+             ";"
+             ";" #'evil-insert-state
+             :desc "insert ;" "SPC" (cmd! (insert ";")))))
 
 (map! :after rfc-mode
       :map rfc-mode-map
