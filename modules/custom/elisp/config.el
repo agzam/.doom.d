@@ -8,7 +8,10 @@
 
 (add-hook! 'profiler-report-mode-hook
   (defun yas-minor-mode-off ()
-      (yas-minor-mode -1)))
+      (yas-minor-mode -1))
+  (run-with-timer
+   0.1 nil
+   #'profiler-report-expand-all))
 
 (use-package! paradox
   :defer t

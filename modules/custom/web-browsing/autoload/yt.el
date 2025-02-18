@@ -15,13 +15,14 @@ Passes the filepath as the param to CALLBACK."
                    (format "yt-dlp --verbose --restrict-filenames '%s'" url) pbuf)))
     (set-process-sentinel
      (get-buffer-process pbuf)
-     (lambda (process event)
+     (lambda (_process event)
        (cond ((string= event "finished\n")
               (when-let* ((fpath (with-current-buffer pbuf
                                    (goto-char (point-max))
+                                   (edebug)
                                    (when (re-search-backward
-                                          "Deleting original file \\|\\[download\\] \\([^.]+\\)" nil t)
-                                     (let ((base-name (match-string-no-properties 1)))
+                                          "\\(Deleting original file\\|\\[download\\]\\) \\([^.]+\\)" nil t)
+                                     (let ((base-name (match-string-no-properties 2)))
                                        (car-safe
                                         (directory-files
                                          (expand-file-name default-directory)

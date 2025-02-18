@@ -140,3 +140,23 @@ its own buffer."
     (message link)
     (kill-new link)
     link))
+
+;;;###autoload
+(defun profiler-report-expand-all ()
+  "Expand all entries in the profiler report recursively."
+  (interactive)
+  (thread-last
+    (buffer-list)
+    (seq-filter
+     (lambda (b)
+       (string-match-p
+        "\\*\\(CPU\\|Memory\\)-Profiler-Report.*\\*"
+        (buffer-name b))))
+    (seq-do
+     (lambda (b)
+       (with-current-buffer b
+         (goto-char (point-min))
+         (while (not (eobp))
+           (profiler-report-expand-entry)
+           (profiler-report-next-entry))
+         (goto-char (point-min)))))))

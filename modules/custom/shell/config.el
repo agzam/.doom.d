@@ -48,7 +48,7 @@
   ;; fullscreen apps
   (eshell-vterm-mode)
   (defalias 'eshell/v 'eshell-exec-visual)
-  (dolist (cmd '(ncdu btop k9s))
+  (dolist (cmd '(ncdu btop k9s pueue))
     (add-to-list 'eshell-visual-commands (symbol-name cmd))))
 
 (use-package! shell-pop

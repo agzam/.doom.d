@@ -12,5 +12,6 @@
   (yt-extract-video-y-entonces
    url
    (lambda (fpath)
-     (telega-chatbuf-attach-video fpath)
-     (delete-file fpath))))
+     (funcall-interactively #'telega-chatbuf-attach-video fpath)
+     ;; TODO: figure that out (delete-file fpath)
+     )))
