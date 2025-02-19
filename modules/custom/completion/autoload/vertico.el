@@ -2,26 +2,27 @@
 
 (defvar vertico-posframe-global nil)
 
+(defvar vertico-posframe-tall-mode nil
+  "Track if vertico-posframe is in tall mode.")
+
+(defun vertico-posframe-height-restore-h ()
+  (setq vertico-posframe-height nil
+        vertico-count 15
+        vertico-posframe-tall-mode nil))
+
 ;;;###autoload
 (defun vertico-posframe-briefly-tall ()
   (interactive)
-  (setq vertico-posframe-height 65
-        vertico-count 47)
-  (add-hook! 'minibuffer-exit-hook
-    (defun vertico-posframe-height-restore-h ()
-      (setq vertico-posframe-height nil
-            vertico-count 15))))
-
-;;;###autoload
-(defun restore-vertico-posframe-state-h ()
-  (when (not (eq vertico-posframe-mode
-                 vertico-posframe-global))
-    (run-at-time
-     "0 sec" nil
-     (fn! ()
-          (when vertico-posframe-global
-            (vertico-posframe-mode +1)
-            (setq vertico-posframe-global nil))))))
+  (if vertico-posframe-tall-mode
+      (vertico-posframe-height-restore-h)
+    (let* ((frame-height (frame-height))
+           (max-height (- frame-height 2))
+           (vertico-height (min 75 max-height))
+           (count (- vertico-height 18)))
+      (setq vertico-posframe-height vertico-height
+            vertico-count count
+            vertico-posframe-tall-mode t)
+      (add-hook! 'minibuffer-exit-hook #'vertico-posframe-height-restore-h))))
 
 ;;;###autoload
 (defun vertico-jump-to-home-dir-on~  ()
