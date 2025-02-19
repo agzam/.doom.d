@@ -1,13 +1,17 @@
 ;;; custom/shell/eshell.el -*- lexical-binding: t; -*-
 
 ;;;###autoload
-(defun eshell/b (regexp)
-  "Output buffer content of buffer matching REGEXP."
-  (cl-loop for buf in (buffer-list)
-           thereis
-           (and (string-match-p regexp (buffer-name buf))
-                (with-current-buffer buf
-                  (buffer-substring-no-properties (point-min) (point-max))))))
+(defun eshell/b (buf-or-regexp)
+  "Output buffer content of buffer matching BUF-OR-REGEXP."
+  (let ((buf (if (bufferp buf-or-regexp)
+                 buf-or-regexp
+               (cl-loop for b in (buffer-list)
+                        thereis (and (string-match-p
+                                      buf-or-regexp (buffer-name b))
+                                     b)))))
+    (when buf
+      (with-current-buffer buf
+        (buffer-substring-no-properties (point-min) (point-max))))))
 
 ;;;###autoload
 (defun eshell-clear+ ()
