@@ -54,9 +54,7 @@
         "v" #'expreg-transient)
 
   (defadvice! evil-select-block-a (ofn &rest args)
-    :around #'evil-select-block
-    :around #'evil-select-quote
-    :around #'evil-select-paren
+    :around #'evil-visual-message
     (expreg-transient)
     (apply ofn args))
 

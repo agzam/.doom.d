@@ -11,6 +11,19 @@
       (setq beg (point))
       `((line . ,(cons beg end))))))
 
+(defun expreg-transient--insert-browser-url ()
+  (interactive)
+  (when-let* ((url (browser-copy-tab-link))
+              (_ (string-match-p "^https?://"  url))
+              (rb (region-beginning))
+              (re (region-end))
+              (txt (buffer-substring-no-properties rb re)))
+    (delete-region rb re)
+    (pcase major-mode
+      (org-mode (insert (org-link-make-string url txt)))
+      (markdown--mode (markdown-insert-inline-link txt url))
+      (t url))))
+
 ;;;###autoload
 (transient-define-prefix expreg-transient ()
   "expand/contract"
@@ -50,20 +63,12 @@
     ("`" "code" (lambda () (interactive) (org-emphasize ?~)))
     ("+" "strikethrough" (lambda () (interactive) (org-emphasize ?+)))]
    [("C-c l" "insert link" org-insert-link)
-    ("C-c L" "insert browser url"
-     (lambda ()
-       (interactive)
-       (when-let* ((url (browser-copy-tab-link))
-                   (_ (string-match-p "^https?://"  url))
-                   (rb (region-beginning))
-                   (re (region-end))
-                   (txt (buffer-substring-no-properties rb re))
-                   (lnk (org-link-make-string url txt)))
-         (delete-region rb re)
-         (insert (org-link-make-string url txt)))))
-    ("C-c t" "wrap in quote block"
+    ("C-c L" "insert browser url" expreg-transient--insert-browser-url)
+    ("; l" "insert link" org-insert-link)
+    ("; L" "insert browser url" expreg-transient--insert-browser-url)
+    ("; t" "wrap in quote block"
      (lambda () (interactive) (org-wrap-in-block 'quote)))
-    ("C-c s" "wrap in source block"
+    ("; s" "wrap in source block"
      (lambda () (interactive) (org-wrap-in-block 'src)))]]
   ["Markdown"
    :if (lambda () (derived-mode-p 'markdown-mode))
@@ -73,15 +78,8 @@
     ("`" "code" markdown-insert-code)
     ("+" "strikethrough" markdown-insert-strike-through)]
    [("C-c l" "insert link" markdown-insert-link)
-    ("C-c L" "insert browser url"
-     (lambda ()
-       (interactive)
-       (when-let* ((url (browser-copy-tab-link))
-                   (_ (string-match-p "^https?://"  url))
-                   (rb (region-beginning))
-                   (re (region-end))
-                   (txt (buffer-substring-no-properties rb re)))
-         (delete-region rb re)
-         (markdown-insert-inline-link txt url))))
-    ("C-c s" "wrap in code block" markdown-wrap-code-generic)
-    ("C-c <" "wrap in collapsible" markdown-wrap-collapsible)]])
+    ("C-c L" "insert browser url" expreg-transient--insert-browser-url)
+    ("; l" "insert link" markdown-insert-link)
+    ("; L" "insert browser url" expreg-transient--insert-browser-url)
+    ("; s" "wrap in code block" markdown-wrap-code-generic)
+    ("; <" "wrap in collapsible" markdown-wrap-collapsible)]])
