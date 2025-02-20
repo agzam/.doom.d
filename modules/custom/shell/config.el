@@ -45,6 +45,15 @@
             (:when (featurep 'eshell-atuin)
               :desc "history" "M-r" #'eshell-atuin-history))))
 
+  (cl-defmethod eshell-output-object-to-target :around (_obj (target marker))
+    ;; immediately open the redirected buffer
+    (let ((base (cl-call-next-method)))
+      (when (buffer-live-p (marker-buffer target))
+        (with-current-buffer (marker-buffer target)
+          (ansi-color-apply-on-region (point-min) (point-max))
+          (display-buffer (current-buffer))))
+      base))
+
   ;; fullscreen apps
   (eshell-vterm-mode)
   (defalias 'eshell/v 'eshell-exec-visual)
