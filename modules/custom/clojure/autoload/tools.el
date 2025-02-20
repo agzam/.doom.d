@@ -126,3 +126,12 @@ it loads that, otherwise runs neil to choose a library."
 (defun portal.api/close ()
   (interactive)
   (cider-nrepl-sync-request:eval "(portal.api/close)"))
+
+
+;;;###autoload
+(defun lsp-clojure-show-project-tree+ ()
+  (interactive)
+ (if (get-buffer-window lsp-clojure--project-tree-buffer-name t)
+     (switch-to-buffer-other-window
+      lsp-clojure--project-tree-buffer-name)
+   (call-interactively #'lsp-clojure-show-project-tree)))

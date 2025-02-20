@@ -270,6 +270,7 @@ See: `(frame-position-display-spots)'  details."
     ("J" "reduce frame height" reduce-frame-height :transient t)
     ("K" "increase frame height" increase-frame-height :transient t)]]
   [:hide always
+   :class transient-subgroups
    :setup-children
    (lambda (_)
      (transient-parse-suffixes

@@ -57,6 +57,7 @@
     ("u" "undo kill tab" tab-undo)
     ("SPC" "templates" tab-bar-new-tab-transient)]]
   [:hide always
+   :class transient-columns
    :setup-children
    (lambda (_)
      (transient-parse-suffixes

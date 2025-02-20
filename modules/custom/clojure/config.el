@@ -244,7 +244,8 @@
                         "P" #'cider-pprint-eval-last-sexp-to-comment
                         "d" #'cider-pprint-eval-defun-at-point
                         "D" #'cider-pprint-eval-defun-to-comment
-                        "r" #'cider-pprint-eval-last-sexp-to-repl)
+                        "r" #'cider-pprint-eval-last-sexp-to-repl
+                        "t" #'lsp-clojure-show-project-tree+)
                (:prefix ("s" . "repl")
                         "s" #'cider-switch-to-repl-buffer
                         "S" #'cider-switch-to-nrepl-buffer

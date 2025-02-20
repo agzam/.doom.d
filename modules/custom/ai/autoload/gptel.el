@@ -93,6 +93,7 @@
    [""
     ("C-<return>" "Let's go" +gptel-improve-text)]]
   [:hide always
+   :class transient-subgroups
    :setup-children
    (lambda (_)
      "easy toggling prompt variations"

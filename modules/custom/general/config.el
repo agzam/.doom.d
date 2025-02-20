@@ -48,7 +48,7 @@
 
 
 (use-package! expreg
-  :defer t
+  :commands (evil-visual-char evil-visual-line evil-visual-block expreg-transient)
   :config
   (map! :map evil-visual-state-map
         "v" #'expreg-transient)

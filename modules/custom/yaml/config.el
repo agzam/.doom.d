@@ -37,15 +37,22 @@
 
 (use-package! yaml-pro
   :after yaml-mode
-  :hook (yaml-mode . yaml-pro-mode)
+  :hook (yaml-mode . yaml-pro-ts-mode)
   :config
-  (map! :map yaml-pro-mode-map
+  (map! :map yaml-pro-ts-mode-map
         [remap imenu] #'yaml-pro-jump
         "C-c C-f" nil
+        :n "]]" #'yaml-pro-ts-next-subtree
+        :n "[[" #'yaml-pro-ts-prev-subtree
+        :n "[{" #'yaml-pro-ts-first-sibling
+        :n "]}" #'yaml-pro-ts-last-sibling
+        :n "M-l" #'yaml-pro-ts-indent-subtree
+        :n "M-h" #'yaml-pro-ts-unindent-subtree
         :n "zc" #'yaml-pro-fold-at-point
         :n "zo" #'yaml-pro-unfold-at-point
-        :n "gk" #'yaml-pro-prev-subtree
-        :n "gj" #'yaml-pro-next-subtree
-        :n "gK" #'yaml-pro-up-level
-        :n "M-k" #'yaml-pro-move-subtree-up
-        :n "M-j" #'yaml-pro-move-subtree-down))
+        :n "gk" #'yaml-pro-ts-prev-subtree
+        :n "gj" #'yaml-pro-ts-next-subtree
+        :n "gK" #'yaml-pro-ts-up-level
+        :n "gJ" #'yaml-pro-ts-down-level
+        :n "M-k" #'yaml-pro-ts-move-subtree-up
+        :n "M-j" #'yaml-pro-ts-move-subtree-down))
