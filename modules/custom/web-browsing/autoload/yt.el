@@ -19,7 +19,6 @@ Passes the filepath as the param to CALLBACK."
        (cond ((string= event "finished\n")
               (when-let* ((fpath (with-current-buffer pbuf
                                    (goto-char (point-max))
-                                   (edebug)
                                    (when (re-search-backward
                                           "\\(Deleting original file\\|\\[download\\]\\) \\([^.]+\\)" nil t)
                                      (let ((base-name (match-string-no-properties 2)))
