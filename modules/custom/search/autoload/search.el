@@ -58,3 +58,15 @@
                (file-readable-p file))
       (call-process-shell-command
        (format "zoxide add \"%s\"" file)))))
+
+;; +default/search-project broke in Doom due to
+;; https://github.com/minad/consult/commit/ada079d5932700a8819ace622ef4323e73983161
+;;;###autoload
+(defun search-in-project ()
+  (interactive)
+  (consult-ripgrep
+   (project-root (project-current))
+   (if (use-region-p)
+       (buffer-substring-no-properties
+        (region-beginning) (region-end))
+     (symbol-name (symbol-at-point)))))

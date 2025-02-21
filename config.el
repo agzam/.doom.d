@@ -334,13 +334,10 @@
 
 (map! :leader
       :desc "M-x" "SPC" #'execute-extended-command
-      ;; +default/search-project broke in Doom due to https://github.com/minad/consult/commit/ada079d5932700a8819ace622ef4323e73983161
-      "*" (cmd! (consult-ripgrep
-                 (project-root (project-current))
-                 (symbol-name (symbol-at-point))))
-      "TAB"   #'alternate-buffer
-      "v"     #'expreg-transient
-      :nv   ";" (cmd! (call-interactively
+      "*" #'search-in-project
+      "TAB" #'alternate-buffer
+      "v" #'expreg-transient
+      :nv ";" (cmd! (call-interactively
                        (if (evil-visual-state-p)
                            #'comment-or-uncomment-region
                          #'comment-line)))
