@@ -51,6 +51,7 @@
     ("%" "%" evilmi-jump-items :transient t)
     ("C-;" "embark-action" embark-act)
     (">" "indent" indent-rigidly)
+    ("<" "outdent" indent-rigidly-left)
     ("~" "invert" evil-invert-char)
     ("SPC" "space" (lambda () (interactive) (funcall (general-simulate-key "SPC"))))]]
   ["Org Mode"

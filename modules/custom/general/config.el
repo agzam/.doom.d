@@ -49,14 +49,15 @@
 
 (use-package! expreg
   :commands (evil-visual-char evil-visual-line evil-visual-block expreg-transient)
-  :config
-  (map! :map evil-visual-state-map
-        "v" #'expreg-transient)
-
+  :init
   (defadvice! evil-select-block-a (ofn &rest args)
     :around #'evil-visual-message
     (expreg-transient)
     (apply ofn args))
+  :config
+  (map! :map evil-visual-state-map
+        "v" #'expreg-transient)
+
 
   (setq-default expreg-functions
                 '(expreg--subword
