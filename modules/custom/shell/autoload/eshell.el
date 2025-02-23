@@ -78,8 +78,8 @@ With prefix ARG, also copy the prompt and input."
 
 ;;From https://github.com/nbarrientos/dotfiles/.emacs.d/init.el
 ;;;###autoload
-(defun eshell-send-detached-input+ (&optional arg)
-  "Send the current Eshell input to a compilation buffer.
+(defun eshell-send-detached-input (&optional arg)
+  "Send current eshell input to a compilation buffer.
 With universal prefix argument bury the compilation buffer and
 send a notification when the process has exited."
   (interactive "p")
@@ -108,5 +108,34 @@ send a notification when the process has exited."
                          :on-action (lambda (id key) (switch-to-buffer-other-window ,(buffer-name compilation-buffer)))
                          :title (format "Process running in '%s' finished!" ,hostname)
                          :urgency (if (string-prefix-p "finished" str) 'normal 'critical)))))))
+    (eshell-add-input-to-history cmd)
+    (eshell-reset)))
+
+
+;;;###autoload
+(defun eshell-send-detached-input-to-kitty (&optional arg)
+  "Send current eshell input to the existing Kitty instance.
+With an argument - keep the window open; with two - keep focus in Emacs.
+
+Make sure remote control is enabled in kitty.conf:
+https://sw.kovidgoyal.net/kitty/remote-control/
+allow_remote_control yes
+listen_on unix:/tmp/kitty_sock"
+  (interactive "p")
+  (when-let* ((cmd (buffer-substring eshell-last-output-end (point-max)))
+              (ksock (car-safe (file-expand-wildcards "/tmp/kitty-sock-[0-9]*"))))
+    (start-process-shell-command
+     "detach-kitty" "*detached-kitty*"
+     (format
+      (concat
+       "kitten @ --to unix:%1$s "
+       "launch --type=tab "
+       "--cwd %3$s "
+       (when (eq arg 4) "--hold ")
+       "/bin/zsh -c %2$s"
+       (unless (eq arg 16) "&& kitten @ --to unix:%1$s focus-window"))
+      ksock
+      (shell-quote-argument cmd)
+      (eshell/pwd)))
     (eshell-add-input-to-history cmd)
     (eshell-reset)))

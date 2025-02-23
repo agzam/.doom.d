@@ -32,7 +32,9 @@
     (defun set-eshell-keys-h ()
       (map! :map eshell-mode-map
             :desc "clear" "C-c C-l" #'eshell-clear+
-            :desc "detach" "C-<return>" #'eshell-send-detached-input+
+            :desc "detach" "C-<return>" #'eshell-send-detached-input
+            :desc "kitty detach" "s-<return>" #'eshell-send-detached-input-to-kitty
+            :i "C-u" nil
             (:localleader
              :desc "clear" "c" #'eshell-clear+
              "b" #'eshell-insert-buffer-name))

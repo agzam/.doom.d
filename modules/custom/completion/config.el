@@ -49,6 +49,7 @@
         "C-n"      #'corfu-next
         "C-p"      #'corfu-previous
         "C-/" #'+corfu-move-to-minibuffer
+        :i "C-u" nil ; evil-collection bs
         (:prefix ("C-c p" . "cape")
                  "p"  #'complete-tag
                  "t"  #'cape-dabbrev
