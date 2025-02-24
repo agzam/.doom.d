@@ -124,7 +124,8 @@
 ;;;###autoload
 (defun +tab-bar-add-new-tab ()
   (interactive)
-  (tab-bar-new-tab)
+  (let ((tab-bar-new-tab-to 'rightmost))
+    (tab-bar-new-tab))
   (doom/switch-to-scratch-buffer)
   (tab-bar-new-tab-transient))
 
