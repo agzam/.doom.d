@@ -67,7 +67,7 @@
     ("C-c L" "insert browser url" expreg-transient--insert-browser-url)
     ("; l" "insert link" org-insert-link)
     ("; L" "insert browser url" expreg-transient--insert-browser-url)
-    ("; t" "wrap in quote block"
+    ("; q" "wrap in quote block"
      (lambda () (interactive) (org-wrap-in-block 'quote)))
     ("; s" "wrap in source block"
      (lambda () (interactive) (org-wrap-in-block 'src)))]]

@@ -577,9 +577,7 @@
 (map! :after transient
       (:map transient-map
             "q" #'transient-quit-one
-            "<escape>" #'transient-quit-one)
-      (:map transient-edit-map "q" #'transient-quit-one)
-      (:map transient-sticky-map "q" #'transient-quit-seq))
+            "<escape>" #'transient-quit-one))
 
 (map! :after helpful
       :map helpful-mode-map
