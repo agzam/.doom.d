@@ -123,19 +123,19 @@ allow_remote_control yes
 listen_on unix:/tmp/kitty_sock"
   (interactive "p")
   (when-let* ((cmd (buffer-substring eshell-last-output-end (point-max)))
-              (ksock (car-safe (file-expand-wildcards "/tmp/kitty-sock-[0-9]*"))))
+              (ksock (car-safe (file-expand-wildcards "/tmp/kitty_sock-[0-9]*"))))
     (start-process-shell-command
      "detach-kitty" "*detached-kitty*"
      (format
       (concat
        "kitten @ --to unix:%1$s "
        "launch --type=tab "
-       "--cwd %3$s "
+       "--cwd '%3$s' "
        (when (eq arg 4) "--hold ")
-       "/bin/zsh -c %2$s"
+       "/bin/zsh -i -c '%2$s' "
        (unless (eq arg 16) "&& kitten @ --to unix:%1$s focus-window"))
       ksock
-      (shell-quote-argument cmd)
+      cmd
       (eshell/pwd)))
     (eshell-add-input-to-history cmd)
     (eshell-reset)))
