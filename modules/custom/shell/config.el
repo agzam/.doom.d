@@ -28,6 +28,7 @@
         "c" #'comint-clear-buffer))
 
 (after! eshell
+  (setq eshell-aliases-file (concat doom-emacs-dir ".local/etc/eshell/aliases"))
   (add-hook! 'eshell-mode-hook
     (defun set-eshell-keys-h ()
       (map! :map eshell-mode-map
