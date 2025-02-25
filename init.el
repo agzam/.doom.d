@@ -224,4 +224,5 @@
        nix
        golang
        lua
+       python
        (:if (featurep :system 'macos) jira))
