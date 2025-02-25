@@ -122,8 +122,13 @@ https://sw.kovidgoyal.net/kitty/remote-control/
 allow_remote_control yes
 listen_on unix:/tmp/kitty_sock"
   (interactive "p")
-  (when-let* ((cmd (buffer-substring eshell-last-output-end (point-max)))
-              (ksock (car-safe (file-expand-wildcards "/tmp/kitty_sock-[0-9]*"))))
+  (let* ((cmd (buffer-substring eshell-last-output-end (point-max)))
+         (ksock (car-safe (file-expand-wildcards "/tmp/kitty_sock-[0-9]*")))
+         (keep-tab? (eq arg 4))
+         (no-focus? (eq arg 16))
+         (tmpf (expand-file-name
+                (concat "kitty-run-" (format-time-string "%Y-%m-%d-%H%M%S"))
+                (make-temp-file nil t))))
     (start-process-shell-command
      "detach-kitty" "*detached-kitty*"
      (format
@@ -131,11 +136,19 @@ listen_on unix:/tmp/kitty_sock"
        "kitten @ --to unix:%1$s "
        "launch --type=tab "
        "--cwd '%3$s' "
-       (when (eq arg 4) "--hold ")
-       "/bin/zsh -i -c '%2$s' "
-       (unless (eq arg 16) "&& kitten @ --to unix:%1$s focus-window"))
+       (when keep-tab? "--hold ")
+       "/bin/zsh -i -c '%2$s "
+       (unless keep-tab? (concat " 2>&1 | tee " tmpf))
+       (when keep-tab? "; exec zsh")
+       "' "
+       (unless no-focus? "&& kitten @ --to unix:%1$s focus-window"))
       ksock
       cmd
       (eshell/pwd)))
     (eshell-add-input-to-history cmd)
-    (eshell-reset)))
+    (eshell-reset)
+    (unless keep-tab?
+      (with-current-buffer (find-file-noselect tmpf)
+        (compilation-mode)
+        (auto-revert-mode)
+        (display-buffer (current-buffer))))))
