@@ -345,7 +345,8 @@
   (require 'org)
   (setq embark-cycle-key "C-;"
         embark-help-key "M-h"
-        embark-confirm-act-all nil)
+        embark-confirm-act-all nil
+        embark-quit-after-action nil)
 
   (setq embark-indicators '(embark-which-key-indicator
                             embark-highlight-indicator
@@ -353,6 +354,14 @@
 
   (advice-add #'embark-completing-read-prompter
               :around #'embark-hide-which-key-indicator)
+
+  (defadvice! embark-select-next-line-a (orig-fn &rest args)
+    "embark-select always moves to the next item upon selection."
+    :around #'embark-select
+    (apply orig-fn args)
+    (when (minibufferp)
+      (vertico-next)))
+
   (map!
    :after embark
    (:map embark-general-map
