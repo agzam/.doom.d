@@ -289,6 +289,7 @@
 
   (map! :map vertico-map
         (:prefix ";"
+         "." #'evil-insert-state
          "i" #'vertico-quick-insert
          "g" #'vertico-multiform-grid
          "b" #'vertico-multiform-buffer

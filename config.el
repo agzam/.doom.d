@@ -317,7 +317,7 @@
             "C-c C-s" #'embark-collect
             (:prefix
              ";"
-             ";" #'evil-insert-state
+             "." #'evil-insert-state
              :desc "insert ;" "SPC" (cmd! (insert ";")))))
 
 (map! :after rfc-mode
