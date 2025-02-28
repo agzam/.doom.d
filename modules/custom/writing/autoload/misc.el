@@ -76,7 +76,7 @@ created within the last minute and grabs the latest."
          (ocr-file (make-temp-name
                     (expand-file-name "ocr" temporary-file-directory)))
          (cmd (format
-               "%s '%s' %s"
+               "%s --psm 6 '%s' %s"
                (executable-find "tesseract")
                (expand-file-name f)
                ocr-file))

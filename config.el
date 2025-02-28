@@ -346,6 +346,8 @@
         :desc "choose shell" "\"" #'shell-pop-choose)
 
       (:prefix ("b" . "buffers/browser")
+       :desc "proj. buffers" "b" #'consult-projectile
+       :desc "all buffers" "B" #'consult-buffer
        :desc "scratch" "s" #'doom/switch-to-scratch-buffer
        :desc "Messages" "m" #'switch-to-messages-buffer
        :desc "kill" "d" #'kill-current-buffer
