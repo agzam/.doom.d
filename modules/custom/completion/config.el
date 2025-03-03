@@ -382,6 +382,9 @@
                   "k" (embark-split-action find-file split-window-vertically)
                   "a" (embark-ace-action find-file)))
 
+   (:map embark-command-map
+         "h" #'helpful-command)
+
    (:map
     embark-buffer-map
     "o" nil

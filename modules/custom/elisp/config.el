@@ -1,6 +1,7 @@
 ;;; custom/elisp/config.el -*- lexical-binding: t; -*-
 
 (map! :map profiler-report-mode-map
+      :n "RET" #'profiler-report-helpful-symbol-at-point
       "M-l" #'profiler-report-expand-entry
       "M-h" #'profiler-report-collapse-entry
       "M-j" #'profiler-report-next-entry

@@ -160,3 +160,8 @@ its own buffer."
            (profiler-report-expand-entry)
            (profiler-report-next-entry))
          (goto-char (point-min)))))))
+
+;;;###autoload
+(defun profiler-report-helpful-symbol-at-point ()
+  (interactive)
+  (helpful-symbol (get-text-property (point) 'profiler-entry)))
