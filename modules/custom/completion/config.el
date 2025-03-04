@@ -347,7 +347,7 @@
   (setq embark-cycle-key "C-;"
         embark-help-key "M-h"
         embark-confirm-act-all nil
-        embark-quit-after-action nil)
+        embark-quit-after-action t)
 
   (setq embark-indicators '(embark-which-key-indicator
                             embark-highlight-indicator

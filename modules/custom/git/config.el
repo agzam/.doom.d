@@ -229,8 +229,9 @@
 
   (map! :map gh-notify-mode-map
         "C-c C-o" #'gh-notify-forge-browse-topic-at-point
-        :ni "r" #'gh-notify-mark-read-and-move
-        :ni "u" #'gh-notify-mark-read-and-move)
+        :ni "r" #'gh-notify-mark-read-and-move-next
+        :ni "u" #'gh-notify-mark-read-and-move-next
+        :ni "U" #'gh-notify-mark-read-and-move-prev)
 
   (map! :localleader :map gh-notify-mode-map
         "C-l" nil

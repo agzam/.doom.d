@@ -7,8 +7,8 @@
     (not (oref obj unread-p))))
 
 ;;;###autoload
-(defun gh-notify-mark-read-and-move ()
-  "Marks notification and moves either up or down, depending on the status of next notification."
+(defun gh-notify-mark-read-and-move-next (&optional arg)
+  "Marks notification read and moves to the next (or prev if ARG)"
   (interactive)
   (let* ((notification (gh-notify-current-notification))
          (forge-obj (gh-notify-notification-forge-obj notification))
@@ -25,7 +25,12 @@
       (insert (funcall 'gh-notify-render-notification notification))
       (insert "\n")
       (read-only-mode +1)))
-  (forward-line -2))
+  (forward-line (if arg -2 0)))
+
+;;;###autoload
+(defun gh-notify-mark-read-and-move-prev ()
+  (interactive)
+  (funcall-interactively #'gh-notify-mark-read-and-move :prev))
 
 ;;;###autoload
 (defun gh-notify-code-review-forge-pr-at-point ()
