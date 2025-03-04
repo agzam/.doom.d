@@ -57,3 +57,21 @@ PATH (a string) can be an url, a local file path, or a base64 encoded datauri."
                  (org-download-insert-link raw-uri new-path)))))
     (error
      (user-error "Failed to attach file: %s" (error-message-string e)))))
+
+;;;###autoload
+(defun yank-media--tiff-as-png-a (orig-fun mimetype data)
+  "There's never a situation when I want the clipboard image content to be
+attached as .tiff. Flameshot.app stores it as tiff."
+  (if (string= mimetype "image/tiff")
+      (let ((png-data (with-temp-buffer
+                        (set-buffer-multibyte nil)
+                        (insert data)
+                        (let ((coding-system-for-read 'binary)
+                              (coding-system-for-write 'binary))
+                          (shell-command-on-region (point-min) (point-max)
+                                                   "magick tiff:- png:-"
+                                                   (current-buffer)
+                                                   'no-mark)
+                          (buffer-string)))))
+        (funcall orig-fun "image/png" png-data))
+    (funcall orig-fun mimetype data)))

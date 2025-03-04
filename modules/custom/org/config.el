@@ -53,7 +53,7 @@
    org-cycle-emulate-tab nil
    org-edit-src-content-indentation 0
    org-fontify-quote-and-verse-blocks t
-
+   org-image-actual-width nil
    ;; Org 9.6 breaks things like consult-line
    ;; Temporarily changing fold style. Track the issue here:
    ;; https://github.com/minad/consult/issues/563
@@ -160,7 +160,10 @@
     (add-hook! 'org-attach-after-change-hook
       (defun org-attach-save-file-list-to-property (dir)
         (when-let ((files (org-attach-file-list dir)))
-          (org-set-property "ORG_ATTACH_FILES" (mapconcat #'identity files ", "))))))
+          (org-set-property "ORG_ATTACH_FILES" (mapconcat #'identity files ", ")))))
+
+    (advice-add 'org--image-yank-media-handler
+                :around #'yank-media--tiff-as-png-a))
 
   (org-babel-do-load-languages
    'org-babel-load-languages
