@@ -52,17 +52,18 @@
     ("C-;" "embark-action" embark-act)
     (">" "indent" indent-rigidly)
     ("<" "outdent" indent-rigidly-left)
+    ("=" "fix indent" evil-indent)
     ("~" "invert" evil-invert-char)
     ("SPC" "space" (lambda () (interactive) (funcall (general-simulate-key "SPC"))))]]
   ["Org Mode"
    :if (lambda () (derived-mode-p 'org-mode))
    :hide (lambda () (not transient-show-common-commands))
-   [("*" "bold" (lambda () (interactive) (org-emphasize ?*)))
-    ("/" "italic" (lambda () (interactive) (org-emphasize ?\/)))
-    ("_" "underline" (lambda () (interactive) (org-emphasize ?_)))
-    ("=" "verbatim" (lambda () (interactive) (org-emphasize ?=)))
-    ("`" "code" (lambda () (interactive) (org-emphasize ?~)))
-    ("+" "strikethrough" (lambda () (interactive) (org-emphasize ?+)))]
+   [("; *" "bold" (lambda () (interactive) (org-emphasize ?*)))
+    ("; /" "italic" (lambda () (interactive) (org-emphasize ?\/)))
+    ("; _" "underline" (lambda () (interactive) (org-emphasize ?_)))
+    ("; =" "verbatim" (lambda () (interactive) (org-emphasize ?=)))
+    ("; `" "code" (lambda () (interactive) (org-emphasize ?~)))
+    ("; +" "strikethrough" (lambda () (interactive) (org-emphasize ?+)))]
    [("C-c l" "insert link" org-insert-link)
     ("C-c L" "insert browser url" expreg-transient--insert-browser-url)
     ("; l" "insert link" org-insert-link)
@@ -74,10 +75,10 @@
   ["Markdown"
    :if (lambda () (derived-mode-p 'markdown-mode))
    :hide (lambda () (not transient-show-common-commands))
-   [("*" "bold" markdown-insert-bold)
-    ("/" "italic" markdown-insert-italic)
-    ("`" "code" markdown-insert-code)
-    ("+" "strikethrough" markdown-insert-strike-through)]
+   [("; *" "bold" markdown-insert-bold)
+    ("; /" "italic" markdown-insert-italic)
+    ("; `" "code" markdown-insert-code)
+    ("; +" "strikethrough" markdown-insert-strike-through)]
    [("C-c l" "insert link" markdown-insert-link)
     ("C-c L" "insert browser url" expreg-transient--insert-browser-url)
     ("; l" "insert link" markdown-insert-link)
