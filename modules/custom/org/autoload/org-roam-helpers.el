@@ -125,10 +125,17 @@
 the current note with precise positions."
   ;; this is an attempt to fix: jgru/consult-org-roam#38
   (interactive current-prefix-arg)
-  (let* ((node (if (called-interactively-p 'any)
-                   (or (ignore-errors (and (eq major-mode 'org-mode)
-                                           (org-roam-node-at-point)))
-                       (consult-org-roam-node-read nil nil nil t "Backlinks for the node: "))
+  (let* ((node-ids-w-backlinks
+          (mapcar #'car (org-roam-db-query [:select [nodes:id]
+                                            :from links
+                                            :inner :join nodes :on (= links:dest nodes:id)
+                                            :group :by nodes:id])))
+         (node (if (called-interactively-p 'any)
+                   (consult-org-roam-node-read
+                    (ignore-errors
+                      (org-roam-node-title (org-roam-node-at-point)))
+                    (lambda (node) (member (org-roam-node-id node) node-ids-w-backlinks))
+                    nil t "Backlinks for the node: ")
                  (org-roam-node-at-point)))
          (backlinks (org-roam-db-query
                      [:select [source pos]
