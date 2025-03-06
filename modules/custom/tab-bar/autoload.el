@@ -37,7 +37,9 @@
 ;;;###autoload
 (transient-define-prefix tab-bar-transient ()
   "Layouts"
-  ["Layouts\n"
+  ["Layouts"
+   ["" "" "" ""
+    ("<tab>" "recent" tab-bar-switch-to-recent-tab)]
    [("k" "prev" tab-bar-switch-to-prev-tab)
     ("j" "next" tab-bar-switch-to-next-tab)
     ("<" "move left" +tab-bar-tab-move-left :transient t)

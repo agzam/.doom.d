@@ -53,7 +53,7 @@
    org-cycle-emulate-tab nil
    org-edit-src-content-indentation 0
    org-fontify-quote-and-verse-blocks t
-   org-image-actual-width nil
+   org-image-actual-width '(0.8)
    ;; Org 9.6 breaks things like consult-line
    ;; Temporarily changing fold style. Track the issue here:
    ;; https://github.com/minad/consult/issues/563
