@@ -1,12 +1,5 @@
 ;;; custom/elisp/autoload.el -*- lexical-binding: t; -*-
 
-;;;###autoload (autoload 'paradox-menu-mode--set-keys "custom/elisp/autoload" nil t)
-(defun paradox-menu-mode--set-keys ()
-  (map! :localleader
-        :map paradox-menu-mode-map
-        "r" #'paradox-filter-regexp
-        "f" #'hydra-paradox-filter/body))
-
 ;;;###autoload (autoload 'eval-current-form-sp "custom/elisp/autoload" nil t)
 (defun eval-current-form-sp (&optional arg)
   "Call `eval-last-sexp' after moving out of one level of

@@ -14,13 +14,6 @@
    0.1 nil
    #'profiler-report-expand-all))
 
-(use-package! paradox
-  :defer t
-  :hook (paradox-menu-mode . paradox-menu-mode--set-keys)
-  :init
-  (paradox-enable)
-  (setq paradox-column-width-package 30))
-
 (use-package! let-plist)
 
 (use-package! evilify-edebug
