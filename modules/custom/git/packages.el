@@ -20,9 +20,9 @@
 
 
 (unpin!
- ;; magit
- ;; forge
- ;; compat
+ magit
+ forge
+ compat
  )
 
 (package! closql)
