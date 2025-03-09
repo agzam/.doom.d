@@ -56,5 +56,10 @@
 (defun reddigg-hnreader-show-all-h ()
   "Expands all the comments."
   (org-fold-show-all)
-  (goto-char (point-min))
-  (org-next-visible-heading 1))
+  (run-with-timer
+   0.3 nil
+   (lambda ()
+     (goto-char (point-min))
+     (jinx-mode -1)
+     (ignore-errors
+      (org-next-visible-heading 1)))))
