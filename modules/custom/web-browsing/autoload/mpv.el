@@ -15,20 +15,16 @@
                           (string-match url-regex (car kill-ring)))
                      (car kill-ring))
 
-                    ((and (thing-at-point 'word)
-                          (string-match url-regex (thing-at-point 'word)))
-                     (thing-at-point 'word))
-
                     ((eq major-mode 'org-mode)
-                     (org-element-property :path (org-element-context)))))))
-    (cond
-     ((eq major-mode 'dired-mode)
-      (mpv-play (dired-get-file-for-visit)))
+                     (or
+                      (org-element-property :path (org-element-context))
+                      (thing-at-point 'url)))
 
-     ((and (eq major-mode 'org-mode) path)
-      (mpv-play path))
+                    ((eq major-mode 'dired-mode)
+                     (mpv-play (dired-get-file-for-visit)))
 
-     (t (mpv-play-url (read-string "Play: " path))))))
+                    (t (thing-at-point 'url))))))
+    (mpv-play-url (read-string "Play: " path))))
 
 (defvar mpv--osc-style "auto")
 (defvar mpv--subtitle-visible "auto")
@@ -36,10 +32,8 @@
 ;;;###autoload
 (defun mpv-toggle-osc ()
   (interactive)
-  (mpv-run-command
-   "script-message" "osc-visibility"
-   (setf mpv--osc-style (if (string= mpv--osc-style "auto")
-                            "always" "auto"))))
+  ;; get https://github.com/tomasklaen/uosc
+  (mpv-run-command "script-message-to" "uosc" "toggle-ui"))
 
 ;;;###autoload
 (defun mpv-toggle-subtitles ()
