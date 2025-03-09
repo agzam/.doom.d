@@ -11,6 +11,7 @@
       (setq beg (point))
       `((line . ,(cons beg end))))))
 
+;;;###autoload
 (defun expreg-transient--insert-browser-url ()
   (interactive)
   (when-let* ((url (browser-copy-tab-link))
@@ -31,30 +32,44 @@
    [("V" "contract" expreg-contract :transient t)]]
   ["Editing"
    :hide always
-   [("RET" "ignore" transient-quit-one)
-    ("y" "y" evil-yank)
-    ("d" "d" evil-delete)
-    ("x" "x" evil-delete-char)
-    ("p" "p" evil-paste-after)
-    ("P" "P" evil-paste-before)
-    ("r" "r" evil-replace)
-    ("c" "c" evil-change)
-    ("s" "s" evil-surround-region)
-    ("R" "R" evil-multiedit-match-all)
-    ("o" "o" exchange-point-and-mark :transient t)
-    ("0" "0" evil-beginning-of-line :transient t)
-    ("$" "$" evil-end-of-line :transient t)
-    ("k" "k" evil-previous-visual-line :transient t)
-    ("j" "j" evil-next-visual-line :transient t)
-    ("h" "h" evil-backward-char :transient t)
-    ("l" "l" evil-forward-char :transient t)
-    ("%" "%" evilmi-jump-items :transient t)
-    ("C-;" "embark-action" embark-act)
-    (">" "indent" indent-rigidly)
-    ("<" "outdent" indent-rigidly-left)
-    ("=" "fix indent" evil-indent)
-    ("~" "invert" evil-invert-char)
-    ("SPC" "space" (lambda () (interactive) (funcall (general-simulate-key "SPC"))))]]
+   :setup-children
+   (lambda (_)
+     (transient-parse-suffixes
+      'expreg-transient
+      ;; sets up 'special' keys for this transient,
+      ;;
+      ;; - for the string nominal of the key - calls the command that
+      ;;   normally binds to it, exiting the transient
+      ;;
+      ;; - alternatively, can be a list with the key, transient flag,
+      ;; and the command - if you want to explicitly
+      ;; override the one that normally binds to the key.
+      (thread-last
+        '("y" "d" "P" "r" "c" "R" "t" "T" "f" "F" "n" "C-;" "g" "G" "SPC"
+          ">" "<" "=" "~" "M-x" "[" "]"  ":" "M-:" "`" "C-h"
+          ("s" nil evil-surround-region)
+          ("j" t evil-next-visual-line)
+          ("k" t evil-previous-visual-line)
+          ("h" t evil-backward-char)
+          ("l" t evil-forward-char)
+          ("w" t) ("W" t) ("b" t) ("B" t) ("o" t) ("0" t) ("$" t)
+          ("%" t) ("/" t)
+          ("{" t) ("}" t))
+        (mapcar
+         (lambda (key-map)
+           (let* ((key (if (stringp key-map) key-map (car key-map)))
+                  (explicit-cmd (ignore-errors (nth 2 key-map)))
+                  (transient? (and (listp key-map) (cadr key-map)))
+                  (cmd (or explicit-cmd
+                           (lambda ()
+                             (interactive)
+                             (if transient?
+                                 (call-interactively (or (lookup-key evil-motion-state-map (kbd key))
+                                                         (lookup-key evil-visual-state-map (kbd key))
+                                                         (lookup-key evil-normal-state-map (kbd key))))
+                               (general--simulate-keys nil key)))))
+                  (desc (format "%s" key)))
+             (list key desc cmd :transient transient?)))))))]
   ["Org Mode"
    :if (lambda () (derived-mode-p 'org-mode))
    :hide (lambda () (not transient-show-common-commands))
