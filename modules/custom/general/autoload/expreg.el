@@ -54,7 +54,8 @@
           ("l" t evil-forward-char)
           ("w" t) ("W" t) ("b" t) ("B" t) ("o" t) ("0" t) ("$" t)
           ("%" t) ("/" t)
-          ("{" t) ("}" t))
+          ("{" t) ("}" t)
+          ("x" nil (lambda () (interactive) (general--simulate-keys nil "SPC x"))))
         (mapcar
          (lambda (key-map)
            (let* ((key (if (stringp key-map) key-map (car key-map)))

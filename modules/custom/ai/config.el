@@ -7,21 +7,29 @@
         whisper-language "en"))
 
 (use-package! gptel
-  :commands ()
+  :after (transient)
+  :commands (gptel-menu gptel-send)
   :config
+  (setf
+   (cdr (assoc 'default gptel-directives))
+   "You are an experienced software engineer assistant. Respond concisely. Prioritize theory. Do not provide code snippets until instructed. Do not repeat entire snippets of code - show only relevant changes. Do not explain code.")
+
+  (setf
+   (cdr (assoc 'chat gptel-directives))
+   "You are conversation partner helping me learn and improve Spanish. Respond concisely. Point to the mistakes I make. Suggest improvements. Help me to acquire the language. Share interesting etymological facts, e.g., explaining why certain words are feminine due to their Greek origin.")
+
   (setopt
    gptel-default-mode 'org-mode
    gptel-api-key (auth-host->pass "api.openai.com")
    gptel-expert-commands t
    gptel-track-media t)
 
-  (transient-suffix-put 'gptel-menu (kbd "RET") :key "s-<return>")
+  (after! gptel-transient
+    (transient-suffix-put 'gptel-menu (kbd "RET") :key "s-<return>"))
 
   (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "* ")
 
-  (setf
-   (cdr (assoc 'default gptel-directives))
-   "You are an experienced software engineer assistant. Respond concisely. Prioritize theory. Do not provide code snippets until instructed. Do not repeat entire snippets of code - show only relevant changes. Do not explain code.")
+
 
   (gptel-make-anthropic "Claude"
     :stream t

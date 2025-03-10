@@ -105,11 +105,10 @@
   (add-hook! 'google-translate-mode-hook
     (defun google-translate-mode-h ()
       (variable-pitch-mode +1)
-      (pop-to-buffer "*Google Translate*")))
-
-  (map! :map google-translate-mode-map
-        (:localleader
-         "l" #'google-translate-listen-source))
+      (pop-to-buffer "*Google Translate*")
+      (map! :map google-translate-mode-map
+            (:localleader
+             "l" #'google-translate-listen-source))))
 
   (add-to-list
    'display-buffer-alist

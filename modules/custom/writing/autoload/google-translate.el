@@ -136,10 +136,8 @@ text like: \"2023 was a better year than 2021\" would translate to:
   :reader (lambda (&rest _)
             (let* ((src google-translate-default-source-language)
                    (tgt google-translate-default-target-language)
-                   (current-input-method
-                    (symbol-name
-                     (google-translate-find-preferable-input-method
-                      src))))
+                   (pref (google-translate-find-preferable-input-method src))
+                   (current-input-method (when pref (symbol-name pref))))
               (read-string
                (format "Translate. %s -> %s: " src tgt)
                nil nil nil t))))
