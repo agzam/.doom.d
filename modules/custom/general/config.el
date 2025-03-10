@@ -163,12 +163,12 @@
   ;; otherwise, evil prioritizes buffer's major mode keymap
   ;; for some reason tapping into transient-setup|buffer-hook
   ;; didn't work for me
-  (defadvice! transient-show-no-evil-a (ofn &rest args)
-    :around #'gptel-menu
-    ;; :around 'transient--init-keymaps
-    (save-mark-and-excursion
-     (evil-emacs-state))
-    (apply ofn args))
+  ;; (defadvice! transient-show-no-evil-a (ofn &rest args)
+  ;;   :around #'gptel-menu
+  ;;   ;; :around 'transient--init-keymaps
+  ;;   (save-mark-and-excursion
+  ;;    (evil-emacs-state))
+  ;;   (apply ofn args))
   ;; Go back to evil after transient
   (add-hook! 'transient-exit-hook
     (defun transient-exit-evil-normal-h ()

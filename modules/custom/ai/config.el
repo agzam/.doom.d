@@ -9,16 +9,19 @@
 (use-package! gptel
   :commands ()
   :config
-  (setq
+  (setopt
    gptel-default-mode 'org-mode
    gptel-api-key (auth-host->pass "api.openai.com")
-   gptel-expert-commands t)
+   gptel-expert-commands t
+   gptel-track-media t)
+
+  (transient-suffix-put 'gptel-menu (kbd "RET") :key "s-<return>")
 
   (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "* ")
 
   (setf
    (cdr (assoc 'default gptel-directives))
-   "You are a large language model and an experienced software engineer. Respond concisely. Prioritize theory, don't provide code snippets until instructed. Do not repeat entire body of code (unless explicitly asked for it), only specific part(s). Do not explain the code unless explicitly asked for it.")
+   "You are an experienced software engineer assistant. Respond concisely. Prioritize theory. Do not provide code snippets until instructed. Do not repeat entire snippets of code - show only relevant changes. Do not explain code.")
 
   (gptel-make-anthropic "Claude"
     :stream t
@@ -28,6 +31,13 @@
     :host "localhost:11434"
     :stream nil
     :models '("llama3:latest" "solar"))
+
+  (gptel-make-openai "DeepSeek"
+    :host "api.deepseek.com"
+    :endpoint "/chat/completions"
+    :stream t
+    :key (auth-host->pass "deepseek.com")
+    :models '(deepseek-chat deepseek-reasoner deepseek-coder))
 
   (add-hook! 'gptel-mode-hook
     (defun gptel-mode-set-local-keys ()

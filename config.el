@@ -302,7 +302,13 @@
       :i "TAB" #'completion-at-point
       "C-x m" #'mpv-transient
       (:when (featurep :system 'linux)
-        :i "C-M-S-s-y" #'nerd-dictation-toggle))
+        :i "C-M-S-s-y" #'nerd-dictation-toggle)
+      (:when (modulep! :custom ai)
+        (:prefix ("C-x g" . "gptel")
+         :desc "gptel-menu" "g" #'gptel-menu
+         :desc "new gptel" "n" #'gptel+
+         :desc "check text" "e" #'+gptel-improve-text-transient
+         "s" #'gptel-send)))
 
 (map! (:map (prog-mode-map text-mode-map markdown-mode-map)
        :desc "external browser" "C-c C-o"
@@ -540,7 +546,7 @@
                   :desc "en->es" "S" #'+google-translate-en->es
                   :desc "translate" "t" #'translate-transient))
                (:when (modulep! :custom ai)
-                 (:prefix ("g" . "chatgpt")
+                 (:prefix ("g" . "gptel")
                   :desc "gptel-menu" "g" #'gptel-menu
                   :desc "new gptel" "n" #'gptel+
                   :desc "check text" "e" #'+gptel-improve-text-transient
