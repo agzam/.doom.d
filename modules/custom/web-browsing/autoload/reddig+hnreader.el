@@ -55,7 +55,8 @@
 ;;;###autoload
 (defun reddigg-hnreader-show-all-h ()
   "Expands all the comments."
-  (org-fold-show-all)
+  (unless (string-match-p "\\*HN\\*" (buffer-name))
+    (org-fold-show-all))
   (run-with-timer
    0.3 nil
    (lambda ()

@@ -35,7 +35,8 @@
                   "n" #'lsp-find-declaration
                   "d" #'lsp-find-definition
                   "D" #'lsp-find-definition-other-window
-                  "r" #'lsp-find-references)
+                  "r" #'lsp-find-references
+                  "s" #'consult-lsp-symbols)
          (:prefix ("f" . "format")
                   "b" #'lsp-format-buffer
                   "r" #'lsp-format-region

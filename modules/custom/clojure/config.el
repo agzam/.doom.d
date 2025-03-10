@@ -191,6 +191,11 @@
                ";" #'clojure-toggle-ignore
                "m"  #'cider-macroexpand-1
                "M"  #'cider-macroexpand-all
+               (:prefix ("c" . "cider")
+                        "s" #'cider-scratch
+                        "b" #'cider-pop-back
+                        "g" #'cider-find-var
+                        "n" #'cider-find-ns)
                (:prefix ("d" . "debug")
                         "d" #'cider-storm-switch-to-gui+
                         "D" #'cider-storm-storm-start-gui
@@ -211,10 +216,6 @@
                         "R" #'cider-insert-region-in-repl
                         "u" #'cider-undef)
                (:prefix ("g" . "goto")
-                        "b" #'cider-pop-back
-                        "g" #'cider-find-var
-                        "n" #'cider-find-ns
-                        "s" #'cider-scratch
                         "l" #'clj-fully-qualified-symbol-with-gh-link)
                (:prefix ("h" . "help")
                         "n" #'cider-find-ns

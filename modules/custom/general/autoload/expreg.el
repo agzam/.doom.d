@@ -52,8 +52,9 @@
           ("k" t evil-previous-visual-line)
           ("h" t evil-backward-char)
           ("l" t evil-forward-char)
+          ("%" t evilmi-jump-items)
           ("w" t) ("W" t) ("b" t) ("B" t) ("o" t) ("0" t) ("$" t)
-          ("%" t) ("/" t)
+          ("/" t)
           ("{" t) ("}" t)
           ("x" nil (lambda () (interactive) (general--simulate-keys nil "SPC x"))))
         (mapcar

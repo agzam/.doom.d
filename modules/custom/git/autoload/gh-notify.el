@@ -30,7 +30,7 @@
 ;;;###autoload
 (defun gh-notify-mark-read-and-move-prev ()
   (interactive)
-  (funcall-interactively #'gh-notify-mark-read-and-move :prev))
+  (funcall-interactively #'gh-notify-mark-read-and-move-next :prev))
 
 ;;;###autoload
 (defun gh-notify-code-review-forge-pr-at-point ()
