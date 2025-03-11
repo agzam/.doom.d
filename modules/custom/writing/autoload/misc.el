@@ -33,7 +33,21 @@ if (pasteboardItems.count > 0) {
 }
 "
               filepath))
-            (created (car-safe (run-jxa jxa-script))))
+            (created
+             (if (eq system-type 'gnu/linux)
+                 (when-let* ((xclip (or (executable-find "xclip")
+                                        (user-error "xclip not found.")))
+                             (has-image? (with-temp-buffer
+                                           (call-process
+                                            xclip nil t nil "-selection" "clipboard" "-t" "TARGETS" "-o")
+                                           (goto-char (point-min))
+                                           (search-forward "image/png" nil t)))
+                             (out-fname (format "%s.png" filepath)))
+                   (with-temp-buffer
+                     (call-process xclip nil t nil "-selection" "clipboard" "-t" "image/png" "-o")
+                     (write-region (point-min) (point-max) out-fname nil 'silent))
+                   out-fname)
+               (car-safe (run-jxa jxa-script)))))
       created))
 
 (defun find-latest-png (&optional folder)
@@ -77,12 +91,14 @@ created within the last minute and grabs the latest."
                     (expand-file-name "ocr" temporary-file-directory)))
          (cmd (format
                "%s --psm 6 '%s' %s"
-               (executable-find "tesseract")
+               (or (executable-find "tesseract")
+                   (user-error "tesseract not installed."))
                (expand-file-name f)
                ocr-file))
          (ocr-file (concat ocr-file ".txt")))
-    (when (zerop (call-process-shell-command
-                  cmd))
+    (if (not (zerop (call-process-shell-command
+                     cmd)))
+        (user-error "command has failed! '%s'" cmd)
       (with-current-buffer (get-buffer-create
                             (format "* OCR %s *" f))
         (erase-buffer)
