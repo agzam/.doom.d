@@ -29,8 +29,6 @@
 
   (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "* ")
 
-
-
   (gptel-make-anthropic "Claude"
     :stream t
     :key (auth-host->pass "antropic.com"))

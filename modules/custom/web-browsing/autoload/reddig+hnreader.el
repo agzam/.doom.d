@@ -55,12 +55,15 @@
 ;;;###autoload
 (defun reddigg-hnreader-show-all-h ()
   "Expands all the comments."
-  (unless (string-match-p "\\*HN\\*" (buffer-name))
+  (unless (string-match-p
+           "\\*HN\\*\\|\\*reddigg\\*"
+           (buffer-name))
     (org-fold-show-all))
+  (setq-local org-link-elisp-confirm-function nil)
   (run-with-timer
    0.3 nil
    (lambda ()
      (goto-char (point-min))
      (jinx-mode -1)
      (ignore-errors
-      (org-next-visible-heading 1)))))
+       (org-next-visible-heading 1)))))

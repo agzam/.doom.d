@@ -45,8 +45,9 @@
       ;; and the command - if you want to explicitly
       ;; override the one that normally binds to the key.
       (thread-last
-        '("y" "d" "p" "P" "r" "c" "R" "t" "T" "f" "F" "n" "C-;" "g" "G" "SPC"
-          ">" "<" "=" "~" "M-x" "[" "]"  ":" "M-:" "`" "C-h" "C-e" "C-y"
+        '("y" "d" "p" "P" "r" "c" "R" "t" "T" "f" "F" "n" "C-;" "g" "G"
+          "SPC" "," ":" "M-x" "M-:" "`" "C-h" "C-e"  "C-y"
+          ">" "<" "=" "~"  "[" "]"
           ("s" nil evil-surround-region)
           ("j" t evil-next-visual-line)
           ("k" t evil-previous-visual-line)
