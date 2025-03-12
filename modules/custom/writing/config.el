@@ -86,7 +86,7 @@
   :config
   (defun google-translate--search-tkk () "Search TKK." (list 430675 2721866130))
   (setq google-translate-pop-up-buffer-set-focus t
-        google-translate-default-source-language "ru"
+        google-translate-default-source-language "auto"
         google-translate-default-target-language "en")
 
   ;; to use 'listen' feature of google-translate, on Mac:
