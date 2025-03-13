@@ -22,6 +22,8 @@
 (require 'transient)
 (require 'subr-x)
 (require 'general)
+(require 'avy)
+(require 'edit-indirect)
 
 ;;;###autoload
 (defun sp-evil-sexp-go-back ()
@@ -40,6 +42,36 @@
       (backward-char))))
 
 ;;;###autoload
+(defun sp-narrow-to-current-sexp ()
+  "Narrow screen to current sexp."
+  (interactive)
+  (save-mark-and-excursion
+    (sp-beginning-of-sexp)
+    (backward-char)
+    (sp-mark-sexp)
+    (narrow-to-region
+     (region-beginning)
+     (region-end))))
+
+;;;###autoload
+(defun sp-edit-indirect-current-sexp ()
+  "Edit current sexp in an indirect buffer."
+  (interactive)
+  (let* ((reg (save-mark-and-excursion
+               (sp-beginning-of-sexp)
+               (backward-char)
+               (sp-mark-sexp)
+               (list (region-beginning)
+                     (region-end))))
+         (edit-indirect-guess-mode-function
+          (lambda (pb _ _)
+            (funcall (with-current-buffer pb major-mode)))))
+    (funcall-interactively
+     #'edit-indirect-region
+     (car reg) (cadr reg) t)))
+
+
+;;;###autoload
 (defun avy-goto-parens ()
   (interactive)
   (let* ((avy-command this-command) ; for look up in avy-orders-alist
@@ -53,6 +85,8 @@
                   :end end)))))
 
 (add-to-list 'avy-orders-alist '(avy-goto-parens . avy-order-closest))
+
+
 
 (transient-define-prefix sexp-transient ()
   "rule the parens"
@@ -83,6 +117,7 @@
       (thread-last
         '("p" "P" "C-;" "g" "G"
           "SPC" "," ":" "M-x" "M-:" "`" "C-h"
+          "s-k" "s-]" "s-j" "s-]"
           "[" "]"
           ("C-l" t) ("C-e" t) ("C-y" t)
           ("s" nil evil-surround-region)
@@ -118,15 +153,9 @@
     ("t" "transpose" sp-transpose-sexp :transient t)]
    [("|" "split" sp-split-sexp :transient t)
     ("J" "join" sp-join-sexp :transient t)]
-   [("n n" "narrow" (lambda ()
-                      (interactive)
-                      (save-mark-and-excursion
-                        (mark-sexp)
-                        (narrow-to-region
-                         (region-beginning)
-                         (region-end))))
-     :transient t)
-    ("n w" "widen" widen :transient t)]
+   [("n n" "narrow" sp-narrow-to-current-sexp :transient t)
+    ("n w" "widen" widen :transient t)
+    ("E" "edit" sp-edit-indirect-current-sexp :transient t)]
    [("> >" "slurp" sp-forward-slurp-sexp :transient t)
     ("> <" "barf" sp-forward-barf-sexp :transient t)
     ("< <" "left slurp" sp-backward-slurp-sexp :transient t)

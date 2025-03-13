@@ -132,6 +132,9 @@
               "C-c C-f" nil
               "C-c r" nil)
         (:map cider-mode-map
+         "C-c C-c" nil
+         "C-c C-k" nil
+         "C-x C-s" nil
          "C-c C-f" nil
          "C-c r" nil
          :i "C-x C-p" #'cider-pprint-eval-last-sexp)
