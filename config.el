@@ -27,6 +27,7 @@
 ;; `load-theme' function. This is the default:
 
 (load! "lisp/functions")
+(load! "lisp/sexp-transient")
 
 (setq doom-theme 'ag-themes-spacemacs-light)
 
@@ -343,6 +344,7 @@
       "*" #'search-in-project
       "TAB" #'alternate-buffer
       "v" #'expreg-transient
+      "k" #'sexp-transient
       :nv ";" (cmd! (call-interactively
                        (if (evil-visual-state-p)
                            #'comment-or-uncomment-region
@@ -420,22 +422,6 @@
       (:prefix ("j" . "jump")
        "j" #'avy-goto-char-timer
        :desc "xwidget" "x" #'xwidget-webkit-url-get-create)
-
-      (:prefix ("k" .  "lispy")
-               "=" #'sp-reindent
-               "-" #'sp-reindent
-               "W" #'sp-unwrap-sexp
-               "b" #'sp-forward-barf-sexp
-               "B" #'sp-backward-barf-sexp
-               "c" #'sp-convolute-sexp
-               (:prefix ("d" . "kill")
-                        "x" #'sp-kill-sexp)
-               "r" #'sp-raise-sexp
-               "s" #'sp-forward-slurp-sexp
-               "S" #'sp-backward-slurp-sexp
-               "t" #'sp-transpose-sexp
-               "w" #'sp-wrap-sexp
-               "y" #'sp-copy-sexp)
 
       (:when (modulep! :custom tab-bar)
         :desc "tab-bar" "l" #'tab-bar-transient)

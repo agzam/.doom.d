@@ -46,7 +46,7 @@
       ;; override the one that normally binds to the key.
       (thread-last
         '("y" "d" "p" "P" "r" "c" "R" "t" "T" "f" "F" "n" "C-;" "g" "G"
-          "SPC" "," ":" "M-x" "M-:" "`" "C-h" "C-e"  "C-y"
+          "SPC" "," ":" "M-x" "M-:" "`" "C-h"
           ">" "<" "=" "~"  "[" "]"
           ("s" nil evil-surround-region)
           ("j" t evil-next-visual-line)
@@ -55,6 +55,7 @@
           ("l" t evil-forward-char)
           ("%" t evilmi-jump-items)
           ("0" t evil-beginning-of-line)
+          ("C-l" t) ("C-e" t)  ("C-y" t)
           ("w" t) ("W" t) ("b" t) ("B" t) ("o" t)  ("$" t)
           ("/" t) ("{" t) ("}" t)
           ("x" nil (lambda () (interactive) (general--simulate-keys nil "SPC x"))))
@@ -67,10 +68,12 @@
                            (lambda ()
                              (interactive)
                              (if transient?
-                                 (call-interactively (or (lookup-key evil-motion-state-map (kbd key))
-                                                         (lookup-key evil-visual-state-map (kbd key))
-                                                         (lookup-key evil-normal-state-map (kbd key))))
-                               (general--simulate-keys nil key)))))
+                                 (call-interactively
+                                  (or (lookup-key evil-motion-state-map (kbd key))
+                                      (lookup-key evil-visual-state-map (kbd key))
+                                      (lookup-key evil-normal-state-map (kbd key))
+                                      (lookup-key global-map (kbd key)))
+                                  (general--simulate-key s nil key))))))
                   (desc (format "%s" key)))
              (list key desc cmd :transient transient?)))))))]
   ["Org Mode"
