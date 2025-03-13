@@ -178,7 +178,8 @@
               :nv "h" nil :n "j" nil :n "l" nil :n "o" nil :n "p" nil :n "i" nil)))
 
     ;; (advice-add 'cider-eval-sexp-at-point :around #'cider-eval-sexp-at-point-a)
-    (advice-add 'cider-last-sexp :around #'cider-eval-sexp-at-point-a)
+    ;; (advice-add 'cider-last-sexp :around #'cider-eval-sexp-at-point-a)
+    (advice-remove 'cider-eval-last-sexp #'evil-collection-cider-last-sexp)
     (advice-add 'org-edit-special :around #'org-edit-special-for-clojure-a))
 
   (after! ob-clojure
@@ -208,7 +209,7 @@
                         "L" #'clojure-unalign)
                (:prefix ("e" . "eval")
                         "b" #'cider-eval-buffer
-                        "c" #'cider-eval-sexp-at-point
+                        "c" #'cider-eval-sexp-at-point*
                         "d" #'cider-eval-defun-at-point
                         "D" #'cider-insert-defun-in-repl
                         "p" #'cider-pprint-eval-sexp-at-point

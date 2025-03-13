@@ -221,6 +221,19 @@ With ARG, kills all buffers, not only in the current project"
     (cider-complete-at-point)))
 
 ;;;###autoload
+(defun cider-eval-sexp-at-point* ()
+  (interactive)
+  (if (looking-at "[])}]")
+      (progn
+        (forward-char)
+        (cider-eval-last-sexp))
+    (progn
+      (unless (looking-at "[[({]")
+        (sp-beginning-of-sexp)
+        (backward-char))
+      (cider-eval-sexp-at-point))))
+
+;;;###autoload
 (defun clojure-set-completion-at-point-h ()
   (setq-local completion-styles '(orderless
                                   partial-completion

@@ -1,20 +1,14 @@
 ;;; custom/elisp/autoload.el -*- lexical-binding: t; -*-
 
 ;;;###autoload (autoload 'eval-current-form-sp "custom/elisp/autoload" nil t)
-(defun eval-current-form-sp (&optional arg)
-  "Call `eval-last-sexp' after moving out of one level of
-parentheses. Will exit any strings and/or comments first.
-An optional ARG can be used which is passed to `sp-up-sexp' to move out of more
-than one sexp.
-Requires smartparens because all movement is done using `sp-up-sexp'."
+(defun sp-eval-current-sexp (&optional arg)
+  "Eval current sexp."
   (interactive "p")
   (let ((evil-move-beyond-eol t))
-    ;; evil-move-beyond-eol disables the evil advices around eval-last-sexp
-    (save-excursion
-      (when-let ((pos (plist-get (or (sp-get-enclosing-sexp)
-                                     (sp-get-expression)) :end)))
-        (goto-char pos))
-      (call-interactively 'eros-eval-last-sexp))))
+    (when (looking-at-p "[[({]")
+      (forward-char))
+    (sp-up-sexp)
+    (call-interactively 'eros-eval-last-sexp)))
 
 ;;;###autoload
 (defun pp-eval-current (&optional arg)

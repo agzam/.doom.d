@@ -37,7 +37,7 @@
                  "f" #'+emacs-lisp/edebug-instrument-defun-on
                  "F" #'+emacs-lisp/edebug-instrument-defun-off)
         (:prefix ("e" . "eval")
-                 "c" #'eval-current-form-sp
+                 "c" #'sp-eval-current-sexp
                  "b" #'eval-buffer
                  "d" #'eval-defun
                  "e" #'eval-last-sexp

@@ -70,7 +70,6 @@
      #'edit-indirect-region
      (car reg) (cadr reg) t)))
 
-
 ;;;###autoload
 (defun avy-goto-parens ()
   (interactive)
@@ -86,7 +85,15 @@
 
 (add-to-list 'avy-orders-alist '(avy-goto-parens . avy-order-closest))
 
+;;;###autoload
+(defun sp-eval-current-in-mode ()
+  "Evals current sexp in its dedicated mode evaluator."
+  (interactive)
+  (cond
+   ((derived-mode-p 'clojure-mode)
+    (call-interactively #'cider-eval-sexp-at-point*))
 
+   (t (call-interactively #'sp-eval-current-sexp))))
 
 (transient-define-prefix sexp-transient ()
   "rule the parens"
@@ -165,7 +172,8 @@
     ("v" "select" (lambda () (interactive)
                     (expreg-expand)
                     (expreg-transient)))
-    ("u" "undo" evil-undo :transient t)]])
+    ("u" "undo" evil-undo :transient t)]
+   [("e c" "eval current" sp-eval-current-in-mode)]])
 
 (provide 'sexp-transient)
 ;;; sexp-transient.el ends here
