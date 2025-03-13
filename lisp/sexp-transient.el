@@ -39,6 +39,21 @@
     (unless (eq curr (search-forward-regexp "[[({]\\|[])}]"))
       (backward-char))))
 
+;;;###autoload
+(defun avy-goto-parens ()
+  (interactive)
+  (let* ((avy-command this-command) ; for look up in avy-orders-alist
+         (avy-style 'post))
+    (beginning-of-defun)
+    (let ((beg (point)))
+      (end-of-defun)
+      (let ((end (point)))
+        (avy-jump "(+\\|\\[+\\|{+" :window-flip nil
+                  :beg beg
+                  :end end)))))
+
+(add-to-list 'avy-orders-alist '(avy-goto-parens . avy-order-closest))
+
 (transient-define-prefix sexp-transient ()
   "rule the parens"
   ["Navigation"
@@ -94,6 +109,7 @@
                   (desc (format "%s" key)))
              (list key desc cmd :transient transient?)))))))]
   ["sexp"
+   [("a" "avy" avy-goto-parens :transient t)]
    [("w" "wrap" sp-wrap-sexp :transient t)
     ("W" "unwrap" sp-unwrap-sexp :transient t)
     ("=" "reindent" sp-reindent :transient t)]
@@ -111,10 +127,10 @@
                          (region-end))))
      :transient t)
     ("n w" "widen" widen :transient t)]
-   [("." "slurp" sp-forward-slurp-sexp :transient t)
-    (">" "barf" sp-forward-barf-sexp :transient t)
-    ("," "left slurp" sp-backward-slurp-sexp :transient t)
-    ("<" "left barf" sp-backward-barf-sexp :transient t)]
+   [("> >" "slurp" sp-forward-slurp-sexp :transient t)
+    ("> <" "barf" sp-forward-barf-sexp :transient t)
+    ("< <" "left slurp" sp-backward-slurp-sexp :transient t)
+    ("< >" "left barf" sp-backward-barf-sexp :transient t)]
    [("d x" "kill" sp-kill-sexp)
     ("y" "copy" sp-copy-sexp)
     ("v" "select" (lambda () (interactive)
