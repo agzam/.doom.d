@@ -198,24 +198,6 @@ With ARG, kills all buffers, not only in the current project"
 
 
 ;;;###autoload
-(defun cider-eval-sexp-at-point-a (fn &rest args)
-  (require 'evil-collection-cider)
-  (save-excursion
-    (when (or (evil-normal-state-p) (evil-motion-state-p))
-      (sp-end-of-sexp)
-      (forward-char))
-    (apply fn args))
-
-  ;; (save-excursion
-  ;;   (when (thing-at-point-looking-at "(\\|\\[\\|{")
-  ;;     (forward-char))
-  ;;   (evil-collection-cider-last-sexp)
-  ;;   (sp-end-of-sexp)
-  ;;   ;; (forward-char)
-  ;;   (apply fn args))
-  )
-
-
 (defun +cider-complete-at-point ()
   (when (cider-connected-p)
     (cider-complete-at-point)))

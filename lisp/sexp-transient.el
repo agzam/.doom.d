@@ -92,8 +92,15 @@
   (cond
    ((derived-mode-p 'clojure-mode)
     (call-interactively #'cider-eval-sexp-at-point*))
-
    (t (call-interactively #'sp-eval-current-sexp))))
+
+(defun sp-pp-eval-current-in-mode ()
+  "Eval & pretty-print sexp."
+  (interactive)
+  (cond
+   ((derived-mode-p 'clojure-mode)
+    (call-interactively #'cider-pprint-eval-sexp-at-point))
+   (t (call-interactively #'pp-eval-current))))
 
 (transient-define-prefix sexp-transient ()
   "rule the parens"
@@ -173,7 +180,13 @@
                     (expreg-expand)
                     (expreg-transient)))
     ("u" "undo" evil-undo :transient t)]
-   [("e c" "eval current" sp-eval-current-in-mode)]])
+   [("e c" "eval current" sp-eval-current-in-mode)
+    ("e p" "pprint" sp-pp-eval-current-in-mode)
+    ("e ;" "eval to comment"
+     cider-pprint-eval-last-sexp-to-comment
+     :if (lambda () (derived-mode-p 'clojure-mode)))
+    ("#" "ignore" clojure-toggle-ignore
+     :if (lambda () (derived-mode-p 'clojure-mode)))]])
 
 (provide 'sexp-transient)
 ;;; sexp-transient.el ends here

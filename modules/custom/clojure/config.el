@@ -53,7 +53,17 @@
       (add-to-list
        'imenu-generic-expression
        '("re-frame" "^(*reg-\\(event-db\\|sub\\|sub-raw\\|fx\\|event-fx\\|event-ctx\\|cofx\\)[ \n]+\\([^\t \n]+\\)" 2)
-       t))))
+       t)))
+
+  (defadvice! clojure-toggle-ignore-a (orig-fn &optional n)
+    :around #'clojure-toggle-ignore
+    (when (looking-at "[])}]")
+      (sp-beginning-of-sexp)
+      (unless (looking-at "[[({]")
+        (search-backward-regexp "[[({]")))
+    (when (looking-at " \\|\n")
+      (sp-backward-sexp))
+    (funcall orig-fn n)))
 
 (use-package! cider
   :after clojure-mode
@@ -166,6 +176,16 @@
      (direction . right)
      (window . root)))
 
+  (defadvice! cider-pprint-eval-last-sexp-to-comment-a
+    (orig-fn &optional arg)
+    :around #'cider-pprint-eval-last-sexp-to-comment
+    (unless (looking-at "[])}]")
+      (sp-end-of-sexp)
+      (search-forward-regexp "[])}]"))
+    (let ((evil-move-beyond-eol t))
+      (forward-char))
+    (funcall orig-fn arg))
+
   ;; When in cider-debug-mode, override evil keys to not interfere with debug keys
   (after! evil
     (add-hook! 'cider--debug-mode-hook
@@ -177,8 +197,6 @@
         (map! :map cider--debug-mode-map
               :nv "h" nil :n "j" nil :n "l" nil :n "o" nil :n "p" nil :n "i" nil)))
 
-    ;; (advice-add 'cider-eval-sexp-at-point :around #'cider-eval-sexp-at-point-a)
-    ;; (advice-add 'cider-last-sexp :around #'cider-eval-sexp-at-point-a)
     (advice-remove 'cider-eval-last-sexp #'evil-collection-cider-last-sexp)
     (advice-add 'org-edit-special :around #'org-edit-special-for-clojure-a))
 
@@ -192,7 +210,7 @@
                 clojure-ts-clojurescript-mode-map
                 cider-repl-mode-map)
                ","  #'clj-fully-qualified-symbol-at-point
-               ";" #'clojure-toggle-ignore
+               "#" #'clojure-toggle-ignore
                "m"  #'cider-macroexpand-1
                "M"  #'cider-macroexpand-all
                (:prefix ("c" . "cider")

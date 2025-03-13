@@ -99,9 +99,11 @@ created within the last minute and grabs the latest."
     (if (not (zerop (call-process-shell-command
                      cmd)))
         (user-error "command has failed! '%s'" cmd)
-      (with-current-buffer (get-buffer-create
-                            (format "* OCR %s *" f))
-        (erase-buffer)
-        (insert-file-contents ocr-file)
+      (progn
+        (with-current-buffer (get-buffer-create
+                              (format "* OCR %s *" f))
+          (erase-buffer)
+          (insert-file-contents ocr-file)
+          (kill-new (buffer-substring-no-properties (point-min) (point-max))))
         (delete-file ocr-file)
         (display-buffer (current-buffer))))))
