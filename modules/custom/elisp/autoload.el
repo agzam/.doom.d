@@ -1,6 +1,6 @@
 ;;; custom/elisp/autoload.el -*- lexical-binding: t; -*-
 
-;;;###autoload (autoload 'eval-current-form-sp "custom/elisp/autoload" nil t)
+;;;###autoload
 (defun sp-eval-current-sexp (&optional arg)
   "Eval current sexp."
   (interactive "p")

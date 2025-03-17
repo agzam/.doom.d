@@ -11,6 +11,9 @@
   (let* ((url-regex "\\`https?://")
          (path (or path
                    (cond
+                    ((eq major-mode 'dired-mode)
+                     (mpv-play (dired-get-file-for-visit)))
+
                     ((and (car kill-ring)
                           (string-match url-regex (car kill-ring)))
                      (car kill-ring))
@@ -19,9 +22,6 @@
                      (or
                       (org-element-property :path (org-element-context))
                       (thing-at-point 'url)))
-
-                    ((eq major-mode 'dired-mode)
-                     (mpv-play (dired-get-file-for-visit)))
 
                     (t (thing-at-point 'url))))))
     (mpv-play-url (read-string "Play: " path))))
