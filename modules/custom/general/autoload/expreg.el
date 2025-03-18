@@ -30,54 +30,28 @@
   "expand/contract"
   [[("v" "expand" expreg-expand :transient t)]
    [("V" "contract" expreg-contract :transient t)]]
-  ["Editing"
+  ["bypass keys"
    :hide always
    :setup-children
    (lambda (_)
-     (transient-parse-suffixes
+     (transient-bypass-keys
       'expreg-transient
-      ;; sets up 'special' keys for this transient,
-      ;;
-      ;; - for the string nominal of the key - calls the command that
-      ;;   normally binds to it, exiting the transient
-      ;;
-      ;; - alternatively, can be a list with the key, transient flag,
-      ;; and the command - if you want to explicitly
-      ;; override the one that normally binds to the key.
-      (thread-last
-        '("d" "p" "P" "r" "c" "R" "t" "T" "f" "F" "n" "C-;" "g" "G"
-          "SPC" "," ":" "M-x" "M-:" "`" "C-h"
-          "s-k" "s-]" "s-j" "s-]"
-          ">" "<" "=" "~"  "[" "]"
-          ("s" nil evil-surround-region)
-          ("j" t evil-next-visual-line)
-          ("k" t evil-previous-visual-line)
-          ("h" t evil-backward-char)
-          ("l" t evil-forward-char)
-          ("%" t evilmi-jump-items)
-          ("0" t evil-beginning-of-line)
-          ("y" t evil-yank)
-          ("C-l" t) ("C-e" t)  ("C-y" t)
-          ("w" t) ("W" t) ("b" t) ("B" t) ("o" t)  ("$" t)
-          ("/" t) ("{" t) ("}" t)
-          ("x" nil (lambda () (interactive) (general--simulate-keys nil "SPC x"))))
-        (mapcar
-         (lambda (key-map)
-           (let* ((key (if (stringp key-map) key-map (car key-map)))
-                  (explicit-cmd (ignore-errors (nth 2 key-map)))
-                  (transient? (and (listp key-map) (cadr key-map)))
-                  (cmd (or explicit-cmd
-                           (lambda ()
-                             (interactive)
-                             (if transient?
-                                 (call-interactively
-                                  (or (lookup-key evil-motion-state-map (kbd key))
-                                      (lookup-key evil-visual-state-map (kbd key))
-                                      (lookup-key evil-normal-state-map (kbd key))
-                                      (lookup-key global-map (kbd key))))
-                               (general--simulate-keys nil key)))))
-                  (desc (format "%s" key)))
-             (list key desc cmd :transient transient?)))))))]
+      '("d" "p" "P" "r" "c" "R" "t" "T" "f" "F" "n" "C-;" "g" "G"
+        "SPC" "," ":" "M-x" "M-:" "`" "C-h"
+        "s-k" "s-]" "s-j" "s-]"
+        ">" "<" "=" "~"  "[" "]"
+        ("s" nil evil-surround-region)
+        ("j" t evil-next-visual-line)
+        ("k" t evil-previous-visual-line)
+        ("h" t evil-backward-char)
+        ("l" t evil-forward-char)
+        ("%" t evilmi-jump-items)
+        ("0" t evil-beginning-of-line)
+        ("y" t evil-yank)
+        ("C-l" t) ("C-e" t)  ("C-y" t)
+        ("w" t) ("W" t) ("b" t) ("B" t) ("o" t)  ("$" t)
+        ("/" t) ("{" t) ("}" t)
+        ("x" nil (lambda () (interactive) (general--simulate-keys nil "SPC x"))))))]
   ["Org Mode"
    :if (lambda () (derived-mode-p 'org-mode))
    :hide (lambda () (not transient-show-common-commands))

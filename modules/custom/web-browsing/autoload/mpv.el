@@ -47,6 +47,13 @@
 ;;;###autoload
 (transient-define-prefix mpv-transient ()
   "mpv"
+  ["bypass keys"
+   :hide always
+   :setup-children
+   (lambda (_)
+     (transient-bypass-keys
+      'mpv-transient
+      '(("d" t))))]
   ["mpv"
    [("f" "follow" elfeed-tube-mpv-follow-mode)
     ("w" "where" elfeed-tube-mpv-where)]
