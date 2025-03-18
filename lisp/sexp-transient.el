@@ -111,16 +111,11 @@ Every key spec in KEY-SPECS list can be, either:
 
 ;;;###autoload
 (defun avy-goto-parens ()
+  "Use avy to jump to a beginning of sexp."
   (interactive)
   (let* ((avy-command this-command) ; for look up in avy-orders-alist
          (avy-style 'post))
-    (beginning-of-defun)
-    (let ((beg (point)))
-      (end-of-defun)
-      (let ((end (point)))
-        (avy-jump "(+\\|\\[+\\|{+" :window-flip nil
-                  :beg beg
-                  :end end)))))
+    (avy-jump "(+\\|\\[+\\|{+" :window-flip nil)))
 
 (add-to-list 'avy-orders-alist '(avy-goto-parens . avy-order-closest))
 
