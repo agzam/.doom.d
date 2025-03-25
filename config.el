@@ -292,7 +292,6 @@
       :n "zk" #'text-scale-increase
       :n "zj" #'text-scale-decrease
       :n "s-e" #'+scroll-line-down-other-window
-      :n "s-r" #'+scroll-line-up-other-window
       :n "s-y" #'+scroll-line-up-other-window
       :n "s-u" #'+scroll-line-down-other-window
       :nv "C-e" (cmd! () (ultra-scroll-down 45))

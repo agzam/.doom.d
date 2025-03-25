@@ -39,7 +39,7 @@
       '("d" "p" "P" "r" "c" "R" "t" "T" "f" "F" "n" "C-;" "g" "G"
         "SPC" "," ":" "M-x" "M-:" "`" "C-h"
         "s-k" "s-]" "s-j" "s-]"
-        ">" "<" "=" "~"  "[" "]"
+        ">" "<" "=" "~"  "[" "]" "J"
         ("s" nil evil-surround-region)
         ("j" t evil-next-visual-line)
         ("k" t evil-previous-visual-line)

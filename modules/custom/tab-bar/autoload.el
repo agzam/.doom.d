@@ -31,7 +31,8 @@
                       (switch-to-buffer
                        (find-file-noselect
                         (completing-read "choose project: " projectile-known-projects)))))
-    ("SPC" "zoxide history" +zoxide-find)]
+    ("SPC" "zoxide history" +zoxide-find)
+    ("b" "buffers" consult-buffer)]
    [("d" "kill tab" +tab-bar-kill-tab)]])
 
 ;;;###autoload
