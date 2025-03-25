@@ -16,7 +16,8 @@
              (yaml . ("https://github.com/ikatyang/tree-sitter-yaml" "master"))
              (clojure . ("https://github.com/sogaiu/tree-sitter-clojure" "master"))
              (dockerfile . ("https://github.com/camdencheek/tree-sitter-dockerfile" "main"))
-             (bash . ("https://github.com/tree-sitter/tree-sitter-bash" "master"))))
+             (bash . ("https://github.com/tree-sitter/tree-sitter-bash" "master"))
+             (mermaid . ("https://github.com/monaqa/tree-sitter-mermaid" "master"))))
     (add-to-list 'treesit-language-source-alist grammar)
     ;; Only install `grammar' if we don't already have it
     ;; installed. However, if you want to *update* a grammar then

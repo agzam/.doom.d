@@ -15,7 +15,8 @@
              (js-json-mode . json-ts-mode)
              ;; (clojure-mode . clojure-ts-mode)
              (dockerfile-mode . dockerfile-ts-mode)
-             (bash-mode . bash-ts-mode)))
+             (bash-mode . bash-ts-mode)
+             (mermaid-mode . mermaid-ts-mode)))
     (add-to-list 'major-mode-remap-alist mapping))
   :config
   (tree-sitter-init+))
@@ -39,3 +40,8 @@
   :after evil
   :config
   (global-evil-matchit-mode 1))
+
+(use-package! mermaid-mode
+  :config
+  ;; install https://github.com/mermaid-js/mermaid-cli
+  (setopt mermaid-mmdc-location (executable-find "mmdc")))

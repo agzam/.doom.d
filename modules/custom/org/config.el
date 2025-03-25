@@ -53,7 +53,7 @@
    org-cycle-emulate-tab nil
    org-edit-src-content-indentation 0
    org-fontify-quote-and-verse-blocks t
-   org-image-actual-width '(0.8)
+   org-image-actual-width '(0.7)
    ;; Org 9.6 breaks things like consult-line
    ;; Temporarily changing fold style. Track the issue here:
    ;; https://github.com/minad/consult/issues/563
@@ -572,3 +572,9 @@
 ;;    khoj-index-files nil
 ;;    khoj-server-url "http://127.0.0.1:42110")
 ;;   (add-hook! org-roam-mode #'khoj--server-start))
+
+(use-package! ob-mermaid
+  :after (org)
+  :config
+  ;; install https://github.com/mermaid-js/mermaid-cli
+  (setopt ob-mermaid-cli-path (executable-find "mmdc")))
