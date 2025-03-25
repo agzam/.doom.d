@@ -1,7 +1,8 @@
 ;;; custom/tree-sitter/config.el -*- lexical-binding: t; -*-
 
 (use-package! treesit
-  :mode (("\\.tsx\\'" . tsx-ts-mode))
+  :mode (("\\.tsx\\'" . tsx-ts-mode)
+         ("\\.bash\\'" . bash-ts-mode))
   :preface
   (dolist (mapping
            '((python-mode . python-ts-mode)
@@ -13,7 +14,8 @@
              (json-mode . json-ts-mode)
              (js-json-mode . json-ts-mode)
              ;; (clojure-mode . clojure-ts-mode)
-             (dockerfile-mode . dockerfile-ts-mode)))
+             (dockerfile-mode . dockerfile-ts-mode)
+             (bash-mode . bash-ts-mode)))
     (add-to-list 'major-mode-remap-alist mapping))
   :config
   (tree-sitter-init+))
