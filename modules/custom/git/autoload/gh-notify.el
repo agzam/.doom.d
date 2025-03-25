@@ -36,14 +36,13 @@
 (defun gh-notify-code-review-forge-pr-at-point ()
   "Jumps to PR review straight from notications list."
   (interactive)
-  (if-let* ((obj (gh-notify-current-notification))
-            (pr-p (cl-struct-slot-value 'gh-notify-notification 'type obj))
-            (forge-buf (call-interactively #'gh-notify-visit-notification)))
-      (with-current-buffer forge-buf
-        (run-with-timer
-         0.3 nil
-         #'code-review-forge-pr-at-point))
-    (message "Not a Pull-Request")))
+  (unwind-protect
+      (progn
+        (add-hook #'magit-post-display-buffer-hook #'code-review-forge-pr-at-point )
+        (forge-visit-topic
+         (gh-notify-notification-forge-obj
+          (gh-notify-current-notification))))
+    (remove-hook #'magit-post-display-buffer-hook #'code-review-forge-pr-at-point)))
 
 ;;;###autoload
 (defun gh-notify-forge-browse-topic-at-point ()
