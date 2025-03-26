@@ -16,7 +16,8 @@
              ;; (clojure-mode . clojure-ts-mode)
              (dockerfile-mode . dockerfile-ts-mode)
              (bash-mode . bash-ts-mode)
-             (mermaid-mode . mermaid-ts-mode)))
+             (mermaid-mode . mermaid-ts-mode)
+             (java-mode . java-ts-mode)))
     (add-to-list 'major-mode-remap-alist mapping))
   :config
   (tree-sitter-init+))

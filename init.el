@@ -225,4 +225,5 @@
        golang
        lua
        python
-       (:if (featurep :system 'macos) jira))
+       (:if (featurep :system 'macos) jira)
+       java)
