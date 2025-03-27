@@ -13,6 +13,7 @@
 
 (use-package! clojure-mode
   :defer t
+  :mode (("\\.bb\\'" . clojure-ts-mode))
   :init
   (defadvice! skip-cider--setup-clojure-major-mode-a (_ &rest _)
     :around 'cider--setup-clojure-major-mode

@@ -105,7 +105,13 @@
    50)
 
   ;; (magit-transient-unblock-global-keys)
-  )
+
+  ;; tarsius broke something with the recent update
+  ;; I'm getting messages like:
+  ;; transient-setup: Cannot insert ("N" "Forge" forge-dispatch) into magit-dispatch; o not found
+  ;; this is a temporary measure until it gets sorted out
+  (transient-append-suffix 'magit-dispatch '(0 0 -1)
+    '("o" "Dummy" nil)))
 
 (use-package! evil-collection-magit
   :when (modulep! :editor evil +everywhere)
@@ -196,9 +202,7 @@
                   "y" #'git-link-forge-topic)))
 
   ;; forge-topic uses markdown to display images, sometimes they get too big on the screen
-  (setq markdown-max-image-size '(700 . nil))
-
-  )
+  (setq markdown-max-image-size '(700 . nil)))
 
 (use-package! gist
   :defer t
@@ -213,8 +217,9 @@
   (setq browse-at-remote-add-line-number-if-no-region-selected t))
 
 (use-package! gh-notify
-  :commands (gh-notify)
+  :after (magit forge)
   :defer t
+  :commands (gh-notify)
   :config
   (require 'gh-notify)
   (setq gh-notify-redraw-on-visit t
@@ -224,8 +229,7 @@
         :n "RET" #'gh-notify-visit-notification
         :n "q" #'kill-buffer-and-window
         (:after code-review
-         :n "s-r" #'gh-notify-code-review-forge-pr-at-point)
-        )
+         :n "s-r" #'gh-notify-code-review-forge-pr-at-point))
 
   (map! :map gh-notify-mode-map
         "C-c C-o" #'gh-notify-forge-browse-topic-at-point

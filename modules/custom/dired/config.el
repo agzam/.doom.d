@@ -65,22 +65,14 @@
 (use-package! dired-imenu
   :after dired)
 
+
 (use-package! dired-subtree
   :after dired
   :init
-  (setq dired-subtree-cycle-depth 5)
-  (map! :map dired-mode-map
-        :n "M-l" #'dired-subtree-cycle
-        :n "M-h" #'dired-subtree-remove*
-        :n "M-k" #'dired-subtree-remove*
-        :n "M-j" #'dired-subtree-down-n-open
-        :n "M-n" #'dired-subtree-next-sibling
-        :n "M-p" #'dired-subtree-previous-sibling))
+  (setq dired-subtree-cycle-depth 5))
 
-(after! dired
-  (map! :map dired-mode-map
-        :n "s" #'dired-sort-toggle-or-edit)
 
+(after! dired 
   (setq dired-use-ls-dired t
         dired-listing-switches "-alh --group-directories-first"
         dired-dwim-target t
@@ -99,19 +91,6 @@
         (setq insert-directory-program gls
               dired-listing-switches "-aBhl --group-directories-first"))))
 
-  (add-hook 'dired-mode-hook #'dired-hide-details-mode)
-
-  (when (modulep! :custom general)
-    (map!
-     :map dired-mode-map
-     :n "o" nil
-     (:prefix ("o" . "open")
-      :desc "below" :n  "j" (dired-split-action +evil/window-split-and-follow)
-      :desc "right" :n "l" (dired-split-action +evil/window-vsplit-and-follow)
-      :desc "left"  :n "h" (dired-split-action split-window-horizontally)
-      :desc "above" :n "k" (dired-split-action split-window-vertically)
-      :desc "ace-action" :n "a" #'dired-ace-action)))
-
   (when (modulep! :custom search)
     (add-hook! dired-after-readin #'+add-to-zoxide-cache))
 
@@ -119,7 +98,26 @@
     "Provide full path for each file in dired-do-shell-command"
     :around #'dired-do-shell-command
     (let ((files (dired-get-marked-files nil current-prefix-arg nil nil t)))
-      (funcall orig-fn command arg files))))
+      (funcall orig-fn command arg files)))
+
+  (add-hook! 'dired-mode-hook
+             #'dired-hide-details-mode
+             (defun dired-set-keys ()
+               (map! :map dired-mode-map
+                     :n "M-l" #'dired-subtree-cycle
+                     :n "M-h" #'dired-subtree-remove*
+                     :n "M-k" #'dired-subtree-remove*
+                     :n "M-j" #'dired-subtree-down-n-open
+                     :n "M-n" #'dired-subtree-next-sibling
+                     :n "M-p" #'dired-subtree-previous-sibling
+
+                     :n "o" nil
+                     (:prefix ("o" . "open")
+                      :desc "below" :n  "j" (dired-split-action +evil/window-split-and-follow)
+                      :desc "right" :n "l" (dired-split-action +evil/window-vsplit-and-follow)
+                      :desc "left"  :n "h" (dired-split-action split-window-horizontally)
+                      :desc "above" :n "k" (dired-split-action split-window-vertically)
+                      :desc "ace-action" :n "a" #'dired-ace-action)))))
 
 (use-package! dired-sidebar
   :defer t

@@ -84,6 +84,7 @@
             [remap imenu] #'consult-outline
             "C-c C-f f" #'org-roam-node-find
             "C-c C-i" #'org-roam-node-insert+
+            :n "zk" #'text-scale-increase
 
             ;; tilde insead of backtick
             :iv "`" (cmd! (self-insert-command 1 126))
@@ -574,7 +575,9 @@
 ;;   (add-hook! org-roam-mode #'khoj--server-start))
 
 (use-package! ob-mermaid
+  :defer t
   :after (org)
   :config
   ;; install https://github.com/mermaid-js/mermaid-cli
-  (setopt ob-mermaid-cli-path (executable-find "mmdc")))
+  (when-let* ((mmdc (executable-find "mmdc")))
+    (setopt ob-mermaid-cli-path mmdc)))

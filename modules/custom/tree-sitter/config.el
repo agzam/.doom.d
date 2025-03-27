@@ -43,6 +43,8 @@
   (global-evil-matchit-mode 1))
 
 (use-package! mermaid-mode
+  :defer t
   :config
   ;; install https://github.com/mermaid-js/mermaid-cli
-  (setopt mermaid-mmdc-location (executable-find "mmdc")))
+  (when-let* ((mmdc (executable-find "mmdc")))
+    (setopt mermaid-mmdc-location mmdc)))
