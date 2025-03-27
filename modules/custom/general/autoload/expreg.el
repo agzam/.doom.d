@@ -40,6 +40,8 @@
         "SPC" "," ":" "M-x" "M-:" "`" "C-h"
         "s-k" "s-]" "s-j" "s-]"
         ">" "<" "=" "~"  "[" "]" "J"
+        ("*" nil evil-ex-search-word-forward)
+        ("#" nil evil-ex-search-word-backward)
         ("s" nil evil-surround-region)
         ("j" t evil-next-visual-line)
         ("k" t evil-previous-visual-line)

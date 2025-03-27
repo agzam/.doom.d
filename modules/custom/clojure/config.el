@@ -139,9 +139,13 @@
   (after! cider-scratch
     (setq cider-scratch-buffer-name "*clj-scratch*"))
 
-  (map! (:map cider-eval-commands-map
-              "C-c C-f" nil
-              "C-c r" nil)
+  (map!
+   (:map evil-insert-state-map "C-x C-p" nil)
+   (:map global-map "C-x C-p" nil)
+   (:map cider-eval-commands-map
+         "C-c C-f" nil
+         "C-c r" nil
+         :i "C-x C-p" #'cider-pprint-eval-last-sexp)
         (:map cider-mode-map
          "C-c C-c" nil
          "C-c C-k" nil
@@ -151,7 +155,8 @@
          :i "C-x C-p" #'cider-pprint-eval-last-sexp)
         (:map (cider-clojure-interaction-mode-map
                clojurescript-mode-map
-               clojure-mode-map)
+               clojure-mode-map
+               clojure-ts-mode-map)
          "C-c C-n" #'clj-edit-ns-header
          :i "C-j" #'cider-eval-last-sexp
          :i "C-x C-e" #'cider-eval-last-sexp
