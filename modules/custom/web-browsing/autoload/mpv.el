@@ -53,12 +53,12 @@
    (lambda (_)
      (transient-bypass-keys
       'mpv-transient
-      '(("d" t))))]
+      '(("d" t) ("j" t) ("k" t))))]
   ["mpv"
    [("f" "follow" elfeed-tube-mpv-follow-mode)
     ("w" "where" elfeed-tube-mpv-where)]
-   [("k" "vol up" mpv-volume-increase :transient t)
-    ("j" "vol down" mpv-volume-decrease :transient t)]
+   [("K" "vol up" mpv-volume-increase :transient t)
+    ("J" "vol down" mpv-volume-decrease :transient t)]
    [("p" "prev" mpv-playlist-prev :transient t)
     ("n" "next" mpv-playlist-next :transient t)]
    [("h" "<<" mpv-seek-backward :transient t)
