@@ -13,3 +13,6 @@
 [submodule "modules/custom/web-browsing/consult-hn"]
 	path = modules/custom/web-browsing/consult-hn
 	url = git@github.com:agzam/consult-hn.git
+[submodule "github-topics"]
+	path = modules/custom/git/github-topics
+	url = git@github.com:agzam/github-topics.git

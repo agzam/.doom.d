@@ -30,3 +30,6 @@
 (package! consult-gh :recipe (:host github :repo "armindarvish/consult-gh" :files ("*.el")))
 
 (package! git-auto-commit-mode)
+
+
+(package! github-topics :recipe (:local-repo "github-topics"))

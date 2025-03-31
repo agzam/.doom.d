@@ -37,7 +37,7 @@
      (transient-bypass-keys
       'expreg-transient
       '("d" "p" "P" "r" "c" "R" "t" "T" "f" "F" "n" "C-;" "g" "G"
-        "SPC" "," ":" "M-x" "M-:" "`" "C-h"
+        "SPC" "," ":" "M-x" "M-:" "`" "C-h" "C-x TAB"
         "s-k" "s-]" "s-j" "s-]"
         ">" "<" "=" "~"  "[" "]" "J"
         ("*" nil evil-ex-search-word-forward)
@@ -50,8 +50,9 @@
         ("%" t evilmi-jump-items)
         ("0" t evil-beginning-of-line)
         ("y" t evil-yank)
+        ("o" t exchange-point-and-mark)
         ("C-l" t) ("C-e" t)  ("C-y" t)
-        ("w" t) ("W" t) ("b" t) ("B" t) ("o" t)  ("$" t)
+        ("w" t) ("W" t) ("b" t) ("B" t)  ("$" t)
         ("/" t) ("{" t) ("}" t)
         ("x" nil (lambda () (interactive) (general--simulate-keys nil "SPC x"))))))]
   ["Org Mode"

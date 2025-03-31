@@ -16,8 +16,6 @@
 
   (add-to-list 'embark-keymap-alist '(jira-ticket embark-jira-ticket-map))
 
-  (setopt github-orgs '("qlik-trial" "stitchdata"))
-
   (map! :map embark-jira-ticket-map
         :desc "browse" "b" #'jira-view-simple
         (:prefix ("f" . "find")

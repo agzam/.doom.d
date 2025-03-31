@@ -375,3 +375,8 @@
 
 (use-package! git-auto-commit-mode
   :defer t)
+
+(use-package! github-topics
+  :defer t
+  :config
+  (setopt github-topics-default-orgs '(qlik-trial stitchdata)))
