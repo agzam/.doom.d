@@ -377,6 +377,19 @@
   :defer t)
 
 (use-package! github-topics
-  :defer t
+  :defer t 
+  :commands (github-topics-find-prs)
   :config
-  (setopt github-topics-default-orgs '(qlik-trial stitchdata)))
+  (setopt github-topics-default-orgs '(qlik-trial stitchdata))
+
+  (add-to-list
+   'display-buffer-alist
+   '("\\*Searching GitHub.*"
+     (display-buffer-in-quadrant)
+     (direction . right)
+     (init-width . 0.3)
+     (window . root)))
+
+  (add-hook! github-topics-prs-buffer-hook
+    (defun on-github-topics-prs-buffer-h (buf)
+      (jinx-mode -1))))

@@ -31,5 +31,4 @@
 
 (package! git-auto-commit-mode)
 
-
 (package! github-topics :recipe (:local-repo "github-topics"))
