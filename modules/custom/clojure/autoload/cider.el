@@ -267,8 +267,8 @@ which isn't great for Polylith projects. Let's fix that."
           (funcall ofn arg)
           (if-let* ((ses (funcall find-matching-session
                                   host port
-                                  (sesman-sessions (sesman--system)))))
-              (sesman-link-with-buffer nil ses)
+                                  (sesman-sessions 'CIDER))))
+              (sesman-link-session 'CIDER ses)
             (cider-connect-clj (list :host host
                                      :port (string-to-number port)))))
       (funcall ofn arg))))

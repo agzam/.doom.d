@@ -14,7 +14,7 @@
 (package! git-link)
 
 ;; @tarsius broke Code-Review: https://github.com/wandersoncferreira/code-review/issues/245
-(package! code-review :recipe (:host github :repo "Daskeladden/code-review"))
+(package! code-review :recipe (:host github :repo "ag91/code-review"))
 
 ;; (package! gist)
 
