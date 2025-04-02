@@ -195,9 +195,9 @@
        (default +bindings +smartparens)
 
        :custom
+       general
        git
        (completion +icons +minibuffer)
-       general
        colors
        modeline
        tab-bar
@@ -206,24 +206,25 @@
 
        search
        dired
-       writing
        ai
+       writing
+       learning
        web-browsing
        chat
-
+       notmuch
+       (:if (featurep :system 'macos) jira)
        tree-sitter
        lsp
+
        clojure
-       org
-       shell
-       yaml
-       pdf
-       notmuch
-       webdev
        flutter
-       nix
        golang
+       java
        lua
+       nix
+       org
+       pdf
        python
-       (:if (featurep :system 'macos) jira)
-       java)
+       shell
+       webdev
+       yaml)
