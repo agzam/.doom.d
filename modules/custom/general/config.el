@@ -223,3 +223,10 @@
         scroll-margin 0)
   :config
   (ultra-scroll-mode 1))
+
+
+(after! image-mode
+  (map! :map image-mode-map
+        (:prefix ("z" . "zoom")
+         :n "k" #'image-increase-size
+         :n "j" #'image-decrease-size)))
