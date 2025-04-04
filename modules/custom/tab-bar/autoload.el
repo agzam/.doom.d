@@ -11,9 +11,8 @@
   "New Tab"
   ["Choose a template"
    [("o" "Org" (lambda () (interactive) (org-roam-dailies-goto-today '("w"))))
-    ("c" "chat-gpt" gptel+)]
-
-   [("gn" "gh-notify" gh-notify)]
+    ("gt" "gptel" gptel+)
+    ("gn" "gh-notify" gh-notify)]
 
    [("ef" "elfeed" elfeed)
     ("no" "notmuch" notmuch)

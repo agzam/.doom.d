@@ -4,8 +4,8 @@
   :defer t
   :commands (exercism)
   :init
-  (shell-command (format "%s configure --workspace ~/GitHub/agzam/exercism/"
-                         (or (executable-find "exercism")
-                             (user-error "exercism CLI not found"))))
+  (if-let* ((exe (executable-find "exercism")))
+    (shell-command (format "%s configure --workspace ~/GitHub/agzam/exercism/" exe))
+    (print "exercism CLI not found"))
   :config
   (setopt exercism--workspace (expand-file-name "~/GitHub/agzam/exercism/")))

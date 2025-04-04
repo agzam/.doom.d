@@ -1,0 +1,55 @@
+# This is an attempt for re-building config and required files for
+# every Doom or packages update.
+
+name: rebuild
+on:
+  workflow_dispatch
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout .doom.d
+        uses: actions/checkout@main
+        with:
+          path: doom-d
+          submodules: recursive
+
+      - name: Checkout doomemacs
+        uses: actions/checkout@main
+        with:
+          repository: doomemacs/doomemacs
+          path: doom-tmp
+          fetch-depth: 1
+
+      - run: mv doom-d ~/.doom.d
+      - run: cp -r doom-tmp ~/.emacs.d
+
+      - name: Cache Emacs
+        uses: actions/cache@v3
+        id: emacs-cache
+        with:
+          path: /usr/local/emacs/
+          key: emacs-${{ matrix.emacs-version }}
+
+      - name: Install Emacs
+        if: steps.emacs-cache.outputs.cache-hit != 'true'
+        uses: purcell/setup-emacs@master
+        with:
+          version: 30.1
+
+      - run: ls -al $HOME/.emacs.d
+
+      - name: Install Doom
+        run: |
+          ~/.emacs.d/bin/doom install --force --no-fonts --no-env
+
+      - run: ls -al $HOME/.emacs.d
+
+      - run: diff -qr doom-tmp $HOME/.emacs.d
+
+      # - name: Save results
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: doom-files
+      #     path:
