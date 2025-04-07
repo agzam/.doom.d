@@ -214,7 +214,13 @@
 (after! writegood-mode
   (remove-hook! 'org-mode-hook #'writegood-mode))
 
+(after! grip-mode
+  (setq grip-preview-use-webkit (featurep :system 'macos))
+  (setq grip-github-user "agzam")
+  (setf grip-github-password (auth-host->pass "api.github.com")))
+
 (after! markdown-mode
+  (setopt markdown-enable-math nil)
   (require 'lsp-marksman)
   (map! :map (markdown-mode-map)
         (:localleader

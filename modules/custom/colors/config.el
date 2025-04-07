@@ -2,6 +2,8 @@
 
 (setq pulse-delay 0.05)
 
+(remove-hook! 'doom-init-ui-hook #'window-divider-mode)
+
 (use-package! ag-themes
   :after-call doom-init-ui-h
   :config)

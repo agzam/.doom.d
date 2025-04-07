@@ -85,3 +85,4 @@
 (package! ligature)
 
 (unpin! evil-collection)
+(unpin! projectile)

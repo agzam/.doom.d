@@ -20,9 +20,10 @@
 
   (setopt
    gptel-default-mode 'org-mode
-   gptel-api-key (auth-host->pass "api.openai.com")
    gptel-expert-commands t
    gptel-track-media t)
+
+  (setq gptel-api-key (auth-host->pass "api.openai.com"))
 
   (after! gptel-transient
     (transient-suffix-put 'gptel-menu (kbd "RET") :key "s-<return>"))

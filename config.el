@@ -29,10 +29,10 @@
 (load! "lisp/functions")
 (load! "lisp/sexp-transient")
 
-(setq doom-theme 'ag-themes-spacemacs-light)
+(setopt doom-theme 'ag-themes-spacemacs-light)
 
 (unless (display-graphic-p)
-  (setq doom-theme nil)
+  (setopt doom-theme nil)
   ;; forcing thin cursor in insert mode
   (add-hook 'evil-insert-state-entry-hook
             (lambda () (send-string-to-terminal "\033[5 q")))
@@ -41,12 +41,14 @@
   (doom-disable-show-paren-mode-h))
 
 
-(setq
+(setopt
  doom-font (font-spec :family "Fira Code" :size 16)
  doom-serif-font (font-spec :family "Fira Code" :size 16)
  doom-variable-pitch-font (font-spec :family "Noto Sans" :size 18)
  ;; doom-unicode-font (font-spec :family "Apple Color Emoji" :size 18)
  )
+
+(desktop-save-mode +1)
 
 (add-hook! 'doom-load-theme-hook
   (defun reset-fixed-pitch-height-h ()
@@ -56,7 +58,7 @@
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type t)
+(setopt display-line-numbers-type t)
 (remove-hook! (prog-mode text-mode conf-mode) #'display-line-numbers-mode)
 
 ;; Here are some additional functions/macros that could help you configure Doom:
@@ -86,7 +88,7 @@
  messages-buffer-max-lines 10000
  fill-column 70)
 
-(setq
+(setopt
  default-text-properties '(line-height 1.4)
  doom-localleader-key ","
  doom-localleader-alt-key "C-,"
@@ -94,7 +96,7 @@
  scroll-margin 1
  evil-want-C-u-scroll nil
  ;; auto-hscroll-mode 'current-line
- default-input-method 'russian-computer
+ default-input-method "russian-computer"
  tab-width 4
  apropos-sort-by-scores t
  doom-font-increment 1
@@ -124,7 +126,7 @@
   (setq dumb-jump-force-searcher 'rg))
 
 (after! which-key
-  (setq
+  (setopt
    which-key-use-C-h-commands t
    which-key-show-early-on-C-h t
    which-key-idle-delay 0.5
@@ -133,7 +135,7 @@
 
   ;; replace 'evil-' in which-key HUD with a tiny triangle
   ;; borrowed from https://tecosaur.github.io/emacs-config/config.html
-  (setq which-key-allow-multiple-replacements t)
+  (setopt which-key-allow-multiple-replacements t)
   (after! which-key
     (pushnew!
      which-key-replacement-alist
@@ -142,7 +144,6 @@
 
   (which-key-mode))
 
-(setq markdown-enable-math nil)
 
 (when (modulep! :custom general)
   (add-hook! 'window-setup-hook
@@ -165,7 +166,7 @@
 
 (after! custom
   ;; in customize dialogs keep the elisp names
-  (setq custom-unlispify-tag-names nil))
+  (setopt custom-unlispify-tag-names nil))
 
 (add-hook! 'next-error-hook #'recenter)
 
@@ -180,10 +181,10 @@
 (remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
 
 (after! evil
-  (setq evil-jumps-cross-buffers t
-        evil-move-cursor-back nil
-        evil-in-single-undo t
-        evil-want-fine-undo 'yes)
+  (setopt evil-jumps-cross-buffers t
+          evil-move-cursor-back nil
+          evil-in-single-undo t
+          evil-want-fine-undo t)
   (map! :map 'evil-visual-state-map "u" #'undo)
 
   (defadvice! fwd-o-bkwd-paragraph-o-heading-recenter-a (&rest _args)
@@ -196,17 +197,17 @@
     (recenter)))
 
 (after! better-jumper
-  (setq better-jumper-context 'window))
+  (setopt better-jumper-context 'window))
 
 (after! time
-  (setq world-clock-list
-        '(("America/Los_Angeles" "Pacific")
-          ("America/Chicago" "Central")
-          ("America/New_York" "Eastern")
-          ("Europe/Paris" "Paris")
-          ("Europe/Kiev" "Kiev")
-          ("Europe/Moscow" "Moscow")
-          ("Asia/Tashkent" "Tashkent"))))
+  (setopt world-clock-list
+          '(("America/Los_Angeles" "Pacific")
+            ("America/Chicago" "Central")
+            ("America/New_York" "Eastern")
+            ("Europe/Paris" "Paris")
+            ("Europe/Kiev" "Kiev")
+            ("Europe/Moscow" "Moscow")
+            ("Asia/Tashkent" "Tashkent"))))
 
 (after! flycheck
   (ignore-errors
@@ -220,21 +221,16 @@
   ;;   (defun disable-flycheck-popup-buffer ()
   ;;     (setq flycheck-display-errors-function #'ignore)))
   (add-to-list 'flycheck-disabled-checkers 'emacs-lisp-package)
-  (setq flycheck-temp-prefix "/tmp/.flycheck"))
+  (setopt flycheck-temp-prefix "/tmp/.flycheck"))
 
 (after! grep
-  (setq grep-program "rg")
+  (setopt grep-program "rg")
   ;; for whatever strange reason, embark-export started automatically enabling wgrep in
   ;; grep buffers. A workaround until I figure out what the heck.
   ;; (add-hook! 'embark-after-export-hook
   ;;   (defun embark-after-export-h ()
   ;;     (run-with-timer 0.1 nil (lambda () (quiet! (wgrep-abort-changes))))))
   )
-
-(after! grip-mode
-  (setq grip-preview-use-webkit (featurep :system 'macos))
-  (setq grip-github-user "agzam")
-  (setf grip-github-password (auth-host->pass "api.github.com")))
 
 (add-hook! 'prog-mode-hook
            #'hs-minor-mode
@@ -581,7 +577,7 @@
       :n "gd" #'calendar-goto-date)
 
 (after! epa
-  (setq epg-pinentry-mode 'loopback))
+  (setopt epg-pinentry-mode 'loopback))
 
 (use-package! ligature
   :config
@@ -599,9 +595,9 @@
   (global-ligature-mode 't))
 
 (after! undo-fu
-  (setq undo-limit 80000000 ; 80Mb
-        undo-strong-limit 120000000 ; 120Mb
-        ;; 400Mb
-        undo-outer-limit 400000000))
+  (setopt undo-limit 80000000 ; 80Mb
+          undo-strong-limit 120000000 ; 120Mb
+          ;; 400Mb
+          undo-outer-limit 400000000))
 
-(setq warning-suppress-log-types '((org-element)))
+(setopt warning-suppress-log-types '((org-element)))
