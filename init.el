@@ -195,8 +195,8 @@
        (default +bindings +smartparens)
 
        :custom
-       general
        git
+       general
        (completion +icons +minibuffer)
        colors
        modeline

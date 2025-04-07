@@ -12,6 +12,4 @@
   ;; important: this needs to be set before the package loads
   (setopt lsp-pyright-multi-root nil)
   :config
-  (setopt lsp-pyright-langserver-command "basedpyright"
-          lsp-pyright-type-checking-mode "standard"
-          lsp-pyright-auto-search-paths nil))
+  (setopt lsp-pyright-langserver-command "basedpyright"))
