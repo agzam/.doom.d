@@ -102,6 +102,7 @@
 
   (add-hook! 'dired-mode-hook
              #'dired-hide-details-mode
+             #'turn-off-evil-matchit-mode
              (defun dired-set-keys ()
                (map! :map dired-mode-map
                      :n "M-l" #'dired-subtree-cycle
