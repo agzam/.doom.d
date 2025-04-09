@@ -110,14 +110,28 @@ Every key spec in KEY-SPECS list can be, either:
      (car reg) (cadr reg) t)))
 
 ;;;###autoload
-(defun avy-goto-parens ()
+(defun avy-goto-beg-sexp ()
   "Use avy to jump to a beginning of sexp."
   (interactive)
   (let* ((avy-command this-command) ; for look up in avy-orders-alist
          (avy-style 'post))
     (avy-jump "(+\\|\\[+\\|{+" :window-flip nil)))
 
-(add-to-list 'avy-orders-alist '(avy-goto-parens . avy-order-closest))
+(add-to-list 'avy-orders-alist '(avy-goto-beg-sexp . avy-order-closest))
+
+;;;###autoload
+(defun avy-goto-end-sexp ()
+  "Use avy to jump to a end of sexp."
+  (interactive)
+  (let* ((avy-command this-command)
+         (avy-style 'post))
+    (avy-jump "\\([^])}>]+\\)[])}]+"
+              :window-flip nil
+              :action (lambda (pt)
+                        (goto-char pt)
+                        (re-search-forward "[])}]+" nil t 1)))))
+
+(add-to-list 'avy-orders-alist '(avy-goto-end-sexp . avy-order-closest))
 
 ;;;###autoload
 (defun sp-eval-current-in-mode ()
@@ -166,7 +180,8 @@ Every key spec in KEY-SPECS list can be, either:
         ("f" t) ("F" t) ("t" t) ("T" t)
         ("/" t))))]
   ["sexp"
-   [("a" "avy" avy-goto-parens :transient t)]
+   [("a" "avy" avy-goto-beg-sexp :transient t)
+    ("A" "avy" avy-goto-end-sexp :transient t)]
    [("w" "wrap" sp-wrap-sexp :transient t)
     ("W" "unwrap" sp-unwrap-sexp :transient t)
     ("=" "reindent" sp-reindent :transient t)]
