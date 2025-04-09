@@ -51,6 +51,7 @@
      (shell-command-to-string
       (format "%s view %s --gjq 'fields.summary'" j ticket)))))
 
+;;;###autoload
 (defun jira--ticket-arg-or-ticket-at-point (&optional ticket)
   "Resolves ticket based on argument or symbol-at-point"
   (let* ((satp (thing-at-point 'symbol t))

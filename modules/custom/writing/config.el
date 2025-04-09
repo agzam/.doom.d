@@ -261,11 +261,12 @@
 
 (use-package! jinx
   :defer t
-  :hook (doom-first-file . global-jinx-mode)
+  :hook (doom-first-buffer . global-jinx-mode)
   :config
-  (add-to-list 'vertico-multiform-categories
-               '(jinx grid (vertico-grid-annotate . 20)))
-  (vertico-multiform-mode 1)
+  (after! vertico-multiform
+    (add-to-list 'vertico-multiform-categories
+                 '(jinx grid (vertico-grid-annotate . 20)))
+    (vertico-multiform-mode 1))
 
   (setq jinx-languages "en_US ru_RU es_MX")
 

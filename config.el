@@ -232,6 +232,8 @@
   ;;     (run-with-timer 0.1 nil (lambda () (quiet! (wgrep-abort-changes))))))
   )
 
+(global-visual-wrap-prefix-mode)
+
 (add-hook! 'prog-mode-hook
            #'hs-minor-mode
            #'visual-line-mode)
