@@ -12,9 +12,13 @@
 (defun +search-github-with-lang ()
   "Search on Github with attempt of detecting language associated with current-buffer's mode"
   (interactive)
-  (let* ((mode (intern (replace-regexp-in-string "-mode$" "" (symbol-name major-mode))))
-         (lang (cl-some (lambda (entry)
-                          (when (memq mode (car entry))
+  (let* ((lang (cl-some (lambda (entry)
+                          (when (cl-intersection
+                                 (seq-map #'symbol-name
+                                          (derived-mode-all-parents major-mode))
+                                 (seq-map (lambda (x) (concat (symbol-name x) "-mode"))
+                                          (car entry))
+                                 :test #'equal)
                             (cdr entry)))
                         +search--github-mode->lang))
          (lang-term (if lang (concat "language:\"" lang "\" ") ""))
