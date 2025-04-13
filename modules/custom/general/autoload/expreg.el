@@ -36,7 +36,7 @@
    (lambda (_)
      (transient-bypass-keys
       'expreg-transient
-      '("d" "p" "P" "r" "c" "R" "t" "T" "f" "F" "n" "C-;" "g" "G"
+      '("d" "p" "P" "r" "c" "R" "t" "T" "f" "F" "n" "C-;"
         "SPC" "," ":" "M-x" "M-:" "`" "C-h" "C-x TAB"
         "s-k" "s-]" "s-j" "s-]"
         ">" "<" "=" "~"  "[" "]" "J"
@@ -54,6 +54,7 @@
         ("C-l" t) ("C-e" t)  ("C-y" t)
         ("w" t) ("W" t) ("b" t) ("B" t)  ("$" t)
         ("/" t) ("{" t) ("}" t)
+        ("g" t evil-goto-first-line) ("G" t evil-goto-line)
         ("x" nil (lambda () (interactive) (general--simulate-keys nil "SPC x"))))))]
   ["Org Mode"
    :if (lambda () (derived-mode-p 'org-mode))

@@ -51,13 +51,15 @@
 (add-hook! 'doom-after-init-hook
   (defun init-desktop-mode-h ()
     (setopt desktop-path (list doom-profile-state-dir))
-    (desktop-save-mode +1))
+    (desktop-save-mode +1)))
 
-  (defun restore-desktop-and-tabs-h ()
-    (require 'org-roam-mode)
-    (require 'projectile)
-    (tab-bar-mode 1)
-    (desktop-read doom-profile-state-dir)))
+(defun restore-desktop-and-tabs-h ()
+  (interactive)
+  (require 'org-roam-mode)
+  (require 'projectile)
+  (require 'magit)
+  (tab-bar-mode 1)
+  (desktop-read doom-profile-state-dir))
 
 (add-hook! 'doom-load-theme-hook
   (defun reset-fixed-pitch-height-h ()
