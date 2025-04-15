@@ -51,7 +51,9 @@
 (add-hook! 'doom-after-init-hook
   (defun init-desktop-mode-h ()
     (setopt desktop-path (list doom-profile-state-dir))
-    (desktop-save-mode +1)))
+    (desktop-save-mode 1)))
+
+(setopt desktop-save t)
 
 (defun restore-desktop-and-tabs-h ()
   (interactive)
@@ -613,4 +615,5 @@
           ;; 400Mb
           undo-outer-limit 400000000))
 
-(setopt warning-suppress-log-types '((org-element)))
+(unless (member "--debug-init" command-line-args)
+  (setopt warning-minimum-level :error))

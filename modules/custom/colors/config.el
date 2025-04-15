@@ -19,6 +19,7 @@
                          'ag-themes-spacemacs-light
                        'base16-solarized-light))
           ("21:00" . ag-themes-base16-ocean)
+          ("23:00" . modus-vivendi)
           ;; ("" . ag-themes-base16-tokyo-night-light)
           )))
 

@@ -2,7 +2,7 @@
 
 (use-package! magit
   :commands magit-file-delete
-  :defer-incrementally (dash f s with-editor git-commit package eieio transient)
+  :defer t
   :init
   ;; Must be set early to prevent ~/.emacs.d/transient from being created
   (setq transient-levels-file  (concat doom-etc-dir "transient/levels")
@@ -20,8 +20,6 @@
                magit-refs-mode
                magit-revision-mode))
     (evil-set-initial-state m nil))
-
-  (add-to-list 'doom-debug-variables 'magit-refresh-verbose)
 
   ;; The default location for git-credential-cache is in
   ;; ~/.cache/git/credential. However, if ~/.git-credential-cache/ exists, then
