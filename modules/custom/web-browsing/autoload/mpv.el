@@ -8,23 +8,36 @@
 ;;;###autoload
 (defun mpv-open+ (&optional path)
   (interactive)
-  (let* ((url-regex "\\`https?://")
-         (path (or path
-                   (cond
-                    ((eq major-mode 'dired-mode)
-                     (mpv-play (dired-get-file-for-visit)))
+  (catch 'exit
+   (let* ((url-regex "\\`https?://")
+          (path (or path
+                    (cond
+                     ((eq major-mode 'dired-mode)
+                      (mpv-play (dired-get-file-for-visit))
+                      (throw 'exit nil))
 
-                    ((and (car kill-ring)
-                          (string-match url-regex (car kill-ring)))
-                     (car kill-ring))
+                     ((and (car kill-ring)
+                           (string-match url-regex (car kill-ring)))
+                      (car kill-ring))
 
-                    ((eq major-mode 'org-mode)
-                     (or
-                      (org-element-property :path (org-element-context))
-                      (thing-at-point 'url)))
+                     ((eq major-mode 'org-mode)
+                      (or
+                       (org-element-property :path (org-element-context))
+                       (thing-at-point 'url)))
 
-                    (t (thing-at-point 'url))))))
-    (mpv-play-url (read-string "Play: " path))))
+                     (t (thing-at-point 'url))))))
+     (mpv-play-url (read-string "Play: " path)))))
+
+(defadvice! mpv-play-next-without-stopping-a (orig-fn arg)
+  ;; don't quit mpv, just to play a file/url
+  ;; send it into a queue and switch to it immediately
+  :around #'mpv-play
+  :around #'mpv-play-url
+  (if (mpv-live-p)
+      (progn
+       (mpv--enqueue `(loadfile ,arg append) #'ignore)
+       (mpv-run-command "playlist-next"))
+    (funcall orig-fn arg)))
 
 (defvar mpv--osc-style "auto")
 (defvar mpv--subtitle-visible "auto")
@@ -53,7 +66,9 @@
    (lambda (_)
      (transient-bypass-keys
       'mpv-transient
-      '(("d" t) ("j" t) ("k" t))))]
+      '(("d" t dired-flag-file-deletion)
+        ("j" t evil-next-visual-line)
+        ("k" t evil-previous-visual-line))))]
   ["mpv"
    [("f" "follow" elfeed-tube-mpv-follow-mode)
     ("w" "where" elfeed-tube-mpv-where)]
