@@ -86,4 +86,8 @@
     ("; l" "insert link" markdown-insert-link)
     ("; L" "insert browser url" expreg-transient--insert-browser-url)
     ("; s" "wrap in code block" markdown-wrap-code-generic)
-    ("; <" "wrap in collapsible" markdown-wrap-collapsible)]])
+    ("; <" "wrap in collapsible" markdown-wrap-collapsible)]]
+  ["Clojure"
+   :if (lambda () (derived-mode-p 'clojure-mode))
+   :hide (lambda () (not transient-show-common-commands))
+   [("; c" "wrap comment" clojure-wrap-rich-comment)]])

@@ -166,3 +166,19 @@ convert from JSON."
            (message link)
            (kill-new link)
            link))))))
+
+
+;;;###autoload
+(defun clojure-wrap-rich-comment ()
+  "Wrap the selected region in (comment ...)."
+  (interactive)
+  (when (use-region-p)
+    (let ((beg (region-beginning))
+          (end (region-end)))
+      (save-excursion
+        (goto-char end)
+        (insert ")")
+        (goto-char beg)
+        (insert "(comment \n")
+        (when lsp-mode
+          (call-interactively #'lsp-format-region))))))
