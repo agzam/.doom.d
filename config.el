@@ -48,20 +48,6 @@
  ;; doom-unicode-font (font-spec :family "Apple Color Emoji" :size 18)
  )
 
-(add-hook! 'doom-after-init-hook
-  (defun init-desktop-mode-h ()
-    (setopt desktop-path (list doom-profile-state-dir))
-    (desktop-save-mode 1)))
-
-(setopt desktop-save t)
-
-(defun restore-desktop-and-tabs-h ()
-  (interactive)
-  (require 'org-roam-mode)
-  (require 'projectile)
-  (require 'magit)
-  (tab-bar-mode 1)
-  (desktop-read doom-profile-state-dir))
 
 (add-hook! 'doom-load-theme-hook
   (defun reset-fixed-pitch-height-h ()
@@ -245,7 +231,7 @@
   ;;     (run-with-timer 0.1 nil (lambda () (quiet! (wgrep-abort-changes))))))
   )
 
-(global-visual-wrap-prefix-mode)
+;; (global-visual-wrap-prefix-mode)
 
 (add-hook! 'prog-mode-hook
            #'hs-minor-mode

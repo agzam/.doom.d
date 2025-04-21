@@ -58,7 +58,7 @@
          (ticket-at-point (when (and satp (string-match-p "\\b[A-Z]+-[0-9]+\\b" satp))
                             satp))
          (_ (unless (or ticket
-                        (string-match-p "^[A-Z]\\{3,5\\}-[0-9]+$" ticket-at-point))
+                        (string-match-p "^[A-Z]\\{3,10\\}-[0-9]+$" ticket-at-point))
               (user-error "not a ticket number"))))
     (or ticket ticket-at-point)))
 
@@ -139,12 +139,19 @@ e.g., XYZ-1234 becomes XYZ-1234 - \='This ticket does nothing\='"
   (let* ((j (jira--find-exe))
          (buf (get-buffer-create (format "%s" ticket)))
          (cmd (format "%s view %s" j ticket))
-         (output (ansi-color-apply (shell-command-to-string cmd))))
+         (output (ansi-color-apply (shell-command-to-string cmd)))
+         (subtasks-out (thread-last
+                         ticket
+                         (format "%s list --query 'parent = %s'" j)
+                         shell-command-to-string ansi-color-apply)))
     (with-current-buffer buf
       (erase-buffer)
       (put 'jira--ticket-number 'permanent-local t)
       (setq-local jira--ticket-number ticket)
       (insert (replace-regexp-in-string "\r" "" output))
+      (unless (s-blank-p subtasks-out)
+        (insert "Subtasks:\n")
+        (insert subtasks-out))
       (markdown-mode)
       (jira-browse-ticket-mode)
       (goto-char (point-min)))

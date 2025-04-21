@@ -55,9 +55,12 @@
     ("K" "kill project buffers" +tab-bar-kill-project-buffers)]
    [("[" "history back" tab-bar-history-back :transient t)
     ("]" "history forward" tab-bar-history-forward :transient t)
-    ("d" "kill tab" +tab-bar-kill-tab)
+    ("dd" "kill tab" +tab-bar-kill-tab)
     ("u" "undo kill tab" tab-undo)
-    ("SPC" "templates" tab-bar-new-tab-transient)]]
+    ("SPC" "templates" tab-bar-new-tab-transient)]
+   [("dr" "restore" restore-desktop-and-tabs)
+    ("ds" "save" (lambda () (interactive)
+                   (desktop-save (car desktop-path))))]]
   [:hide always
    :class transient-columns
    :setup-children
@@ -226,3 +229,13 @@
         (if (eq 'current-tab (car tab))
             (select-window (get-buffer-window sel-buf))
           (tab-bar-switch-to-tab (alist-get 'name tab)))))))
+
+
+;;;###autoload
+(defun restore-desktop-and-tabs ()
+  (interactive)
+  (require 'org-roam-mode)
+  (require 'projectile)
+  (require 'magit)
+  (tab-bar-mode 1)
+  (desktop-read doom-profile-state-dir))

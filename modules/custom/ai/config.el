@@ -23,7 +23,7 @@
    gptel-expert-commands t
    gptel-track-media t)
 
-  (setq gptel-api-key (auth-host->pass "api.openai.com"))
+  (setq gptel-api-key (lambda () (auth-host->pass "api.openai.com")))
 
   (after! gptel-transient
     (transient-suffix-put 'gptel-menu (kbd "RET") :key "s-<return>"))
@@ -32,7 +32,7 @@
 
   (gptel-make-anthropic "Claude"
     :stream t
-    :key (auth-host->pass "antropic.com"))
+    :key (lambda () (auth-host->pass "antropic.com")))
 
   (gptel-make-ollama "Ollama"
     :host "localhost:11434"
@@ -43,7 +43,7 @@
     :host "api.deepseek.com"
     :endpoint "/chat/completions"
     :stream t
-    :key (auth-host->pass "deepseek.com")
+    :key (lambda () (auth-host->pass "deepseek.com"))
     :models '(deepseek-chat deepseek-reasoner deepseek-coder))
 
   (add-hook! 'gptel-mode-hook

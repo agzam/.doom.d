@@ -30,4 +30,12 @@
     :before #'tab-bar-transient
     (set-frame-parameter nil 'tab-bar-lines 1)))
 
+(add-hook! 'doom-after-init-hook
+  (defun init-desktop-mode-h ()
+    (setopt desktop-path (list doom-profile-state-dir))
+    (ignore-errors (make-directory doom-profile-state-dir))
+    (desktop-save-mode 1)))
+
+(setopt desktop-save t)
+
 ;; (add-hook! 'tab-bar-tab-added-hook #'tab-bar-created-h)
