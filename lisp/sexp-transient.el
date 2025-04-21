@@ -169,7 +169,7 @@ Every key spec in KEY-SPECS list can be, either:
      (transient-bypass-keys
       'sexp-transient
       '("p" "P" "C-;" "g" "G"
-        "SPC" "," ":" "M-x" "M-:" "`" "C-h"
+        "SPC" "," ":" "M-x" "M-:" "`"
         "s-k" "s-]" "s-j" "s-]"
         "[" "]"
         ("C-l" t) ("C-e" t) ("C-y" t)
