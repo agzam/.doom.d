@@ -193,10 +193,10 @@ Every key spec in KEY-SPECS list can be, either:
    [("n n" "narrow" sp-narrow-to-current-sexp :transient t)
     ("n w" "widen" widen :transient t)
     ("E" "edit" sp-edit-indirect-current-sexp :transient t)]
-   [("> >" "slurp" sp-forward-slurp-sexp :transient t)
-    ("> <" "barf" sp-forward-barf-sexp :transient t)
-    ("< <" "left slurp" sp-backward-slurp-sexp :transient t)
-    ("< >" "left barf" sp-backward-barf-sexp :transient t)]
+   [("M-l" "slurp" sp-forward-slurp-sexp :transient t)
+    ("M-h" "barf" sp-forward-barf-sexp :transient t)
+    ("M-S-h" "left slurp" sp-backward-slurp-sexp :transient t)
+    ("M-S-l" "left barf" sp-backward-barf-sexp :transient t)]
    [("d x" "kill" sp-kill-sexp)
     ("y" "copy" sp-copy-sexp)
     ("v" "select" (lambda () (interactive)
@@ -209,7 +209,13 @@ Every key spec in KEY-SPECS list can be, either:
      cider-pprint-eval-last-sexp-to-comment
      :if (lambda () (derived-mode-p 'clojure-mode)))
     ("#" "ignore" clojure-toggle-ignore
-     :if (lambda () (derived-mode-p 'clojure-mode)))]])
+     :if (lambda () (derived-mode-p 'clojure-mode)))]]
+  ["Clojure"
+   :if (lambda () (derived-mode-p 'clojure-mode))
+   :hide (lambda () (not transient-show-common-commands))
+   [("> SPC" "->" lsp-clojure-thread-first :transient t)
+    (">>" "->>" lsp-clojure-thread-last :transient t)
+    ("<" "un-thread" lsp-clojure-unwind-thread :transient t)]])
 
 (provide 'sexp-transient)
 ;;; sexp-transient.el ends here

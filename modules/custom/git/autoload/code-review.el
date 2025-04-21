@@ -7,10 +7,10 @@
    (let-alist (code-review-db-get-pr-alist)
      (format "https://github.com/%s/%s/pull/%s" .owner .repo .num))))
 
-
-;; some weird fucking update keeps popping up ghub-debug buffers
-;; super annoying
+;;;###autoload
 (defadvice! code-review-forge-pr-at-point-no-debug-a (orig-fn &rest args)
+  ;; some weird fucking update keeps popping up ghub-debug buffers
+  ;; super annoying
   :around #'code-review--build-buffer
   (let ((buf-regx "\\*http api\\.github\\.com:443\\*"))
     (add-to-list 'display-buffer-alist
