@@ -72,7 +72,7 @@
     ("; L" "insert browser url" expreg-transient--insert-browser-url)
     ("; q" "wrap in quote block"
      (lambda () (interactive) (org-wrap-in-block 'quote)))
-    ("; s" "wrap in source block"
+    ("; c" "wrap in source block"
      (lambda () (interactive) (org-wrap-in-block 'src)))]]
   ["Markdown"
    :if (lambda () (derived-mode-p 'markdown-mode))
@@ -85,7 +85,7 @@
     ("C-c L" "insert browser url" expreg-transient--insert-browser-url)
     ("; l" "insert link" markdown-insert-link)
     ("; L" "insert browser url" expreg-transient--insert-browser-url)
-    ("; s" "wrap in code block" markdown-wrap-code-generic)
+    ("; c" "wrap in code block" markdown-wrap-code-generic)
     ("; <" "wrap in collapsible" markdown-wrap-collapsible)]]
   ["Clojure"
    :if (lambda () (derived-mode-p 'clojure-mode))
