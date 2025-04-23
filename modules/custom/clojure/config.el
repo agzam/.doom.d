@@ -47,9 +47,12 @@
         (when (member major-mode clj-modes)
           (clojure-set-completion-at-point-h)))))
 
-  (add-hook! (clojure-mode clojure-ts-mode) #'add-edn-imenu-regexp-h)
+  (add-hook! (clojure-mode clojure-ts-mode)
+    #'add-edn-imenu-regexp-h
+    #'visual-wrap-prefix-mode)
 
   (add-hook! (clojurescript-mode clojure-ts-clojurescript-mode)
+    #'visual-wrap-prefix-mode
     (defun add-reframe-regs-to-imenu ()
       (add-to-list
        'imenu-generic-expression

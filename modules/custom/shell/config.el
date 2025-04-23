@@ -92,3 +92,6 @@
     :around #'eshell-atuin-history
     (let* ((vertico-sort-function nil))
       (funcall ofn arg))))
+
+(use-package! yuck-mode
+  :defer t)

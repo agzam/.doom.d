@@ -30,3 +30,5 @@
 (package! eshell-vterm)
 
 (package! eshell-atuin)
+
+(package! yuck-mode)

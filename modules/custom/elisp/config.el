@@ -78,6 +78,7 @@
         :i "C-j" #'eval-print-last-sexp)
 
   (add-hook! 'emacs-lisp-mode-hook
+    #'visual-wrap-prefix-mode
     (defun always-lexical-binding-h ()
       (setq lexical-binding t))))
 
