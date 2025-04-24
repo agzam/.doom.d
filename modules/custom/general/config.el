@@ -230,3 +230,16 @@
         (:prefix ("z" . "zoom")
          :n "k" #'image-increase-size
          :n "j" #'image-decrease-size)))
+
+
+(after! flycheck
+  (map! :map flycheck-mode-map
+        (:localleader
+         (:prefix ("ee" . "errors")
+          "n" #'flycheck-next-error
+          "p" #'flycheck-previous-error
+          "y" #'flycheck-copy-errors-as-kill
+          "t" #'lsp-treemacs-errors-list
+          "l" #'flycheck-list-errors
+          "c" #'consult-flycheck
+          "s" #'flycheck-select-checker))))

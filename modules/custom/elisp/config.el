@@ -40,10 +40,10 @@
                  "c" #'sp-eval-current-sexp
                  "b" #'eval-buffer
                  "d" #'eval-defun
-                 "e" #'eval-last-sexp
+                 "l" #'eval-last-sexp
                  "i" #'with-editor-eval
                  "r" #'eval-region
-                 "l" #'load-library
+                 "L" #'load-library
                  "p" #'pp-eval-current
                  ";" #'eval-print-last-sexp)
         (:prefix ("g" . "goto")

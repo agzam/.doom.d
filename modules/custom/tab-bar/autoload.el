@@ -11,27 +11,32 @@
   "New Tab"
   ["Choose a template"
    [("o" "Org" (lambda () (interactive) (org-roam-dailies-goto-today '("w"))))
-    ("gt" "gptel" gptel+)
-    ("gn" "gh-notify" gh-notify)]
+    ("gt" "gptel"
+     (lambda () (interactive) (call-interactively #'gptel+)))
 
-   [("ef" "elfeed" elfeed)
-    ("no" "notmuch" notmuch)
-    ("t" "telega" telega)]
+    ("gn" "gh-notify"
+     (lambda () (interactive) (gh-notify)))]
+
+   [("ef" "elfeed" (lambda () (interactive) (elfeed)))
+    ("no" "notmuch" (lambda () (interactive) (notmuch)))
+    ("t" "telega" (lambda () (interactive) (telega)))]
 
    [("ed" "doom.d" find-in-doom-dir)
     ("ei" "emacs.d" (lambda () (interactive) (dired (file-name-directory doom-emacs-dir))))
     ("D" "dotfile.org" (lambda () (interactive) (find-file "~/dotfile.org/dotfile.org")))]
 
-   [("hn" "NH" hnreader-news)
-    ("rd" "Reddit" reddigg-view-frontpage)]
+   [("hn" "NH" (lambda () (interactive) (hnreader-news)))
+    ("rd" "Reddit" (lambda () (interactive) (reddigg-view-frontpage)))]
 
    [("p" "projects" (lambda ()
                       (interactive)
                       (switch-to-buffer
                        (find-file-noselect
                         (completing-read "choose project: " projectile-known-projects)))))
-    ("SPC" "zoxide history" +zoxide-find)
-    ("b" "buffers" consult-buffer)]
+    ("SPC" "zoxide history"
+     (lambda () (interactive) (+zoxide-find)))
+    ("b" "buffers" (lambda () (interactive) (consult-buffer)))
+    ("fr" "recent" (lambda () (interactive) (consult-recent-file)))]
    [("d" "kill tab" +tab-bar-kill-tab)]])
 
 ;;;###autoload

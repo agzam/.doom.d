@@ -32,3 +32,6 @@
 (package! eshell-atuin)
 
 (package! yuck-mode)
+
+(package! mise :recipe (:host github
+                        :repo "eki3z/mise.el"))

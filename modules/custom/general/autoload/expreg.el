@@ -36,7 +36,7 @@
    (lambda (_)
      (transient-bypass-keys
       'expreg-transient
-      '("d" "p" "P" "r" "c" "R" "t" "T" "f" "F" "n" "C-;"
+      '("d" "p" "P" "r" "R" "t" "T" "f" "F" "n" "C-;"
         "SPC" "," ":" "M-x" "M-:" "`" "C-h" "C-x TAB"
         "s-k" "s-]" "s-j" "s-]"
         ">" "<" "=" "~"  "[" "]" "J"

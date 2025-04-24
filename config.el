@@ -573,6 +573,8 @@
       :map helpful-mode-map
       :n "q" #'kill-buffer-and-window)
 
+(add-hook! 'helpful-mode-hook #'visual-wrap-prefix-mode)
+
 (map! :after calendar
       :map calendar-mode-map
       :n "gd" #'calendar-goto-date)

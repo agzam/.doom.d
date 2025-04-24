@@ -59,6 +59,7 @@
   (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command))
 
 (use-package! dap-mode
+  :defer t
   :after lsp-mode
   :init
   (after! lsp-mode (require 'dap-mode))
@@ -69,6 +70,7 @@
   (dap-ui-controls-mode 1))
 
 (use-package! dap-ui
+  :defer t
   :after dap-mode
   :hook (dap-mode . dap-ui-mode)
   :hook (dap-ui-mode . dap-ui-controls-mode))
