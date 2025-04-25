@@ -34,8 +34,11 @@
          (:prefix ("g" . "goto")
                   "n" #'lsp-find-declaration
                   "d" #'lsp-find-definition
-                  "D" #'lsp-find-definition-other-window
+                  "D" (lambda () (interactive)
+                        (lsp-find-definition :display-action 'window))
                   "r" #'lsp-find-references
+                  "R" (lambda () (interactive)
+                        (lsp-find-references t :display-action 'window))
                   "s" #'consult-lsp-symbols)
          (:prefix ("f" . "format")
                   "b" #'lsp-format-buffer

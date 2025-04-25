@@ -10,8 +10,11 @@
 (transient-define-prefix tab-bar-new-tab-transient ()
   "New Tab"
   ["Choose a template"
-   [("o" "Org" (lambda () (interactive) (org-roam-dailies-goto-today '("w"))))
-    ("gt" "gptel"
+   [("ort" "Work note" (lambda () (interactive)
+                         (general--simulate-keys nil "SPC ort")))
+    ("orr" "Backlinks" (lambda () (interactive) (general--simulate-keys nil "SPC orr")))
+    ("orb" "Backlinks" (lambda () (interactive) (general--simulate-keys nil "SPC orb")))]
+   [("gt" "gptel"
      (lambda () (interactive) (call-interactively #'gptel+)))
 
     ("gn" "gh-notify"
