@@ -100,6 +100,8 @@
     (let ((files (dired-get-marked-files nil current-prefix-arg nil nil t)))
       (funcall orig-fn command arg files)))
 
+  (advice-add 'dired-do-rename :around #'dired-do-rename-wrapper-a)
+
   (add-hook! 'dired-mode-hook
              #'dired-hide-details-mode
              #'turn-off-evil-matchit-mode

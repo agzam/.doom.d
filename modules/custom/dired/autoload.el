@@ -112,3 +112,34 @@
       "mplayer -af scaletempo=scale=1.3:speed=tempo -volume 80 -speed 1.3 "
       "\"" (expand-file-name filename) "\""))
     (vterm-send-return)))
+
+(defvar dired-rsync-size-threshold (* 50 1024 1024)
+  "Use rsync when file/dir exceeds this size (bytes)")
+
+(defun dired--calculate-size (file)
+  "Return recursive size of FILE or directory."
+  (if (file-directory-p file)
+      (seq-reduce (lambda (acc f)
+                    (+ acc (file-attribute-size (file-attributes f))))
+                  (directory-files-recursively file ".*" t) 0)
+    (file-attribute-size (file-attributes file))))
+
+
+(defun dired-should-use-rsync-p (files)
+  "Return non-nil if total size of FILES exceeds threshold."
+  (< dired-rsync-size-threshold
+     (seq-reduce (lambda (acc file)
+                   (+ acc (dired--calculate-size file)))
+                 files 0)))
+
+;;;###autoload
+(defun dired-do-rename-wrapper-a (orig-fun &optional arg)
+  "Wraps regular rename command to use rsync instead."
+  (let ((files (dired-get-marked-files nil arg)))
+    (if (dired-should-use-rsync-p files)
+        (let ((dest (expand-file-name
+                     (read-directory-name
+                      "Rsync to directory: " (dired-dwim-target-directory)))))
+          (dired-do-rsync dest)
+          (revert-buffer))
+      (funcall orig-fun arg))))
