@@ -132,6 +132,13 @@
                    (+ acc (dired--calculate-size file)))
                  files 0)))
 
+(defun dired-do-rsync (dest)
+  "Rsync marked files to DEST with progress."
+  (async-shell-command
+   (format "rsync -av --progress --remove-source-files %s %s"
+           (mapconcat #'shell-quote-argument (dired-get-marked-files) " ")
+           (shell-quote-argument dest))))
+
 ;;;###autoload
 (defun dired-do-rename-wrapper-a (orig-fun &optional arg)
   "Wraps regular rename command to use rsync instead."
