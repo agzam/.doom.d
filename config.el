@@ -487,6 +487,7 @@
 
       (:prefix ("t" . "toggle yo")
        :desc "v-line nav" "w" #'+toggle-visual-line-navigation
+       :desc "prefix wrap" ">" #'visual-wrap-prefix-mode
        :desc "minor modes" "m" #'consult-minor-mode-menu
        :desc "iBuffer side" "i" #'ibuffer-sidebar-toggle-sidebar
        :desc "Dired side" "d" #'dired-sidebar-toggle-sidebar

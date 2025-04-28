@@ -17,9 +17,9 @@
   (setf circadian-themes
         `(("6:00" . ,(if (display-graphic-p)
                          'ag-themes-spacemacs-light
-                       'base16-solarized-light))
+                       'ag-themes-base16-ashes))
           ("21:00" . ag-themes-base16-ocean)
-          ("23:00" . base16-ashes)
+          ("23:00" . ag-themes-base16-ashes)
           ;; ("" . ag-themes-base16-tokyo-night-light)
           )))
 

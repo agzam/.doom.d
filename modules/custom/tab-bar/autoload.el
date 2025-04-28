@@ -63,7 +63,7 @@
     ("K" "kill project buffers" +tab-bar-kill-project-buffers)]
    [("[" "history back" tab-bar-history-back :transient t)
     ("]" "history forward" tab-bar-history-forward :transient t)
-    ("dd" "kill tab" +tab-bar-kill-tab)
+    ("dd" "kill tab" +tab-bar-kill-tab :transient t)
     ("u" "undo kill tab" tab-undo)
     ("SPC" "templates" tab-bar-new-tab-transient)]
    [("dr" "restore" restore-desktop-and-tabs)
