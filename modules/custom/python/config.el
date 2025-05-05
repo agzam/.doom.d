@@ -17,9 +17,11 @@
    lsp-pyright-venv-path "."
    lsp-pyright-venv-directory ".venv")
 
-  (defadvice! lsp-pyright-locate-python-use-mise (_)
-    :around #'lsp-pyright-locate-python
-    (concat (mise-python-dir) "/bin/python"))
+  (setopt lsp-pyright-type-checking-mode "off")
+
+  (lsp-register-custom-settings
+   `(("basedpyright.analysis.typeCheckingMode" lsp-pyright-type-checking-mode)))
+
   (lsp-dependency
    'pyright
    `(:system ,(concat (mise-python-dir) "/bin/basedpyright-langserver"))))
