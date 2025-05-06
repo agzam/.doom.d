@@ -305,6 +305,7 @@
          :desc "gptel-menu" "g" #'gptel-menu
          :desc "new gptel" "n" #'gptel+
          :desc "check text" "e" #'+gptel-improve-text-transient
+         :desc "quick" "q" #'gptel-quick-question-buffer
          "s" #'gptel-send)))
 
 (map! (:map (prog-mode-map text-mode-map markdown-mode-map)
@@ -534,6 +535,7 @@
                   :desc "gptel-menu" "g" #'gptel-menu
                   :desc "new gptel" "n" #'gptel+
                   :desc "check text" "e" #'+gptel-improve-text-transient
+                  :desc "quick" "q" #'gptel-quick-question-buffer
                   "s" #'gptel-send)))
 
       (:prefix ("z" . "zoom")

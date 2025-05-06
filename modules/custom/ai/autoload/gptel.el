@@ -188,7 +188,11 @@
                      (buffer-list)
                      (seq-filter
                       (lambda (buf)
-                        (buffer-local-value 'gptel-mode buf)))
+                        (and
+                         (buffer-local-value 'gptel-mode buf)
+                         (not (string-match-p
+                               ".*quick.org$"
+                               (buffer-file-name buf))))))
                      (seq-sort
                       (lambda (a b)
                         (string> (buffer-name a) (buffer-name b))))
@@ -211,3 +215,11 @@
         (make-directory chat-dir :parents))
       (write-file
        (expand-file-name (concat "gptel-" suffix "." ext) chat-dir)))))
+
+
+;;;###autoload
+(defun gptel-quick-question-buffer ()
+  "Opens `a quick question` buffer - an `inbox` buffer for uncategorized
+gptel conversations."
+  (interactive)
+  (find-file (concat org-default-folder "/gptel/quick.org")))

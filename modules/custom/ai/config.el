@@ -53,6 +53,7 @@
             :i "s-RET" #'gptel-send
             :i ", m" #'gptel-menu
             :i ", SPC" #'insert-comma
+            :n "q" #'bury-buffer
             (:localleader
              "m" #'gptel-menu
              "," #'gptel-menu
@@ -71,6 +72,18 @@
    `(,(rx bos (or "*Claude" "*ChatGPT" "gptel-"))
      (display-buffer-in-quadrant)
      (direction . right)
+     (window . root)))
+
+  (add-to-list
+   'display-buffer-alist
+   `((lambda (buffer _action)
+       (with-current-buffer buffer
+         (and buffer-file-name
+              (natnump (string-match-p
+                        (concat org-default-folder "gptel/quick.org")
+                        buffer-file-name)))))
+     (display-buffer-in-side-window)
+     (side . right)
      (window . root))))
 
 (use-package! gptel-quick
