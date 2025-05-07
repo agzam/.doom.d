@@ -497,6 +497,7 @@
       (:prefix ("T" . "toggle global")
        :desc "numbers" "N" #'global-display-line-numbers-mode
        :desc "variable-pitch" "f" #'variable-pitch-mode
+       :desc "prefix wrap" ">" #'global-visual-wrap-prefix-mode
        (:when (modulep! :custom colors)
          :desc "next color theme" "n" #'colors/cycle-themes-down
          :desc "prev color theme" "p" #'colors/cycle-themes-up))

@@ -93,6 +93,21 @@
              (url (gethash 'url parsed)))
         (list :ticket ticket :url url :summary summary)))))
 
+(defun jira--url (ticket)
+  (let* ((j (jira--find-exe))
+         (jq (jira--find-exe "jq"))
+         (cmd (format (concat
+                       "%s view %s --template json | %s -r '"
+                       "\"\\( .self | split(\"/rest\")[0] )/browse/\\( .key )\"'")
+                      j ticket jq)))
+    (string-trim (shell-command-to-string cmd))))
+
+;;;###autoload
+(defun jira--browser-ticket-mode-get-url ()
+  (interactive)
+  (let ((ticket (buffer-local-value 'jira--ticket-number (current-buffer))))
+    (kill-new (jira--url ticket))))
+
 ;;;###autoload
 (defun jira-ticket->link (&optional ticket-arg)
   "Convert the TICKET-ARG number at point to org-mode link."
