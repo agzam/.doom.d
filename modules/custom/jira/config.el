@@ -24,7 +24,5 @@
          :desc "link" "l" #'jira-ticket->link
          :desc "link+desc" "d" #'jira-ticket->num+description)))
 
-(use-package! go-jira
-  :config
-  (map! :map jira-browse-ticket-mode-map
-        :n "yy" #'jira--browser-ticket-mode-get-url))
+(map! :map jira-browse-ticket-mode-map
+      :n "yy" #'jira--browser-ticket-mode-get-url)

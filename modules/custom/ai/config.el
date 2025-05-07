@@ -82,8 +82,9 @@
               (natnump (string-match-p
                         (concat org-default-folder "gptel/quick.org")
                         buffer-file-name)))))
-     (display-buffer-in-side-window)
-     (side . right)
+
+     (display-buffer-in-quadrant)
+     (direction . right)
      (window . root))))
 
 (use-package! gptel-quick

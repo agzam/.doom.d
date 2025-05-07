@@ -130,13 +130,18 @@ the current note with precise positions."
                                             :from links
                                             :inner :join nodes :on (= links:dest nodes:id)
                                             :group :by nodes:id])))
+         (node-at-point (if-let* ((link (org-element-context)) ; thing-at-point is an org-link
+                                  ((eq (org-element-type link) 'link))
+                                  (type (org-element-property :type link))
+                                  (id (org-element-property :path link)))
+                            (org-roam-node-from-id id)
+                          (org-roam-node-at-point)))
          (node (if (called-interactively-p 'any)
                    (consult-org-roam-node-read
                     (ignore-errors
-                      (org-roam-node-title (org-roam-node-at-point)))
+                      (org-roam-node-title node-at-point))
                     (lambda (node) (member (org-roam-node-id node) node-ids-w-backlinks))
-                    nil t "Backlinks for the node: ")
-                 (org-roam-node-at-point)))
+                    nil t "Backlinks for the node: ")))
          (backlinks (org-roam-db-query
                      [:select [source pos]
                       :from links
