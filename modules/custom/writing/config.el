@@ -227,7 +227,12 @@
          (:prefix ("s" . "wrap")
                   "<" #'markdown-wrap-collapsible
                   "C" #'markdown-wrap-code-clojure
-                  "c" #'markdown-wrap-code-generic))))
+                  "c" #'markdown-wrap-code-generic)
+         (:prefix ("o" . "open/links")
+                  "o" #'markdown-open
+                  "l" #'markdown-store-link))
+        :i "[[" #'markdown-insert-link+
+        :i "[ SPC" (cmd! (insert "[]" (backward-char)))))
 
 (use-package! youtube-sub-extractor
   :commands (youtube-sub-extractor-extract-subs)

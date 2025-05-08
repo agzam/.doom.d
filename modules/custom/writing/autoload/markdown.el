@@ -110,3 +110,44 @@
   (funcall 'markdown-wrap-code-generic)
   (insert "clojure")
   (search-forward "```" nil :noerror))
+
+
+(defvar markdown-stored-links nil
+  "Stores markdown links as (label file heading-text)")
+
+;;;###autoload
+(defun markdown-store-link ()
+  "Store current markdown heading as a link."
+  (interactive)
+  (save-excursion
+    (unless (markdown-heading-at-point)
+      (markdown-back-to-heading))
+    (let* ((heading-line (buffer-substring-no-properties
+                          (line-beginning-position)
+                          (line-end-position)))
+           (heading-text (replace-regexp-in-string "^#+ " "" heading-line))
+           (file-path (buffer-file-name))
+           (label (format "%s#%s"
+                          (file-name-nondirectory file-path)
+                          (replace-regexp-in-string " " "-" (downcase heading-text)))))
+      (add-to-list 'markdown-stored-links (cons label (list file-path heading-text)))
+      (message "Stored link to: %s" label))))
+
+;;;###autoload
+(defun markdown-insert-link+ ()
+  (interactive)
+  (if (not (seq-empty-p markdown-stored-links))
+      (let* ((sel (thread-first
+                    (completing-read
+                     "Heading: "
+                     markdown-stored-links
+                     nil :require-match)
+                    (assoc markdown-stored-links)))
+             (file-path (nth 1 sel))
+             (heading-text (nth 2 sel))
+             (lbl (replace-regexp-in-string " " "-" (downcase heading-text)))
+             (label (if (equal (file-truename file-path)
+                               (file-truename (buffer-file-name)))
+                        (format "#%s" lbl)
+                      (format "%s#%s" (file-relative-name file-path) lbl))))
+        (markdown-insert-inline-link heading-text label))))
