@@ -190,6 +190,7 @@
                       (lambda (buf)
                         (and
                          (buffer-local-value 'gptel-mode buf)
+                         (buffer-file-name buf)
                          (not (string-match-p
                                ".*quick.org$"
                                (buffer-file-name buf))))))
