@@ -101,3 +101,15 @@ ago. With a prefix argument opens `jinx-correct-word' dialog."
       (insert ",")
       (forward-char)))
    (t (insert ", "))))
+
+
+;;;###autoload
+(defun insert-dash ()
+  "Cleverly insert a dash, triple dash turns it into an em-dash."
+  (interactive)
+  (if (and (not (< (point) 3))
+           (string= (buffer-substring (- (point) 2) (point)) "--"))
+      (progn
+        (delete-char -2)
+        (insert "— "))
+    (insert "-")))

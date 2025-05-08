@@ -550,6 +550,9 @@
       "M-r" #'consult-history
       "C-c C-l" #'comint-clear-buffer)
 
+(map! :map (org-mode-map markdown-mode-map)
+      :i "-" #'insert-dash)
+
 (after! (:and evil evil-maps)
   ;; often conflicts with doom-local-leader
   ;; (unbind-key (kbd ",") evil-motion-state-map)
