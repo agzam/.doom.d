@@ -215,7 +215,8 @@ Every key spec in KEY-SPECS list can be, either:
    :hide (lambda () (not transient-show-common-commands))
    [("> SPC" "->" lsp-clojure-thread-first :transient t)
     (">>" "->>" lsp-clojure-thread-last :transient t)
-    ("<" "un-thread" lsp-clojure-unwind-thread :transient t)]])
+    ("<" "un-thread" lsp-clojure-unwind-thread :transient t)
+    ("; c" "wrap comment" clojure-wrap-rich-comment)]])
 
 (provide 'sexp-transient)
 ;;; sexp-transient.el ends here

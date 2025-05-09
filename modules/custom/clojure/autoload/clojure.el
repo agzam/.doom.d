@@ -170,15 +170,37 @@ convert from JSON."
 
 ;;;###autoload
 (defun clojure-wrap-rich-comment ()
-  "Wrap the selected region in (comment ...)."
+  "Wrap/unwrap the selected sexp in (comment ...)."
   (interactive)
-  (when (use-region-p)
-    (let ((beg (region-beginning))
-          (end (region-end)))
+  (if-let* ((wrapped-pos (save-excursion
+                           (let ((pos t))
+                             (while pos
+                               (setq pos (sp-backward-up-sexp))
+                               (when (looking-at-p "(comment\\b")
+                                 (setq pos nil)))
+                             (when (looking-at-p "(comment\\b")
+                               (point))))))
       (save-excursion
-        (goto-char end)
-        (insert ")")
-        (goto-char beg)
-        (insert "(comment \n")
-        (when lsp-mode
-          (call-interactively #'lsp-format-region))))))
+        (goto-char wrapped-pos)
+        (sp-mark-sexp)
+        (let* ((beg (region-beginning))
+               (end (region-end))
+               (content (buffer-substring-no-properties (region-beginning) (region-end))))
+          (delete-region beg end)
+          (insert (replace-regexp-in-string
+                   "^\\s-*(comment\\b\\s-*\n?" ""
+                   (replace-regexp-in-string ")\\s-*$" "" content)))))
+    (progn
+      (unless (use-region-p)
+        (unless (looking-at-p "(+\\|\\[+\\|{+")
+          (sp-backward-up-sexp))
+        (sp-mark-sexp))
+      (let ((beg (region-beginning))
+            (end (region-end)))
+       (save-excursion
+         (goto-char end)
+         (insert ")")
+         (goto-char beg)
+         (insert "(comment \n")))))
+  (when lsp-mode
+    (call-interactively #'lsp-format-region)))
