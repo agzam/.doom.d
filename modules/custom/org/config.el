@@ -478,7 +478,7 @@
   (map! "C-x p p" #'org-pomodoro)
   (setq org-pomodoro-start-sound-p t
         org-pomodoro-killed-sound-p t
-        org-pomodoro-audio-player "/usr/bin/mplayer -volume 50"
+        org-pomodoro-audio-player (format "%s -volume 50" (executable-find "mplayer"))
         org-pomodoro-start-sound "~/.doom.d/modules/custom/org/pomodoro__race-start.mp3"
         org-pomodoro-short-break-sound "~/.doom.d/modules/custom/org/pomodoro__break-over.mp3")
 

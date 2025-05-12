@@ -92,10 +92,7 @@
   ;; to use 'listen' feature of google-translate, on Mac:
   ;; brew install mplayer-osx-extended
   ;; ln -s '/Applications/MPlayer OSX Extended.app/Contents/Resources/Binaries/mpextended.mpBinaries/Contents/MacOS/mplayer' /opt/homebrew/bin/mplayer
-  (setf google-translate-listen-program
-        (if (eq system-type 'darwin)
-            "/opt/homebrew/bin/mplayer"
-          "/usr/bin/mplayer"))
+  (setopt google-translate-listen-program (executable-find "mplayer"))
   (setq google-translate-input-method-auto-toggling t
         google-translate-preferable-input-methods-alist
         '((nil . ("en"))

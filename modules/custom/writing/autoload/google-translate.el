@@ -89,7 +89,7 @@ text like: \"2023 was a better year than 2021\" would translate to:
 (defvar translate--last-context nil)
 (defvar translate--minibuffer-text nil)
 (defvar translate--langs-src (ring-convert-sequence-to-ring '("auto" "en" "es" "ru")))
-(defvar translate--langs-target nil)
+(defvar translate--langs-target (ring-convert-sequence-to-ring '("en" "es" "ru")))
 
 (transient-define-suffix translate--set-source ()
   :description "source"
