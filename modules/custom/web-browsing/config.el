@@ -197,6 +197,7 @@
         :localleader
         (:prefix ("t" . "toggle")
                  "t" #'subed-toggle-srt-metadata)
+        "v" #'subed-view-plain-text
         "p" #'subed-mpv-play-from-file+))
 
 (use-package! consult-hn
