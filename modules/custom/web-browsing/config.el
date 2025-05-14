@@ -214,17 +214,22 @@
   :config
   (map! :map hnreader-mode-map
         "C-c C-o" #'hnreader-browse-nh-story-url
-        :n "yy" #'hnreader-copy-hn-story-url))
+        :n "yy" #'hnreader-copy-hn-story-url
+        (:localleader
+         (:prefix ("u" . "urls")
+          :desc "urls" "s" (cmd! (consult-line-collect-urls "ycombinator\\.com\\|view story in eww"))))))
 
 (use-package! reddigg
   :defer t
   :hook (reddigg-mode . reddigg-hnreader-show-all-h)
   :config
   (setq reddigg-subs '(emacs clojure programming))
-
   (map! :map reddigg-mode-map
         "C-c C-o" #'reddigg-browse-current-sub-url
-        :n "yy" #'reddigg-copy-current-sub-url))
+        :n "yy" #'reddigg-copy-current-sub-url
+        (:localleader
+         (:prefix ("u" . "urls")
+          :desc "urls" "s" #'consult-line-collect-urls))))
 
 (after! (ol-eww hnreader)
   (defadvice! org-eww-open-other-window-a (orig-fun &rest args)
