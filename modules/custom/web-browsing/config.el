@@ -215,6 +215,7 @@
   (map! :map hnreader-mode-map
         "C-c C-o" #'hnreader-browse-nh-story-url
         :n "yy" #'hnreader-copy-hn-story-url
+        :n "q" #'kill-buffer-and-window
         (:localleader
          (:prefix ("u" . "urls")
           :desc "urls" "s" (cmd! (consult-line-collect-urls "ycombinator\\.com\\|view story in eww"))))))
@@ -227,6 +228,7 @@
   (map! :map reddigg-mode-map
         "C-c C-o" #'reddigg-browse-current-sub-url
         :n "yy" #'reddigg-copy-current-sub-url
+        :n "q" #'kill-buffer-and-window
         (:localleader
          (:prefix ("u" . "urls")
           :desc "urls" "s" #'consult-line-collect-urls))))

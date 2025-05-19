@@ -21,9 +21,9 @@
               (txt (buffer-substring-no-properties rb re)))
     (delete-region rb re)
     (pcase major-mode
-      (org-mode (insert (org-link-make-string url txt)))
-      (markdown--mode (markdown-insert-inline-link txt url))
-      (t url))))
+      ('org-mode (insert (org-link-make-string url txt)))
+      ('markdown-mode (markdown-insert-inline-link txt url))
+      (_ url))))
 
 ;;;###autoload
 (transient-define-prefix expreg-transient ()
