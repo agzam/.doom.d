@@ -8,7 +8,6 @@
 (use-package! org
   :defer t
   :config
-
   (setopt org-directory org-default-folder)
   (setopt
    org-ctrl-k-protect-subtree t
@@ -138,7 +137,18 @@
      (sqlite . t)
      ;; (ditaa . t)
      ;; (ruby . t)
-     )))
+     ))
+
+  ;; youtube videos played in mpv
+  (org-link-set-parameters
+   "yt" :follow (lambda (path) (mpv-open+ (concat "https:" path)))
+   :export (lambda (link _desc _format)
+             (format
+              (concat
+               "<iframe width=\"560\" height=\"315\" src=\"https:%s\" title=\"YouTube video player\" frameborder=\"0\" "
+               "allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" "
+               "referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>")
+              link))))
 
 (use-package! org-tempo
   :after org

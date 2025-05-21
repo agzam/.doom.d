@@ -39,6 +39,12 @@
        (mpv-run-command "playlist-next"))
     (funcall orig-fn arg)))
 
+(defadvice! message-when-mpv-starts-a (orig-fn &rest args)
+  :around #'mpv-play
+  :around #'mpv-play-url
+  (message "Starting mpv to play %s" (car args))
+  (apply orig-fn args))
+
 (defvar mpv--osc-style "auto")
 (defvar mpv--subtitle-visible "auto")
 
