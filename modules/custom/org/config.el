@@ -3,45 +3,14 @@
 (add-to-list 'load-path (format "%sstraight/build-%s/org-roam/extensions/"
                                 (file-truename doom-local-dir) emacs-version))
 
-(defvar org-default-folder
-  (cond
-   ((featurep :system 'macos) (expand-file-name "~/Sync/org/"))
-   ((featurep :system 'linux) "~/Sync/org/")))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Nothing can shadow org-roam keys ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defvar org-roam-global-keys-mode-map
-  (let ((map (make-sparse-keymap))) map))
-
-(define-minor-mode org-roam-global-keys-mode
-  "A minor mode so that org-roam keys can't get shadowed."
-  :init-value t
-  :lighter " org-roam keys"
-  :keymap org-roam-global-keys-mode-map)
-
-(define-globalized-minor-mode global-org-roam-global-keys-mode
-  org-roam-global-keys-mode org-roam-global-keys-mode
-  :group 'org-roam)
-
-(global-org-roam-global-keys-mode t)
-
-(map! :map org-roam-global-keys-mode-map
-      (:prefix ("C-c C-f" . "Org")
-               "f" #'org-roam-node-find
-               :desc "work today" "t" (cmd! (funcall-interactively #'org-roam-dailies-goto-today '("w")))
-               :desc "journal today" "T" (cmd! (funcall-interactively #'org-roam-dailies-goto-today '("j")))
-               :desc "work note" "n" (cmd! (funcall-interactively #'org-roam-dailies-goto-date nil '("w")))
-               "k" #'khoj
-               "b" #'browser-create-roam-node-for-active-tab))
-;;;;;;
+(defvar org-default-folder (expand-file-name "~/Sync/org/"))
 
 (use-package! org
   :defer t
   :config
 
-  (setf org-directory org-default-folder)
-  (setq
+  (setopt org-directory org-default-folder)
+  (setopt
    org-ctrl-k-protect-subtree t
    org-ellipsis " ↴"
    org-fold-catch-invisible-edits 'smart
@@ -53,28 +22,19 @@
    org-cycle-emulate-tab nil
    org-edit-src-content-indentation 0
    org-fontify-quote-and-verse-blocks t
-   org-image-actual-width '(0.7)
-   ;; Org 9.6 breaks things like consult-line
-   ;; Temporarily changing fold style. Track the issue here:
-   ;; https://github.com/minad/consult/issues/563
-   ;; https://github.com/doomemacs/doomemacs/issues/6380
-   ;; org-fold-core-style 'overlays
-
-   ;; org-element-use-cache nil
-   ;; org-element-cache-persistent nil
-   )
+   org-image-actual-width '(0.7))
 
   (add-to-list
    'auto-mode-alist
    `(,(format "\\%s.*\.txt\\'" (replace-regexp-in-string "~" "" org-default-folder)) . org-mode))
 
-  (setq
+  (setopt
    org-confirm-babel-evaluate nil
    org-todo-keywords '((sequence "TODO(t!)" "ONGOING(o!)" "|" "DONE(d!)" "CANCELED(c@/!)"))
    org-enforce-todo-dependencies t
    org-enforce-todo-checkbox-dependencies t)
 
-  (setq org-link-make-description-function #'+org-link-make-description-function)
+  (setopt org-link-make-description-function #'+org-link-make-description-function)
 
   (add-hook! org-mode
     (defun org-init-keybinds-h ()
@@ -142,21 +102,21 @@
   (add-hook!
    'org-mode-hook
    #'org-indent-mode
-   (defun flycheck-disable-h () (flycheck-mode -1))
    #'yas-minor-mode-on
    #'org-roam-count-overlay-mode
-   #'bug-reference-mode)
+   #'bug-reference-mode
+   (defun flycheck-disable-h () (flycheck-mode -1)))
 
   (add-hook! 'org-capture-mode-hook #'recenter)
 
-  (setq org-export-with-smart-quotes nil
-        org-html-validation-link nil
-        org-latex-prefer-user-labels t
-        org-ascii-text-width 900 ; don't wrap text
-        org-ascii-links-to-notes nil)
+  (setopt org-export-with-smart-quotes nil
+          org-html-validation-link nil
+          org-latex-prefer-user-labels t
+          org-ascii-text-width 900 ; don't wrap text
+          org-ascii-links-to-notes nil)
   (add-to-list 'org-export-backends 'md)
 
-  (setq org-capture-bookmark nil)
+  (setopt org-capture-bookmark nil)
 
   (after! org-attach
     (add-hook! 'org-attach-after-change-hook
@@ -193,7 +153,7 @@
              org-roam-dailies-goto-yesterday)
   :after org org-capture
   :init
-  (setq
+  (setopt
    org-roam-v2-ack t
    org-roam-directory org-default-folder
    org-roam-db-location (concat doom-local-dir "org-roam.db")
@@ -231,74 +191,70 @@
           (:prefix ("r" . "roam")
                    "w" #'org-roam-toggle-ui-xwidget)))
 
-  (setq
+  (setopt
    org-roam-completion-everywhere nil
    org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
 
-  (setq org-roam-capture-templates
-        `(("d" "default" plain
-           "%?"
-           :if-new
-           (file+head
-            "${slug}.org"
-            "\n#+title: ${title}\n#+startup: overview\n\n")
-           :unnarrowed t
-           :jump-to-captured t)))
+  (setopt org-roam-capture-templates
+          `(("d" "default" plain
+             "%?"
+             :if-new
+             (file+head
+              "${slug}.org"
+              "\n#+title: ${title}\n#+startup: overview\n\n")
+             :unnarrowed t
+             :jump-to-captured t)))
 
-  (setq org-capture-templates
-        `(("Q" "quote" entry
-           (file ,(concat org-directory "quotes.org"))
-           "* %c %?\n:PROPERTIES:\n:ID: %(org-id-new) \n:END:"
-           :jump-to-captured t)
-          ("p" "person" entry
-           (file ,(concat org-directory "people.org"))
-           "* %(+person-w-name-based-id)\n%?"
-           :jump-to-captured t)
-          ("c" "colleague" entry
-           (file ,(concat org-directory "coworkers.org"))
-           "* %(+person-w-name-based-id)\n%?"
-           :jump-to-captured t)))
+  (setopt org-capture-templates
+          `(("Q" "quote" entry
+             (file ,(concat org-directory "quotes.org"))
+             "* %c %?\n:PROPERTIES:\n:ID: %(org-id-new) \n:END:"
+             :jump-to-captured t)
+            ("p" "person" entry
+             (file ,(concat org-directory "people.org"))
+             "* %(+person-w-name-based-id)\n%?"
+             :jump-to-captured t)
+            ("c" "colleague" entry
+             (file ,(concat org-directory "coworkers.org"))
+             "* %(+person-w-name-based-id)\n%?"
+             :jump-to-captured t)))
 
-  (setq org-roam-capture-ref-templates
-        '(("r" "ref" plain "%?" :if-new
-           (file+head
-            (concat "${slug}.org" "#+title: ${title}\n"
-                    "#+title: ${title}\n#+startup: overview\n\n"
-                    "%(org-roam--link-to \"unread\")\n"
-                    "%(org--insert-selection-dwim \"${body}\")"))
-           :unnarrowed t
-           :jump-to-captured t)
-          ("c" "chat-gpt" plain "%?" :if-new
-           (file+head "${slug}.org" "%(+chat-gpt-page-summary \"${ref}\" \"${title}\")")
-           :unnarrowed t
-           :jump-to-captured t)))
+  (setopt org-roam-capture-ref-templates
+          '(("r" "ref" plain "%?" :if-new
+             (file+head
+              (concat "${slug}.org" "#+title: ${title}\n"
+                      "#+title: ${title}\n#+startup: overview\n\n"
+                      "%(org-roam--link-to \"unread\")\n"
+                      "%(org--insert-selection-dwim \"${body}\")"))
+             :unnarrowed t
+             :jump-to-captured t)
+            ("c" "chat-gpt" plain "%?" :if-new
+             (file+head "${slug}.org" "%(+chat-gpt-page-summary \"${ref}\" \"${title}\")")
+             :unnarrowed t
+             :jump-to-captured t)))
 
-  (setq org-roam-dailies-capture-templates
-        '(("w" "work" plain
-           "**** %?%(org-roam-capture-dailies--set-node-props \"work\")"
-           :if-new
-           (file+datetree
-            "%<%Y-%m>-work-notes.org"
-            'day)
-           :jump-to-captured t
-           :immediate-finish t
-           :unnarrowed t)
-          ("j" "journal" plain
-           "%(org-roam-capture-dailies--set-node-props \"journal\")**** %?"
-           :if-new
-           (file+datetree
-            "%<%Y-%m>-journal.org"
-            'day)
-           :jump-to-captured t
-           :unnarrowed t)))
+  (setopt org-roam-dailies-capture-templates
+          '(("w" "work" plain
+             "**** %?%(org-roam-capture-dailies--set-node-props \"work\")"
+             :if-new
+             (file+datetree
+              "%<%Y-%m>-work-notes.org"
+              'day)
+             :jump-to-captured t
+             :immediate-finish t
+             :unnarrowed t)
+            ("j" "journal" plain
+             "%(org-roam-capture-dailies--set-node-props \"journal\")**** %?"
+             :if-new
+             (file+datetree
+              "%<%Y-%m>-journal.org"
+              'day)
+             :jump-to-captured t
+             :unnarrowed t)))
 
-  (advice-add
-   #'org-roam-dailies--capture
-   :around #'org-roam-capture-dont-create-id-a)
+  (advice-add #'org-roam-dailies--capture :around #'org-roam-capture-dont-create-id-a)
 
-  (advice-add
-   #'consult-org-roam-backlinks
-   :override #'consult-org-roam-backlinks*)
+  (advice-add #'consult-org-roam-backlinks :override #'consult-org-roam-backlinks*)
 
   (defadvice! org-property-lowecase-a (orig-fn pom prop value)
     :around #'org-entry-put
@@ -411,28 +367,28 @@
             :n "zO"  #'outline-show-subtree
             :n "zr"  #'+org/show-next-fold-level
             :n "zR"  #'+org/open-all-folds
-            :n "zi"  #'org-toggle-inline-images
+            :n "zi"  #'org-link-preview
 
             :map org-read-date-minibuffer-local-map
-            Cleft    (cmd! (org-eval-in-calendar '(calendar-backward-day 1)))
-            Cright   (cmd! (org-eval-in-calendar '(calendar-forward-day 1)))
-            Cup      (cmd! (org-eval-in-calendar '(calendar-backward-week 1)))
-            Cdown    (cmd! (org-eval-in-calendar '(calendar-forward-week 1)))
-            CSleft   (cmd! (org-eval-in-calendar '(calendar-backward-month 1)))
-            CSright  (cmd! (org-eval-in-calendar '(calendar-forward-month 1)))
-            CSup     (cmd! (org-eval-in-calendar '(calendar-backward-year 1)))
-            CSdown   (cmd! (org-eval-in-calendar '(calendar-forward-year 1)))))))
+            Cleft    (cmd! (org-funcall-in-calendar '(calendar-backward-day 1)))
+            Cright   (cmd! (org-funcall-in-calendar '(calendar-forward-day 1)))
+            Cup      (cmd! (org-funcall-in-calendar '(calendar-backward-week 1)))
+            Cdown    (cmd! (org-funcall-in-calendar '(calendar-forward-week 1)))
+            CSleft   (cmd! (org-funcall-in-calendar '(calendar-backward-month 1)))
+            CSright  (cmd! (org-funcall-in-calendar '(calendar-forward-month 1)))
+            CSup     (cmd! (org-funcall-in-calendar '(calendar-backward-year 1)))
+            CSdown   (cmd! (org-funcall-in-calendar '(calendar-forward-year 1)))))))
 
 (use-package! org-appear
   :after org
   :hook (org-mode . org-appear-mode)
   :config
-  (setq org-appear-delay 1
-        org-appear-autolinks t
-        org-appear-autoemphasis t
-        org-appear-autosubmarkers t
-        ;; org-fold-core-style 'text-properties
-        )
+  (setopt org-appear-delay 1
+          org-appear-autolinks t
+          org-appear-autoemphasis t
+          org-appear-autosubmarkers t
+          ;; org-fold-core-style 'text-properties
+          )
 
   ;; appear in evil normal state
   ;; (add-hook! 'org-mode-hook
@@ -446,41 +402,41 @@
   :after org
   :hook (org-mode . org-superstar-mode)
   :config
-  (setq org-superstar-leading-bullet ?\s
-        org-superstar-leading-fallback ?\s
-        org-hide-leading-stars nil
-        org-superstar-todo-bullet-alist '(("TODO" . 9744)
-                                          ("[ ]"  . 9744)
-                                          ("DONE" . 9745)
-                                          ("[X]"  . 9745))
-        org-superstar-item-bullet-alist '((?* . ?⋆)
-                                          (?+ . ?◦)
-                                          (?- . ?•))))
+  (setopt org-superstar-leading-bullet ?\s
+          org-superstar-leading-fallback ?\s
+          org-hide-leading-stars nil
+          org-superstar-todo-bullet-alist '(("TODO" . 9744)
+                                            ("[ ]"  . 9744)
+                                            ("DONE" . 9745)
+                                            ("[X]"  . 9745))
+          org-superstar-item-bullet-alist '((?* . ?⋆)
+                                            (?+ . ?◦)
+                                            (?- . ?•))))
 
 (use-package! org-edit-indirect
   :hook (org-mode . org-edit-indirect-mode)
   :config
-  (setq edit-indirect-guess-mode-function #'edit-indirect-guess-mode-fn+))
+  (setopt edit-indirect-guess-mode-function #'edit-indirect-guess-mode-fn+))
 
 (use-package! consult-org-roam
   :after org-roam
   :config
-  (setq consult-org-oram-grep-func #'consult-ripgrep))
+  (setopt consult-org-oram-grep-func #'consult-ripgrep))
 
 (use-package! ox-gfm
   :after org
   :config
-  (setq org-export-with-toc nil))
+  (setopt org-export-with-toc nil))
 
 (use-package! org-pomodoro
   :after org
   :config
   (map! "C-x p p" #'org-pomodoro)
-  (setq org-pomodoro-start-sound-p t
-        org-pomodoro-killed-sound-p t
-        org-pomodoro-audio-player (format "%s -volume 50" (executable-find "mplayer"))
-        org-pomodoro-start-sound "~/.doom.d/modules/custom/org/pomodoro__race-start.mp3"
-        org-pomodoro-short-break-sound "~/.doom.d/modules/custom/org/pomodoro__break-over.mp3")
+  (setopt org-pomodoro-start-sound-p t
+          org-pomodoro-killed-sound-p t
+          org-pomodoro-audio-player (format "%s -volume 50" (executable-find "mplayer"))
+          org-pomodoro-start-sound "~/.doom.d/modules/custom/org/pomodoro__race-start.mp3"
+          org-pomodoro-short-break-sound "~/.doom.d/modules/custom/org/pomodoro__break-over.mp3")
 
   (add-hook! '(org-clock-in-hook
                org-clock-out-hook
@@ -496,8 +452,8 @@
   (defvar verb-edn-request-enabled t)
   (defvar verb-edn-response-enabled t)
 
-  (setq verb-inhibit-cookies t   ; I'll handle them manually
-        verb-json-use-mode 'json-mode)
+  (setopt verb-inhibit-cookies t   ; I'll handle them manually
+          verb-json-use-mode 'json-mode)
   (map! :map org-mode-map
         (:localleader "v" verb-command-map
                       (:prefix ("v" . "verb")
@@ -525,8 +481,8 @@
   (defadvice! evil-ex-store-pattern-a (_ _)
     "Remember the search pattern after consult-line."
     :after #'consult-line
-    (setq evil-ex-search-pattern
-          (list (car consult--line-history) t t)))
+    (setopt evil-ex-search-pattern
+            (list (car consult--line-history) t t)))
 
   (defadvice! org-show-entry-consult-a (fn &rest args)
     :around #'consult-line
@@ -540,8 +496,8 @@
 (use-package! anki-editor
   :commands (anki-editor-mode anki-editor-push-notes anki-editor-push-tree)
   :config
-  (setq anki-editor-create-decks t      ; Allow anki-editor to create a new deck if it doesn't exist
-        anki-editor-org-tags-as-anki-tags t)
+  (setopt anki-editor-create-decks t      ; Allow anki-editor to create a new deck if it doesn't exist
+          anki-editor-org-tags-as-anki-tags t)
 
   (defvar anki-editor-mode-map (make-sparse-keymap))
 
@@ -559,11 +515,10 @@
   :after org
   ;; :hook (org-mode . toc-org-enable)
   :config
-  (setq toc-org-hrefify-default "gh"))
+  (setopt toc-org-hrefify-default "gh"))
 
 (use-package! org-modern-indent
-  :config
-  (add-hook! org-mode #'org-modern-indent-mode))
+  :hook (org-mode . org-modern-indent-mode))
 
 ;; (use-package! khoj
 ;;   :after (org org-roam)
