@@ -56,6 +56,10 @@
         ("/" t) ("{" t) ("}" t)
         ("g" t evil-goto-first-line) ("G" t evil-goto-line)
         ("x" nil (lambda () (interactive) (general--simulate-keys nil "SPC x"))))))]
+  ["Misc"
+   :hide (lambda () (not transient-show-common-commands))
+   [("u" (lambda () (interactive) (undo) (evil-visual-restore)) :transient t)]
+   [("C-r" (lambda () (interactive) (undo-redo) (evil-visual-restore)) :transient t)]]
   ["Org Mode"
    :if (lambda () (derived-mode-p 'org-mode))
    :hide (lambda () (not transient-show-common-commands))
