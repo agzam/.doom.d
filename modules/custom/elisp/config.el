@@ -14,7 +14,8 @@
    0.1 nil
    #'profiler-report-expand-all))
 
-(use-package! let-plist)
+(use-package! let-plist
+  :defer t)
 
 (use-package! evilify-edebug
   :after (edebug evil-collection)

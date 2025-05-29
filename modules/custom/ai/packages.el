@@ -6,3 +6,5 @@
   ;; :recipe (:host github :repo "karthink/gptel" :files ("*.el"))
   )
 (package! gptel-quick :recipe (:host github :repo "karthink/gptel-quick"))
+
+(package! aider :recipe (:host github :repo "tninja/aider.el"))

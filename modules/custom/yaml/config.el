@@ -1,8 +1,10 @@
 ;;; custom/yaml/config.el -*- lexical-binding: t; -*-
 
-(use-package! yaml-mode)
+(use-package! yaml-mode
+  :defer t)
 
 (use-package! jinja2-mode
+  :defer t
   :mode "\\.jinja$"
   :config
   ;; The default behavior is to reindent the whole buffer on save. This is
@@ -11,6 +13,7 @@
   (setq jinja2-enable-indent-on-save nil))
 
 (use-package! highlight-indent-guides
+  :defer t
   :hook (yaml-mode . highlight-indent-guides-mode)
   :init
   (setq highlight-indent-guides-method 'character

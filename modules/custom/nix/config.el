@@ -27,7 +27,9 @@
         "u" #'nix-unpack))
 
 (use-package! nix-update
+  :defer t
   :commands nix-update-fetch)
 
 (use-package! nix-repl
+  :defer t
   :commands nix-repl-show)

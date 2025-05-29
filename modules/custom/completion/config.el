@@ -4,6 +4,7 @@
 ;;; https://github.com/itome/.doom.d/
 
 (use-package! corfu
+  :defer t
   :hook
   (doom-first-buffer . global-corfu-mode)
   :config
@@ -91,6 +92,7 @@
   (setq dabbrev-ignored-buffer-modes '(pdf-view-mode dired-mode vterm-mode)))
 
 (use-package! orderless
+  :defer t
   :config
   (setq completion-styles '(orderless partial-completion basic)
         completion-category-defaults nil
@@ -98,6 +100,7 @@
                                         (symbol (styles . (partial-completion))))))
 
 (use-package! corfu-terminal
+  :defer t
   :when (not (display-graphic-p))
   :hook ((corfu-mode . corfu-terminal-mode)))
 

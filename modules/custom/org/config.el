@@ -156,12 +156,12 @@
   (add-to-list 'org-modules 'org-tempo t))
 
 (use-package! org-roam
+  :after (org org-capture)
   :commands (org-roam-buffer-toggle-display
              org-roam-dailies-goto-date
              org-roam-dailies-goto-today
              org-roam-dailies-goto-tomorrow
              org-roam-dailies-goto-yesterday)
-  :after org org-capture
   :init
   (setopt
    org-roam-v2-ack t
@@ -424,6 +424,7 @@
                                             (?- . ?•))))
 
 (use-package! org-edit-indirect
+  :defer t
   :hook (org-mode . org-edit-indirect-mode)
   :config
   (setopt edit-indirect-guess-mode-function #'edit-indirect-guess-mode-fn+))
@@ -528,6 +529,7 @@
   (setopt toc-org-hrefify-default "gh"))
 
 (use-package! org-modern-indent
+  :defer t
   :hook (org-mode . org-modern-indent-mode))
 
 ;; (use-package! khoj

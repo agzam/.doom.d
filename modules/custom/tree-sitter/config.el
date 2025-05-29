@@ -1,6 +1,7 @@
 ;;; custom/tree-sitter/config.el -*- lexical-binding: t; -*-
 
 (use-package! treesit
+  :defer t
   :mode (("\\.tsx\\'" . tsx-ts-mode)
          ("\\.bash\\'" . bash-ts-mode))
   :preface

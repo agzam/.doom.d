@@ -25,6 +25,7 @@
 
 
 (use-package! info+
+  :defer t
   :commands (info info-display-manual)
   :config
   (setq Info-fontify-angle-bracketed-flag nil)
@@ -192,6 +193,7 @@
         ibuffer-sidebar-pop-to-sidebar-on-toggle-open nil))
 
 (use-package! which-key-posframe
+  :after (which-key)
   :config
   (defun posframe-poshandler-frame-right-vertical (info)
     ;; (pp info)
@@ -218,6 +220,8 @@
 
 
 (use-package! ultra-scroll
+  :after-call (doom-first-file-hook)
+  :defer t
   :init
   (setq scroll-conservatively 101 ; important
         scroll-margin 0)

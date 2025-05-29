@@ -306,6 +306,7 @@
          :desc "new gptel" "n" #'gptel+
          :desc "check text" "e" #'+gptel-improve-text-transient
          :desc "quick" "q" #'gptel-quick-question-buffer
+         "m" #'gptel-mode
          "s" #'gptel-send)))
 
 (map! (:map (prog-mode-map text-mode-map markdown-mode-map)
@@ -537,6 +538,7 @@
                   :desc "new gptel" "n" #'gptel+
                   :desc "check text" "e" #'+gptel-improve-text-transient
                   :desc "quick" "q" #'gptel-quick-question-buffer
+                  "m" #'gptel-mode
                   "s" #'gptel-send)))
 
       (:prefix ("z" . "zoom")
@@ -591,6 +593,7 @@
   (setopt epg-pinentry-mode 'loopback))
 
 (use-package! ligature
+  :defer t
   :config
   (ligature-set-ligatures 't '("www"))
   (ligature-set-ligatures 'prog-mode '("www" "**" "***" "**/" "*>" "*/" "\\\\" "\\\\\\" "{-" "::"

@@ -1,6 +1,7 @@
 ;;; custom/python/config.el -*- lexical-binding: t; -*-
 
 (use-package! python
+  :defer t
   :mode ("[./]flake8\\'" . conf-mode)
   :mode ("/Pipfile\\'" . conf-mode)
   :config

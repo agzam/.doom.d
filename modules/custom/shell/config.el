@@ -72,9 +72,11 @@
 
 
 (use-package! vimrc-mode
+  :defer t
   :mode "\\.vim\\(rc\\)?\\'")
 
 (use-package! eat
+  :defer t
   :hook ((eshell-load . eat-eshell-mode)))
 
 (use-package! eshell-atuin
@@ -97,5 +99,6 @@
   :defer t)
 
 (use-package! mise
+  :defer t
   :hook (doom-init-ui . global-mise-mode)
   :when (executable-find "mise"))

@@ -1,6 +1,6 @@
 ;;; custom/colors/config.el -*- lexical-binding: t; -*-
 
-(setq pulse-delay 0.05)
+(setopt pulse-delay 0.05)
 
 (remove-hook! 'doom-init-ui-hook #'window-divider-mode)
 
@@ -9,6 +9,7 @@
   :config)
 
 (use-package! circadian
+  :defer t
   :hook (window-setup . circadian-setup)
   :config
   ;; North of TX
@@ -27,7 +28,7 @@
   :defer t)
 
 (use-package! beacon
-  :after-call doom-first-file-hook
+  :after-call (doom-first-file-hook)
   :config
   (setq beacon-blink-delay 0.1
         beacon-blink-duration 0.7

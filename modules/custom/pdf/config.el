@@ -1,6 +1,7 @@
 ;;; custom/pdf/config.el -*- lexical-binding: t; -*-
 
 (use-package! pdf-tools
+  :defer t
   :mode ("\\.pdf\\'" . pdf-view-mode)
   :magic ("%PDF" . pdf-view-mode)
   :config

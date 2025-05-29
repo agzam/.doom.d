@@ -1,10 +1,4 @@
 ;;; custom/writing/config.el -*- lexical-binding: t; -*-
-(use-package! keytar
-  :defer 5
-  :after lsp-grammarly
-  :config
-  (require 'keytar))
-
 (use-package! spacehammer
   :defer t
   :commands spacehammer-edit-with-emacs
@@ -20,25 +14,6 @@
      (display-buffer-in-quadrant)
      (direction . right)
      (window . root))))
-
-;; (use-package! lsp-grammarly
-;;   :defer t
-;;   :commands (spacehammer/edit-with-emacs lsp-grammarly-resume)
-;;   :hook ((text-mode . lsp)
-;;          (markdown-mode . lsp))
-;;   :config
-;;   (setq lsp-grammarly-domain "technical"
-;;         lsp-grammarly-audience "expert")
-;;   ;; TODO
-;;   ;;(setq lsp-grammarly-active-modes (remove 'org-mode lsp-grammarly-active-modes))
-
-;;   (defadvice! lsp-grammarly-check-grammar-a ()
-;;     "Set a temp file for the buffer, if there's no buffer-file, e.g., source blocks."
-;;     :before #'lsp-grammarly-resume
-;;     (unless (buffer-file-name)
-;;       (set-visited-file-name (format "/tmp/%s" (uuidgen-4)))
-;;       (set-buffer-modified-p nil)
-;;       (lsp))))
 
 (use-package! mw-thesaurus
   :defer t

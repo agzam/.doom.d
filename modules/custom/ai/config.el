@@ -1,6 +1,7 @@
 ;;; custom/ai/config.el -*- lexical-binding: t; -*-
 
 (use-package! whisper
+  :defer t
   :config
   (setq whisper-install-directory "/home/ag/sandbox/"
         whisper-model "base"
@@ -93,3 +94,10 @@
   (map! :n "C-s-k" #'gptel-quick)
   (map! :map visual-line-mode-map
         "C-s-k" #'gptel-quick))
+
+(use-package! aider
+  :commands (aider-transient-menu)
+  :config
+  (require 'aider-doom)
+  (setopt aider-args `("--model" "claude-sonnet-4-20250514"
+                       "--anthropic-api-key" ,(auth-host->pass "antropic.com"))))

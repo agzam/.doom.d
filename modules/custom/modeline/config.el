@@ -6,7 +6,7 @@
          (doom-modeline-mode . setup-custom-doom-modeline)
          (window-state-change . setup-custom-doom-modeline)
          (doom-init-ui . doom-modeline-mode))
-  :after-call doom-first-input-hook doom-first-file-hook
+  :after-call (doom-first-input-hook doom-first-file-hook)
   :init
   (unless after-init-time
     ;; prevent flash of unstyled modeline at startup

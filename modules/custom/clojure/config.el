@@ -336,7 +336,7 @@
   :after clojure-mode)
 
 (use-package! neil
-  :commands neil-find-clojure-package
+  :commands (neil-find-clojure-package)
   :config
   (setq neil-prompt-for-version-p t))
 

@@ -157,6 +157,7 @@
   )
 
 (use-package! yeetube
+  :defer t
   :config
   (setq yeetube-play-function #'mpv-open+
         yeetube-results-limit 100)
@@ -184,7 +185,8 @@
    "--script=~/.config/mpv/scripts/post-load.lua"))
 
 
-(use-package! rfc-mode)
+(use-package! rfc-mode
+  :after (org))
 
 (use-package! subed
   :defer t
