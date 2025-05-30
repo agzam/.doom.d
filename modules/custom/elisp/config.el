@@ -15,7 +15,7 @@
    #'profiler-report-expand-all))
 
 (use-package! let-plist
-  :defer t)
+  :after (elisp-mode))
 
 (use-package! evilify-edebug
   :after (edebug evil-collection)

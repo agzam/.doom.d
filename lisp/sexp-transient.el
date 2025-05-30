@@ -53,7 +53,7 @@ Every key spec in KEY-SPECS list can be, either:
                         (if transient?
                             (call-interactively
                              (or
-                              (lookup-key (current-local-map) (kbd "d"))
+                              (lookup-key (current-local-map) (kbd key))
                               (lookup-key evil-normal-state-map (kbd key))
                               (lookup-key evil-motion-state-map (kbd key))
                               (lookup-key evil-visual-state-map (kbd key))

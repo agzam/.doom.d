@@ -39,10 +39,9 @@
       '("d" "p" "P" "r" "c" "R" "t" "T" "f" "F" "n" "C-;"
         "SPC" "," ":" "M-x" "M-:" "`" "C-h" "C-x TAB"
         "s-k" "s-]" "s-j" "s-]"
-        ">" "<" "=" "~"  "[" "]" "J"
+        ">" "<" "=" "~"  "[" "]" "J" "s"
         ("*" nil evil-ex-search-word-forward)
         ("#" nil evil-ex-search-word-backward)
-        ("s" nil evil-surround-region)
         ("j" t evil-next-visual-line)
         ("k" t evil-previous-visual-line)
         ("h" t evil-backward-char)
