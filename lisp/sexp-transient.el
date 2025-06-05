@@ -25,45 +25,6 @@
 (require 'avy)
 (require 'edit-indirect)
 
-(defun transient-bypass-keys (prefix key-specs)
-  "Create a bunch of keys (transient suffixes) as bypas keys.
-For special handling in a transient PREFIX.
-
-Sometimes you want a transient where pressing e.g., the backspace key
-does exactly the same thing as you press it outside of the transient,
-taking into the account major and minor mode maps, etc.
-
-Every key spec in KEY-SPECS list can be, either:
-
-- a string, to invoke the command that normally binds to the key,
-  while exiting the transient.
-
-- or, a list with the key string nominal and the transient flag.
-  Optionally, the explicit command to call."
-  (transient-parse-suffixes
-   prefix
-   (mapcar
-    (lambda (key-map)
-      (let* ((key (if (stringp key-map) key-map (car key-map)))
-             (explicit-cmd (ignore-errors (nth 2 key-map)))
-             (transient? (and (listp key-map) (cadr key-map)))
-             (cmd (or explicit-cmd
-                      (lambda ()
-                        (interactive)
-                        (if transient?
-                            (call-interactively
-                             (or
-                              (lookup-key evil-normal-state-map (kbd key))
-                              (lookup-key evil-motion-state-map (kbd key))
-                              (lookup-key evil-visual-state-map (kbd key))
-                              (lookup-key (current-local-map) (kbd key))
-                              (lookup-key global-map (kbd key))))
-                          (general--simulate-keys nil key)))))
-             (desc (format "%s" key)))
-        (list key desc cmd :transient transient?)))
-    key-specs)))
-
-
 ;;;###autoload
 (defun sp-evil-sexp-go-back ()
   "Find previous sexp."
@@ -152,6 +113,7 @@ Every key spec in KEY-SPECS list can be, either:
 
 (transient-define-prefix sexp-transient ()
   "rule the parens"
+  :transient-non-suffix t
   ["Navigation"
    :hide always
    [("k" "k" sp-evil-sexp-go-back :transient t)
@@ -162,23 +124,6 @@ Every key spec in KEY-SPECS list can be, either:
     ("<up>" "k" evil-previous-visual-line :transient t)
     ("<left>" "h" evil-backward-char :transient t)
     ("<right>" "l" evil-forward-char :transient t)]]
-  ["bypass keys"
-   :hide always
-   :setup-children
-   (lambda (_)
-     (transient-bypass-keys
-      'sexp-transient
-      '("p" "P" "C-;" "g" "G"
-        "SPC" "," ":" "M-x" "M-:" "`"
-        "s-k" "s-]" "s-j" "s-]"
-        "[" "]"
-        ("C-l" t) ("C-e" t) ("C-y" t)
-        ("s" nil evil-surround-region)
-        ("%" t)
-        ("o" t evilmi-jump-items)
-        ("0" t) ("$" t)
-        ("f" t) ("F" t) ("t" t) ("T" t)
-        ("/" t))))]
   ["sexp"
    [("a" "avy" avy-goto-beg-sexp :transient t)
     ("A" "avy" avy-goto-end-sexp :transient t)]
