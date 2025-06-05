@@ -28,9 +28,33 @@
 ;;;###autoload
 (transient-define-prefix expreg-transient ()
   "expand/contract"
-  :transient-non-suffix t
   [[("v" "expand" expreg-expand :transient t)]
    [("V" "contract" expreg-contract :transient t)]]
+  ["bypass keys"
+   :hide always
+   :setup-children
+   (lambda (_)
+     (transient-bypass-keys
+      'expreg-transient
+      '("d" "p" "P" "r" "c" "R" "t" "T" "f" "F" "n" "C-;"
+        "SPC" "," ":" "M-x" "M-:" "`" "C-h" "C-x TAB"
+        "s-k" "s-]" "s-j" "s-]"
+        ">" "<" "=" "~"  "[" "]" "J" "s"
+        ("*" nil evil-ex-search-word-forward)
+        ("#" nil evil-ex-search-word-backward)
+        ("j" t evil-next-visual-line)
+        ("k" t evil-previous-visual-line)
+        ("h" t evil-backward-char)
+        ("l" t evil-forward-char)
+        ("%" t evilmi-jump-items)
+        ("0" t evil-beginning-of-line)
+        ("y" t evil-yank)
+        ("o" t exchange-point-and-mark)
+        ("C-l" t) ("C-e" t)  ("C-y" t)
+        ("w" t) ("W" t) ("b" t) ("B" t)  ("$" t)
+        ("/" t) ("{" t) ("}" t)
+        ("g" t evil-goto-first-line) ("G" t evil-goto-line)
+        ("x" nil (lambda () (interactive) (general--simulate-keys nil "SPC x"))))))]
   ["Misc"
    :hide (lambda () (not transient-show-common-commands))
    [("u" (lambda () (interactive) (undo) (evil-visual-restore)) :transient t)]
