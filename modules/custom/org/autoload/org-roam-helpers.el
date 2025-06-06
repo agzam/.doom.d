@@ -154,17 +154,17 @@ the current note with precise positions."
          (pos-map (make-hash-table :test 'equal))
          (_ (dolist (link backlinks)
               (puthash (car link) (cadr link) pos-map)))
-         (chosen-node-or-str (if source-ids
-                                 (consult-org-roam-node-read
-                                  nil
-                                  (lambda (n)
-                                    (if (org-roam-node-p n)
-                                        (if (member (org-roam-node-id n) source-ids)
-                                            t
-                                          nil)))
-                                  nil nil
-                                  (format "Go to backlink for '%s' " (oref node title)))
-                               (user-error "No backlinks found"))))
+         (chosen-node-or-str
+          (if source-ids
+              (let ((consult-preview-key 'any))
+                (consult-org-roam-node-read
+                 nil
+                 (lambda (n)
+                   (when (and n (org-roam-node-p n))
+                     (member (org-roam-node-id n) source-ids)))
+                 nil nil
+                 (format "Go to backlink for '%s' " (oref node title))))
+            (user-error "No backlinks found"))))
     (when chosen-node-or-str
       (org-roam-node-visit chosen-node-or-str other-window)
       (goto-char (gethash (org-roam-node-id chosen-node-or-str) pos-map))
