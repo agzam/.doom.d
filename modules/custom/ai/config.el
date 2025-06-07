@@ -99,5 +99,6 @@
   :commands (aider-transient-menu)
   :config
   (require 'aider-doom)
-  (setopt aider-args `("--model" "claude-sonnet-4-20250514"
+  (setopt aider-args `("--executable" "mise" "exec" "aider"
+                       "--model" "claude-sonnet-4-20250514"
                        "--anthropic-api-key" ,(auth-host->pass "antropic.com"))))

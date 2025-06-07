@@ -208,7 +208,7 @@
   :config
   (cl-defun consult-hn-reader (&key hn-object-url &allow-other-keys)
     (hnreader-comment hn-object-url))
-  (setq consult-hn-browse-fn #'consult-hn-reader))
+  (setopt consult-hn-browse-fn #'consult-hn-reader))
 
 (use-package! hnreader
   :defer t

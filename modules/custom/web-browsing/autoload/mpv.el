@@ -72,7 +72,8 @@
    (lambda (_)
      (transient-bypass-keys
       'mpv-transient
-      '(("d" t dired-flag-file-deletion)
+      '(("M-x")
+        ("d" t dired-flag-file-deletion)
         ("j" t evil-next-visual-line)
         ("k" t evil-previous-visual-line))))]
   ["mpv"

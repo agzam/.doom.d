@@ -83,7 +83,7 @@
  left-fringe-width 6
  right-fringe-width 0
  evil-escape-key-sequence "kj"
- evil-esc-delay 0.3
+ evil-esc-delay 0.01
  messages-buffer-max-lines 10000
  fill-column 70)
 
