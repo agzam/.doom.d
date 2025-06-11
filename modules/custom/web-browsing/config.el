@@ -203,12 +203,14 @@
         "p" #'subed-mpv-play-from-file+))
 
 (use-package! consult-hn
-  :commands (consult-hn)
+  :commands (consult-hn consult-hn-transient)
   :defer t
   :config
+  (require 'consult-hn-transient)
   (cl-defun consult-hn-reader (&key hn-object-url &allow-other-keys)
     (hnreader-comment hn-object-url))
-  (setopt consult-hn-browse-fn #'consult-hn-reader))
+  (setopt consult-hn-browse-fn #'consult-hn-reader)
+  (transient-suffix-put 'consult-hn-transient (kbd "RET") :key "s-<return>"))
 
 (use-package! hnreader
   :defer t

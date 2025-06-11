@@ -532,15 +532,6 @@
   :defer t
   :hook (org-mode . org-modern-indent-mode))
 
-;; (use-package! khoj
-;;   :after (org org-roam)
-;;   :config
-;;   (setq
-;;    khoj-index-directories (list org-default-folder)
-;;    khoj-index-files nil
-;;    khoj-server-url "http://127.0.0.1:42110")
-;;   (add-hook! org-roam-mode #'khoj--server-start))
-
 (use-package! ob-mermaid
   :defer t
   :after (org)

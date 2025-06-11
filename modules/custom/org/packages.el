@@ -70,6 +70,4 @@
 ;; (package! org-transclusion :recipe (:host github :repo "nobiot/org-transclusion"))
 (package! toc-org)
 
-(package! khoj :recipe (:host github :repo "khoj-ai/khoj"))
-
 (package! ob-mermaid)

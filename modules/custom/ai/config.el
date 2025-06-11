@@ -99,6 +99,15 @@
   :commands (aider-transient-menu)
   :config
   (require 'aider-doom)
-  (setopt aider-args `("--executable" "mise" "exec" "aider"
-                       "--model" "claude-sonnet-4-20250514"
+  (setopt aider-args `("--model" "claude-opus-4-20250514"
                        "--anthropic-api-key" ,(auth-host->pass "antropic.com"))))
+
+(use-package! khoj
+  :after (org org-roam)
+  :config
+  (setopt
+   khoj-index-directories (list
+                           org-default-folder
+                           (expand-file-name "~/SyncMobile/Books")
+                           (expand-file-name "~/SyncMobile/Papers"))
+   khoj-server-url "http://127.0.0.1:42110"))

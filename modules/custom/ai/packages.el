@@ -8,3 +8,5 @@
 (package! gptel-quick :recipe (:host github :repo "karthink/gptel-quick"))
 
 (package! aider :recipe (:host github :repo "tninja/aider.el"))
+
+(package! khoj :recipe (:host github :repo "khoj-ai/khoj"))
