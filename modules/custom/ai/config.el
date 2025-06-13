@@ -97,9 +97,11 @@
 
 (use-package! aider
   :commands (aider-transient-menu)
+  :hook (aider-comint-mode . visual-line-mode)
   :config
   (require 'aider-doom)
   (setopt aider-args `("--model" "claude-opus-4-20250514"
+                       "--no-auto-commits"
                        "--anthropic-api-key" ,(auth-host->pass "antropic.com"))))
 
 (use-package! khoj
