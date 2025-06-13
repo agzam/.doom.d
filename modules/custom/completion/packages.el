@@ -18,7 +18,7 @@
 (package! consult-yasnippet)
 
 (package! dash-docs)
-(package! consult-dash)
+(package! consult-dash :recipe (:host github :repo "emacsmirror/consult-dash"))
 
 (package! consult :recipe (:host github :repo "minad/consult"))
 
