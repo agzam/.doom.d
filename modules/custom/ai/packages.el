@@ -10,3 +10,5 @@
 (package! aider :recipe (:host github :repo "tninja/aider.el"))
 
 (package! khoj :recipe (:host github :repo "khoj-ai/khoj"))
+
+(package! ob-gptel :recipe (:host github :repo "jwiegley/ob-gptel"))

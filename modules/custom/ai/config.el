@@ -113,3 +113,10 @@
                            (expand-file-name "~/SyncMobile/Books")
                            (expand-file-name "~/SyncMobile/Papers"))
    khoj-server-url "http://127.0.0.1:42110"))
+
+(use-package! ob-gptel
+  :after (org gptel)
+  :config
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((gptel . t))))
