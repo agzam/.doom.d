@@ -2,12 +2,12 @@
 
 (use-package! magit
   :commands magit-file-delete
-  :defer t
+  :defer-incrementally (dash f s with-editor git-commit package eieio transient)
   :init
   ;; Must be set early to prevent ~/.emacs.d/transient from being created
-  (setq transient-levels-file  (concat doom-etc-dir "transient/levels")
-        transient-values-file  (concat doom-etc-dir "transient/values")
-        transient-history-file (concat doom-etc-dir "transient/history"))
+  (setopt transient-levels-file  (concat doom-etc-dir "transient/levels")
+          transient-values-file  (concat doom-etc-dir "transient/values")
+          transient-history-file (concat doom-etc-dir "transient/history"))
   :config
   (map! :map magit-blame-read-only-mode-map
         :n "RET" #'magit-show-commit)
@@ -210,6 +210,7 @@
    ))
 
 (use-package! git-link
+  :defer t
   :after magit
   :config
   (setq browse-at-remote-add-line-number-if-no-region-selected t))
@@ -287,6 +288,7 @@
       (funcall-interactively fn arg))))
 
 (use-package! code-review
+  :defer t
   :after (magit forge)
   :init
   (setq code-review-db-database-file

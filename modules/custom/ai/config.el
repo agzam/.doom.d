@@ -72,6 +72,7 @@
    'display-buffer-alist
    `(,(rx bos (or "*Claude" "*ChatGPT" "gptel-"))
      (display-buffer-in-quadrant)
+     (init-width . 0.35)
      (direction . right)
      (window . root)))
 
@@ -105,6 +106,7 @@
                        "--anthropic-api-key" ,(auth-host->pass "antropic.com"))))
 
 (use-package! khoj
+  :disabled t
   :after (org org-roam)
   :config
   (setopt

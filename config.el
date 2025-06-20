@@ -616,3 +616,10 @@
 
 (unless (member "--debug-init" command-line-args)
   (setopt warning-minimum-level :error))
+
+(add-hook! 'doom-after-reload-hook
+  (defun load-custom-after-reload-h ()
+    "Reload custom config on `doom/reload',
+     so my custom keybinds are properly restored."
+    (doom-load (file-name-concat doom-user-dir "init.el"))
+    (doom-load (file-name-concat doom-user-dir "config.el"))))
