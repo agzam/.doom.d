@@ -445,7 +445,7 @@
        (:prefix ("c" . "chat")
                 "t" #'telega
                 (:when (modulep! :custom ai)
-                  :desc "ChatGPT" "g" #'gptel+))
+                  :desc "gptel" "g" #'gptel+))
        "r" nil
        (:prefix ("r" . "roam")
         "r" #'org-roam-node-find
@@ -538,6 +538,7 @@
                   :desc "new gptel" "n" #'gptel+
                   :desc "check text" "e" #'+gptel-improve-text-transient
                   :desc "quick" "q" #'gptel-quick-question-buffer
+                  :desc "search" "/" #'gptel-log-find
                   "m" #'gptel-mode
                   "s" #'gptel-send)))
 
