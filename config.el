@@ -82,8 +82,6 @@
  garbage-collection-messages nil
  left-fringe-width 6
  right-fringe-width 0
- evil-escape-key-sequence "kj"
- evil-esc-delay 0.01
  messages-buffer-max-lines 10000
  fill-column 70)
 
@@ -183,7 +181,27 @@
   (setopt evil-jumps-cross-buffers t
           evil-move-cursor-back nil
           evil-in-single-undo t
-          evil-want-fine-undo t)
+          evil-want-fine-undo t
+          evil-escape-key-sequence "kj"
+
+          ;; This is a delay between escape and another key in things
+          ;; like ESC x = M-x, ESC f = M-f, ESC b = M-b.
+          ;; I don't care about it since I'm almost always use Evil-mode
+          evil-esc-delay 0
+
+          ;; this one is a delay between evil-escape-key-sequence keys
+          ;; - used for jumping to normal state from insert
+          evil-escape-delay 0.01
+          )
+
+  ;; cursor shape in the terminal
+  (when (and (not (display-graphic-p))
+             (string= (getenv "TERM") "xterm-256color"))
+    (add-hook 'evil-insert-state-entry-hook
+              (lambda () (send-string-to-terminal "\e[6 q")))
+    (add-hook 'evil-normal-state-entry-hook
+              (lambda () (send-string-to-terminal "\e[2 q"))))
+
   (map! :map 'evil-visual-state-map "u" #'undo)
 
   (defadvice! fwd-o-bkwd-paragraph-o-heading-recenter-a (&rest _args)
