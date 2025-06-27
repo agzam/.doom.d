@@ -74,7 +74,8 @@ It's safer to use a function rather than the concrete value of a key"
    [("a" "apps" consult-omni-apps)
     ("gh" "code search" +search-github-with-lang)
     ("gH" "github" consult-omni-github :if (lambda () (featurep 'consult-gh)))
-    ("ss" "slack search" search-in-slack :if (lambda () (featurep :system 'macos)))]])
+    ("ss" "slack search" search-in-slack :if (lambda () (featurep :system 'macos)))
+    ("hn" "HN" consult-hn-transient :if (lambda () (featurep 'consult-hn)))]])
 
 (defadvice! consult-omni-transient-a (&rest _)
   :before #'consult-omni-transient

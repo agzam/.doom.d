@@ -60,7 +60,7 @@
   ;; fullscreen apps
   (eshell-vterm-mode)
   (defalias 'eshell/v 'eshell-exec-visual)
-  (dolist (cmd '(ncdu btop htop k9s pueue procs))
+  (dolist (cmd '(ncdu btop htop k9s pueue procs lazydocker))
     (add-to-list 'eshell-visual-commands (symbol-name cmd))))
 
 (use-package! shell-pop
