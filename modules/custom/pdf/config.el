@@ -27,6 +27,10 @@
   ;; The mode-line does serve any useful purpose is annotation windows
   (add-hook 'pdf-annot-list-mode-hook #'hide-mode-line-mode)
 
+  (map! :map pdf-view-roll-minor-mode-map
+        "<wheel-up>" #'pdf-view-previous-line-or-previous-page
+        "<wheel-down>" #'pdf-view-next-line-or-next-page)
+
   ;; HACK Fix #1107: flickering pdfs when evil-mode is enabled
   ;; (setq-hook! 'pdf-view-mode-hook evil-normal-state-cursor (list nil))
 

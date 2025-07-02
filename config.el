@@ -191,7 +191,7 @@
 
           ;; this one is a delay between evil-escape-key-sequence keys
           ;; - used for jumping to normal state from insert
-          evil-escape-delay 0.01
+          evil-escape-delay 0.1
           )
 
   ;; cursor shape in the terminal
