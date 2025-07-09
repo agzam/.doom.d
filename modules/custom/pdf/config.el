@@ -84,11 +84,18 @@
                                      ,(face-attribute 'default :background)))
     (funcall fn args))
 
-  (defadvice! pdf-view-next-page-at-top-of-the-page-a (&optional N)
+  (defadvice! pdf-view-next-page-at-top-of-the-page-a (&optional _)
     "Always start at the top of the page."
     :after #'pdf-view-next-page
     :after #'pdf-view-next-page-command
-    (image-scroll-down)))
+    (image-scroll-down))
+
+  (defadvice! adjust-pdf-colors-on-theme-change-a (&rest _)
+    :after #'load-theme
+    (thread-last
+      (buffer-list)
+      (seq-filter (lambda (b) (with-current-buffer b (eq major-mode 'pdf-view-mode))))
+      (seq-do (lambda (b) (with-current-buffer b (pdf-view-themed-minor-mode +1)))))))
 
 
 (use-package! org-noter
@@ -118,7 +125,7 @@
             (setq notes-window (org-noter--get-notes-window 'start))
             (org-noter--set-notes-scroll notes-window))))))
 
-  (defadvice! org-noter--set-notes-scroll-ignore-a (&rest args)
+  (defadvice! org-noter--set-notes-scroll-ignore-a (&rest _)
     :override #'org-noter--set-notes-scroll)
 
   (defadvice! org-noter--create-session-a (orig-fn &rest args)

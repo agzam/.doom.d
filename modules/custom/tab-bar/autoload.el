@@ -12,6 +12,8 @@
   ["Choose a template"
    [("ort" "Work note" (lambda () (interactive)
                          (general--simulate-keys nil "SPC ort")))
+    ("orT" "Journal note" (lambda () (interactive)
+                            (general--simulate-keys nil "SPC orT")))
     ("orr" "Backlinks" (lambda () (interactive) (general--simulate-keys nil "SPC orr")))
     ("orb" "Backlinks" (lambda () (interactive) (general--simulate-keys nil "SPC orb")))]
    [("gt" "gptel"
