@@ -35,7 +35,7 @@
                     (defun +clojure-disable-lsp-indentation-h ()
                       (setq-local lsp-enable-indentation nil))
                     (defun activate-clojure-dash-docsets-h ()
-                      (dash-docs-activate-docset "Clojure")
+                      ;; (dash-docs-activate-docset "Clojure")
                       (dash-docs-activate-docset "ClojureDocs"))))
 
   (after! lsp-clojure
