@@ -25,3 +25,17 @@ indirectly called by the latter."
                             (window-width window t))
                          t nil t))
         window))))
+
+(defun system-dist-name ()
+  "Returns system distribution name.
+
+e.g. Ubuntu, Arch; or macOS 15.5, etc."
+  (let ((cmd+prefix (alist-get
+                     system-type
+                     '((gnu/linux . ("lsb_release -si 2>/dev/null"))
+                       (darwin . ("sw_vers -productVersion" "macOS "))))))
+    (thread-last
+      (car cmd+prefix)
+      shell-command-to-string
+      string-trim
+      (concat (cadr cmd+prefix)))))
