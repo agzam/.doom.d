@@ -175,7 +175,25 @@
     (defun transient-exit-evil-normal-h ()
       (save-mark-and-excursion
         (when (evil-emacs-state-p)
-          (evil-normal-state))))))
+          (evil-normal-state)))))
+
+  (defadvice! osc52-clipboard-in-ssh-session-a (&rest _)
+    "Make Emacs propagate yanked shit to system clipboard.
+
+    OSC 52 is an escape sequence for clipboard operations in terminals!
+    OSC - OS command (part of the terminal control sequences)
+    52 = the specific command number for clipboard operations
+
+    It's a standardized way to say:
+    `hey terminal, put this crap in the system clipboard`"
+    :after 'evil-yank
+    (when (and (not (display-graphic-p))
+               (getenv "SSH_CONNECTION"))
+      (let* ((text (current-kill 0 t))
+             (base64 (base64-encode-string
+                      (encode-coding-string text 'utf-8) t)))
+        (send-string-to-terminal
+         (format "\033]52;c;%s\007" base64))))))
 
 (use-package! ibuffer-sidebar
   :defer t
