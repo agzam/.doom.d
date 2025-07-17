@@ -306,6 +306,7 @@
       :n "[ p" (cmd! () (evil-backward-paragraph) (recenter))
       :n "zk" #'text-scale-increase
       :n "zj" #'text-scale-decrease
+      :n "z0" #'text-scale-set
       :n "s-e" #'+scroll-line-down-other-window
       :n "s-y" #'+scroll-line-up-other-window
       :n "s-u" #'+scroll-line-down-other-window

@@ -3,7 +3,8 @@
 (use-package! treesit
   :defer t
   :mode (("\\.tsx\\'" . tsx-ts-mode)
-         ("\\.bash\\'" . bash-ts-mode))
+         ("\\.bash\\'" . bash-ts-mode)
+         ("\\Dockerfile\\'" . dockerfile-ts-mode))
   :preface
   (dolist (mapping
            '((python-mode . python-ts-mode)
