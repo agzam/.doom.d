@@ -11,7 +11,9 @@
   (add-to-list
    'display-buffer-alist
    '("\\* spacehammer-edit.*"
-     (display-buffer-in-quadrant)
+     (display-buffer-reuse-window
+      display-buffer-reuse-mode-window
+      display-buffer-in-quadrant)
      (direction . right)
      (window . root))))
 
@@ -25,6 +27,7 @@
    'display-buffer-alist
    `(,mw-thesaurus-buffer-name
      (display-buffer-reuse-window
+      display-buffer-reuse-mode-window
       display-buffer-in-direction)
      (direction . right)
      (window . root)
@@ -47,7 +50,9 @@
   (add-to-list
    'display-buffer-alist
    `(,sdcv-buffer-name
-     (display-buffer-in-quadrant)
+     (display-buffer-reuse-window
+      display-buffer-reuse-mode-window
+      display-buffer-in-quadrant)
      (direction . right)
      (window . root))))
 
@@ -85,7 +90,9 @@
   (add-to-list
    'display-buffer-alist
    '("\\*Google Translate\\*"
-     (display-buffer-in-quadrant)
+     (display-buffer-reuse-window
+      display-buffer-reuse-mode-window
+      display-buffer-in-quadrant)
      (direction . right)
      (init-width . 0.3)
      (window . root))))
@@ -107,7 +114,9 @@
   (add-to-list
    'display-buffer-alist
    '("\\*define-it:"
-     (display-buffer-in-quadrant)
+     (display-buffer-reuse-window
+      display-buffer-reuse-mode-window
+      display-buffer-in-quadrant)
      (direction . right)
      (window . root))))
 
@@ -230,7 +239,8 @@
   (add-to-list
    'display-buffer-alist
    '((major-mode . wiktionary-bro-mode)
-     (display-buffer-reuse-mode-window
+     (display-buffer-reuse-window
+      display-buffer-reuse-mode-window
       display-buffer-in-quadrant)
      (direction . right)
      (init-width . 0.15)

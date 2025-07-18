@@ -244,7 +244,9 @@
     :around #'hnreader-comment
     (let ((display-buffer-alist
            '((".*"
-              (display-buffer-in-quadrant)
+              (display-buffer-reuse-window
+               display-buffer-reuse-mode-window
+               display-buffer-in-quadrant)
               (direction . right)
               (init-width . 0.5)
               (window . root)))))

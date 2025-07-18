@@ -71,7 +71,8 @@
   (add-to-list
    'display-buffer-alist
    `(,(rx bos (or "*Claude" "*ChatGPT" "gptel-"))
-     (display-buffer-in-quadrant)
+     (display-buffer-reuse-window
+      display-buffer-in-quadrant)
      (init-width . 0.35)
      (direction . right)
      (window . root)))
@@ -84,8 +85,8 @@
               (natnump (string-match-p
                         (concat org-default-folder "gptel/quick.org")
                         buffer-file-name)))))
-
-     (display-buffer-in-quadrant)
+     (display-buffer-reuse-window
+      display-buffer-in-quadrant)
      (direction . right)
      (window . root))))
 

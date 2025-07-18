@@ -275,7 +275,9 @@
   (add-to-list
    'display-buffer-alist
    '("\\*org-roam\\*"
-     (display-buffer-in-quadrant)
+     (display-buffer-reuse-window
+      display-buffer-reuse-mode-window
+      display-buffer-in-quadrant)
      (direction . right)
      (window . root)))
 
@@ -302,6 +304,7 @@
    'display-buffer-alist
    '("\\*org-roam-ui\\*"
      (display-buffer-reuse-window
+      display-buffer-reuse-mode-window
       display-buffer-in-direction)
      (direction . right)
      (window . root)

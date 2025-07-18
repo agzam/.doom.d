@@ -104,13 +104,3 @@ Leaves single window per buffer, removing all duplicates."
   (with-selected-window (other-window-for-scrolling)
     (funcall (doom-lookup-key (kbd "C-y")) count)))
 
-;;;###autoload
-(defun display-buffer-window-equal-width (buffer alist)
-  "Keep buffer window width proportional to other windows."
-  (let* ((win (display-buffer-in-direction buffer alist)))
-    (window-resize
-     win
-     (- (/ (frame-width) (length (window-list)))
-        (window-width win))
-     t t)
-    win))

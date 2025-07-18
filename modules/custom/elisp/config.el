@@ -9,7 +9,7 @@
 
 (add-hook! 'profiler-report-mode-hook
   (defun yas-minor-mode-off ()
-      (yas-minor-mode -1))
+    (yas-minor-mode -1))
   (run-with-timer
    0.1 nil
    #'profiler-report-expand-all))
@@ -79,9 +79,9 @@
         :i "C-j" #'eval-print-last-sexp)
 
   (add-hook! 'emacs-lisp-mode-hook
-    #'visual-wrap-prefix-mode
-    (defun always-lexical-binding-h ()
-      (setq lexical-binding t))))
+             #'visual-wrap-prefix-mode
+             (defun always-lexical-binding-h ()
+               (setq lexical-binding t))))
 
 (after! debug
   (map! :map debugger-mode-map
@@ -115,7 +115,9 @@
 (add-to-list
  'display-buffer-alist
  `("\\*Backtrace\\*"
-   (display-buffer-in-quadrant)
+   (display-buffer-reuse-window
+    display-buffer-reuse-mode-window
+    display-buffer-in-quadrant)
    (direction . right)
    (window . root)))
 

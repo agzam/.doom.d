@@ -181,7 +181,9 @@
                   "*cider-test-report*"
                   "*cider-error"
                   "*cider-result"))
-     (display-buffer-in-quadrant)
+     (display-buffer-reuse-window
+      display-buffer-reuse-mode-window
+      display-buffer-in-quadrant)
      (direction . right)
      (window . root)))
 

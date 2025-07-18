@@ -388,7 +388,9 @@
   (add-to-list
    'display-buffer-alist
    '("\\*Searching GitHub.*"
-     (display-buffer-in-quadrant)
+     (display-buffer-reuse-window
+      display-buffer-reuse-mode-window
+      display-buffer-in-quadrant)
      (direction . right)
      (init-width . 0.3)
      (window . root)))

@@ -102,12 +102,14 @@
   (setq avy-all-windows t)
   (setf (alist-get ?. avy-dispatch-alist) #'avy-action-embark))
 
-
-;; ensure that browsing in Helpful and Info modes doesn't create additional window splits
+;; ensure that browsing in Helpful and Info modes doesn't create
+;; additional window splits
 (add-to-list
  'display-buffer-alist
  `(,(rx bos (or "*helpful" "*info"))
-   (display-buffer-in-quadrant)
+   (display-buffer-reuse-window
+    display-buffer-reuse-mode-window
+    display-buffer-in-quadrant)
    (direction . right)
    (window . root)))
 
@@ -144,7 +146,9 @@
   (add-to-list
    'display-buffer-alist
    `("\\*edit-indirect .*\\*"
-     (display-buffer-in-quadrant)
+     (display-buffer-reuse-window
+      display-buffer-reuse-mode-window
+      display-buffer-in-quadrant)
      (direction . right)
      (window . root))))
 
