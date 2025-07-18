@@ -9,12 +9,6 @@
           transient-values-file  (concat doom-etc-dir "transient/values")
           transient-history-file (concat doom-etc-dir "transient/history"))
   :config
-  (map! :map magit-blame-read-only-mode-map
-        :n "RET" #'magit-show-commit)
-  (add-hook! magit-blame-mode
-    (defun turn-off-evil-org-mode ()
-      (evil-org-mode -1)))
-
   ;; otherwise starts magit in evil-emacs-state
   (dolist (m '(magit-status-mode
                magit-refs-mode
@@ -26,11 +20,11 @@
   ;; it is used instead. Magit seems to be hardcoded to use the latter, so here
   ;; we override it to have more correct behavior.
   (unless (file-exists-p "~/.git-credential-cache/")
-    (setq magit-credential-cache-daemon-socket
-          (doom-glob (or (getenv "XDG_CACHE_HOME")
-                         "~/.cache/")
-                     "git/credential/socket")))
-  (setq
+    (setopt magit-credential-cache-daemon-socket
+            (doom-glob (or (getenv "XDG_CACHE_HOME")
+                           "~/.cache/")
+                       "git/credential/socket")))
+  (setopt
    magit-save-repository-buffers 'dontask
    magit-clone-set-remote.pushDefault nil
    magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1
@@ -109,7 +103,16 @@
   ;; transient-setup: Cannot insert ("N" "Forge" forge-dispatch) into magit-dispatch; o not found
   ;; this is a temporary measure until it gets sorted out
   (transient-append-suffix 'magit-dispatch '(0 0 -1)
-    '("o" "Dummy" nil)))
+    '("o" "Dummy" nil))
+
+  (map! :map magit-blame-read-only-mode-map
+        :n "RET" #'magit-show-commit)
+
+  (add-hook! magit-blame-mode
+    (defun turn-off-evil-org-mode ()
+      (evil-org-mode -1)))
+
+  (add-hook! 'magit-credential-hook #'update-ssh-auth-sock-h))
 
 (use-package! evil-collection-magit
   :when (modulep! :editor evil +everywhere)

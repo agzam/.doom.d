@@ -282,3 +282,13 @@ If URL is a link to a file, it extracts its raw form and tries to open in a buff
    (advice-add 'magit-clone-read-args :around adv-fn))
   (funcall-interactively #'magit-clone :transient))
 
+;;;###autoload
+(defun update-ssh-auth-sock-h ()
+  "Update SSH_AUTH_SOCK environment variable to the current SSH agent socket.
+This is useful for long-running Emacs sessions in tmux where the SSH
+forwarding socket changes between SSH connections. Only runs when in
+terminal mode and connected via SSH."
+  (when (and (not (display-graphic-p))
+             (getenv "SSH_CONNECTION"))
+    (when-let ((sock (car (file-expand-wildcards "/tmp/ssh-*/agent.*" t))))
+      (setenv "SSH_AUTH_SOCK" sock))))
