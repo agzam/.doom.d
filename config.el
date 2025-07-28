@@ -37,8 +37,7 @@
   (add-hook 'evil-insert-state-entry-hook
             (lambda () (send-string-to-terminal "\033[5 q")))
   (add-hook 'evil-normal-state-entry-hook
-            (lambda () (send-string-to-terminal "\033[0 q")))
-  (doom-disable-show-paren-mode-h))
+            (lambda () (send-string-to-terminal "\033[0 q"))))
 
 
 (setopt

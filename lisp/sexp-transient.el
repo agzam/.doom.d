@@ -185,7 +185,7 @@ Every key spec in KEY-SPECS list can be, either:
    [("w" "wrap" sp-wrap-sexp :transient t)
     ("W" "unwrap" sp-unwrap-sexp :transient t)
     ("=" "reindent" sp-reindent :transient t)]
-   [("r" "raise" sp-raise-sexp :transient t)
+   [("r" "raise" raise-sexp :transient t)
     ("c" "convolute" sp-convolute-sexp :transient t)
     ("t" "transpose" sp-transpose-sexp :transient t)]
    [("|" "split" sp-split-sexp :transient t)

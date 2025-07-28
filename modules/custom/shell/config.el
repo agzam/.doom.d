@@ -48,6 +48,10 @@
             (:when (featurep 'eshell-atuin)
               :desc "history" "M-r" #'eshell-atuin-history))))
 
+  (add-hook! '(comint-mode-hook
+               eshell-mode-hook)
+             #'update-hyprland-env-h)
+
   (cl-defmethod eshell-output-object-to-target :around (_obj (target marker))
     ;; immediately open the redirected buffer
     (let ((base (cl-call-next-method)))

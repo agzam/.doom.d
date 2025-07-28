@@ -234,14 +234,14 @@ gptel conversations."
 (defun gptel-log-find ()
   "Grep for things in gptel log files."
   (interactive)
-  (if-let* ((q (if (use-region-p)
-                   (buffer-substring-no-properties
-                    (region-beginning) (region-end))
-                 (if-let* ((s (symbol-at-point)))
-                     (symbol-name s) "")))
-            (in (concat org-default-folder "/gptel")))
-      (let ((consult-ripgrep-args
-             (concat consult-ripgrep-args " --sortr=modified")))
-        (consult--grep
-         "Search in gptel logs: "
-         #'consult--ripgrep-make-builder in q))))
+  (let* ((dir (concat org-default-folder "/gptel"))
+         (initial (if (use-region-p)
+                     (buffer-substring-no-properties
+                      (region-beginning) (region-end))
+                    (or (when-let ((s (symbol-at-point)))
+                          (symbol-name s))
+                        "^")))
+         (consult-ripgrep-args
+          (concat consult-ripgrep-args " --sortr=modified"))
+         (consult-async-min-input 0))  ; Show results immediately
+    (consult-ripgrep dir initial)))

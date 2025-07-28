@@ -13,7 +13,7 @@
   :config
   (setf
    (cdr (assoc 'default gptel-directives))
-   "You are an experienced software engineer assistant. Respond concisely. Prioritize theory. Do not provide code snippets until instructed. Do not repeat entire snippets of code - show only relevant changes. Do not explain code.")
+   "You are an experienced software engineer assistant. Respond concisely. Prioritize theory. Do not provide code snippets until instructed. Do not repeat entire snippets of code - show only relevant changes, unless instructed otherwise. Do not explain code. Do not replace backticks and other symbols in the code to accommodate for Org-mode - keep the code in source blocks as independent pieces that have nothing to do with Org-mode markup.")
 
   (setf
    (cdr (assoc 'chat gptel-directives))
@@ -71,7 +71,8 @@
   (add-to-list
    'display-buffer-alist
    `(,(rx bos (or "*Claude" "*ChatGPT" "gptel-"))
-     (display-buffer-reuse-window
+     (
+      ;; display-buffer-reuse-window
       display-buffer-in-quadrant)
      (init-width . 0.35)
      (direction . right)

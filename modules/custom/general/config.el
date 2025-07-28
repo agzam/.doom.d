@@ -33,6 +33,10 @@
 
 
 (after! smartparens
+  (eval `(add-hook! , sp-lisp-modes
+                      #'doom-disable-show-paren-mode-h
+                      #'show-smartparens-mode))
+
   ;; fix for smartparens. Doom's default module does things like skipping pairs if
   ;; one typed at the beginning of the word.
   (dolist (brace '("(" "{" "["))
