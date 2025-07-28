@@ -54,13 +54,18 @@
 ;;;###autoload
 (defun jira--ticket-arg-or-ticket-at-point (&optional ticket)
   "Resolves ticket based on argument or symbol-at-point"
-  (let* ((satp (thing-at-point 'symbol t))
-         (ticket-at-point (when (and satp (string-match-p "\\b[A-Z]+-[0-9]+\\b" satp))
+  (let* ((ticket-pattern "\\`[A-Z]\\{2,10\\}-[0-9]+\\'")
+         (satp (thing-at-point 'symbol t))
+         (ticket-at-point (when (and satp
+                                     (string-match-p ticket-pattern satp))
                             satp))
-         (_ (unless (or ticket
-                        (string-match-p "^[A-Z]\\{3,10\\}-[0-9]+$" ticket-at-point))
-              (user-error "not a ticket number"))))
-    (or ticket ticket-at-point)))
+         (kill-ring-ticket (when (and (not ticket)
+                                      (not ticket-at-point)
+                                      kill-ring)
+                             (let ((last-kill (car kill-ring)))
+                               (when (string-match-p ticket-pattern last-kill)
+                                 last-kill)))))
+    (or ticket ticket-at-point kill-ring-ticket)))
 
 (defun jira-ticket->url (ticket)
   "Extracts browsable url for the TICKET number."

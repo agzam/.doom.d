@@ -1,7 +1,7 @@
 ;;; custom/jira/config.el -*- lexical-binding: t; -*-
 
 (setopt jira-default-search-format-string
-        "project = TDL AND status NOT IN (Closed, Done) AND text ~ \"%s\"")
+        "project = SAC AND status NOT IN (Closed, Done) AND text ~ \"%s\"")
 
 (map! :map jira-browse-ticket-mode-map
       :n "q" #'kill-buffer-and-window)

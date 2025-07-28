@@ -14,5 +14,6 @@ anything like: RFC 123, rfc-123, RFC123 or rfc123."
 (defun jira-find-pull-requests-on-github (&optional jira-ticket orgs)
   "Search for mentioning of JIRA-TICKET on github for given ORGS"
   (interactive)
-  (let* ((ticket (jira--ticket-arg-or-ticket-at-point jira-ticket)))
+  (let* ((ticket (or (jira--ticket-arg-or-ticket-at-point jira-ticket)
+                     (read-string "Gimme the JIRA ticket to search: "))))
     (github-topics-find-prs ticket)))
