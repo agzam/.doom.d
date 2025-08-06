@@ -134,10 +134,15 @@
 
 (defun dired-do-rsync (dest)
   "Rsync marked files to DEST with progress."
+  (advice-remove 'comint-output-filter #'doom--comint-enable-undo-a)
+  (advice-remove 'comint-output-filter
+                 #'doom--comint-protect-output-in-visual-modes-a)
   (async-shell-command
-   (format "rsync -av --progress --remove-source-files %s %s"
+   (format "rsync -av --progress --remove-source-files %s %s && find %s -type d -empty -delete"
            (mapconcat #'shell-quote-argument (dired-get-marked-files) " ")
-           (shell-quote-argument dest))))
+           (shell-quote-argument dest)
+           (mapconcat #'shell-quote-argument
+                      (mapcar #'file-name-directory (dired-get-marked-files)) " "))))
 
 ;;;###autoload
 (defun dired-do-rename-wrapper-a (orig-fun &optional arg)
