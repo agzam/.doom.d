@@ -260,9 +260,10 @@ which isn't great for Polylith projects. Let's fix that."
               (nrepl (alist-get
                       :nrepl-host
                       (nth 2 (org-babel-get-src-block-info))))
-              (_ (string-match "\\(.*\\):\\([0-9]+\\)" nrepl))
-              (host (match-string 1 nrepl))
-              (port (match-string 2 nrepl)))
+              (nrepl-str (if (numberp nrepl) (number-to-string nrepl) nrepl))
+              (_ (string-match "\\(.*\\):\\([0-9]+\\)" nrepl-str))
+              (host (match-string 1 nrepl-str))
+              (port (match-string 2 nrepl-str)))
         (progn
           (funcall ofn arg)
           (if-let* ((ses (funcall find-matching-session

@@ -17,6 +17,7 @@
         calendar-longitude -96.93)
   (setf circadian-themes
         `(("6:00" . ag-themes-spacemacs-light)
+          ("14:00" . ag-themes-ef-elea-light)
           ("21:00" . ag-themes-base16-ocean)
           ("23:00" . ag-themes-base16-ashes))))
 
@@ -34,3 +35,8 @@
   (when (and (display-graphic-p)
              (not (featurep :system 'macos)))
    (beacon-mode +1)))
+
+(use-package! ef-themes
+  :config
+  (setopt ef-themes-mixed-fonts t
+          ef-themes-variable-pitch-ui t))

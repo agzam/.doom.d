@@ -1,6 +1,7 @@
 ;;; custom/learning/config.el -*- lexical-binding: t; -*-
 
 (use-package! exercism
+  :disabled t
   :defer t
   :commands (exercism)
   :init
