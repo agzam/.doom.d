@@ -194,7 +194,8 @@
 
     It's a standardized way to say:
     `hey terminal, put this crap in the system clipboard`"
-    :after 'evil-yank
+    :after #'kill-new
+    :after #'kill-append
     (when (and (not (display-graphic-p))
                (getenv "SSH_CONNECTION"))
       (let* ((text (current-kill 0 t))
