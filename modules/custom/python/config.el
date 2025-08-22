@@ -14,6 +14,7 @@
   (setopt lsp-pyright-multi-root nil)
   :config
   (setopt
+   ;; don't forget to `pip install basedpyright'
    lsp-pyright-langserver-command "basedpyright"
    lsp-pyright-venv-path "."
    lsp-pyright-venv-directory ".venv")

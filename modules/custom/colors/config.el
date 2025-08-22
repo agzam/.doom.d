@@ -38,5 +38,5 @@
 
 (use-package! ef-themes
   :config
-  (setopt ef-themes-mixed-fonts t
-          ef-themes-variable-pitch-ui t))
+  (setopt ef-themes-mixed-fonts nil
+          ef-themes-variable-pitch-ui nil))
