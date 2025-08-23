@@ -1,16 +1,52 @@
 # This is an attempt for re-building config and required files for
 # every Doom or packages update.
 
-name: rebuild
+name: build
 on:
-  workflow_dispatch
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
-  Build:
-    runs-on: ubuntu-latest
+  build:
+    strategy:
+      matrix:
+        emacs-version: [snapshot]
+        dist:
+          - arch
+          # - ubuntu
+          - macos
+        include:
+          - dist: arch
+            os: ubuntu-latest
+            container: archlinux:latest
+
+          # - dist: ubuntu
+          #   os: ubuntu-latest
+
+          - dist: macos
+            os: macos-latest
+
+    runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
+
     steps:
-      - name: Checkout .doom.d
-        uses: actions/checkout@main
+      - name: Install Arch dependencies
+        if: matrix.dist == 'arch'
+        run: pacman -Syu --noconfirm git openssh base-devel emacs-wayland
+
+      - name: Checkout (manual for Arch)
+        if: matrix.dist == 'arch'
+        run: |
+          git clone https://github.com/${{ github.repository }} doom-d
+          cd doom-d
+          git checkout ${{ github.sha }}
+          git config --global url."https://github.com/".insteadOf "git@github.com:"
+          git submodule update --init --recursive
+
+      - uses: actions/checkout@main
+        if: matrix.dist != 'arch'
         with:
           path: doom-d
           submodules: recursive
@@ -26,6 +62,7 @@ jobs:
       - run: cp -r doom-tmp ~/.emacs.d
 
       - name: Cache Emacs
+        if: matrix.dist != 'arch'
         uses: actions/cache@v3
         id: emacs-cache
         with:
@@ -33,23 +70,30 @@ jobs:
           key: emacs-${{ matrix.emacs-version }}
 
       - name: Install Emacs
-        if: steps.emacs-cache.outputs.cache-hit != 'true'
+        if: matrix.dist != 'arch' && steps.emacs-cache.outputs.cache-hit != 'true'
         uses: purcell/setup-emacs@master
         with:
-          version: 30.1
+          version: ${{ matrix.emacs-version }}
+
+      # - name: Install Emacs (Arch)
+      #   if: matrix.dist == arch
+      #   if: steps.emacs-cache.outputs.cache-hit != 'true'
+      #   uses: purcell/setup-emacs@master
+      #   with:
+      #     version: ${{ matrix.emacs-version }}
 
       - run: ls -al $HOME/.emacs.d
 
       - name: Install Doom
         run: |
-          ~/.emacs.d/bin/doom install --force --no-fonts --no-env
+          ~/.emacs.d/bin/doom install --force --no-fonts --no-env --verbose
 
       - run: ls -al $HOME/.emacs.d
 
       - run: diff -qr doom-tmp $HOME/.emacs.d
 
-      # - name: Save results
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: doom-files
-      #     path:
+    #   # - name: Save results
+    #   #   uses: actions/upload-artifact@v4
+    #   #   with:
+    #   #     name: doom-files
+    #   #     path:
