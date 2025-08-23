@@ -10,6 +10,9 @@
     (put 'cursor 'evil-normal-color "DarkGoldenrod2")
     (posframe-delete-all)))
 
+(use-package! transient
+ :demand t)
+
 (use-package winum
   :after-call doom-switch-window-hook
   :config
