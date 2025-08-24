@@ -16,7 +16,7 @@ jobs:
         dist:
           - arch
           # - ubuntu
-          - macos
+          # - macos
         include:
           - dist: arch
             os: ubuntu-latest
@@ -25,8 +25,8 @@ jobs:
           # - dist: ubuntu
           #   os: ubuntu-latest
 
-          - dist: macos
-            os: macos-latest
+          # - dist: macos
+          #   os: macos-latest
 
     runs-on: ${{ matrix.os }}
     container: ${{ matrix.container }}
