@@ -15,17 +15,20 @@ jobs:
         emacs-version: [snapshot]
         dist:
           - arch
-          # - ubuntu
+          - ubuntu
           - macos
         include:
           - dist: arch
             os: ubuntu-latest
+            home: "/root"
             container: archlinux:latest
 
-          # - dist: ubuntu
-          #   os: ubuntu-latest
+          - dist: ubuntu
+            home: "~"
+            os: ubuntu-latest
 
           - dist: macos
+            home: "~"
             os: macos-latest
 
     runs-on: ${{ matrix.os }}
@@ -34,7 +37,13 @@ jobs:
     steps:
       - name: Install Arch dependencies
         if: matrix.dist == 'arch'
-        run: pacman -Syu --noconfirm git openssh base-devel emacs-wayland
+        run: pacman -Syu --noconfirm git openssh base-devel emacs-wayland tree
+
+      - name: Install Mac dependencies
+        if: matrix.dist == 'macos'
+        run: |
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          brew install tree
 
       - name: Checkout (manual for Arch)
         if: matrix.dist == 'arch'
@@ -55,11 +64,16 @@ jobs:
         uses: actions/checkout@main
         with:
           repository: doomemacs/doomemacs
-          path: doom-tmp
+          submodules: recursive
+          path: emacs-d-tmp
           fetch-depth: 1
 
-      - run: mv doom-d ~/.doom.d
-      - run: cp -r doom-tmp ~/.emacs.d
+      - run: whoami && id
+
+      - name: move files
+        run: |
+          mv -v $GITHUB_WORKSPACE/doom-d ${{ matrix.home }}/.doom.d
+          cp -rv $GITHUB_WORKSPACE/emacs-d-tmp ${{ matrix.home }}/.emacs.d
 
       - name: Cache Emacs
         if: matrix.dist != 'arch'
@@ -77,27 +91,26 @@ jobs:
 
       - name: Install Doom
         run: |
-          cd ~ && ~/.emacs.d/bin/doom install --force --no-fonts --no-env --verbose
+          cd ${{ matrix.home }}
+          ${{ matrix.home }}/.emacs.d/bin/doom install --force --no-fonts --no-env --verbose
 
-      - run: cd ~ && ls -la ~/.emacs.d/.local
+      - run: tree -a ${{ matrix.home }}
+      - run: cd ${{ matrix.home }} && ls -la
 
       - name: Create tar archive
-        run: cd ~ && tar -czf release-${{ matrix.dist }}.tar.gz ~/.emacs.d/.local
+        run: |
+          cd ${{ matrix.home }}
+          tar -czf ${{ matrix.home }}/release-${{ matrix.dist }}.tar.gz .emacs.d/.local
 
-      - run: cd ~ && ls -la
+      # - run: cd ~ && ls -la
 
       - name: Upload release artifact
         uses: actions/upload-artifact@main
         with:
           name: release-${{ matrix.dist }}
-          path: ~/release-${{ matrix.dist }}.tar.gz
+          path: ${{ matrix.home}}/release-${{ matrix.dist }}.tar.gz
 
       # - run: ls -al $HOME/.emacs.d
 
       # - run: diff -qr doom-tmp $HOME/.emacs.d
 
-    #   # - name: Save results
-    #   #   uses: actions/upload-artifact@v4
-    #   #   with:
-    #   #     name: doom-files
-    #   #     path:
