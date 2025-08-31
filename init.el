@@ -227,4 +227,5 @@
        python
        shell
        webdev
-       yaml)
+       yaml
+       rust)

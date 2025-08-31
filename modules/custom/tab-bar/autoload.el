@@ -41,6 +41,7 @@
     ("SPC" "zoxide history"
      (lambda () (interactive) (+zoxide-find)))
     ("b" "buffers" (lambda () (interactive) (consult-buffer)))
+    ("fd" "zoxide" +zoxide-find)
     ("fr" "recent" (lambda () (interactive) (consult-recent-file)))]
    [("d" "kill tab" +tab-bar-kill-tab)]])
 
