@@ -441,7 +441,8 @@
           :desc "markdown link" "m" #'+link-org->link-markdown
           :desc "plain" "p" #'+link-org->link-plain
           :desc "strip" "s" #'+link-org->just-text
-          :desc "bug-reference" "b" #'+link-org->link-bug-reference))
+          :desc "bug-reference" "b" #'+link-org->link-bug-reference
+          :desc "roam heading" "r" #'+link-org->roam-heading))
 
    (:map embark-bug-reference-link-map
     "e" #'+process-external-url

@@ -145,6 +145,27 @@ anything like: RFC 123, rfc-123, RFC123 or rfc123."
       (delete-region beg end)
       (insert url))))
 
+;;;###autoload
+(defun +link-org->roam-heading ()
+  "Convert org-mode link at point to a heading with ROAM_REFS property."
+  (interactive)
+  (let ((element (org-element-context)))
+    (when (eq (org-element-type element) 'link)
+      (let* ((url (org-element-property :raw-link element))
+             (title (if (org-element-property :contents-begin element)
+                       (buffer-substring-no-properties
+                        (org-element-property :contents-begin element)
+                        (org-element-property :contents-end element))
+                     url))
+             (id (org-id-new)))
+        (delete-region (org-element-property :begin element)
+                      (org-element-property :end element))
+        (insert "* " title "\n")
+        (insert ":PROPERTIES:\n")
+        (insert ":id:       " id "\n")
+        (insert ":roam_refs: " url "\n")
+        (insert ":END:\n")))))
+
 (defun +link-org->just-text ()
   "Convert link to simple text."
   (interactive)
