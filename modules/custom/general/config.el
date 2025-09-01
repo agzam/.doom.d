@@ -277,3 +277,11 @@
           "l" #'flycheck-list-errors
           "c" #'consult-flycheck
           "s" #'flycheck-select-checker))))
+
+(after! tramp
+  ;; Typically I have RemoteCommand in my ssh/config that
+  ;; automatically starts tmux, that can interfere with TRAMP and hang
+  ;; the session after the handshake
+  (add-to-list 'tramp-connection-properties
+               (list "^/\\(ssh\\|scp\\):.*:"
+                     "remote-shell" "/bin/bash")))
