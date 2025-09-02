@@ -159,9 +159,14 @@ jump to selected tab, activating it in the browser."
    ((featurep :system 'macos)
     (when-let* ((tab (browser--get-active-tab))
                 (url (plist-get tab :url))
-                (title (replace-regexp-in-string
-                        "\\(^\\(([0-9]+)\\)\\s-*\\)" ""
-                        (plist-get tab :title))))
+                (title
+                 (if (use-region-p)
+                     (buffer-substring (region-beginning) (region-end))
+                   (replace-regexp-in-string
+                    "\\(^\\(([0-9]+)\\)\\s-*\\)" ""
+                    (plist-get tab :title)))))
+      (when (use-region-p)
+        (delete-region (region-beginning) (region-end)))
       (cond
        ((eq major-mode 'markdown-mode)
         (insert (format "[%s](%s)" title url)))

@@ -1,11 +1,12 @@
 ;;; custom/webdev/config.el -*- lexical-binding: t; -*-
 
-(add-hook! (typescript-ts-mode
-            jtsx-tsx-mode)
+(add-hook! '(typescript-ts-mode-hook
+            jtsx-jsx-mode-hook)
            #'+typescript-mode-lookup-handlers
-           #'activate-ts-dash-docsets-h)
+           #'activate-ts-dash-docsets-h
+           #'lsp!)
 
-(add-hook! (jtsx-tsx-mode)
+(add-hook! '(jtsx-tsx-mode-hook)
            #'emmet-mode)
 
 (use-package! emmet-mode
