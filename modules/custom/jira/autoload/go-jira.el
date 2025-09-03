@@ -178,8 +178,8 @@ e.g., XYZ-1234 becomes XYZ-1234 - \='This ticket does nothing\='"
     (display-buffer buf)
     (select-window (get-buffer-window buf))))
 
-(defun jira-browse-ticket-url (&optional ticket)
-  (interactive)
+(defun jira-browse-ticket-url (ticket)
+  (interactive "sJira ticket number: ")
   (let ((j (jira--find-exe))
         (ticket (or ticket
                     (buffer-local-value 'jira--ticket-number (current-buffer)))))

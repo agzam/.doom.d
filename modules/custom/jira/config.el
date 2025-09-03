@@ -17,7 +17,9 @@
   (add-to-list 'embark-keymap-alist '(jira-ticket embark-jira-ticket-map))
 
   (map! :map embark-jira-ticket-map
-        :desc "browse" "b" #'jira-view-simple
+        (:prefix ("b" . "browse")
+         :desc "view" "b" #'jira-view-simple
+         :desc "in browser" "o" #'jira-browse-ticket-url)
         (:prefix ("f" . "find")
          :desc "GH PRs" "g" #'jira-find-pull-requests-on-github)
         (:prefix ("c" . "convert")
