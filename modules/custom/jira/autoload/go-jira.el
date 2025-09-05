@@ -183,7 +183,21 @@ e.g., XYZ-1234 becomes XYZ-1234 - \='This ticket does nothing\='"
   (let ((j (jira--find-exe))
         (ticket (or ticket
                     (buffer-local-value 'jira--ticket-number (current-buffer)))))
-    (shell-command-to-string (format "%s browse %s" j ticket))))
+
+    ;; let's not open a new tab if got one in browser already
+    (if-let* ((_ (eq system-type 'darwin))
+              (ticket-url (jira-ticket->url ticket))
+              (btab
+               (thread-last
+                 (browser-get-tabs)
+                 (seq-filter
+                  (lambda (x)
+                    (string= ticket-url (plist-get x :url))))
+                 (seq-first)))
+              (win-idx (plist-get btab :windowIndex))
+              (tab-idx (plist-get btab :tabIndex)))
+        (browser-activate-tab win-idx tab-idx)
+      (shell-command-to-string (format "%s browse %s" j ticket)))))
 
 ;;;###autoload
 (defun jira-search (&optional query)

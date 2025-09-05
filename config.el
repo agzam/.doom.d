@@ -382,7 +382,8 @@
          :desc "browser history" "h" #'browser-hist-search
          :desc "browser tabs" "t" #'browser-goto-tab
          :desc "browser copy link" "l" #'browser-copy-tab-link
-         :desc "insert url" "y" #'browser-insert-link-from-active-tab))
+         :desc "insert url" "y" #'browser-insert-link-from-active-tab
+         :desc "in eww" "e" #'browser-active-tab->eww))
 
       (:prefix ("e" . "edit")
        :desc "edit indirect" "i" #'edit-indirect-region)
