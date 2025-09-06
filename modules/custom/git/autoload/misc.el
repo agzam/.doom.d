@@ -83,6 +83,20 @@ Signals an error if there is no current project."
                  (replace-regexp-in-string
                   re "\\1" fname)))))))
 
+(defun github-get-readme-url (repo-url)
+  "Get the README blob URL for a GitHub repo."
+  (let* ((parts (split-string repo-url "/"))
+         (owner (nth 3 parts))
+         (repo (nth 4 parts))
+         (api-url (format "https://api.github.com/repos/%s/%s/readme" owner repo)))
+    (with-current-buffer (url-retrieve-synchronously api-url t)
+      (goto-char (point-min))
+      (re-search-forward "^$")
+      (let* ((json (json-read))
+             (html-url (alist-get 'html_url json)))
+        (kill-buffer)
+        html-url))))
+
 ;;;###autoload
 (defun +fetch-github-raw-file (&optional url)
   "Open the raw file of a GitHub URL.
@@ -131,9 +145,9 @@ If URL is a link to a file, it extracts its raw form and tries to open in a buff
                           (if mode (funcall mode)
                             ;; for files with mode headers
                             (hack-local-variables))
+                          (goto-char (point-min))
                           (when-let* ((line (plist-get parts :line))
                                       (line-num (1- (string-to-number line))))
-                            (goto-char (point-min))
                             (forward-line line-num))
                           (switch-to-buffer-other-window
                            (current-buffer)))))))))))
@@ -213,7 +227,10 @@ If URL is a link to a file, it extracts its raw form and tries to open in a buff
                       (pop-to-buffer buf)))))
           (forge-topic-setup-buffer topic))))
 
-     (ext (+fetch-github-raw-file url)))))
+     (ext (+fetch-github-raw-file url))
+
+     ((and (null topic-num) (null ext) repo-name)
+      (+fetch-github-raw-file (github-get-readme-url url))))))
 
 ;;;###autoload
 (defun magit-transient-unblock-global-keys ()

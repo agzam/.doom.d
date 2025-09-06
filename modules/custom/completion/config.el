@@ -387,7 +387,7 @@
        :actions ())
       (github-repo
        :pattern "github\\.com/[^/]+/[^/]+/?$"
-       :actions ())
+       :actions (("b b" . forge-visit-topic-via-url)))
       (github-commit
        :pattern "github\\.com/[^/]+/[^/]+/commit/[0-9a-f]+"
        :actions ())
