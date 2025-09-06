@@ -366,6 +366,32 @@
     (when (minibufferp)
       (vertico-next)))
 
+  (defcustom +embark-url-config
+    '((nil :actions (("b e" . +eww-open-in-other-window)
+                     ("b o" . +browse-url)))
+      (yt-video
+       :pattern "\\(youtube\\.com/watch\\|youtu\\.be/\\)"
+       :actions (("b b" . mpv-open+)
+                 ("b t" . youtube-sub-extractor-extract-subs)))
+      (github-pr
+       :pattern "github\\.com/[^/]+/[^/]+/pull/[0-9]+"
+       :actions (("b b" . forge-visit-topic-via-url)))
+      (github-issue
+       :pattern "github\\.com/[^/]+/[^/]+/issues/[0-9]+"
+       :actions (("b b" . forge-visit-topic-via-url)))
+      (reddit-link
+       :pattern "https\\:\\/\\/www.reddit.com\\/.*"
+       :actions (("b b" . reddigg-view-comments)))
+      (hackernews-link
+       :pattern "https\\:\\/\\/news.ycombinator.com\\/.*"
+       :actions (("b b" . hnreader-comment))))
+    "Complete url configuration with patterns and actions."
+    :type '(alist :key-type (choice (const nil) symbol)
+            :value-type plist)
+    :group 'embark-url-config))
+
+   (+embark-setup-url-types)
+
   (map!
    :after embark
    (:map embark-general-map
@@ -411,9 +437,9 @@
 
    (:map
     embark-url-map
-    "e" #'+process-external-url
-    "b" #'+browse-url
-    "v" #'forge-visit-topic-via-url
+    ;; "e" #'+process-external-url
+    ;; "b" #'+browse-url
+    ;; "v" #'forge-visit-topic-via-url
     (:prefix
      ("c" . "convert")
      :desc "markdown link" "m" #'+link-plain->link-markdown

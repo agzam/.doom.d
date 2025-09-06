@@ -2,8 +2,7 @@
 
 ;;;###autoload
 (defun +embark-target-jira-ticket-at-point ()
-  "Target RFC number at point.
-anything like: RFC 123, rfc-123, RFC123 or rfc123."
+  "Target jira number at point."
   (when-let* ((jira-ticket-pattern "\\b[A-Z]+-[0-9]+\\b")
               (bounds (org-in-regexp jira-ticket-pattern 1))
               (beg (car bounds))

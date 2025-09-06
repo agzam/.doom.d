@@ -8,25 +8,27 @@
 ;;;###autoload
 (defun mpv-open+ (&optional path)
   (interactive)
+  (unless (eq transient-current-command 'mpv-transient)
+    (transient-setup 'mpv-transient))
   (catch 'exit
-   (let* ((url-regex "\\`https?://")
-          (path (or path
-                    (cond
-                     ((eq major-mode 'dired-mode)
-                      (mpv-play (dired-get-file-for-visit))
-                      (throw 'exit nil))
+    (let* ((url-regex "\\`https?://")
+           (path (or path
+                     (cond
+                      ((eq major-mode 'dired-mode)
+                       (mpv-play (dired-get-file-for-visit))
+                       (throw 'exit nil))
 
-                     ((and (car kill-ring)
-                           (string-match url-regex (car kill-ring)))
-                      (car kill-ring))
+                      ((and (car kill-ring)
+                            (string-match url-regex (car kill-ring)))
+                       (car kill-ring))
 
-                     ((eq major-mode 'org-mode)
-                      (or
-                       (org-element-property :path (org-element-context))
-                       (thing-at-point 'url)))
+                      ((eq major-mode 'org-mode)
+                       (or
+                        (org-element-property :path (org-element-context))
+                        (thing-at-point 'url)))
 
-                     (t (thing-at-point 'url))))))
-     (mpv-play-url (read-string "Play: " path)))))
+                      (t (thing-at-point 'url))))))
+      (mpv-play-url (read-string "Play: " path)))))
 
 (defadvice! mpv-play-next-without-stopping-a (orig-fn arg)
   ;; don't quit mpv, just to play a file/url

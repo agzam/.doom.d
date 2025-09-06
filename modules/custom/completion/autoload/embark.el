@@ -148,3 +148,56 @@ targets."
       (save-selected-window
         (let (embark-quit-after-action)
           (embark-dwim)))))))
+
+(defun +embark-target-url-at-point ()
+  "Universal embark url resolver."
+  (let ((url (thing-at-point 'url))
+        (bounds (bounds-of-thing-at-point 'url)))
+    (when (and url bounds)
+      (let ((beg (car bounds))
+            (end (cdr bounds))
+            (url-str (buffer-substring-no-properties (car bounds) (cdr bounds))))
+        (or
+         ;; Try each pattern in order
+         (cl-loop for (type pattern) in +embark-url-patterns
+                  when (if (functionp pattern)
+                           (funcall pattern url-str)
+                         (string-match-p pattern url-str))
+                  return `(,type ,url-str . ,(cons beg end)))
+         ;; Fallback to generic URL
+         `(url ,url-str . ,(cons beg end)))))))
+
+;;;###autoload
+(defun +embark-setup-url-types ()
+  "Setup all URL types from config."
+  ;; Clear existing patterns & remove our only finder if already added
+  ;; to avoid duplicates
+  (setq
+   +embark-url-patterns nil
+   embark-target-finders
+   (remove '+embark-target-url-at-point embark-target-finders))
+  ;; Get shared actions from nil entry
+  (let ((shared-actions (plist-get (cdr (assq nil +embark-url-config)) :actions)))
+    (dolist (config +embark-url-config)
+      (let* ((type (car config))
+             (plist (cdr config))
+             (pattern (plist-get plist :pattern))
+             (actions (plist-get plist :actions))
+             (keymap-name (intern (format "%s-map" type))))
+
+        (when type
+          ;; Add pattern to our list (used by the ONE target finder)
+          (add-to-list '+embark-url-patterns (list type pattern))
+          ;; Create keymap for this URL type
+          (set keymap-name (make-sparse-keymap))
+          (set-keymap-parent (symbol-value keymap-name) embark-url-map)
+          ;; Add shared actions
+          (dolist (action shared-actions)
+            (define-key (symbol-value keymap-name) (kbd (car action)) (cdr action)))
+          ;; Add type-specific actions
+          (dolist (action actions)
+            (define-key (symbol-value keymap-name) (kbd (car action)) (cdr action)))
+          ;; Register the keymap for this target type
+          (add-to-list 'embark-keymap-alist (cons type keymap-name))))))
+  ;; Register our ONE universal target finder
+  (add-to-list 'embark-target-finders '+embark-target-url-at-point))
