@@ -84,11 +84,20 @@ Signals an error if there is no current project."
                   re "\\1" fname)))))))
 
 ;;;###autoload
-(defun +fetch-github-raw-file (url)
+(defun +fetch-github-raw-file (&optional url)
   "Open the raw file of a GitHub URL.
 If URL is a link to a file, it extracts its raw form and tries to open in a buffer."
   (interactive)
-  (let* ((parts (bisect-github-url url))
+  (let* ((url (or url
+                  ;; basic
+                  (thing-at-point-url-at-point)
+                  ;; org-link
+                  (thread-last
+                    (org-element-lineage (org-element-context) '(link) t)
+                    (org-element-property :raw-link))
+                  ;; markdown link
+                  (nth 3 (markdown-link-at-pos (point)))))
+         (parts (bisect-github-url url))
          (raw-url (thread-last
                     url
                     (replace-regexp-in-string
@@ -147,8 +156,9 @@ If URL is a link to a file, it extracts its raw form and tries to open in a buff
                   (when-let* ((o (car (overlays-at (point)))))
                     (overlay-get o 'bug-reference-url))))
          (parts (bisect-github-url url))
-         (topic-num (when-let ((tn (or (plist-get parts :issue) (plist-get parts :pull)))
-                               (string-to-number tn))))
+         (topic-num
+          (when-let* ((tn (or (plist-get parts :issue) (plist-get parts :pull))))
+            (string-to-number tn)))
          (owner (plist-get parts :org))
          (repo-name (plist-get parts :repo))
          (ext (plist-get parts :ext)))

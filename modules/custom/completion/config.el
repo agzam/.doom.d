@@ -379,6 +379,18 @@
       (github-issue
        :pattern "github\\.com/[^/]+/[^/]+/issues/[0-9]+"
        :actions (("b b" . forge-visit-topic-via-url)))
+      (github-file
+       :pattern "github\\.com/[^/]+/[^/]+/blob/[^/]+/.+"
+       :actions (("b b" . +fetch-github-raw-file)))
+      (github-compare-link
+       :pattern "github\\.com/[^/]+/[^/]+/compare/.+"
+       :actions ())
+      (github-repo
+       :pattern "github\\.com/[^/]+/[^/]+/?$"
+       :actions ())
+      (github-commit
+       :pattern "github\\.com/[^/]+/[^/]+/commit/[0-9a-f]+"
+       :actions ())
       (reddit-link
        :pattern "https\\:\\/\\/www.reddit.com\\/.*"
        :actions (("b b" . reddigg-view-comments)))
@@ -388,7 +400,7 @@
     "Complete url configuration with patterns and actions."
     :type '(alist :key-type (choice (const nil) symbol)
             :value-type plist)
-    :group 'embark-url-config))
+    :group 'embark-url-config)
 
    (+embark-setup-url-types)
 
