@@ -449,9 +449,10 @@
 
    (:map
     embark-url-map
-    ;; "e" #'+process-external-url
-    ;; "b" #'+browse-url
-    ;; "v" #'forge-visit-topic-via-url
+    (:prefix
+     ("b" . "browse")
+     :desc "browser" "o" #'browse-url
+     :desc "eww" "e" #'+eww-open-in-other-window)
     (:prefix
      ("c" . "convert")
      :desc "markdown link" "m" #'+link-plain->link-markdown
@@ -459,7 +460,6 @@
      :desc "bug-reference" "b" #'+link-plain->link-bug-reference))
 
    (:map embark-markdown-link-map
-         "e" #'+process-external-url
          "b" (cmd! () (+browse-url (markdown-link-url)))
          "v" #'forge-visit-topic-via-url
          (:prefix
@@ -470,7 +470,6 @@
           :desc "bug-reference" "b" #'+link-markdown->link-bug-reference))
 
    (:map embark-org-link-map
-         "e" #'+process-external-url
          "b" #'org-open-at-point
          "V" #'+open-link-in-vlc
          "v" #'forge-visit-topic-via-url
@@ -483,7 +482,6 @@
           :desc "roam heading" "r" #'+link-org->roam-heading))
 
    (:map embark-bug-reference-link-map
-    "e" #'+process-external-url
     "v" #'forge-visit-topic-via-url
     :desc "browse" "b" #'bug-reference-push-button
     (:prefix

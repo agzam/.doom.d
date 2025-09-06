@@ -8,8 +8,6 @@
 ;;;###autoload
 (defun mpv-open+ (&optional path)
   (interactive)
-  (unless (eq transient-current-command 'mpv-transient)
-    (transient-setup 'mpv-transient))
   (catch 'exit
     (let* ((url-regex "\\`https?://")
            (path (or path
@@ -23,12 +21,16 @@
                        (car kill-ring))
 
                       ((eq major-mode 'org-mode)
-                       (or
-                        (org-element-property :path (org-element-context))
-                        (thing-at-point 'url)))
+                       (replace-regexp-in-string
+                        "^yt:" "https:"
+                        (or
+                         (org-element-property :raw-link (org-element-context))
+                         (thing-at-point 'url))))
 
                       (t (thing-at-point 'url))))))
-      (mpv-play-url (read-string "Play: " path)))))
+      (unless (eq transient-current-command 'mpv-transient)
+        (transient-setup 'mpv-transient))
+      (mpv-play-url path))))
 
 (defadvice! mpv-play-next-without-stopping-a (orig-fn arg)
   ;; don't quit mpv, just to play a file/url
