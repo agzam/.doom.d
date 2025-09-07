@@ -59,6 +59,14 @@
   (mpv-run-command "script-message-to" "uosc" "toggle-ui"))
 
 ;;;###autoload
+(defun mpv-get-path ()
+  "Get path/url to current video"
+  (interactive)
+  (let ((p (mpv-run-command "get_property" "path")))
+    (kill-new p)
+    (message p)))
+
+;;;###autoload
 (defun mpv-toggle-subtitles ()
   (interactive)
   (mpv-run-command
@@ -90,6 +98,7 @@
    [("h" "<<" mpv-seek-backward :transient t)
     ("l" ">>" mpv-seek-forward :transient t)]
    [("i" "osc" mpv-toggle-osc :transient t)
+    ("y" "get path" mpv-get-path :transient t)
     ("c" "subs" mpv-toggle-subtitles :transient t)]
    [("," "slower" mpv-speed-decrease :transient t)
     ("." "faster" mpv-speed-increase :transient t)

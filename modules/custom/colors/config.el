@@ -18,7 +18,8 @@
   (setf circadian-themes
         `(("6:00" . ag-themes-spacemacs-light)
           ("14:00" . ag-themes-ef-elea-light)
-          ("21:00" . ag-themes-ef-elea-dark)
+          ("20:00" . ag-themes-base16-ocean)
+          ("21:30" . ag-themes-ef-elea-dark)
           ("23:00" . ag-themes-base16-ashes))))
 
 (use-package! rainbow-mode
