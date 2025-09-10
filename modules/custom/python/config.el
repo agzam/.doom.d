@@ -26,4 +26,4 @@
 
   (lsp-dependency
    'pyright
-   `(:system ,(concat (mise-python-dir) "/bin/basedpyright-langserver"))))
+   `(:system ,(executable-find "basedpyright-langserver"))))
