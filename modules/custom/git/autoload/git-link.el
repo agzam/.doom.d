@@ -48,3 +48,15 @@
   (let ((url (forge-get-url (forge-current-topic))))
     (message url)
     (kill-new url)))
+
+;;;###autoload
+(defun git-https-url->ssh (url)
+  "Convert git https url to an ssh url."
+  (if (string-match "^https://\\([^/]+\\)/\\([^/]+\\)/\\(.+\\)$" url)
+      (let* ((domain (match-string 1 url))
+             (user (match-string 2 url))
+             (repo (match-string 3 url))
+             (ssh-url (format "git@%s:%s/%s.git" domain user repo)))
+        (kill-new ssh-url)
+        (message ssh-url))
+    (error "Invalid HTTPS URL format")))

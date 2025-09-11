@@ -47,6 +47,8 @@
     :key (lambda () (auth-host->pass "deepseek.com"))
     :models '(deepseek-chat deepseek-reasoner deepseek-coder))
 
+  (map! "C-c C-g" #'gptel-abort)
+
   (add-hook! 'gptel-mode-hook
     (defun gptel-mode-set-local-keys ()
       (map! :map gptel-mode-map
