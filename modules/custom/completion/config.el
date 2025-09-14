@@ -368,17 +368,21 @@
 
   (defcustom +embark-url-config
     '((nil :actions (("b e" . +eww-open-in-other-window)
-                     ("b o" . +browse-url)))
+                     ("b o" . +browse-url)
+                     ("c m" .  +link-plain->link-markdown)
+                     ("c o" . +link-plain->link-org-mode)))
       (yt-video
        :pattern "\\(youtube\\.com/watch\\|youtu\\.be/\\)"
        :actions (("b b" . mpv-open+)
                  ("b t" . youtube-sub-extractor-extract-subs)))
       (github-pr
        :pattern "github\\.com/[^/]+/[^/]+/pull/[0-9]+"
-       :actions (("b b" . forge-visit-topic-via-url)))
+       :actions (("b b" . forge-visit-topic-via-url)
+                 ("c b" . +link-plain->link-bug-reference)))
       (github-issue
        :pattern "github\\.com/[^/]+/[^/]+/issues/[0-9]+"
-       :actions (("b b" . forge-visit-topic-via-url)))
+       :actions (("b b" . forge-visit-topic-via-url)
+                 ("c b" . +link-plain->link-bug-reference)))
       (github-file
        :pattern "github\\.com/[^/]+/[^/]+/blob/[^/]+/.+"
        :actions (("b b" . +fetch-github-raw-file)))

@@ -52,6 +52,7 @@
 (package! golden-ratio)
 (package! lorem-ipsum)
 
+(unpin! evil)
 (unpin! helpful)
 
 ;; :editor evil module
