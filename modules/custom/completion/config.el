@@ -407,7 +407,14 @@
             :value-type plist)
     :group 'embark-url-config)
 
-   (+embark-setup-url-types)
+  (+embark-setup-url-types)
+
+  (add-to-list 'embark-target-finders '+embark-target-org-block)
+
+  (defvar-keymap embark-org-block-map
+    :doc "Embark actions for org blocks"
+    :parent embark-general-map)
+  (add-to-list 'embark-keymap-alist '(org-block . embark-org-block-map))
 
   (map!
    :after embark
@@ -427,6 +434,12 @@
                   "h" (embark-split-action find-file split-window-horizontally)
                   "k" (embark-split-action find-file split-window-vertically)
                   "a" (embark-ace-action find-file)))
+
+   (:map embark-org-block-map
+         (:prefix ("c" . "convert")
+                  "c" #'embark-org-block-convert-to-src
+                  "e" #'embark-org-block-convert-to-example
+                  "q" #'embark-org-block-convert-to-quote))
 
    (:map embark-command-map
          "h" #'helpful-command)

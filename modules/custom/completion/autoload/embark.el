@@ -201,3 +201,69 @@ targets."
           (add-to-list 'embark-keymap-alist (cons type keymap-name))))))
   ;; Register our ONE universal target finder
   (add-to-list 'embark-target-finders '+embark-target-url-at-point))
+
+;;;###autoload
+(defun +embark-target-org-block ()
+  "Target any org block at point."
+  (when (derived-mode-p 'org-mode)
+    (save-excursion
+      (let ((case-fold-search t)
+            (pos (point)))
+        (beginning-of-line)
+        ;; Search forward for ANY #+end_ from current line
+        (when (re-search-forward "^[ \t]*#\\+end_\\(\\S-+\\)" nil t)
+          (let ((end (line-end-position))
+                (block-type (match-string 1)))
+            ;; Now search backward for the matching #+begin_
+            (when (re-search-backward (format "^[ \t]*#\\+begin_%s" (regexp-quote block-type)) nil t)
+              (let ((begin (match-beginning 0)))
+                ;; Verify our original position was inside this block
+                (when (and (<= begin pos) (<= pos end))
+                  `(org-block ,block-type ,begin . ,end))))))))))
+
+;;;###autoload
+(defun embark-org-block-convert (target-type)
+  "Convert org block at point to TARGET-TYPE."
+  (when-let* ((targets (embark--targets))
+              (target (car targets)))
+    (let* ((bounds (plist-get target :bounds))
+           (begin (car bounds))
+           (end (cdr bounds))
+           (current-type (string-trim (plist-get target :target))))
+      (save-excursion
+        ;; First find and replace the #+end_ line (do this first!)
+        (goto-char begin)
+        (when (re-search-forward (format "^[ \t]*#\\+end_%s"
+                                         (regexp-quote current-type))
+                                 end t)
+          (replace-match (format "#+end_%s" target-type) t t))
+        ;; Now go back and replace the #+begin_ line
+        (goto-char begin)
+        (when (re-search-forward (format "^[ \t]*#\\+begin_%s\\(.*\\)$"
+                                         (regexp-quote current-type))
+                                 end t)
+          (let ((params (match-string 1)))
+            (replace-match (format "#+begin_%s%s"
+                                   target-type
+                                   (if (string= target-type "src")
+                                       params
+                                     ""))
+                           t t)))))))
+
+;;;###autoload
+(defun embark-org-block-convert-to-src ()
+  "Convert current block to src block."
+  (interactive)
+  (embark-org-block-convert "src"))
+
+;;;###autoload
+(defun embark-org-block-convert-to-example ()
+  "Convert current block to example block."
+  (interactive)
+  (embark-org-block-convert "example"))
+
+;;;###autoload
+(defun embark-org-block-convert-to-quote ()
+  "Convert current block to quote block."
+  (interactive)
+  (embark-org-block-convert "quote"))
