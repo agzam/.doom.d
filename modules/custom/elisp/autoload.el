@@ -4,11 +4,12 @@
 (defun sp-eval-current-sexp (&optional arg)
   "Eval current sexp."
   (interactive "p")
-  (let ((evil-move-beyond-eol t))
-    (when (looking-at-p "[[({]")
-      (forward-char))
-    (sp-up-sexp)
-    (call-interactively 'eros-eval-last-sexp)))
+  (save-excursion
+    (let ((evil-move-beyond-eol t))
+      (when (looking-at-p "[[({]")
+        (forward-char))
+      (sp-up-sexp)
+      (call-interactively 'eros-eval-last-sexp))))
 
 ;;;###autoload
 (defun pp-eval-current (&optional arg)
