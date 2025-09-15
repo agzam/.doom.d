@@ -157,6 +157,7 @@ If URL is a link to a file, it extracts its raw form and tries to open in a buff
   "Opens Forge Topic buffer or the raw file, based on GitHub URL."
   (interactive)
   (require 'forge)
+  (require 'deferred)
   (let* ((url (or url
                   ;; basic
                   (thing-at-point-url-at-point)

@@ -488,7 +488,9 @@
 
    (:map embark-bug-reference-link-map
     "v" #'forge-visit-topic-via-url
-    :desc "browse" "b" #'bug-reference-push-button
+    (:prefix ("b" . "browse")
+     :desc "browser" "o" #'bug-reference-push-button
+     :desc  "forge-visit" "b"  #'forge-visit-topic-via-url)
     (:prefix
      ("c" . "convert")
      :desc "markdown link" "m" #'+link-bug-reference->link-markdown

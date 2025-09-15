@@ -296,12 +296,12 @@
   :init
   (setq code-review-db-database-file
         (concat doom-data-dir "code-review-db-file.sqlite"))
-  :config
+
   (map! :map (magit-status-mode-map
               forge-pullreq-mode-map
               forge-topic-mode-map)
         :n "s-r" #'code-review-forge-pr-at-point)
-
+  :config
   (after! 'evil-escape
     (add-to-list 'evil-escape-excluded-major-modes 'code-review-mode))
 
