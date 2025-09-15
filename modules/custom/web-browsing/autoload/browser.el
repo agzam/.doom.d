@@ -16,6 +16,7 @@
           (message "JXA Error (exit code %d): %s" exit-code output)
           nil)))))
 
+;;;###autoload
 (defun browser-find-default ()
   ;; in both JXA and AppleScript, when you refer to an application,
   ;; you're usually pointing directly to its location on disk. For
@@ -32,6 +33,7 @@
      "\\\"$(plutil -convert json -o - ~/Library/Preferences/com.apple.LaunchServices/com.apple.launchservices.secure.plist"
      "| jq -r '.LSHandlers[] | select(.LSHandlerURLScheme==\"https\") | .LSHandlerRoleAll')\\\"\""))))
 
+;;;###autoload
 (defun browser-get-tabs ()
   "Using JXA reads browser tabs."
   (let* ((tabs-script

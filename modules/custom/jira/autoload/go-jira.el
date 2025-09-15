@@ -153,6 +153,34 @@ e.g., XYZ-1234 becomes XYZ-1234 - \='This ticket does nothing\='"
           (insert result))))))
 
 ;;;###autoload
+(defun jira-ticket->git-branch-name (&optional ticket-arg)
+  "Convert TICKET-ARG to a git branch name.
+e.g., SAC-28812 with Add New Metadata to tap-asana
+becomes SAC-28812__add_new_metadata_tap-asana"
+  (interactive)
+  (let* ((ticket (jira--ticket-arg-or-ticket-at-point ticket-arg))
+         (sum+url (jira--summary+url ticket))
+         (summary (plist-get sum+url :summary))
+         ;; Clean and format the summary
+         (clean-summary
+          (replace-regexp-in-string
+           "_+" "_"                    ; Collapse multiple underscores
+           (replace-regexp-in-string
+            "^_\\|_$" ""               ; Remove leading/trailing underscores
+            (replace-regexp-in-string
+             "[^a-z0-9-]+" "_"         ; Replace non-alphanumeric (except hyphen) with underscore
+             (replace-regexp-in-string
+              "\\b\\(the\\|and\\|or\\|of\\|to\\|in\\|for\\|a\\|an\\|is\\|are\\|was\\|were\\|be\\|been\\|with\\|from\\|at\\|by\\|on\\)\\b" ""
+              (downcase summary))))))
+         (branch-name (format "%s__%s" ticket clean-summary)))
+    ;; Truncate if too long (keep ticket number intact)
+    (when (< 80 (length branch-name))
+      (setq branch-name (concat (substring branch-name 0 77) "...")))
+    (kill-new branch-name)
+    (message "Branch name copied: '%s'" branch-name)
+    branch-name))
+
+;;;###autoload
 (defun jira-view-simple (ticket)
   "View the TICKET in a buffer."
   (interactive "sJira ticket number: ")

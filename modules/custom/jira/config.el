@@ -24,7 +24,8 @@
          :desc "GH PRs" "g" #'jira-find-pull-requests-on-github)
         (:prefix ("c" . "convert")
          :desc "link" "l" #'jira-ticket->link
-         :desc "link+desc" "d" #'jira-ticket->num+description)))
+         :desc "link+desc" "d" #'jira-ticket->num+description
+         :desc "git branch" "g" #'jira-ticket->git-branch-name)))
 
 (map! :map jira-browse-ticket-mode-map
       :n "yy" #'jira--browser-ticket-mode-get-url)
