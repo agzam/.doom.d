@@ -5,9 +5,10 @@
   :defer-incrementally (dash f s with-editor git-commit package eieio transient)
   :init
   ;; Must be set early to prevent ~/.emacs.d/transient from being created
-  (setopt transient-levels-file  (concat doom-etc-dir "transient/levels")
-          transient-values-file  (concat doom-etc-dir "transient/values")
-          transient-history-file (concat doom-etc-dir "transient/history"))
+  (setopt transient-levels-file  (concat doom-data-dir "transient/levels")
+          transient-values-file  (concat doom-data-dir "transient/values")
+          transient-history-file (concat doom-data-dir "transient/history")
+          magit-clone-default-directory (expand-file-name "~/GitHub/"))
   :config
   ;; otherwise starts magit in evil-emacs-state
   (dolist (m '(magit-status-mode

@@ -234,6 +234,36 @@ If URL is a link to a file, it extracts its raw form and tries to open in a buff
       (+fetch-github-raw-file (github-get-readme-url url))))))
 
 ;;;###autoload
+(defun +forge-browse-topics (url)
+  "Forge buffer with all prs or issues.
+For a github url ending with /pulls or /issues"
+  (interactive "sGitHub URL: ")
+  (require 'forge)
+  (let* ((parts (bisect-github-url url))
+         (owner (plist-get parts :org))
+         (repo (plist-get parts :repo))
+         (topic-type (thread-last (split-string url "/")
+                                  last car-safe))
+         (git-clone-root (or magit-clone-default-directory
+                             (expand-file-name "~/GitHub/")))
+         (possible-paths (list
+                          (expand-file-name (format "%s/%s" owner repo) git-clone-root)
+                          (expand-file-name repo git-clone-root)
+                          (expand-file-name (format "%s-%s" owner repo) git-clone-root)))
+         (repo-path (seq-find #'file-directory-p possible-paths)))
+    (if repo-path
+        (let ((default-directory repo-path))
+          (magit-status-setup-buffer)
+          (unless (forge-get-repository nil)
+            (call-interactively #'forge-add-repository))
+          (forge-pull)
+          (pcase topic-type
+            ("pulls" (forge-list-pullreqs))
+            ("issues" (forge-list-issues))))
+      (error "Repository not found locally. Expected at: %s"
+             (car possible-paths)))))
+
+;;;###autoload
 (defun magit-transient-unblock-global-keys ()
   "Enable/unblock <M-x>, <M-:>, <C-h k>, etc. keys in Magit transients."
   (dolist (sfx (transient-suffixes 'magit-dispatch))

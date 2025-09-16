@@ -375,6 +375,12 @@
        :pattern "\\(youtube\\.com/watch\\|youtu\\.be/\\)"
        :actions (("b b" . mpv-open+)
                  ("b t" . youtube-sub-extractor-extract-subs)))
+      (github-pulls
+       :pattern "github\\.com/[^/]+/[^/]+/pulls\\(?:\\?.*\\)?$"
+       :actions (("b b" . +forge-browse-topics)))
+      (github-issues
+       :pattern "github\\.com/[^/]+/[^/]+/issues\\(?:\\?.*\\)?$"
+       :actions (("b b" . +forge-browse-topics)))
       (github-pr
        :pattern "github\\.com/[^/]+/[^/]+/pull/[0-9]+"
        :actions (("b b" . forge-visit-topic-via-url)
