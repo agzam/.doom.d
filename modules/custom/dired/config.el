@@ -141,3 +141,8 @@
            (:localleader
             "n" #'dired-narrow-fuzzy
             "s" #'dired-sort-toggle-or-edit)))))
+
+(use-package! dired-preview
+  :config
+  (setopt dired-preview-delay 0.01
+          dired-preview-max-size (expt 2 20)))

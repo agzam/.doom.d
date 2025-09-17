@@ -11,3 +11,4 @@
 (package! dired-subtree)
 (package! dired-sidebar)
 (package! dired-narrow)
+(package! dired-preview)

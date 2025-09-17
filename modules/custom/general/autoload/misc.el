@@ -77,7 +77,7 @@ narrowed to."
 (defun find-in-doom-dir ()
   (interactive)
   (find-file doom-user-dir)
-  (projectile-find-dir))
+  (consult-projectile-find-file))
 
 ;; indent on paste
 ;; from Prelude: https://github.com/bbatsov/prelude

@@ -67,6 +67,7 @@
                                  last-kill)))))
     (or ticket ticket-at-point kill-ring-ticket)))
 
+;;;###autoload
 (defun jira-ticket->url (ticket)
   "Extracts browsable url for the TICKET number."
   (let* ((j (jira--find-exe))
@@ -206,6 +207,7 @@ becomes SAC-28812__add_new_metadata_tap-asana"
     (display-buffer buf)
     (select-window (get-buffer-window buf))))
 
+;;;###autoload
 (defun jira-browse-ticket-url (ticket)
   (interactive "sJira ticket number: ")
   (let ((j (jira--find-exe))
