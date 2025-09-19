@@ -18,6 +18,9 @@
                     (ring-extend ring 1)
                     (ring-insert ring doom-theme))
                   (ring-next ring doom-theme))))
+    ;; clean up face definitions from the previous theme so the colors
+    ;; don't "leak" to another
+    (mapc #'disable-theme custom-enabled-themes)
     (setq doom-theme theme)
     (load-theme theme :no-confirm)
     theme))
@@ -31,6 +34,9 @@
                     (ring-extend ring 1)
                     (ring-insert ring doom-theme))
                   (ring-previous ring doom-theme))))
+    ;; clean up face definitions from the previous theme so the colors
+    ;; don't "leak" to another
+    (mapc #'disable-theme custom-enabled-themes)
     (setq doom-theme theme)
     (load-theme theme :no-confirm)
     theme))
