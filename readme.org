@@ -6,6 +6,19 @@ My Doom Emacs config with custom modules.
 
 /This is a work-in-progress document./
 
+* Table of Contents                                                     :TOC:
+:PROPERTIES:
+:TOC:      :include all
+:END:
+
+- [[#preamble][Preamble]]
+  - [[#lets-start-with-who-i-am][Let's start with "Who I am"]]
+  - [[#why-emacs][Why Emacs?]]
+- [[#how-to-use-this-project][How to use this project]]
+- [[#tips--tricks][Tips & Tricks]]
+  - [[#automatically-changing-color-theme-based-on-the-time-of-day][Automatically changing color theme based on the time of day.]]
+- [[#compatibility-note][Compatibility note]]
+
 * Preamble
 Hello, stranger. Hello, friend. Whatever path brought you to this repository, you may find yourself wondering how it might benefit you.
 
@@ -95,9 +108,44 @@ git clone git@github.com:agzam/.doom.d.git ~/.doom.d
 cd ~/.doom.d && git submodule update --init --recursive
 #+end_src
 
-I wouldn't recommend simply cloning it and using it as is - this config has too many tweaks of my personal flavor - you may not want all of that. Instead, I recommend using this as a book of specific tips, tricks, and ideas.
+I wouldn't recommend simply cloning it and using it as is - this config has too many tweaks of my personal flavor and you may find it unsuitable for your needs. Instead, I'd recommend using this as a book of specific tips, tricks, and ideas.
 
-For now, I decided I will be adding tips directly in this document, slowly expanding the portfolio with my personal ideas and interesting things from other places. As I stated at the header of this document, this is still a work-in-progress endeavor, and at this point I'm not even sure of the best way to organize things, or even if I will be motivated in the future to grow it to an applicable and useful level. Things are subject to change, just keep that in mind, please.
+For now, I decided I will be adding tips directly in this document, slowly expanding the portfolio with my personal ideas and interesting things from other places. As I stated at the header of this document, this is still a work-in-progress endeavor, and at this point I'm not even sure of the best way to organize things, or even if I remain motivated in the future to grow it to an applicable and useful level. Things are subject to change, please keep that in mind.
+
+If you just want to read this document in Emacs, you simply can ~M-x eww https://raw.githubusercontent.com/agzam/.doom.d/refs/heads/main/readme.org~, and then ~M-x org-mode~,
+or press =M-:= ~(eval-expression)~ and paste:
+
+#+begin_src emacs-lisp
+(progn
+  (eww "https://raw.githubusercontent.com/agzam/.doom.d/refs/heads/main/readme.org")
+  (run-at-time 0.5 nil (lambda () (with-current-buffer "*eww*" (org-mode)))))
+#+end_src
+
+/We need that delay because eww is asynchronous./
+
+* Tips & Tricks
+** Automatically changing color theme based on the time of day.     :colors:
+
+Emacs has a built-in lunar and solar calendars. And it also has facilities to deal with daylight saving rules, etc. There are numerous interesting applications you can think of, like using Emacs to optimize solar panel usage, tracking daylight exposure for health, calculating prayer times, start/end of Sabbath and Ramadan, etc.
+
+The immediate use that comes to mind is automatically changing current color theme based on time of the day. There are two different packages for that:
+
+https://github.com/BBoal/theme-buffet and
+
+https://guidoschmidt.github.io/circadian.el
+
+Both of them are simple and straightforward, both can use discrete time values, but Circadian can also track sunrise and sunset times based on given latitude and longitude.
+
+I use Circadian, and only because back when I needed to solve this I didn't know about theme-buffet. The only issue I ever had with Circadian was that immediately after changing the colors (e.g., due to sunrise), I would see heightened CPU usage, but that no longer happens.
+
+You can find my Circadian config [[https://github.com/agzam/.doom.d/blob/356d988/modules/custom/colors/config.el#L11][here]]
+
+*** Once you set the list of themes to use, you may also want to add manual cycling.
+
+I use a simple [[https://github.com/agzam/.doom.d/blob/main/modules/custom/colors/autoload.el#L45][transient]] for this with a couple of specialized commands. In order to switch to the next theme in the list of =circadian-themes=, I decided to convert the list to a "ring" so I can "cycle" through the elements. The "ring" in Emacs is a concept (also known as a "circular buffer" or "cyclic buffer") of a circular structure that allows you to efficiently add, remove, and access elements in a fixed-size collection. Think of Emacs' 'kill ring', 'mark ring', etc. Don't confuse it with concept of rings in algebra.
+
+Once you convert the ordinary list of themes with =ring-convert-sequence-to-ring=, you can then do =ring-next= and =ring-previous=.
+
 
 * Compatibility note
 
