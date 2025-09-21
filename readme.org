@@ -1,13 +1,103 @@
-#+TITLE:  My Doom Emacs config
+#+TITLE:  Emacs config of tips and tricks
 #+STARTUP: inlineimages nofold
 #+OPTIONS: f:t
 
-Doom Emacs config and custom modules
+My Doom Emacs config with custom modules.
+
+/This is a work-in-progress document./
+
+* Preamble
+Hello, stranger. Hello, friend. Whatever path brought you to this repository, you may find yourself wondering how it might benefit you.
+
+** Let's start with "Who I am"
+
+My name is Ag, also known as "M-x Tips". A while back, long before Elon turned Twitter to X-itter (playfully pronounced like "zshitter") I started sharing helpful Emacs-related tips and slowly earned some street creds in the community. While this doesn't entitle me to self-proclaim an "Emacs white-beard" or an "expert", I have engaged in interesting projects and discussions, met interesting people and would gladly share any "secrets" I've learned over the years.
+
+Why should you give me any attention? Am I a highly successful programmer? Not exactly. I've been coding for years, but that doesn't make me remarkable - I'm neither great nor terrible; I am merely a-okay. Over the years, I've formed certain opinions, developed unique perspectives, made numerous mistakes, and taken several wrong turns. Still, I assure you that any hacks, techniques, concepts, workflows, ideas and strategies I discuss (either in conversation or through code) are genuine, effective, practical solutions viewed from an honest and pragmatic perspective and I promise you to keep it that way.
+
+I also have published some lame videos, check out my YT channel [[https://www.youtube.com/@ilemming][iLemming - YouTube]]
+
+** Why Emacs?
+
+You likely already have the answer to this question, but if you feel any uncertainty or doubt, please reach out to me. Let's be honest - not everyone needs Emacs. If you pledge to be sincere and avoid trolling, I might be able to offer some compelling reasons to help you decide if you need to explore Emacs, and I promise to remain as unbiased as possible. Aside from technical rationale for choosing Emacs, there are certain psychological, neuroscientific reasons that certainly will affect your system of work. It may not happen immediately - you may not even notice the changes as they come not abruptly but rather gradually.
+
+*** Why Emacs with Vim keys?
+I am a die-hard vimmer. Yes, I am. I do use Neovim, but Emacs remains my main driver, and for many reasons it will likely hold this position for many decades to come.
+
+I personally find these two (Vim and Emacs) to be exactly the paradigm shift — in comparison to my prior experience when I didn't have them. But let me be more specific - the paradigm shift I see is not in Emacs or Vim/Neovim as concrete tools. The paradigm shift I sense is in the grand ideas behind these tools - modal navigation and Lisp. I honestly don't know why more people don't gravitate towards these ideas. Perhaps, because these ideas are kind of like meditation, people say: one can only experience the mind shift only after practicing mediation for some time.
+
+There's some 'tacit' knowledge - just like you can't really explain the feeling of riding a bicycle to anyone who never experienced it before. You may draw diagrams; bring scientific, logical arguments, use factoids; explain how caster effect created by the front fork's angle steers the wheels back under the bike's center of mass; gyroscopic effect of the spinning wheels, etc., etc., and yet that all will not explain the feeling of a real bicycle ride.
+
+There's concept in science called '[[https://wikipedia.org/wiki/Umwelt][umwelt]]' - specific way in which organisms of a particular species perceive and experience the world, shaped by the capabilities of their sensory organs and perceptual systems.
+
+Learning vim-navigation or Lisp /or a language with an advanced type system (e.g. Haskell)/ can be umwelt-transformative. Vim changes how you perceive text as a structured, navigable space. Lisp reveals code-as-data and makes you see programs as transformable structures. These aren't just new skills - they're new sensory-cognitive modalities. You literally cannot "unsee" the patterns once internalized. They become part of your computational umwelt, shaping what problems you notice, what solutions seem natural, and even how you conceptualize everyday processes outside programming. It's similar to how learning music theory changes how you hear songs, or how learning a tonal language might affect how you perceive pitch. The tools become part of your extended cognition, restructuring your problem-space perception. When a Lisper says "code is data" they're not just stating a fact - they're describing a lived perceptual reality where parentheses dissolve into tree structures and programs become sculptable material.
+
+This creates a profound pedagogical challenge: you can explain the mechanics of Lisp and REPL-driven workflow endlessly, but until someone has that "aha" moment where they start thinking in s-expressions, they don't really get it. It's like trying to explain color to someone who's never seen, or echolocation to someone without that sense. That's why who's never given a truthful and heartfelt attempt to understand Lisp, often never gets it. The umwelt shift is precisely what makes these tools powerful - they're not just different syntax but different ways of being-in-computational-world.
+
+*** Still, why Vim navigation in Emacs?
+
+Do you really need modality in Emacs? Many experienced Emacs users say maybe you don't. They say it doesn't really bring any benefits - it's not "better", just "different". Once you build Emacs-native muscle memory, you can be as efficient or even better without any modal modes.
+
+While that might be true for some people, I don't believe this to be generally correct, for one simple reason - when they mention modality, they typically speak of one specific aspect of modality and that's text-editing modality (switching between Insert and Normal modes for typing). Modality critics and "never-vimmers" somehow like to ignore the fact that Emacs is inherently a modal editor - key chords are modal, transients are modal, isearch is modal, repeat-mode is modality. Some of these modal modes are complex (arguably more than vim motions are), they contain state, etc.
+
+The only thing the idea of vim-navigation brings on top of the built-in machinery of Emacs is a simple, structured and memorable language/grammar to deal with modality, that's all it is. Both approaches are modal; Vim just codified its modality into a more learnable, linguistic system while Emacs distributed its modality across context-sensitive mini-languages. Emacs has this same power scattered throughout - the kill-ring, rectangle operations, keyboard macros - but Vim's genius was packaging it into a coherent, immediately graspable system that feels less like using a computer and more like speaking a concise language about text. The best thing about learning that language is that you can apply it anywhere where keyboard input is still relevant - your browser, your terminal, your entire system - e.g., you can control your music, jump between apps, navigate between windows, etc., using only the home row keys.
+
+**** Consider this trivial, practical example
+
+Most people think of keyboard input as a linear, one-dimensional approach to text editing. Vim-style navigation offers something fundamentally different - a spatial "language" that maps directly to how we conceptualize our workspace.
+
+Consider window management in vanilla Emacs:
+
+- =C-x 2= splits horizontally (mnemonic: "two windows")
+
+- =C-x 3= splits vertically (less intuitive—why 3?)
+
+- =C-x 4= becomes a prefix for operations in other windows
+
+The logic breaks down quickly. There's no consistent mental model connecting these commands. =C-x 4= abandons the splitting metaphor entirely, becoming a namespace for "other window" operations rather than a window count.
+
+Doom Emacs's vim-inspired approach creates a coherent spatial language:
+
+- =SPC w s= - split
+
+- =SPC w v= - vertical split
+
+- =SPC w h/j/k/l= - jump left/down/up/right window
+
+- =SPC w m= - toggle window maximize
+
+- =SPC w d= - delete window
+
+- etc.
+
+The hjkl directional keys mirror vim's movement commands, creating a consistent spatial metaphor. Your fingers learn to "think" in terms of physical direction rather than arbitrary key combinations.
+
+This spatial approach transforms window management from memorizing disconnected shortcuts into developing spatial intuition. Instead of thinking "what was that split command again?", you think "I want to move right" and your fingers naturally press 'l'. The keybindings become an extension of spatial reasoning rather than abstract symbol manipulation.
+
+This principle extends beyond window management - vim's entire philosophy treats text editing as navigation through dimensional space, making complex operations feel natural and memorable.
+
+And like I said, this model can easily be extended beyond just the text editor - you can navigate things in your browser, terminal, etc. Why would I even try to learn and memorize new keyboard shortcuts e.g., every time I install a new music player? I can control volume with =j/k= and previous/next song with =h/l= in any music player.
+
+*** Why Doom Emacs?
+
+Okay, modality is a great idea, maybe let's use it. But do you really need to use Doom? After all there are many different other Emacs starter kits - There's Spacemacs, Prelude, Crafted Emacs and more. What's specifically so nice about Doom?
+
+Just like many Emacs users I have gone through stages in my config evolution. Multiple times I declared config bankruptcy and started anew. There were some years I spent using Spacemacs.
+
+Doom just makes sense to me. It's not "bloated" as many perceive it to be. And it doesn't "get in the way" whenever you want to do something non-trivial. The "bloated" perception comes from the number of things that come bundled in Doom - there are numerous Doom modules. But guess what? If you treat Doom as a "cookbook" not a final product and use the modules for inspiration and ideas - you may like it. You don't need to use all Doom modules. You don't really need to use *any* modules and instead roll your own, custom ones (that's what I do). You can make Emacs run only the tiny core of Doom on top of defaults and it would be just fine. Even then, Doom's core contains a few very handy Lisp macros that can significantly reduce (otherwise unavoidable) boilerplate of Emacs Lisp in your config.
+
+Doom and Spacemacs also give you a good foundational recipe for structuring your keybindings. Once you start using "mnemonically recognizable" chords, findings things becomes much easier. And when you need to add additional keys, you'd know where to place them - e.g., =SPC s= is for search =SPC f= - for files. If, for example someday you'd want to add a key for a command that searches for things in your log files, you may choose to use =SPC s l= or =SPC f l= or both, and nothing really stopping you from adding another level =SPC f s l= - which you may mnemonically recognize as "files->search->logs", or you may choose to go a different route =SPC l s= - for "logs->search", etc. I assure you, it only may sound overwhelming to have tons of keys structured in that manner - in practice, once you start using them, it doesn't take long for muscle memory to form. Beside's there's ~which-key-mode~ that makes it easier to navigate deeply nested chords.
+
+* How to use this project
 
 #+begin_src sh :results raw
 git clone git@github.com:agzam/.doom.d.git ~/.doom.d
 cd ~/.doom.d && git submodule update --init --recursive
 #+end_src
+
+I wouldn't recommend simply cloning it and using it as is - this config has too many tweaks of my personal flavor - you may not want all of that. Instead, I recommend using this as a book of specific tips, tricks, and ideas.
+
+For now, I decided I will be adding tips directly in this document, slowly expanding the portfolio with my personal ideas and interesting things from other places. As I stated at the header of this document, this is still a work-in-progress endeavor, and at this point I'm not even sure of the best way to organize things, or even if I will be motivated in the future to grow it to an applicable and useful level. Things are subject to change, just keep that in mind, please.
 
 * Compatibility note
 
