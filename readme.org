@@ -10,7 +10,7 @@ Even though this is idiomatic Doom Emacs configuration, I do not assume reader's
 
 Unless specified explicitly, all the code snippets and discussed techniques can be directly applied to vanilla Emacs.
 
-Links leading to the code in this config can in most cases be copy-pasted with minimal adjustments, functions 100%!
+Links leading to the code in this config can in most cases be copy-pasted with minimal adjustments, functions 100%.
 
 [[https://github.com/doomemacs/doomemacs/blob/8f554047/lisp/doom-lib.el#L963][defadvice!]] syntax is fairly straightforward, if you're not familiar with advising functions: ~M-x info-display-manual RET elisp RET~ then ~M-x Info-goto-node~, find [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Advising-Functions.html][advising functions]].
 
@@ -105,13 +105,17 @@ This principle extends beyond window management - vim's entire philosophy treats
 
 And like I said, this model can easily be extended beyond just the text editor - you can navigate things in your browser, terminal, etc. Why would I even try to learn and memorize new keyboard shortcuts e.g., every time I install a new music player? I can control volume with =j/k= and previous/next song with =h/l= in any music player.
 
+***** So, should we just ignore Emacs-native bindings?
+
+I wouldn't! Knowing vanilla Emacs default keybindings comes very nice. Some may prefer quick press of =C-l=, instead of =Esc z z=, also =C-a/C-e/C-b/C-f= are universally supported in bash, on Macs they work in every input. Rarely, but happens, you may need to ~emacs --debug-init~, or ~emacs -Q~. So, yes, definitely do learn some Emacs keybindings. Please, don't hate me years later, when you have to help a friend with Windows, and frantically yell at it when it keeps opening browser windows, when you simply meant "go down".
+
 *** Why Doom Emacs?
 
-Okay, modality is a great idea, maybe let's use it. But do you really need to use Doom? After all there are many different other Emacs starter kits - There's Spacemacs, Prelude, Crafted Emacs and more. What's specifically so nice about Doom?
+Okay, modality is a great idea, maybe let's use it. Or don't - it's your choice. You can use Doom completely without Evil-mode features. But do you really need to use Doom? After all there are many different other Emacs starter kits - There's Spacemacs, Prelude, Crafted Emacs and more. What's specifically so nice about Doom?
 
 Just like many Emacs users I have gone through stages in my config evolution. Multiple times I declared config bankruptcy and started anew. There were some years I spent using Spacemacs.
 
-Doom just makes sense to me. It's not "bloated" as many perceive it to be. And it doesn't "get in the way" whenever you want to do something non-trivial. The "bloated" perception comes from the number of things that come bundled in Doom - there are numerous Doom modules. But guess what? If you treat Doom as a "cookbook" not a final product and use the modules for inspiration and ideas - you may like it. You don't need to use all Doom modules. You don't really need to use *any* modules and instead roll your own, custom ones (that's what I do). You can make Emacs run only the tiny core of Doom on top of defaults and it would be just fine. Even then, Doom's core contains a few very handy Lisp macros that can significantly reduce (otherwise unavoidable) boilerplate of Emacs Lisp in your config.
+Doom just makes sense to me. It's not "bloated" as many perceive it to be. And it doesn't "get in the way" whenever you want to do something non-trivial - it's the same Emacs. The "bloated" perception comes from the number of things that come bundled in Doom - there are numerous Doom modules. But guess what? You can treat Doom as a "cookbook" instead of an end-product and use its modules for inspiration and ideas. You don't need to use every interesting Doom module, in fact you may actually choose not to use *any* of its modules and instead roll a set of your own, custom ones, or use minimal set of its modules with your own, that's what I do. You can make Emacs run only the tiny core of Doom on top of defaults and it would be just fine. Core of Doom contains a few very handy Lisp macros that can significantly reduce (otherwise unavoidable) boilerplate of Emacs Lisp in your config. I also like modular structure of Doom. I simply stoped worrying about the state of my config - I tend it as an an abundant, cornucopian garden where my metaphorical trees perpetually yield the sweet fruit of satisfaction from watching Emacs truly helping me use my computer. I write Lisp every day - to achieve specific, well-defined goals that I get paid for solving. Too bad it only took me long time to realize that Emacs is not about "using the editor", it's about "talking to it in Lisp".
 
 Doom and Spacemacs also give you a good foundational recipe for structuring your keybindings. Once you start using "mnemonically recognizable" chords, findings things becomes much easier. And when you need to add additional keys, you'd know where to place them - e.g., =SPC s= is for search =SPC f= - for files. If, for example someday you'd want to add a key for a command that searches for things in your log files, you may choose to use =SPC s l= or =SPC f l= or both, and nothing really stopping you from adding another level =SPC f s l= - which you may mnemonically recognize as "files->search->logs", or you may choose to go a different route =SPC l s= - for "logs->search", etc. I assure you, it only may sound overwhelming to have tons of keys structured in that manner - in practice, once you start using them, it doesn't take long for muscle memory to form. Beside's there's ~which-key-mode~ that makes it easier to navigate deeply nested chords.
 
