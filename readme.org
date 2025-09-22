@@ -129,8 +129,8 @@ Or, ~M-x (eval-expression)~ - it's same as pressing =M-:=, and paste:
 
 #+begin_src emacs-lisp
 (progn
-  (eww "https://raw.githubusercontent.com/agzam/.doom.d/refs/heads/main/readme.org")
-  (run-at-time 0.5 nil (lambda () (with-current-buffer "*eww*" (org-mode)))))
+(eww "https://raw.githubusercontent.com/agzam/.doom.d/refs/heads/main/readme.org")
+(run-at-time 0.5 nil (lambda () (with-current-buffer "*eww*" (org-mode)))))
 #+end_src
 
 /We need that delay because eww is asynchronous./
@@ -148,26 +148,27 @@ cd ~/.doom.d && git submodule update --init --recursive
 * Tips & Tricks
 ** Automatically changing color theme based on the time of day.     :colors:
 
-Emacs has a built-in lunar and solar calendars. And it also has facilities to deal with daylight saving rules, etc. There are numerous interesting applications you can think of, like using Emacs to optimize solar panel usage, tracking daylight exposure for health, calculating prayer times, start/end of Sabbath and Ramadan, etc.
+Emacs has a built-in lunar and solar calendars. And it also has facilities to deal with daylight saving rules, etc. There are numerous interesting applications you can think of, like using Emacs to optimize solar panel usage, tracking daylight exposure for health, calculating prayer times, start of Sabbath and Ramadan, etc.
 
-The immediate use that comes to mind is automatically changing current color theme based on time of the day. There are two different packages for that:
+Let's use that for automatically changing current color theme to reduce eye strain. There are two different packages for that:
 
 https://github.com/BBoal/theme-buffet and
 
 https://guidoschmidt.github.io/circadian.el
 
-Both of them are simple and straightforward, both can use discrete time values, but Circadian can also track sunrise and sunset times based on given latitude and longitude.
+Both of them are simple and straightforward, both can use discrete time values. Circadian also can track sunrise and sunset times based on given latitude and longitude.
 
-I use Circadian, and only because back when I needed to solve this I didn't know about theme-buffet. The only issue I ever had with Circadian was that immediately after changing the colors (e.g., due to sunrise), I would see heightened CPU usage, but that no longer happens.
+I use Circadian, and only because back when I needed to solve this I didn't know about [[https://github.com/BBoal/theme-buffet][theme-buffet]].
 
-You can find my Circadian config [[https://github.com/agzam/.doom.d/blob/356d988/modules/custom/colors/config.el#L11][here]]
+You can find my Circadian preferences [[https://github.com/agzam/.doom.d/blob/356d988/modules/custom/colors/config.el#L11][here]]
 
-*** Once you set the list of themes to use, you may also want to add manual cycling.
+*** Once you choose the list of themes, you may want to add manual cycling.
 
-I use a simple [[https://github.com/agzam/.doom.d/blob/main/modules/custom/colors/autoload.el#L45][transient]] for this with a couple of specialized commands. In order to switch to the next theme in the list of =circadian-themes=, I decided to convert the list to a "ring" so I can "cycle" through the elements. The "ring" in Emacs is a concept (also known as a "circular buffer" or "cyclic buffer") of a circular structure that allows you to efficiently add, remove, and access elements in a fixed-size collection. Think of Emacs' 'kill ring', 'mark ring', etc. Don't confuse it with concept of rings in algebra.
+I use a simple [[https://github.com/agzam/.doom.d/blob/main/modules/custom/colors/autoload.el#L45][transient]] for this with a couple of specialized commands. In order to switch to the next theme in the list of =circadian-themes=, I decided to turn the list into a "ring" so I can cycle through the elements. The "ring" in Emacs is a type of structure also known as a "circular buffer" or "cyclic buffer". Think of Emacs' "kill ring", "mark ring", etc.
 
 Once you convert the ordinary list of themes with =ring-convert-sequence-to-ring=, you can then do =ring-next= and =ring-previous=.
 
+-----
 
 * Compatibility note
 
