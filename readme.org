@@ -12,11 +12,11 @@ Unless specified explicitly, all the code snippets and discussed techniques can 
 
 Links leading to the code in this config can in most cases be copy-pasted with minimal adjustments, functions 100%.
 
-[[https://github.com/doomemacs/doomemacs/blob/8f554047/lisp/doom-lib.el#L963][defadvice!]] syntax is fairly straightforward, if you're not familiar with advising functions: ~M-x info-display-manual RET elisp RET~ then ~M-x Info-goto-node~, find [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Advising-Functions.html][advising functions]].
+[[https://github.com/doomemacs/doomemacs/blob/8f554047/lisp/doom-lib.el#L963][defadvice!]] syntax is fairly straightforward, if you're not familiar with advising functions: ~M-x info-display-manual RET elisp RET~ then ~M-x Info-goto-node~, find [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Advising-Functions.html][advising functions]]. If you're using Doom, there's also ~undefadvice!~ macro - a convenient way to remove advising function - useful when debugging things.
 
-Same for [[https://github.com/doomemacs/doomemacs/blob/8f554047/lisp/doom-lib.el#L874][add-hook!]] - mind that unlike normal [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Setting-Hooks.html][add-hook]] it can add multiple functions to multiple hooks.
+Just like previous, [[https://github.com/doomemacs/doomemacs/blob/8f554047/lisp/doom-lib.el#L874][add-hook!]] too, is very simple, just mind that unlike normal [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Setting-Hooks.html][add-hook]] it can add multiple functions to multiple hooks.
 
-Config uses ~use-package~ structure and things are easy to find.
+This configuration uses ~use-package~ structure and things are easy to find.
 
 If you're not interested in hearing my personal reasons why this is still Doom-based config you may skip directly to [[#tips--tricks][Tips & Tricks]].
 
@@ -31,6 +31,7 @@ If you're not interested in hearing my personal reasons why this is still Doom-b
 - [[#how-to-use-this-project][How to use this project]]
 - [[#tips--tricks][Tips & Tricks]]
   - [[#automatically-changing-color-theme-based-on-the-time-of-day][Automatically changing color theme based on the time of day.]]
+  - [[#blend-pdf-document-colors-with-your-current-theme][Blend PDF document colors with your current theme]]
 - [[#compatibility-note][Compatibility note]]
 
 * Preamble
@@ -167,6 +168,33 @@ You can find my Circadian preferences [[https://github.com/agzam/.doom.d/blob/35
 I use a simple [[https://github.com/agzam/.doom.d/blob/main/modules/custom/colors/autoload.el#L45][transient]] for this with a couple of specialized commands. In order to switch to the next theme in the list of =circadian-themes=, I decided to turn the list into a "ring" so I can cycle through the elements. The "ring" in Emacs is a type of structure also known as a "circular buffer" or "cyclic buffer". Think of Emacs' "kill ring", "mark ring", etc.
 
 Once you convert the ordinary list of themes with =ring-convert-sequence-to-ring=, you can then do =ring-next= and =ring-previous=.
+
+** Blend PDF document colors with your current theme
+
+[[https://pdftools.wiki/][pdf-tools]] has this feature when you can change the colors of the document to match your Emacs color theme, it's pretty nice - your left eye won't be twitching  anymore, trying to simultaneously follow your notes in dark colors, while right eye has to be on the blinding whiteness of the pdf.
+
+It's simple - you just turn ~pdf-view-themed-minor-mode~ on.
+
+There's a tiny annoyance though. If you change your theme, you have to re-toggle the themed-minor mode in every single pdf buffer. Typically, there isn't too many open pdfs, so, usually not a big deal. Still, that's easy to fix. Let's advise it:
+
+What we want is to run a routine that enables themed-minor-mode in pdf buffers whenever Emacs runs ~(load-theme)~ command/function, either interactively (through a user call) or programmatically.
+
+#+begin_src emacs-lisp
+(defun adjust-pdf-colors-on-theme-change-a (&rest _)
+  (thread-last
+    (buffer-list)
+    (seq-filter (lambda (b) (with-current-buffer b (eq major-mode 'pdf-view-mode))))
+    (seq-do (lambda (b) (with-current-buffer b (pdf-view-themed-minor-mode +1))))))
+
+(advice-add 'load-theme :after #'adjust-pdf-colors-on-theme-change-a)
+#+end_src
+
+- Current convention for naming advising functions is to add "-a" suffix to the name
+- ~load-theme~ takes some arguments, but in this case we don't care what they are, thus - ~&rest _~
+- ~thread-last~ is similar to Clojure's threading macro [[https://clojuredocs.org/clojure.core/-%3E%3E][->>]], it would pass the first arg - ~(buffer-list)~ as the last param in every subsequent expression
+- ~seq-filter~ is a typical filter function, and ~seq-do~ is just for side-effects
+
+Now, compare that with Doom's [[https://github.com/agzam/.doom.d/blob/f5628e8/modules/custom/pdf/config.el#L93][defadvice! syntax]], not only it's a bit more compact, it also reads better - vanilla Emacs' ~add-advice~ may feel confusing, almost reads backwards - feels like it wants to run the built-in function after our custom one, even though the intent is the opposite.
 
 -----
 
