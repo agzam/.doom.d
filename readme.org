@@ -6,6 +6,8 @@ My Doom Emacs config with custom modules.
 
 /This is a work-in-progress document./
 
+Even though this is idiomatic Doom Emacs configuration, we do not assume reader's recognition of any Doom-specific features. Unless specified explicitly, all the code snippets and discussed techniques can be directly applied to vanilla Emacs. Links leading to the code in this config can in most cases be copy-pasted with minimal adjustment. It uses ~use-package~ structure and things are easy to find.
+
 * Table of Contents                                                     :TOC:
 :PROPERTIES:
 :TOC:      :include all
