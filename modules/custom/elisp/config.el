@@ -104,6 +104,7 @@
         :n "n" #'Info-search-next
         :n "N" #'Info-search-backward
         :localleader
+        "y" #'info-copy-node-url
         "w" #'Info-goto-node-web
         "g" #'Info-goto-node
         "s" #'Info-search

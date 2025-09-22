@@ -153,3 +153,16 @@ its own buffer."
 (defun profiler-report-helpful-symbol-at-point ()
   (interactive)
   (helpful-symbol (get-text-property (point) 'profiler-entry)))
+
+
+;;;###autoload
+(defun info-copy-node-url ()
+  "Copy the current Info node's URL to the kill ring."
+  (interactive)
+  (unless (derived-mode-p 'Info-mode)
+    (error "Not in Info mode"))
+  (let* ((manual (file-name-sans-extension
+                  (file-name-nondirectory Info-current-file)))
+         (url (Info-url-for-node (format "(%s)%s" manual Info-current-node))))
+    (kill-new url)
+    (message "Copied: %s" url)))
