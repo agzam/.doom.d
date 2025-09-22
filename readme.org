@@ -2,11 +2,23 @@
 #+STARTUP: inlineimages nofold
 #+OPTIONS: f:t
 
-My Doom Emacs config with custom modules.
+My Emacs config with custom modules.
 
-/This is a work-in-progress document./
+/This is a work-in-progress document. The rest of the configuration is in good, usable state./
 
-Even though this is idiomatic Doom Emacs configuration, we do not assume reader's recognition of any Doom-specific features. Unless specified explicitly, all the code snippets and discussed techniques can be directly applied to vanilla Emacs. Links leading to the code in this config can in most cases be copy-pasted with minimal adjustment. It uses ~use-package~ structure and things are easy to find.
+Even though this is idiomatic Doom Emacs configuration, I do not assume reader's recognition of any Doom-specific features.
+
+Unless specified explicitly, all the code snippets and discussed techniques can be directly applied to vanilla Emacs.
+
+Links leading to the code in this config can in most cases be copy-pasted with minimal adjustments, functions 100%!
+
+[[https://github.com/doomemacs/doomemacs/blob/8f554047/lisp/doom-lib.el#L963][defadvice!]] syntax is fairly straightforward, if you're not familiar with advising functions: ~M-x info-display-manual RET elisp RET~ then ~M-x Info-goto-node~, find [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Advising-Functions.html][advising functions]].
+
+Same for [[https://github.com/doomemacs/doomemacs/blob/8f554047/lisp/doom-lib.el#L874][add-hook!]] - mind that unlike normal [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Setting-Hooks.html][add-hook]] it can add multiple functions to multiple hooks.
+
+Config uses ~use-package~ structure and things are easy to find.
+
+If you're not interested in hearing my personal reasons why this is still Doom-based config you may skip directly to [[#tips--tricks][Tips & Tricks]].
 
 * Table of Contents                                                     :TOC:
 :PROPERTIES:
@@ -105,17 +117,11 @@ Doom and Spacemacs also give you a good foundational recipe for structuring your
 
 * How to use this project
 
-#+begin_src sh :results raw
-git clone git@github.com:agzam/.doom.d.git ~/.doom.d
-cd ~/.doom.d && git submodule update --init --recursive
-#+end_src
+For now, I decided I will be adding tips directly in this document, slowly expanding the portfolio with ideas of my own discovery and interesting things I borrowed from various other authors.
 
-I wouldn't recommend simply cloning it and using it as is - this config has too many tweaks of my personal flavor and you may find it unsuitable for your needs. Instead, I'd recommend using this as a book of specific tips, tricks, and ideas.
+You may like to read this document in Emacs, without even cloning the repo, simply do: ~M-x eww https://raw.githubusercontent.com/agzam/.doom.d/refs/heads/main/readme.org~, and then ~M-x org-mode~,
 
-For now, I decided I will be adding tips directly in this document, slowly expanding the portfolio with my personal ideas and interesting things from other places. As I stated at the header of this document, this is still a work-in-progress endeavor, and at this point I'm not even sure of the best way to organize things, or even if I remain motivated in the future to grow it to an applicable and useful level. Things are subject to change, please keep that in mind.
-
-If you just want to read this document in Emacs, you simply can ~M-x eww https://raw.githubusercontent.com/agzam/.doom.d/refs/heads/main/readme.org~, and then ~M-x org-mode~,
-or press =M-:= ~(eval-expression)~ and paste:
+Or, ~M-x (eval-expression)~ - it's same as pressing =M-:=, and paste:
 
 #+begin_src emacs-lisp
 (progn
@@ -124,6 +130,16 @@ or press =M-:= ~(eval-expression)~ and paste:
 #+end_src
 
 /We need that delay because eww is asynchronous./
+
+I wouldn't recommend simply cloning it and using it as is - this config has too many tweaks of my personal flavor and you may find it unsuitable for your needs. Instead, I'd recommend using this as a book of specific tips, tricks, and ideas.
+
+If you still want to clone the config to use it as *your* doom config:
+
+#+begin_src sh :results raw
+git clone git@github.com:agzam/.doom.d.git ~/.doom.d
+cd ~/.doom.d && git submodule update --init --recursive
+#+end_src
+
 
 * Tips & Tricks
 ** Automatically changing color theme based on the time of day.     :colors:
