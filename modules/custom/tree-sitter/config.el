@@ -51,3 +51,22 @@
   ;; install https://github.com/mermaid-js/mermaid-cli
   (when-let* ((mmdc (executable-find "mmdc")))
     (setopt mermaid-mmdc-location mmdc)))
+
+(use-package! treesitter-context
+  :config
+  (eval `(add-hook! ,treesitter-context--fold-supported-mode
+                    #'treesitter-context-fold-mode))
+
+  (defadvice! fold-all-with-treesitter-context-a (orig-fn lst action)
+    "hack to make treesitter-context-fold work with fold/hide all."
+    :around #'evil-fold-action
+    (if (and (member major-mode treesitter-context--fold-supported-mode)
+             treesitter-context-fold-mode
+             (member action '(:close-all :open-all)))
+        (save-excursion
+          (goto-char (point-max))
+          (while (treesit-beginning-of-defun 1)
+            (pcase action
+              (:close-all (treesitter-context-fold-hide))
+              (:open-all  (treesitter-context-fold-show)))))
+      (funcall orig-fn lst action))))
