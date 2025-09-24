@@ -29,7 +29,8 @@
    `(:system ,(executable-find "basedpyright-langserver")))
 
   (map!
-   :localleader
    :map (python-mode-map python-ts-mode-map)
-   (:prefix ("i" . "insert")
-            "p" #'python-insert-ipdb)))
+   "C-c C-n" #'python-edit-imports
+   (:localleader
+    (:prefix ("i" . "insert")
+             "p" #'python-insert-ipdb))))

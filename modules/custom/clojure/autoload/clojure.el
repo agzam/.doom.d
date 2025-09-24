@@ -112,6 +112,7 @@ convert from JSON."
 
 ;;;###autoload
 (defun clj-edit-ns-header ()
+  "Edit Clojure ns header in an indirect buffer."
   (interactive)
   (save-mark-and-excursion
     (let ((edit-indirect-guess-mode-function (lambda (buf b_ e_)
