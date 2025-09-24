@@ -76,7 +76,7 @@
      (
       ;; display-buffer-reuse-window
       display-buffer-in-quadrant)
-     (init-width . 0.35)
+     (init-width . 0.40)
      (direction . right)
      (window . root)))
 
