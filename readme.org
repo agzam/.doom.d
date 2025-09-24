@@ -12,13 +12,14 @@ Unless specified explicitly, all the code snippets and discussed techniques can 
 
 Links leading to the code in this config can in most cases be copy-pasted with minimal adjustments, functions 100%.
 
-[[https://github.com/doomemacs/doomemacs/blob/8f554047/lisp/doom-lib.el#L963][defadvice!]] syntax is fairly straightforward. If you're not familiar with advising functions: ~M-x info-display-manual RET elisp RET~ then ~M-x Info-goto-node~, find [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Advising-Functions.html][advising functions]]. If you're using Doom, don't forget about ~undefadvice!~ macro - a convenient way to remove advising function - useful when debugging things.
+[[https://github.com/doomemacs/doomemacs/blob/8f554047/lisp/doom-lib.el#L963][defadvice!]] syntax is fairly straightforward.
 
-[[https://github.com/doomemacs/doomemacs/blob/8f554047/lisp/doom-lib.el#L874][add-hook!]] similarly, is very simple. Mind that unlike normal [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Setting-Hooks.html][add-hook]] it can add multiple functions to multiple hooks.
+If you're not familiar with advising functions (in general, not specifically Doom) - ~M-x info-display-manual RET elisp RET~ then ~M-x Info-goto-node~, find [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Advising-Functions.html][advising functions]].
+If you're using Doom, remember, there's ~undefadvice!~ macro - a convenient way to remove advising - useful when experimenting.
 
-This configuration uses ~use-package~ structure and things are easy to find.
+[[https://github.com/doomemacs/doomemacs/blob/8f554047/lisp/doom-lib.el#L874][add-hook!]] similarly, is very simple Doom macro. Mind that unlike regular [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Setting-Hooks.html][add-hook]] it can add multiple functions to multiple hooks - convenient, but might confuse vanilla Emacs users.
 
-If you're not very interested in hearing my personal reasons why this is still Doom-based config you may skip directly to [[#tips--tricks][Tips & Tricks]].
+This configuration uses ~use-package~ structure and things should be relatively easy to find. Make sure to eval every function when copying over, so you don't miss anything in the call chain. Certain things might prove difficult to cherry-pick without pulling a bunch of other items, please don't hesitate to complain and I will consider moving specific features into self-contained packages.
 
 * Table of Contents                                                     :TOC:
 :PROPERTIES:
@@ -29,7 +30,6 @@ If you're not very interested in hearing my personal reasons why this is still D
   - [[#lets-start-with-who-i-am][Let's start with "Who I am"]]
   - [[#why-emacs][Why Emacs?]]
 - [[#how-to-use-this-project][How to use this project]]
-  - [[#compatibility-note][Compatibility note]]
 - [[#tips--tricks][Tips & Tricks]]
   - [[#automatically-change-color-theme-based-on-the-time-of-day][Automatically change color theme based on the time of day.]]
   - [[#blend-pdf-document-colors-with-your-current-theme][Blend PDF document colors with your current theme]]
@@ -37,9 +37,11 @@ If you're not very interested in hearing my personal reasons why this is still D
 * Preamble
 Hello, stranger. Hello, friend. Whatever path brought you to this repository, you may find yourself wondering how it might benefit you.
 
+/If you're not very interested in hearing my personal reasons why this is still Doom-based config you may skip directly to [[#tips--tricks][Tips & Tricks]]./
+
 ** Let's start with "Who I am"
 
-My name is Ag. I am also known as "M-x Tips". A while back, long before Elon turned Twitter to X-itter (playfully pronounced like "zshitter") I started sharing helpful Emacs-related tips. I slowly earned some street creds in the community. While that alone never entitled me to self-proclaim an "Emacs white-beard" or call myself an "expert", that still opened ways for me to engage in interesting projects and discussions. I met many interesting people and I would love to share any "secrets" I've learned over the years, with you.
+My name is Ag. I am also known as "M-x Tips". A while back, long before Elon turned Twitter to X-itter /(playfully pronounced like "zshitter")/, I started sharing helpful Emacs-related tips there. Overtime I earned some street creds in the community. While that alone never entitled me to self-proclaim an "Emacs white-beard" or call myself an "expert", that still opened ways for me to engage in interesting projects and discussions. I met many interesting people and I would love to share any "secrets" I've learned over the years, with you.
 
 Why should you give me any attention? Am I a highly successful programmer? Not exactly. Sure, I have been coding for may years, but that doesn't make me remarkable - I'm neither great nor terrible; I am merely a-okay. Over the years, I've formed certain opinions, developed unique perspectives, made numerous mistakes, and taken several wrong turns. Still, I assure you that any hacks, techniques, concepts, workflows, ideas and strategies I discuss (either in conversations or through code) are genuine, effective, practical solutions viewed from an honest and pragmatic perspective and I promise you to keep it that way.
 
@@ -47,15 +49,15 @@ I also have recorded some lame videos, check out my YT channel [[https://www.you
 
 ** Why Emacs?
 
-You likely already have the answer to this question. If you stll feel any uncertainty or doubt, please reach out to me. Let's be honest - not everyone needs Emacs. If you pledge to be sincere and avoid trolling, I might be able to offer some compelling reasons to help you decide, and I promise to remain as unbiased as possible. Aside from technical rationale for choosing Emacs, there are certain psychological, neuroscientific reasons that certainly will affect your system of work. It may not happen immediately - you may not even notice the changes as they come not abruptly but rather gradually.
+You likely already have the answer to this question. If you still feel any uncertainty, please reach out to me. Let's be honest - not everyone needs Emacs. If you pledge to be sincere and avoid trolling, I might be able to offer some compelling arguments to help you decide, and I promise to remain as unbiased as possible. Aside from technical rationale for choosing Emacs, there are certain psychological, neuroscientific reasons that certainly will affect your system of work. It may not happen quickly - you may not even notice the changes as they perhaps come rather gradually.
 
 *** Why use Emacs with Vim keys?
 
-I am a die-hard vimmer. Oh yes, I am. I do use Neovim, but Emacs remains my main driver, and for many reasons it will likely remain in this position for many decades to come.
+I am a die-hard vimmer. Oh yes, I am. I do use Neovim, but Emacs still is my main driver, and for many reasons it will likely remain in this position for many decades to come.
 
-I personally find these two (Vim and Emacs) to be exactly the paradigm shift - in comparison to my prior experience when I didn't have them. But let me be more specific - the paradigm shift I see is not in Emacs or Vim/Neovim as concrete tools. The paradigm shift I sense is in the grand ideas behind these tools - modal navigation and Lisp. I honestly don't know why more people don't gravitate towards these ideas. Perhaps, because they are akin to meditation. People say: one can only experience the mind shift only after practicing mediation for some time. I wouldn't know - I have never developed a habitual mediation routine.
+I personally find these two (Vim and Emacs) to be exactly the paradigm shift - in comparison to my prior experience when I didn't have them. But let me be more specific - the paradigm shift I see is not in Emacs nor Vim/Neovim as concrete tools. The paradigm shift I sense is in the grand ideas behind these tools - modal navigation and Lisp. I honestly don't know why more people don't gravitate towards these ideas. Perhaps, because these ideas are akin to the concept of meditation. People say: one can only experience the mind shift only after practicing mediation for some time. /I wouldn't know - I have never developed a habitual mediation routine./
 
-There's some "tacit" knowledge involved - it's just like inability to explain the feeling of riding a bicycle to anyone who never experienced that before. You may draw diagrams; bring scientific, logical arguments, use factoids; explain how caster effect of the fork's angle steers the wheel back under the center of mass; gyroscopic effect of the spinning wheels, yada, yada, and yet, all that will not explain the feeling of a simple bicycle ride.
+There's some "tacit" knowledge involved - it's just like inability to explain the feeling of riding a bicycle to anyone who never experienced that before. You may draw diagrams; bring scientific, logical arguments, use factoids; explain how caster effect of the fork's angle steers the wheel back under the center of mass; gyroscopic effect of the spinning wheels, yada-yada, and yet, all that, still will not explain the feeling of a simple bicycle ride.
 
 There's concept in science called '[[https://wikipedia.org/wiki/Umwelt][umwelt]]' - specific way in which organisms of a particular species perceive and experience the world, shaped by the capabilities of their sensory organs and perceptual systems.
 
@@ -67,13 +69,13 @@ This creates a profound pedagogical challenge: you can explain the mechanics of 
 
 Do you really need modality in Emacs? Many experienced Emacs users say maybe you don't. They assert that it doesn't really bring any benefits - it's not "better", just "different". "Once you build Emacs-native muscle memory, you can be as efficient or even better without any modal modes", they say.
 
-While that might be true for some people, I don't believe this to be generally accurate, for one simple reason - when they mention modality, they typically speak of one specific aspect of modality and that's text-editing modality (switching between Insert and Normal modes for typing). Modality critics and "never-vimmers" somehow like to ignore the fact that Emacs is inherently a modal editor - key chords are modal, transients are modal, isearch is modal, repeat-mode is modality. Some of these modal modes are complex (arguably more than vim motions are), they contain state, etc.
+While that might be true for some people, I don't believe this to be generally accurate, for one simple reason - when they mention modality, they typically speak of one specific aspect of modality and that's text-editing modality (switching between Insert and Normal modes for typing), while vim-navigation is much more than that. Besides, modality critics and "never-vimmers" somehow like to ignore the fact that Emacs is already, inherently a modal editor - key chords are modal, transients are modal, isearch is modal, repeat-mode is modality. Some of these modal modes are complex (arguably more than vim motions are), they have to maintain state, etc.
 
-The only thing the idea of vim-navigation brings on top of the built-in machinery of Emacs is a simple, structured and memorable language/grammar to deal with modality, that's all it is. Both approaches are modal; Vim just codified its modality into a more learnable, linguistic system while Emacs distributed its modality across context-sensitive mini-languages. Emacs has this same power scattered throughout - the kill-ring, rectangle operations, keyboard macros - but Vim's genius was packaging it into a coherent, immediately graspable system that feels less like using a computer and more like speaking a concise language about text. The best thing about learning that language is that you can apply it anywhere where keyboard input is still relevant - your browser, your terminal, your entire system - e.g., you can control your music, jump between apps, navigate between windows, etc., using only the home row keys. I have done that successfully, it works beautifully.
+The only thing the idea of vim-navigation brings on top of the built-in machinery of Emacs is a simple, structured and memorable language/grammar to deal with modality, that's all it is. Both approaches are modal; Vim just codified its modality into a more learnable, linguistic system while Emacs distributed its modality across context-sensitive mini-languages. Emacs has this same power scattered throughout - the kill-ring, rectangle operations, keyboard macros - but Vim's genius was packaging it into a coherent, immediately graspable system that feels less like using a computer and more like speaking a concise language about text. The best thing about learning that language is that you can apply it anywhere where keyboard input is still relevant - your browser, your terminal, your entire system - e.g., you can control your music, jump between apps, navigate between windows, etc., using only the home row keys. I have done that successfully on Macs and Linux - it works beautifully.
 
 **** Consider this trivial, practical example
 
-Most people think of keyboard input as a linear, one-dimensional approach to text editing. Vim-style navigation offers something fundamentally different - a spatial "language" that maps directly to how we conceptualize our workspace.
+Most people think of keyboard input as a linear, one-dimensional approach to text editing. 
 
 Consider window management in vanilla Emacs:
 
@@ -85,7 +87,7 @@ Consider window management in vanilla Emacs:
 
 The logic breaks down quickly. There's no consistent mental model connecting these commands. =C-x 4= abandons the splitting metaphor entirely, becoming a namespace for "other window" operations rather than a window count.
 
-Doom and Spacemacs vim-inspired approach creates a coherent spatial language:
+Vim-style navigation offers something fundamentally different - a spatial "language" that maps directly to how we conceptualize our workspace. Doom and Spacemacs vim-inspired approach utilized that coherent spatial language:
 
 - =SPC w s= - split
 
@@ -111,48 +113,65 @@ And like I already said, this model can easily be extended beyond just the text 
 
 I wouldn't! Knowing vanilla Emacs default keys comes very nice. Some may prefer quick press of =C-l=, instead of =Esc z z=, also =C-a/C-e/C-b/C-f= are universally supported in bash; on Macs they work in every input. Rarely, yet it happens, you may need to ~emacs --debug-init~, or ~emacs -Q~ where Evil might not yet be initialized or simply inaccessible.
 
-Also, if you're planning to use Emacs in terminal... I'd recommend GUI (for many good reasons), but sometimes you just need it. In TTY, text input modality can be detrimental, for example, you may feel a tiny delay between switching modes. That can be fixed, but it may feel like too much work to make it work just right in some elaborate setting when you need them all play well - terminal app, multiplexer, shell and Emacs. Abstraction comes with a cost, and when you have layers of abstraction - the cost may increase.
+Also, if you're planning to use Emacs in terminal... I'd recommend GUI (for many good reasons), but sometimes you just need it. In TTY, text input modality can be detrimental, for example, you may feel a tiny delay between switching modes. That can be fixed, but it may feel like a hassle to make it work just right in some elaborate setting when you need them all play well - terminal app, multiplexer, shell and Emacs. Abstraction comes with a cost, and when you have layers of abstraction - the cost may increase.
 
 So maybe do learn some Emacs-native keybindings, but don't hate me years later, helping a friend with Windows, while frantically yelling at the screen for popping up a new browser window whenever you want for cursor to "go down".
 
+***** What about non-querty?
+
+~h/j/k/l~ and other vim keys seem logical on Qwerty layout, but what about Dvorak, Colemak, etc.? Honestly, I don't know. I have never tried myself switching to other layouts, because I have never felt that my typing speed and accuracy are my bottlenecks. However, I have heard from many others that the overhead is very minimal - most users reported keeping ~h/j/k/l~, some done minimal re-mapping - trivial thing for Emacs.
+
+***** What about other modal modes like meow.
+
+There are other modal modes available in Emacs and they are quite popular - [[https://github.com/emacsorphanage/god-mode][god-mode]], [[https://github.com/meow-edit/meow][meow]], etc. You may want to explore those. I've heard many success stories of happy users of meow.
+
 *** Why Doom Emacs?
 
-Okay, modality is a good idea, maybe let's use it. Or don't - it's your choice. You can use Doom completely without Evil-mode features. But do you really need to use Doom? After all there are multiple different other Emacs starter kits - There's Spacemacs, Prelude, Crafted Emacs and more. You don't even have to use any starter kits, right? So, what's so specifically nice about Doom?
+Okay, modality is a good idea, maybe let's use it. Or don't - it's your choice. You can use Doom completely without Evil-mode features. But do you really need to use Doom? After all, there are multiple different other Emacs starter kits - There's Spacemacs, Prelude, Crafted Emacs and more. You don't even have to use any starter kits, right? So, what's so specifically nice about Doom?
 
 Just like many Emacs users I have gone through stages in my config evolution. Multiple times I declared config bankruptcy and started anew. I have used minimal and complicated, confusing setups. There were some years I spent using Spacemacs until finally switching to Doom.
 
-Doom (today) just makes sense to me. Someday that may change, but so far (and I've been using it for years) it has not disappointed. It's not "bloated" as many perceive it to be. And it doesn't "get in the way" whenever you want to do something non-trivial - it's the same Emacs. The "bloated" perception comes from the number of things that come bundled in Doom - it comes with the "batteries". But guess what? You can treat Doom as a "cookbook" instead of an end-product and use its modules [only] for inspiration and ideas. You don't need to use every interesting Doom module, in fact you may actually choose not to use /any/ of its modules and instead roll a set of your own, custom ones, or use minimal set of its modules combining with your own, and that's what I do.
+Doom (today) just makes sense to me. Someday that may change, but so far (and I've been using it for years) it has not disappointed. It's not "bloated" as many perceive it to be. And it doesn't "get in the way" whenever you want to do something non-trivial - it's the same, good, ol' Emacs. The "bloated" perception comes from the number of things included, Doom comes with the "batteries". But guess what? You can treat Doom as a "cookbook" instead of an end-product and use its modules /[only]/ for inspiration and ideas. You don't need to use every interesting Doom module, in fact you may actually choose not to use /any/ of its modules and instead roll a set of your own, custom ones, or use minimal set of its modules combined with yours - that's what I do.
 
-You can make Emacs run only the tiny core of Doom on top of defaults and it would be just fine. Core of Doom contains a few, very handy Lisp macros that can significantly reduce (otherwise unavoidable) boilerplate of elisp in your config. If I ever decide to move away from Doom, I still probably will borrow these macros - they are simply too nice to ignore.
+You can make Emacs run only a tiny core of Doom and it would be just fine. Core of Doom contains a few, very handy Lisp macros that can significantly reduce (otherwise unavoidable) boilerplate of elisp. If I ever decide to move away from Doom, I still probably will borrow these macros - they are simply too nice to ignore.
 
-I also like modular structure of Doom. I simply stoped worrying about the state of my config - I tend it as an an abundant, cornucopian garden. My metaphorical trees perpetually yield the sweet fruit of satisfaction. Just like a regular garden, mine also has some dark, not so pretty parts, and that's okay. I write Lisp every day - to achieve specific, well-defined goals, most of the time that happens in a scratch buffer first. Later my experiments may get moved into the config. Occasionally I perform "weed-whacking" cleanup - remove old, unused, needless and deprecated things, but I almost never have to make sweeping changes. That is the essense of using Emacs. It is not about "using editor features", it's about "talking to it in Lisp", and where that Lisp is sitting isn't really that important, as long as you can quickly locate things.
+I also like modular structure of Doom. I simply stoped worrying about the state of my config - I tend it as an an abundant, cornucopian garden. My metaphorical trees perpetually yield the sweet fruit of satisfaction. Just like a regular garden, mine also has some dark, not so pretty parts, and that's okay. I write Lisp every day - to achieve specific, well-defined goals, most of the time that happens in a scratch buffer first. Later my experiments may get moved into the config. Occasionally I perform "weed-whacking" cleanup - remove old, unused, needless and deprecated things, but I almost never have to make sweeping changes. That is the essense of using Emacs. It is not about "using editor features", it's about "talking to it in Lisp", and where that Lisp is sitting isn't really that important, as long as you can quickly locate things, and Emacs gives that to you. You have complete freedom to explore source code of any function that runs Emacs - built-in, third-party and your own.
 
-Doom and Spacemacs also give you a good foundational recipe for structuring your keybindings. Once you start using "mnemonically recognizable" chords, it simplifies navigation. And when you need to add additional keys, you'd know where to place them. For example, =SPC s= is for "search" =SPC f= - for "files". If someday you'd want to add a key for a command that searches for things in your log files, you may choose to use either =SPC s l= or =SPC f l=, or both. Nothing really is stopping you from adding another level - =SPC f s l= - which you may mnemonically recognize as "files -> search -> logs". You may choose to go a different route - =SPC l s= - for "logs -> search", etc. I assure you, it only may sound overwhelming to have tons of keys structured in that manner - in practice, once you start using them, it doesn't take long for muscle memory to form. I often don't even think what I just pressed to achieve a certain effect. It's almost weird - my fingers are capable of reproducing the sequence, but I can't even "read it out loud" - it's like playing the "Guitar Hero" - you may be extremely good at playing it, your fingers know how to score, but you can't recite the entire sequence of colors for a song off your head, right?
+Doom and Spacemacs also give you a good foundational recipe for structuring your keybindings. Once you start using "mnemonically recognizable" chords, it simplifies navigation. And when you need to add additional keys, you'd know where to place them. For example, =SPC s= for 'search' category; =SPC f= - for 'files'. If someday you'd want to add a key for a command that searches for things in your logs, you may choose to use either =SPC s l= or =SPC f l=, or both. Nothing really is stopping you from adding another level - =SPC f s l= - which you may mnemonically recognize as "files -> search -> logs". You may choose to go a different route - =SPC l s= - for "logs -> search", etc. I assure you, it only may sound overwhelming to have tons of keys structured in that manner - in practice, once you start using them, it doesn't take long for muscle memory to form. I often don't even think what I just pressed to achieve a certain effect. It's almost weird - my fingers are capable of reproducing the sequence, but I can't even "read it out loud" - it's like playing the "Guitar Hero" - you may be extremely good at that game, your fingers know how to score, but you never can recite the entire sequence of colored keys for a song off your head, right?
 
 * How to use this project
 
 For now, I decided I will be adding tips directly in this document, slowly expanding the portfolio with ideas of my own discovery and interesting things I borrowed from various other authors.
 
-You may like to read this document in Emacs, without even cloning the repo, simply do: ~M-x eww https://raw.githubusercontent.com/agzam/.doom.d/refs/heads/main/readme.org~, and then ~M-x org-mode~,
+- You may like to read this document in Emacs, without even cloning the repo, simply do:
+  - ~M-x eww~
 
-Or, ~M-x (eval-expression)~ - it's same as pressing =M-:=, and paste:
+  - Paste this:
 
-#+begin_src emacs-lisp
-(progn
-  (eww "https://raw.githubusercontent.com/agzam/.doom.d/refs/heads/main/readme.org")
-  (run-at-time 0.5 nil (lambda () (with-current-buffer "*eww*" (org-mode)))))
-#+end_src
+      #+begin_src 
+      https://raw.githubusercontent.com/agzam/.doom.d/refs/heads/main/readme.org
+      #+end_src
 
-/We do need that delay because eww is asynchronous. Properly handling this, would require more than just two lines - don't do this in a command./
+  - Force Org-mode - ~M-x org-mode~
 
-I wouldn't recommend simply cloning and using it as is - this config has too many tweaks of my personal flavor and you may find those unsuitable for you taste. Instead, I'd recommend using this project as a book of specific tips, tricks, and ideas, but hey, if you insist on wanting to use it as /your/ doom config:
+- Alternatively, ~M-x (eval-expression)~ - it's same as pressing =M-:=, and paste this code:
 
-#+begin_src sh :results raw
-git clone git@github.com:agzam/.doom.d.git ~/.doom.d
-cd ~/.doom.d && git submodule update --init --recursive
-#+end_src
+  #+begin_src emacs-lisp
+  (progn
+    (eww "https://raw.githubusercontent.com/agzam/.doom.d/refs/heads/main/readme.org")
+    (run-at-time 0.5 nil (lambda () (with-current-buffer "*eww*" (org-mode)))))
+  #+end_src
 
-** Compatibility note
+  /We do need that delay because eww is asynchronous. Properly handling it would require more than just two lines - plese don't do it this way in a command./
+
+- I wouldn't recommend simply cloning and using the config as is - it has too many tweaks of my personal flavor and you may find those unsuitable for you taste. Instead, I'd recommend using this project as a book of specific tips, tricks, and ideas, but hey, if you insist on wanting to use it as /your/ doom config:
+
+  #+begin_src sh :results raw
+  git clone git@github.com:agzam/.doom.d.git ~/.doom.d
+  cd ~/.doom.d && git submodule update --init --recursive
+  #+end_src
+
+*** Compatibility note
 
 I've been using this config mostly with the latest versions of Emacs. On Mac I prefer using emacs-plus [[https://github.com/d12frosted/homebrew-emacs-plus][homebrew formulae]], i.e. GNU Emacs instead of [[https://github.com/railwaycat/homebrew-emacsmacport][Mitsuharu Yamamoto's mac]] port [fn:1] - mainly for tiny compatibility issues - I need my Emacs to work both - in Linux and Mac. Note that emacs-mac can be built it ~--with-metal~ flag that supposedly improves performance, especially on Apple Silicon. I've tried many times, yet failed to see any difference - my GNU Emacs instance feels equally snappy on Mac.
 
@@ -190,24 +209,112 @@ It's very simple - you just turn ~pdf-view-themed-minor-mode~ on, and voila!
 
 There's a tiny annoyance though. If you change your theme, you have to re-toggle the themed-minor mode in every pdf buffer. Typically, there isn't too many open pdfs, so, usually that ain't a big deal. Still, why not find a workaround?
 
-What we want is to run a routine that enables themed-minor-mode in pdf buffers whenever Emacs runs ~(load-theme)~ command/function, either interactively (through a user call) or programmatically.
+Whenever Emacs loads and enables a theme, it runs ~(enable-theme)~ function, which adds a hook. A hook in Emacs is a list of functions to run in response to some event, so whenever ~(enable-theme)~ runs, it will execute every item on that list, or nothing - if it's empty.
 
 #+begin_src emacs-lisp
-(defun adjust-pdf-colors-on-theme-change-a (&rest _)
+(defun adjust-pdf-colors-on-theme-change-h (_)
+  "Keep pdf-view-themed buffers in sync with main color-theme changes."
   (thread-last
     (buffer-list)
-    (seq-filter (lambda (b) (with-current-buffer b (eq major-mode 'pdf-view-mode))))
-    (seq-do (lambda (b) (with-current-buffer b (pdf-view-themed-minor-mode +1))))))
+    (seq-filter
+     (lambda (b)
+       (with-current-buffer b (eq major-mode 'pdf-view-mode))))
+    (seq-do
+     (lambda (b)
+       (with-current-buffer b
+         (when pdf-view-themed-minor-mode
+           (pdf-view-themed-minor-mode +1)))))))
 
-(advice-add 'load-theme :after #'adjust-pdf-colors-on-theme-change-a)
+(add-hook 'enable-theme-functions #'adjust-pdf-colors-on-theme-change-h)
 #+end_src
 
-- Current convention for naming advising functions is to add "-a" suffix to the name
-- ~load-theme~ takes some arguments, but in this time we don't care what they are, thus - ~&rest _~
+- Current convention for naming hook functions is to append "-h" suffix to the name
+  
+- ~enable-theme-functions~ is a hook that gets called with a single argument - ~theme~, but this time we don't care what theme that is - thus ~_~ for the parameter.
+  
 - ~thread-last~ is similar to Clojure's threading macro [[https://clojuredocs.org/clojure.core/-%3E%3E][->>]], it would pass the first arg - ~(buffer-list)~ as the last param in every subsequent expression
-- ~seq-filter~ is a typical filter function, and ~seq-do~ is just for side-effects
+  
+- ~seq-filter~ is a typical filter function, and ~seq-do~ is just for side-effects. In this case, the effect is to re-enable the minor mode. Minor modes in Emacs expose both a variable and a function with the same name. If the argument given to the function is positive, it enables the mode, if zero or negative - disables it.
 
-Now, compare that with Doom's [[https://github.com/agzam/.doom.d/blob/f5628e8/modules/custom/pdf/config.el#L93][defadvice! syntax]], not only it would be a bit more compact, it also reads better - vanilla Emacs' ~add-advice~ may feel confusing, almost reads backwards - feels like it wants to run the built-in function after our custom one, even though the intent is the opposite.
+*** Lisp-1 vs Lisp-2
+
+Let's look into this "vars & functions can share names" thing a bit closer.
+
+Emacs Lisp is so called "Lisp-2" - functions and vars live in separate namespaces and unlike in most other mainstream languages can carry the same name. Most other "modern" Lisps - Clojure, Scheme, Janet, Fennel, etc. are "Lisp-1" Lisps, so binding to the same name will simply overwrite (shadow) previous declaration.
+
+This has implications. Sometimes, you will see that instead of calling functions directly (like in most other languages), you'd have to do something like this:
+
+~(funcall foo)~ 
+
+Let's say, you want to store a pointer to a function in a variable...
+
+~(setq my-mode-toggler pdf-view-themed-minor-mode)~
+
+What do you think happens here? Yup, you probably guessed it right, mode-toggler won't be getting the pointer to the function, instead it will receive the current value of our variable (of the same name). Makes sense, right?
+
+If we really want to assign the function, we would have to do it like this:
+~(setq my-mode-toggler #'pdf-view-themed-minor-mode)~ - Now our variable points to the function, not the var.
+
+But what do you think happens if we'd try to execute it?
+
+~(my-mode-toggler +1)~
+
+This will fail, but why? Because ~my-mode-toggler~ is not really a function. It is only a variable holding a function. Thus we'd have to do it like this:
+
+~(funcall my-mode-toggler +1)~
+
+That's why you may encounter patterns similar to:
+
+#+begin_src emacs-lisp
+(let ((toggle-func (if some-condition
+                       #'pdf-view-themed-minor-mode 
+                     #'some-other-minor-mode)))
+  (funcall toggle-func 1)) ; we can't just (toggle-func 1) here
+#+end_src
+
+**** What's with the hashtag?
+
+Allow me another tiny bit of pedantics to explain these seemingly weird hashtag characters. You may at some point see the code like this:
+
+~(setq my-mode-toggler 'pdf-view-themed-minor-mode)~
+
+and you may wonder how does that differ from:
+
+~(setq my-mode-toggler #'pdf-view-themed-minor-mode)~
+
+Because if you call it ~(funcall my-mode-toggler)~, the code still runs with no apparent difference.
+
+The semantic difference that in the first case the variable holds the symbol. While in the second, it holds the function itself. Confusing, innit?
+
+Try these:
+
+#+begin_src emacs-lisp
+(setq f1 '(lambda () "hello"))    ; f1 is a symbol holding a list
+(type-of f1)                      ; => cons - a pair of two values
+                                  ; But guess what? We still can execute it
+(funcall f1)                      ; => "hello"
+                                  ; Because for the interpreter,
+                                  ; it doesn't really matter - is it data, is it code?
+
+                                  ; With hashtag is almost the same,
+                                  ; yet slightly different
+(setq f2 #'(lambda () "hello"))   ; f2 is a function object
+(eq f1 f2)                        ; => nil - they are not the same
+(type-of f2)                      ; => interpreted function
+#+end_src
+
+Symbols in Elisp are named objects with multiple storage slots. For a name, value, function, and a property bag. I'm not gonna get into details here, but I'd encourage you to try out these:
+
+#+begin_src emacs-lisp
+(symbol-name f1)  
+(symbol-value f1) 
+(symbol-function f1)
+(symbol-plist f1) 
+#+end_src
+
+So why then in most cases it just works as if there's no difference? Because in most cases, Elisp interpreter receiving the symbol would do the lookup (what's in the function slot for this symbol). 
+
+But you always should use ~#'~ syntax in your code, because it's more explicit and slightly more efficient. 
 
 -----
 

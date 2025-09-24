@@ -90,13 +90,7 @@
     :after #'pdf-view-next-page-command
     (image-scroll-down))
 
-  (defadvice! adjust-pdf-colors-on-theme-change-a (&rest _)
-    :after #'load-theme
-    (thread-last
-      (buffer-list)
-      (seq-filter (lambda (b) (with-current-buffer b (eq major-mode 'pdf-view-mode))))
-      (seq-do (lambda (b) (with-current-buffer b (pdf-view-themed-minor-mode +1)))))))
-
+  (add-hook! 'enable-theme-functions #'adjust-pdf-colors-on-theme-change-h))
 
 (use-package! org-noter
   :after (org pdf-tools)
