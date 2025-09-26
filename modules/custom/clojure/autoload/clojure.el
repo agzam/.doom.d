@@ -205,3 +205,12 @@ convert from JSON."
          (insert "(comment \n")))))
   (when lsp-mode
     (call-interactively #'lsp-format-region)))
+
+(defun clj-zprint-region (start end)
+  "Format region with zprint using clj.
+good for squishing wide nested maps."
+  (interactive "r")
+  (shell-command-on-region 
+   start end 
+   "clj -Sdeps '{:deps {zprint/zprint {:mvn/version \"1.3.0\"}}}' -M -m zprint.main 2>/dev/null"
+   nil t))
