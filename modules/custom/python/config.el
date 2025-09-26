@@ -33,4 +33,9 @@
    "C-c C-n" #'python-edit-imports
    (:localleader
     (:prefix ("i" . "insert")
-             "p" #'python-insert-ipdb))))
+             "p" #'python-insert-ipdb)
+    (:prefix ("f" . "format")
+             "r" #'python-format)
+    (:prefix ("c" . "convert")
+             "j" #'python-to-json
+             "e" #'python-to-edn))))
