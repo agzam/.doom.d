@@ -28,7 +28,12 @@
 
    [("ed" "doom.d" find-in-doom-dir)
     ("ei" "emacs.d" (lambda () (interactive) (dired (file-name-directory doom-emacs-dir))))
-    ("D" "dotfile.org" (lambda () (interactive) (find-file "~/dotfile.org/dotfile.org")))]
+    ("D" "dotfile.org" (lambda ()
+                         (interactive)
+                         (find-file
+                          (expand-file-name
+                           "agzam/dotfile.org/dotfile.org"
+                           (or magit-clone-default-directory "~/GitHub/")))))]
 
    [("hn" "NH" (lambda () (interactive) (hnreader-news)))
     ("rd" "Reddit" (lambda () (interactive) (reddigg-view-frontpage)))]
