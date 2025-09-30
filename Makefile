@@ -2,6 +2,12 @@ LOGFILE = /tmp/emacs-cron.log
 EMACS = emacs
 DOOM_DIR = $(HOME)/.emacs.d
 EMACS_BATCH = $(EMACS) --batch --no-window-system
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+	INSTALL_CMD = brew install
+else ifeq ($(shell test -f /etc/arch-release && echo yes),yes)
+    INSTALL_CMD = sudo pacman -S --noconfirm
+endif
 
 .PHONY: help pdf-tools-build vterm
 help:
@@ -9,29 +15,42 @@ help:
 
 pdf-tools:
 	@echo "[$(shell date -Iseconds)] Starting pdf-tools rebuild" | tee -a $(LOGFILE)
-	DISPLAY="" $(EMACS_BATCH) --eval \
+	@CMD=$$(DISPLAY="" $(EMACS_BATCH) --eval \
 	"(progn \
-		(let ((default-directory \"$(DOOM_DIR)/.local/straight/repos\")) \
-			(normal-top-level-add-subdirs-to-load-path)) \
-		(require 'pdf-tools) \
-		(pdf-tools-install t) \
-	)" 2>&1 | tee -a $(LOGFILE)
+		(let* ((default-directory \"$(DOOM_DIR)/.local/straight/repos\"))									\
+			(normal-top-level-add-subdirs-to-load-path)														\
+			(require 'straight)																				\
+			(let* ((build-dir (expand-file-name																\
+								(format \".local/straight/build-%s\" emacs-version)                         \
+								user-emacs-directory))														\
+					(cmd (format \"%s/pdf-tools/build/server/autobuild -i %s/pdf-tools/ \"                  \
+							build-dir build-dir)))															\
+				(princ cmd)))																				\
+	)" 2>/dev/null) && \
+	$$CMD 2>&1 | tee -a $(LOGFILE)
 	@echo "[$(shell date -Iseconds)] Finished pdf-tools rebuild (exit: $$?)" | tee -a $(LOGFILE)
 
 vterm:
+	@echo "Checking for required dependencies..."
+	@which cmake > /dev/null 2>&1 || (echo "Installing cmake..." && $(INSTALL_CMD) cmake)
+	@which libtool > /dev/null 2>&1 || (echo "Installing libtool..." && $(INSTALL_CMD) libtool)
+
 	@echo "\n[$(shell date -Iseconds)] Starting vterm rebuild" | tee -a $(LOGFILE)
 	DISPLAY="" $(EMACS_BATCH) --eval \
 	"(progn \
 		(let ((default-directory \"$(DOOM_DIR)/.local/straight/repos\")) \
 			(normal-top-level-add-subdirs-to-load-path)) \
 		(require 'cl-macs) \
+		(require 'straight) \
+		(let ((default-directory (straight--build-dir))) \
+			(normal-top-level-add-subdirs-to-load-path)) \
 		(cl-letf (((symbol-function 'yes-or-no-p) (lambda (&rest _) t)) \
-					((symbol-function 'y-or-n-p) (lambda (&rest _) t))) \
-			(require 'vterm) \
-			(vterm-module-compile)) \
-		(with-current-buffer (get-buffer vterm-install-buffer-name) \
-			(princ (buffer-string))) \
-	)" 2>&1 | tee -a $(LOGFILE)
+				  ((symbol-function 'y-or-n-p) (lambda (&rest _) t))) \
+			(load \"vterm\" t) \
+			(let ((vterm-install-buffer-name \"*vterm-compile*\")) \
+				(vterm-module-compile) \
+				(with-current-buffer vterm-install-buffer-name \
+					(princ (buffer-string))))))" 2>&1 | tee -a $(LOGFILE)
 	@echo "[$(shell date -Iseconds)] Finished vterm rebuild (exit: $$?)\n" | tee -a $(LOGFILE)
 
 org-roam-db-sync:
