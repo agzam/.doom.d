@@ -69,10 +69,8 @@
         google-translate-default-source-language "auto"
         google-translate-default-target-language "en")
 
-  ;; to use 'listen' feature of google-translate, on Mac:
-  ;; brew install mplayer-osx-extended
-  ;; ln -s '/Applications/MPlayer OSX Extended.app/Contents/Resources/Binaries/mpextended.mpBinaries/Contents/MacOS/mplayer' /opt/homebrew/bin/mplayer
-  (setopt google-translate-listen-program (executable-find "mplayer"))
+  (setopt google-translate-listen-program (executable-find "ffplay")
+          google-translate-listen-program-args '("-nodisp" "-autoexit" "-loglevel" "quiet"))
   (setq google-translate-input-method-auto-toggling t
         google-translate-preferable-input-methods-alist
         '((nil . ("en"))
@@ -85,7 +83,8 @@
       (pop-to-buffer "*Google Translate*")
       (map! :map google-translate-mode-map
             (:localleader
-             "l" #'google-translate-listen-source))))
+             "l" #'google-translate-listen-source+
+             "L" #'google-translate-listen-translation+))))
 
   (add-to-list
    'display-buffer-alist

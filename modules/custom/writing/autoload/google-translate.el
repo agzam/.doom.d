@@ -180,7 +180,14 @@ text like: \"2023 was a better year than 2021\" would translate to:
   (transient-setup 'translate-transient))
 
 ;;;###autoload
-(defun google-translate-listen-source ()
+(defun google-translate-listen-source+ ()
   "Listen to the source text in translation buffer."
   (interactive)
   (push-button (next-button (point-min))))
+
+;;;###autoload
+(defun google-translate-listen-translation+ ()
+  "Listen to the translation text in translation buffer."
+  (interactive)
+  (goto-char (point-min))
+  (push-button (forward-button 2)))

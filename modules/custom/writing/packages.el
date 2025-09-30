@@ -4,7 +4,7 @@
 (package! sdcv)
 (package! google-translate :recipe
   (:host github :repo "agzam/google-translate"
-         :branch "major-mode"))
+         :branch "player-args"))
 
 (package! define-it)
 
