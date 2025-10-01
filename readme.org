@@ -164,13 +164,33 @@ For now, I decided I will be adding tips directly in this document, slowly expan
 
   /We do need that delay because eww is asynchronous. Properly handling it would require more than just two lines - plese don't do it this way in a command./
 
-- I wouldn't recommend simply cloning and using the config as is - it has too many tweaks of my personal flavor and you may find those unsuitable for you taste. Instead, I'd recommend using this project as a book of specific tips, tricks, and ideas, but hey, if you insist on wanting to use it as /your/ doom config:
+- I wouldn't recommend simply cloning and using the config as is - it has too many tweaks of my personal flavor perhaps unsuitable for your taste. Instead, I'd recommend using this project as a recipe book of specific tips, tricks, and ideas, but hey, if you insist on wanting to use it as /your/ doom config:
 
   #+begin_src sh :results raw
   git clone git@github.com:agzam/.doom.d.git ~/.doom.d
   cd ~/.doom.d && git submodule update --init --recursive
   #+end_src
 
+- Mind that this is heavily opinionated configuration - *do not expect* things to run smoothly off the bat! Make sure to run doom CLI checks after you do:
+
+    #+begin_src sh
+    doom install
+    #+end_src
+
+    Do these:
+    #+begin_src sh
+    doom build
+    doom doctor
+    #+end_src  
+
+   I also suggest first time running it with:
+
+    #+begin_src sh
+    emacs --debug-init
+    #+end_src
+
+    That will tell you about things config expects - missing fonts, etc.
+  
 *** Compatibility note
 
 I've been using this config mostly with the latest versions of Emacs. On Mac I prefer using emacs-plus [[https://github.com/d12frosted/homebrew-emacs-plus][homebrew formulae]], i.e. GNU Emacs instead of [[https://github.com/railwaycat/homebrew-emacsmacport][Mitsuharu Yamamoto's mac]] port [fn:1] - mainly for tiny compatibility issues - I need my Emacs to work both - in Linux and Mac. Note that emacs-mac can be built it ~--with-metal~ flag that supposedly improves performance, especially on Apple Silicon. I've tried many times, yet failed to see any difference - my GNU Emacs instance feels equally snappy on Mac.
