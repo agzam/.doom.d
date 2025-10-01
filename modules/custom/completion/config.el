@@ -302,6 +302,9 @@
          "t" #'vertico-posframe-briefly-tall
          ";" #'vertico-posframe-briefly-tall
          "p" #'vertico-multiform-posframe
+         "s" #'embark-collect
+         "e" #'embark-export
+         "C-;" #'embark-act
          :desc "insert ;" "SPC" (cmd! (insert ";")))
         "C-h" #'vertico-directory-delete-word
         "M-h" #'vertico-grid-left
