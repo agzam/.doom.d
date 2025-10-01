@@ -9,7 +9,7 @@ else ifeq ($(shell test -f /etc/arch-release && echo yes),yes)
     INSTALL_CMD = sudo pacman -S --noconfirm
 endif
 
-.PHONY: help pdf-tools-build vterm
+.PHONY: help pdf-tools-build vterm org-roam-db-sync dash-docsets
 help:
 	@grep -E '^[a-zA-Z_-]+:' Makefile | grep -v '.PHONY' | sed 's/:.*//g' | sort
 
@@ -52,15 +52,32 @@ vterm:
 
 org-roam-db-sync:
 	@echo "\n[$(shell date -Iseconds)] Starting org-road-db-sync" | tee -a $(LOGFILE)
-	DISPLAY="" $(EMACS_BATCH) --eval \
-	"(progn \
-		(let ((default-directory \"$(DOOM_DIR)/.local/straight/repos\")) \
-			(normal-top-level-add-subdirs-to-load-path)) \
-		(require 'org) \
-		(require 'org-roam) \
-		(require 'git-auto-commit-mode) \
-		(setq org-roam-directory (expand-file-name \"~/Sync/org/\")) \
-		(setq org-roam-db-location (concat \"$(DOOM_DIR)\" \"/.local/org-roam.db\")) \
-		(org-roam-db-sync t) \
+	DISPLAY="" $(EMACS_BATCH) --eval													\
+	"(progn																				\
+		(let ((default-directory \"$(DOOM_DIR)/.local/straight/repos\"))				\
+			(normal-top-level-add-subdirs-to-load-path))								\
+		(require 'org)																	\
+		(require 'org-roam)																\
+		(require 'git-auto-commit-mode)													\
+		(setq org-roam-directory (expand-file-name \"~/Sync/org/\"))					\
+		(setq org-roam-db-location (concat \"$(DOOM_DIR)\" \"/.local/org-roam.db\"))	\
+		(org-roam-db-sync t)															\
 	)" 2>&1 | tee -a $(LOGFILE)
 	@echo "[$(shell date -Iseconds)] Finished org-roam-db-sync (exit: $$?)\n" | tee -a $(LOGFILE)
+
+dash-docsets:
+	@echo "\n[$(shell date -Iseconds)] Installing dash docsets" | tee -a $(LOGFILE)
+	mkdir -p ~/.docsets/
+	DISPLAY="" $(EMACS_BATCH) --eval															\
+	"(progn																						\
+		(let ((default-directory \"$(DOOM_DIR)/.local/straight/repos\"))						\
+			(normal-top-level-add-subdirs-to-load-path))										\
+        (require 'dash-docs)																	\
+		(load \"~/.doom.d/modules/custom/completion/autoload/dash-docs.el\")					\
+		(advice-add 'dash-docs-unofficial-docsets :override #'dash-docs-unofficial-docsets+)	\
+		(dolist (d '(ClojureDocs ClojureScript Hammerspoon))									\
+			(dash-docs-install-user-docset+ (symbol-name d)))									\
+		(dolist (d '(TypeScript CSS))															\
+			(dash-docs-install-docset (symbol-name d)))											\
+	)" 2>&1 | tee -a $(LOGFILE)
+	@echo "[$(shell date -Iseconds)] Finished installing docsets (exit: $$?)\n" | tee -a $(LOGFILE)
