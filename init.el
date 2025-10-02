@@ -204,6 +204,7 @@
        git
        general
        (completion +icons +minibuffer)
+       embark
        colors
        modeline
        tab-bar

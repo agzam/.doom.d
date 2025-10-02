@@ -1,4 +1,4 @@
-;;; custom/completion/autoload/embark.el -*- lexical-binding: t; -*-
+;;; custom/embark/autoload.el -*- lexical-binding: t; -*-
 
 ;;;###autoload
 (eval-when-compile
@@ -267,3 +267,36 @@ targets."
   "Convert current block to quote block."
   (interactive)
   (embark-org-block-convert "quote"))
+
+;;;###autoload
+(defun embark--ephemeral-cleanup (&rest _)
+  (setq embark-post-action-hooks 
+        (remove (list t 'embark--ephemeral-cleanup) 
+                embark-post-action-hooks))
+  (thread-last
+    (buffer-list)
+    (seq-filter (lambda (b) (string-prefix-p "* embark-ephemeral *" (buffer-name b))))
+    (seq-do (lambda (b)
+              (when-let* ((w (get-buffer-window b)))
+                (delete-window w))
+              (kill-buffer b)))))
+
+;;;###autoload
+(defun embark-ephemeral-act (text)
+  "Creates short-lived buffer for something to act on."
+  (interactive)
+  (unwind-protect
+        (progn
+          (push (list t 'embark--ephemeral-cleanup) embark-post-action-hooks)
+          (let ((buf (generate-new-buffer "* embark-ephemeral *")))
+            (with-current-buffer buf
+              (insert text)
+              (goto-char (point-min))
+              (let ((win (display-buffer
+                          buf
+                          '(display-buffer-at-bottom 
+                            (window-height . 1)))))
+                (set-window-parameter win 'mode-line-format 'none)
+                (select-window win))
+              (call-interactively #'embark-act))))
+    (embark--ephemeral-cleanup)))

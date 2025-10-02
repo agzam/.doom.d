@@ -24,8 +24,6 @@
 
 (unpin! compat
         consult
-        embark
-        embark-consult
         posframe
         vertico
         vertico-posframe)
