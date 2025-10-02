@@ -53,7 +53,8 @@
       (github-repo
        :pattern "github\\.com/[^/]+/[^/]+/?$"
        :actions (("b b" . forge-visit-topic-via-url)
-                 ("c s" . git-https-url->ssh)))
+                 ("c s" . git-https-url->ssh)
+                 ("g c" . magit-clone-regular+)))
       (github-commit
        :pattern "github\\.com/[^/]+/[^/]+/commit/[0-9a-f]+"
        :actions ())

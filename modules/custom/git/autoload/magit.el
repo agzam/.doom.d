@@ -296,3 +296,22 @@ be used as a git branch name."
             (other-window 1)
             (magit-worktree-status worktree)))
         (magit-refresh)))))
+
+;;;###autoload
+(defun magit-clone-regular+ (&optional repository directory)
+  "Simplified version of magit cloning fn to use directly."
+  (interactive)
+  (let* ((repository (magit-read-string-ns "Clone from url or name"
+                                           repository))
+         (parts (parse-git-url repository))
+         (org (plist-get parts :org))
+         (cwd (or directory
+                  (if (functionp magit-clone-default-directory)
+                      (funcall magit-clone-default-directory repository)
+                    (expand-file-name org magit-clone-default-directory))))
+         (directory (read-directory-name
+                     "Clone to: " (concat cwd "/") nil nil
+                     (magit-clone--url-to-name repository))))
+    (magit-clone-internal repository directory nil)))
+
+

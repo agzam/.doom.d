@@ -344,20 +344,21 @@
                              consult-gh-issue-list consult-gh-pr-list)
   :config
   (require 'consult-gh-embark)
+  
   (setq consult-gh-defaul-clone-directory "~/GitHub"
         consult-gh-show-preview t
         consult-gh-repo-preview-mode 'org-mode
         consult-gh-confirm-before-clone t
         consult-gh-ask-for-path-before-save t
         consult-gh-file-action #'consult-gh--files-view-action
-        consult-gh-issue-action #'consult-gh--view-action+
-        consult-gh-pr-action #'consult-gh--view-action+
-        consult-gh-repo-action #'consult-gh--repo-browse-url-action
+        consult-gh-issue-action #'consult-gh-url-action
+        consult-gh-pr-action #'consult-gh-url-action
+        consult-gh-repo-action #'consult-gh-url-action
         consult-gh-prioritize-local-folder t
         consult-gh-prs-state-to-show 'all
         consult-gh-issues-state-to-show 'all)
 
-  (dolist (repo '("agzam" "stitchdata" "qlik-trial"))
+  (dolist (repo '("agzam" "stitchdata" "qlik-trial" "singer-io"))
     (add-to-list 'consult-gh-favorite-orgs-list repo))
 
   (add-to-list 'savehist-additional-variables 'consult-gh--known-orgs-list)

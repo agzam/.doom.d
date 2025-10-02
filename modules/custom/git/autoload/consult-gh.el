@@ -28,4 +28,17 @@
                      (or issue pr)))))))
     (forge-visit-topic-via-url url)))
 
-
+;;;###autoload
+(defun consult-gh-url-action (cand)
+  (let* ((repo (get-text-property 0 :repo cand))
+         (repo-url (string-trim (consult-gh--command-to-string "browse" "--repo" repo "--no-browser")))
+         (type (get-text-property 0 :type cand))
+         (number (get-text-property 0 :number cand))
+         (url (cond
+               ((and (string= type "pr") number repo-url)
+                (concat repo-url "/pull/" number))
+               ((and (string= type "issue") number repo-url)
+                (concat repo-url "/issues/" number))
+               ((and (string= type "repo") repo-url)
+                repo-url))))
+    (embark-ephemeral-act url)))
