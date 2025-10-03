@@ -303,15 +303,22 @@ be used as a git branch name."
   (interactive)
   (let* ((repository (magit-read-string-ns "Clone from url or name"
                                            repository))
+         (repository (if (string-match "^https://.*$" repository)
+                         (git-https-url->ssh repository)
+                       repository))
          (parts (parse-git-url repository))
          (org (plist-get parts :org))
-         (cwd (or directory
-                  (if (functionp magit-clone-default-directory)
-                      (funcall magit-clone-default-directory repository)
-                    (expand-file-name org magit-clone-default-directory))))
-         (directory (read-directory-name
-                     "Clone to: " (concat cwd "/") nil nil
-                     (magit-clone--url-to-name repository))))
+         (cwd (file-name-as-directory
+               (or directory
+                   (if (functionp magit-clone-default-directory)
+                       (funcall magit-clone-default-directory repository)
+                     (expand-file-name org magit-clone-default-directory)))))
+         (directory (file-name-as-directory
+                     (expand-file-name
+                      (read-directory-name
+                       "Clone to: " cwd nil nil
+                       (magit-clone--url-to-name repository)))))
+         (default-directory cwd))
     (magit-clone-internal repository directory nil)))
 
 
