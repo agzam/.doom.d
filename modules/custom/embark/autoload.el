@@ -283,7 +283,13 @@ targets."
 
 ;;;###autoload
 (defun embark-ephemeral-act (text)
-  "Creates short-lived buffer for something to act on."
+  "Creates short-lived buffer for something to act on.
+
+Embark acts on things-at-point, and as far as I know, there's no good
+way of making it act on anything that doesn't exist `at-point` - things
+you pull out of thin air, i.e., a result of an http request, or data
+fetched from some external process. This creates a provisional buffer
+that gets destroyed shortly after acted on."
   (interactive)
   (unwind-protect
         (progn
@@ -299,4 +305,6 @@ targets."
                 (set-window-parameter win 'mode-line-format 'none)
                 (select-window win))
               (call-interactively #'embark-act))))
-    (embark--ephemeral-cleanup)))
+    (run-with-timer
+     0.5 nil
+     #'embark--ephemeral-cleanup)))

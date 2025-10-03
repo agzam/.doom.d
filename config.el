@@ -384,6 +384,7 @@
          :desc "browser tabs" "t" #'browser-goto-tab
          :desc "browser copy link" "l" #'browser-copy-tab-link
          :desc "insert url" "y" #'browser-insert-link-from-active-tab
+         :desc "act on url" "a" #'browser-tab-act
          :desc "in eww" "e" #'browser-active-tab->eww))
 
       (:prefix ("e" . "edit")

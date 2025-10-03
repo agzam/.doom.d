@@ -25,7 +25,7 @@
  compat
  )
 
-(package! closql :pin "05a2b048fd4e5c90aa971479cb9e71cf9aeba2bf")
+(package! closql)
 
 (package! consult-gh :recipe (:host github :repo "armindarvish/consult-gh" :files ("*.el")))
 

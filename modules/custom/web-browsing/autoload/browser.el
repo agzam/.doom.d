@@ -255,7 +255,10 @@ jump to selected tab, activating it in the browser."
 
 ;;;###autoload
 (defun browser-active-tab->eww ()
-  "Current tab content in eww."
+  "Current tab content in eww.
+
+Don't forget to enable js execution. In the Browser, go to mac menu -
+View -> Developer -> Allow JS Execution from Apple Events."
   (interactive)
   (let* ((content-script
           (format
@@ -282,3 +285,9 @@ JSON.stringify({
         (insert html-str))
       (eww-open-file tmp-file)
       (delete-file tmp-file))))
+
+;;;###autoload
+(defun browser-tab-act ()
+  "Get the tab url, embark-act on it."
+  (interactive)
+  (embark-ephemeral-act (browser-copy-tab-link)))
