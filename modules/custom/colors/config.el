@@ -13,14 +13,14 @@
   :hook (window-setup . circadian-setup)
   :config
   ;; North of TX
-  (setq calendar-latitude 33.16
-        calendar-longitude -96.93)
-  (setf circadian-themes
+  (setopt calendar-latitude 33.16
+          calendar-longitude -96.93)
+  (setopt circadian-themes
         `(("6:00" . ag-themes-spacemacs-light)
-          ("14:00" . ag-themes-ef-elea-light)
+          ("14:00" . ag-themes-doom-feather-light)
           ("20:00" . ag-themes-base16-ocean)
-          ("21:30" . ag-themes-ef-elea-dark)
-          ("23:00" . ag-themes-base16-ashes))))
+          ("21:30" . ag-themes-base16-ashes)
+          ("23:00" . ag-themes-doom-plain-dark))))
 
 (use-package! rainbow-mode
   :defer t)
@@ -41,3 +41,5 @@
   :config
   (setopt ef-themes-mixed-fonts nil
           ef-themes-variable-pitch-ui nil))
+
+(use-package! doom-themes)

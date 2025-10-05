@@ -44,7 +44,9 @@
 ;;;###autoload
 (transient-define-prefix colors/cycle-themes ()
   "toggle theme"
-  ["Load theme"
+  [:description
+   (lambda ()
+     (format "Theme: %s\n" doom-theme))
    [("n" "next" colors/load-next-theme :transient t)
     ("p" "previous" colors/load-prev-theme :transient t)
     ("l" "list themes" consult-theme)]])
@@ -52,12 +54,11 @@
 ;;;###autoload
 (defun colors/cycle-themes-up ()
   (interactive)
-  (colors/load-prev-theme)
-  (circadian-setup)
-  (colors/cycle-themes))
+  (colors/cycle-themes)
+  (colors/load-prev-theme))
 
 ;;;###autoload
 (defun colors/cycle-themes-down ()
   (interactive)
-  (colors/load-next-theme)
-  (colors/cycle-themes))
+  (colors/cycle-themes)
+  (colors/load-next-theme))

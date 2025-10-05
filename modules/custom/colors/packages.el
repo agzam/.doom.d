@@ -5,6 +5,7 @@
 (package! spacemacs-theme :recipe (:host github :repo "nashamri/spacemacs-theme"))
 (package! base16-theme)
 (package! ef-themes)
+(package! doom-themes)
 
 (package! ag-themes :recipe (:local-repo "ag-themes" :files ("*.el")))
 ;; (package! ag-themes :recipe (:host github :repo "agzam/ag-themes.el"))
