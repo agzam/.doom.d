@@ -249,7 +249,7 @@ jump to selected tab, activating it in the browser."
    ((featurep :system 'macos)
     (when-let* ((tab (browser--get-active-tab))
                 (url (plist-get tab :url)))
-      (message url)
+      (print url)
       (kill-new url)
       url))))
 

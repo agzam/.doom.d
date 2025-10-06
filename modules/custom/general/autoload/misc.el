@@ -118,3 +118,44 @@ Useful for clean up before running `doom -up`."
 ;;;###autoload
 (defun auth-host->pass (host)
   (auth-source-pick-first-password :host host))
+
+;;;###autoload
+(defun parse-circleci-url (url)
+  "Extract info from CircleCI URL.
+URL format: .../project/github/ORG/REPO/BUILD_NUM/output/JOB_NUM/..."
+  (when (string-match "project/github/\\([^/]+\\)/\\([^/]+\\)/\\([0-9]+\\)" url)
+    (let ((org (match-string 1 url))
+          (repo (match-string 2 url))
+          (build-num (match-string 3 url))
+          (job-num (when (string-match "output/\\([0-9]+\\)" url)
+                     (match-string 1 url))))
+      (list :org org
+            :repo repo
+            :build build-num
+            :job job-num))))
+
+;;;###autoload
+(defun open-circleci-log (url)
+  "Open CircleCI raw log URL in a buffer with meaningful name."
+  (interactive "sCircleCI URL: ")
+  (let ((info (parse-circleci-url url)))
+    (let-plist info
+      (let ((buffer-name (if info
+                             (format "*CircleCI: %s/%s #%s%s*"
+                                     .org
+                                     .repo
+                                     .build
+                                     (if .job
+                                         (format " job:%s" .job)
+                                       ""))
+                           "*CircleCI Log*")))
+        (with-current-buffer (get-buffer-create buffer-name)
+          (erase-buffer)
+          (shell-command
+           (format "curl -s '%s' | ansifilter" url)
+           (current-buffer))
+          (goto-char (point-min))
+          (while (search-forward "\r" nil t)
+            (replace-match "" nil t))
+          (goto-char (point-min))
+          (switch-to-buffer (current-buffer)))))))

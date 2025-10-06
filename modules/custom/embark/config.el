@@ -29,43 +29,56 @@
       (yt-video
        :pattern "\\(youtube\\.com/watch\\|youtu\\.be/\\)"
        :actions (("b b" . mpv-open+)
+                 ("RET" . mpv-open+)
                  ("b t" . youtube-sub-extractor-extract-subs)))
+      (github-repo
+       :pattern "github\\.com/[^/]+/[^/]+/?$"
+       :actions (("b b" . (lambda (x) (forge-visit-topic-via-url x)))
+                 ("RET" . (lambda (x) (forge-visit-topic-via-url x)))
+                 ("c s" . git-https-url->ssh)
+                 ("g c" . magit-clone-regular+)))
       (github-pulls
        :pattern "github\\.com/[^/]+/[^/]+/pulls\\(?:\\?.*\\)?$"
-       :actions (("b b" . +forge-browse-topics)))
+       :actions (("b b" . +forge-browse-topics)
+                 ("RET" . +forge-browse-topics)))
       (github-issues
        :pattern "github\\.com/[^/]+/[^/]+/issues\\(?:\\?.*\\)?$"
-       :actions (("b b" . +forge-browse-topics)))
+       :actions (("b b" . +forge-browse-topics)
+                 ("RET" . +forge-browse-topics)))
       (github-pr
        :pattern "github\\.com/[^/]+/[^/]+/pull/[0-9]+"
-       :actions (("b b" . forge-visit-topic-via-url)
+       :actions (("b b" . (lambda (x) (forge-visit-topic-via-url x)))
+                 ("RET" . (lambda (x) (forge-visit-topic-via-url x)))
                  ("c b" . +link-plain->link-bug-reference)
                  ("g c" . magit-clone-regular+)))
       (github-issue
        :pattern "github\\.com/[^/]+/[^/]+/issues/[0-9]+"
-       :actions (("b b" . forge-visit-topic-via-url)
+       :actions (("b b" . (lambda (x) (forge-visit-topic-via-url x)))
+                 ("RET" . (lambda (x) (forge-visit-topic-via-url x)))
                  ("c b" . +link-plain->link-bug-reference)
                  ("g c" . magit-clone-regular+)))
       (github-file
        :pattern "github\\.com/[^/]+/[^/]+/blob/[^/]+/.+"
-       :actions (("b b" . +fetch-github-raw-file)))
+       :actions (("b b" . +fetch-github-raw-file)
+                 ("RET" . +fetch-github-raw-file)))
       (github-compare-link
        :pattern "github\\.com/[^/]+/[^/]+/compare/.+"
        :actions ())
-      (github-repo
-       :pattern "github\\.com/[^/]+/[^/]+/?$"
-       :actions (("b b" . forge-visit-topic-via-url)
-                 ("c s" . git-https-url->ssh)
-                 ("g c" . magit-clone-regular+)))
       (github-commit
        :pattern "github\\.com/[^/]+/[^/]+/commit/[0-9a-f]+"
        :actions ())
       (reddit-link
        :pattern "https\\:\\/\\/www.reddit.com\\/.*"
-       :actions (("b b" . reddigg-view-comments)))
+       :actions (("b b" . reddigg-view-comments)
+                 ("RET" . reddigg-view-comments)))
       (hackernews-link
        :pattern "https\\:\\/\\/news.ycombinator.com\\/.*"
-       :actions (("b b" . hnreader-read-page))))
+       :actions (("b b" . hnreader-read-page)
+                 ("RET" . hnreader-read-page)))
+      (circle-ci-log
+       :pattern "https\\:\\/\\/circleci.com\\/api\\/.*"
+       :actions (("b b" . open-circleci-log)
+                 ("RET" . open-circleci-log))))
     "Complete url configuration with patterns and actions."
     :type '(alist :key-type (choice (const nil) symbol)
             :value-type plist)
