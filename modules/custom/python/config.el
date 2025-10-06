@@ -5,7 +5,11 @@
   :mode ("[./]flake8\\'" . conf-mode)
   :mode ("/Pipfile\\'" . conf-mode)
   :config
-  (add-hook! (python-ts-mode python-mode) #'lsp!))
+  (add-hook! (python-ts-mode python-mode)
+             #'lsp!
+             #'+python-mode-lookup-handlers
+             (defun activate-python-dash-docset-h ()
+               (dash-docs-activate-docset "Python 3"))))
 
 (use-package! lsp-pyright
   :defer t

@@ -6,7 +6,7 @@ UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Darwin)
 	INSTALL_CMD = brew install
 else ifeq ($(shell test -f /etc/arch-release && echo yes),yes)
-    INSTALL_CMD = sudo pacman -S --noconfirm
+	INSTALL_CMD = sudo pacman -S --noconfirm
 endif
 
 .PHONY: help pdf-tools-build vterm org-roam-db-sync dash-docsets
@@ -72,12 +72,12 @@ dash-docsets:
 	"(progn																						\
 		(let ((default-directory \"$(DOOM_DIR)/.local/straight/repos\"))						\
 			(normal-top-level-add-subdirs-to-load-path))										\
-        (require 'dash-docs)																	\
+		(require 'dash-docs)																	\
 		(load \"~/.doom.d/modules/custom/completion/autoload/dash-docs.el\")					\
 		(advice-add 'dash-docs-unofficial-docsets :override #'dash-docs-unofficial-docsets+)	\
 		(dolist (d '(ClojureDocs ClojureScript Hammerspoon))									\
 			(dash-docs-install-user-docset+ (symbol-name d)))									\
-		(dolist (d '(TypeScript CSS))															\
+		(dolist (d '(TypeScript CSS Python_3))													\
 			(dash-docs-install-docset (symbol-name d)))											\
 	)" 2>&1 | tee -a $(LOGFILE)
 	@echo "[$(shell date -Iseconds)] Finished installing docsets (exit: $$?)\n" | tee -a $(LOGFILE)

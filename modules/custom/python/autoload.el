@@ -1,6 +1,16 @@
 ;;; custom/python/autoload.el -*- lexical-binding: t; -*-
 
 ;;;###autoload
+(defun +python-mode-lookup-handlers ()
+  (set-lookup-handlers! '(python-ts-mode
+                          python-mode)
+    :definition #'+lsp-lookup-definition-handler
+    :references #'+lsp-lookup-references-handler
+    :implementations '(lsp-find-implementation :async t)
+    :type-definition #'lsp-find-type-definition
+    :documentation #'+consult-dash-doc))
+
+;;;###autoload
 (defun python-insert-ipdb ()
   "Insert an ipdb breakpoint."
   (interactive)
