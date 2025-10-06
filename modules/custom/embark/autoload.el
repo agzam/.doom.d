@@ -272,7 +272,7 @@ targets."
 (defun embark--ephemeral-cleanup (&rest _)
   (setq embark-post-action-hooks 
         (remove (list t 'embark--ephemeral-cleanup) 
-                embark-post-action-hooks))
+                embark-pre-action-hooks))
   (thread-last
     (buffer-list)
     (seq-filter (lambda (b) (string-prefix-p "* embark-ephemeral *" (buffer-name b))))
@@ -292,19 +292,17 @@ fetched from some external process. This creates a provisional buffer
 that gets destroyed shortly after acted on."
   (interactive)
   (unwind-protect
-        (progn
-          (push (list t 'embark--ephemeral-cleanup) embark-post-action-hooks)
-          (let ((buf (generate-new-buffer "* embark-ephemeral *")))
-            (with-current-buffer buf
-              (insert text)
-              (goto-char (point-min))
-              (let ((win (display-buffer
-                          buf
-                          '(display-buffer-at-bottom 
-                            (window-height . 1)))))
-                (set-window-parameter win 'mode-line-format 'none)
-                (select-window win))
-              (call-interactively #'embark-act))))
-    (run-with-timer
-     0.5 nil
-     #'embark--ephemeral-cleanup)))
+      (progn
+        (push (list t 'embark--ephemeral-cleanup) embark-pre-action-hooks)
+        (let ((buf (generate-new-buffer "* embark-ephemeral *")))
+          (with-current-buffer buf
+            (insert text)
+            (goto-char (point-min))
+            (let ((win (display-buffer
+                        buf
+                        '(display-buffer-at-bottom 
+                          (window-height . 1)))))
+              (set-window-parameter win 'mode-line-format 'none)
+              (select-window win))
+            (call-interactively #'embark-act))))
+    (embark--ephemeral-cleanup)))

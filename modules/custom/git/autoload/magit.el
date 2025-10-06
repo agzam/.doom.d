@@ -319,6 +319,10 @@ be used as a git branch name."
                        "Clone to: " cwd nil nil
                        (magit-clone--url-to-name repository)))))
          (default-directory cwd))
-    (magit-clone-internal repository directory nil)))
+    (if (file-exists-p directory)
+        (progn
+          (message "%s exists already" directory)
+          (dired directory))
+      (magit-clone-internal repository directory nil))))
 
 

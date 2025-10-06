@@ -39,11 +39,13 @@
       (github-pr
        :pattern "github\\.com/[^/]+/[^/]+/pull/[0-9]+"
        :actions (("b b" . forge-visit-topic-via-url)
-                 ("c b" . +link-plain->link-bug-reference)))
+                 ("c b" . +link-plain->link-bug-reference)
+                 ("g c" . magit-clone-regular+)))
       (github-issue
        :pattern "github\\.com/[^/]+/[^/]+/issues/[0-9]+"
        :actions (("b b" . forge-visit-topic-via-url)
-                 ("c b" . +link-plain->link-bug-reference)))
+                 ("c b" . +link-plain->link-bug-reference)
+                 ("g c" . magit-clone-regular+)))
       (github-file
        :pattern "github\\.com/[^/]+/[^/]+/blob/[^/]+/.+"
        :actions (("b b" . +fetch-github-raw-file)))
@@ -63,7 +65,7 @@
        :actions (("b b" . reddigg-view-comments)))
       (hackernews-link
        :pattern "https\\:\\/\\/news.ycombinator.com\\/.*"
-       :actions (("b b" . hnreader-comment))))
+       :actions (("b b" . hnreader-read-page))))
     "Complete url configuration with patterns and actions."
     :type '(alist :key-type (choice (const nil) symbol)
             :value-type plist)

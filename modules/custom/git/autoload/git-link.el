@@ -52,11 +52,15 @@
 ;;;###autoload
 (defun git-https-url->ssh (url)
   "Convert git https url to an ssh url."
-  (if (string-match "^https://\\([^/]+\\)/\\([^/]+\\)/\\(.+\\)$" url)
+  (if (string-match "^https://\\([^/]+\\)/\\([^/]+\\)/\\([^/#?]+\\)" url)
       (let* ((domain (match-string 1 url))
              (user (match-string 2 url))
-             (repo (match-string 3 url))
+             (repo (string-trim-right (match-string 3 url) "/"))
+             (repo (if (string-suffix-p ".git" repo)
+                       (substring repo 0 -4)
+                     repo))
              (ssh-url (format "git@%s:%s/%s.git" domain user repo)))
         (kill-new ssh-url)
         (message ssh-url))
     (error "Invalid HTTPS URL format")))
+
