@@ -323,6 +323,13 @@ be used as a git branch name."
         (progn
           (message "%s exists already" directory)
           (dired directory))
-      (magit-clone-internal repository directory nil))))
-
-
+      (unwind-protect
+          (progn
+            (unless (file-directory-p cwd)
+              (make-directory cwd))
+            (run-with-timer
+             0.1 nil
+             #'magit-clone-internal repository directory nil))
+        (when (and (file-directory-p cwd)
+                   (directory-empty-p cwd))
+          (delete-directory cwd))))))

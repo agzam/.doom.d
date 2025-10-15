@@ -16,6 +16,9 @@
     :after #'eww-forward-url
     (eww--rename-buffer))
 
+  (map! :map shr-map
+        "v" nil)
+
   (map! :map eww-mode-map
         "C-c C-o" #'eww-browse-with-external-browser
         :n "C-j" (cmd! () (pixel-scroll-precision-scroll-down 50))

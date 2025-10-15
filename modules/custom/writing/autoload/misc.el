@@ -104,6 +104,6 @@ created within the last minute and grabs the latest."
                               (format "* OCR %s *" f))
           (erase-buffer)
           (insert-file-contents ocr-file)
-          (kill-new (buffer-substring-no-properties (point-min) (point-max)))
+          ;; (kill-new (buffer-substring-no-properties (point-min) (point-max)))
           (delete-file ocr-file)
           (display-buffer (current-buffer)))))))

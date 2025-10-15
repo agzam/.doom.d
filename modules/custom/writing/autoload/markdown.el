@@ -45,7 +45,7 @@
             (shell-command-on-region
              (point-min)
              (point-max)
-             "pandoc --wrap=none -f org -t gfm" nil t)
+             "pandoc --wrap=none -f org -t gfm | sed 's/<sub>\\([^<]*\\)<\\/sub>/_\\1/g'" nil t)
             (buffer-string))))
     (kill-new converted-content)
     (message "yanked Org as Markdown")))

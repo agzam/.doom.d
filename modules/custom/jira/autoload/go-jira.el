@@ -192,6 +192,10 @@ becomes SAC-28812__add_new_metadata_tap-asana"
          (subtasks-out (thread-last
                          ticket
                          (format "%s list --query 'parent = %s'" j)
+                         shell-command-to-string ansi-color-apply))
+         (linked-items (thread-last
+                         ticket
+                         (format "%s list --query 'issue in linkedIssues(%s)'" j)
                          shell-command-to-string ansi-color-apply)))
     (with-current-buffer buf
       (erase-buffer)
@@ -201,6 +205,9 @@ becomes SAC-28812__add_new_metadata_tap-asana"
       (unless (s-blank-p subtasks-out)
         (insert "Subtasks:\n")
         (insert subtasks-out))
+      (unless (s-blank-p linked-items)
+        (insert "Linked work items:\n")
+        (insert linked-items))
       (markdown-mode)
       (jira-browse-ticket-mode)
       (goto-char (point-min)))
