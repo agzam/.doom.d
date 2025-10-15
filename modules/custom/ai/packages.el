@@ -10,8 +10,13 @@
 
 (package! gptel-quick :recipe (:host github :repo "karthink/gptel-quick"))
 
-(package! aider :recipe (:host github :repo "tninja/aider.el"))
-
-(package! khoj :recipe (:host github :repo "khoj-ai/khoj"))
-
 (package! ob-gptel :recipe (:host github :repo "jwiegley/ob-gptel"))
+
+(package! llm-tool-collection :recipe
+  (:host github :repo "skissue/llm-tool-collection"))
+
+(package! gptel-tools :recipe
+  (:local-repo "gptel-tools" :files ("*.el")))
+
+(package! ragmacs :recipe
+  (:host github :repo "positron-solutions/ragmacs"))

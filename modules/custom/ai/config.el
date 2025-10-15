@@ -27,7 +27,8 @@
   (setq gptel-api-key (lambda () (auth-host->pass "api.openai.com")))
 
   (after! gptel-transient
-    (transient-suffix-put 'gptel-menu (kbd "RET") :key "s-<return>"))
+    (transient-suffix-put 'gptel-menu (kbd "RET") :key "s-<return>")
+    (transient-suffix-put 'gptel-tools (kbd "RET") :key "s-<return>"))
 
   (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "* ")
 
@@ -100,29 +101,66 @@
   (map! :map visual-line-mode-map
         "C-s-k" #'gptel-quick))
 
-(use-package! aider
-  :commands (aider-transient-menu)
-  :hook (aider-comint-mode . visual-line-mode)
-  :config
-  (require 'aider-doom)
-  (setopt aider-args `("--model" "claude-opus-4-20250514"
-                       "--no-auto-commits"
-                       "--anthropic-api-key" ,(auth-host->pass "antropic.com"))))
-
-(use-package! khoj
-  :disabled t
-  :after (org org-roam)
-  :config
-  (setopt
-   khoj-index-directories (list
-                           org-default-folder
-                           (expand-file-name "~/SyncMobile/Books")
-                           (expand-file-name "~/SyncMobile/Papers"))
-   khoj-server-url "http://127.0.0.1:42110"))
-
 (use-package! ob-gptel
   :after (org gptel)
   :config
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((gptel . t))))
+
+(use-package! llm-tool-collection
+  :after gptel
+  :config
+  (mapcar (apply-partially #'apply #'gptel-make-tool)
+          (llm-tool-collection-get-all)))
+
+(use-package! gptel-tools
+  :after gptel
+  :config
+  (gptel-make-preset 'websearch
+    :description "Add basic web search tools"
+    :pre (lambda () (require 'gptel-tools))
+    :tools '(:append "search_web" "read_url" "get_youtube_meta")))
+
+(use-package! ragmacs
+  :after gptel
+  :init
+  (gptel-make-preset 'introspect
+    :pre (lambda () (require 'ragmacs))
+    :description "Introspect Emacs with Ragmacs"
+    :system
+    "You are pair programming with the user in Emacs and on Emacs.
+
+Your job is to dive into Elisp code and understand the APIs and
+structure of elisp libraries and Emacs.  Use the provided tools to do
+so, but do not make duplicate tool calls for information already
+available in the chat.
+
+<tone>
+1. Be terse and to the point.  Speak directly.
+2. Explain your reasoning.
+3. Do NOT hedge or qualify.
+4. If you don't know, say you don't know.
+5. Do not offer unprompted advice or clarifications.
+6. Never apologize.
+7. Do NOT summarize your answers.
+</tone>
+
+<code_generation>
+When generating code:
+1. Create a plan first: list briefly the design steps or ideas involved.
+2. Use the provided tools to check that functions or variables you use
+in your code exist.
+3. Also check their calling convention and function-arity before you use
+them.
+</code_generation>
+
+<formatting>
+1. When referring to code symbols (variables, functions, tags etc)
+enclose them in markdown quotes.
+  Examples: `read_file`, `getResponse(url, callback)`
+  Example: `<details>...</details>`
+2. If you use LaTeX notation, enclose math in \( and \), or \[ and \] delimiters.
+</formatting>"
+    :cache '(tool)
+    :tools '("introspection")))
