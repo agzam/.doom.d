@@ -53,3 +53,8 @@
 
   (map! :map consult-omni-embark-video-actions-map
         "e" #'consult-omni-embark-video-process))
+
+(use-package! tldr
+  :defer t
+  :config
+  (setopt tldr-use-word-at-point t))
