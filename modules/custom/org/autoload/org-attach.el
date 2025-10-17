@@ -81,9 +81,11 @@ attached as .tiff. Flameshot.app stores it as tiff."
 ;;;###autoload
 (defun yank-from-clipboard ()
   (interactive)
+  (unless (executable-find "magick")
+    (error "Imagemagick is not found"))
   (condition-case err
-      (let ((yank-media-preferred-types '(image/tiff)))
-        (call-interactively #'yank-media))
+    (let ((yank-media-preferred-types '(image/tiff)))
+      (call-interactively #'yank-media))
     (error
      (when-let* ((_ (string-match "No handler in the current buffer for anything on the clipboard"
                                   (error-message-string err)))
