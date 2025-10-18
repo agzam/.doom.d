@@ -47,11 +47,14 @@
 
 ;;;###autoload
 (defun dash-docs-activate-docset-a (orig-fn &optional docset)
-  (if (and docset (not (member docset (dash-docs-installed-docsets))))
-      (cond ((member docset (mapcar 'car (dash-docs-unofficial-docsets)))
+  (if (and docset (not (cl-member docset (dash-docs-installed-docsets)
+                                  :test #'string-equal-ignore-case)))
+      (cond ((cl-member docset (mapcar 'car (dash-docs-unofficial-docsets))
+                        :test #'string-equal-ignore-case)
              (dash-docs-install-user-docset docset))
 
-          ((member docset (dash-docs-official-docsets))
+          ((cl-member docset (dash-docs-official-docsets)
+                      :test #'string-equal-ignore-case)
            (dash-docs-install-docset docset))))
   (funcall orig-fn docset))
 
