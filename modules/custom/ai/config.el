@@ -164,3 +164,14 @@ enclose them in markdown quotes.
 </formatting>"
     :cache '(tool)
     :tools '("introspection")))
+
+(use-package! agent-shell
+  :defer t
+  :config
+  (setq agent-shell-anthropic-authentication
+        (agent-shell-anthropic-make-authentication
+         :api-key (lambda () (auth-host->pass "antropic.com"))))
+
+  (map! :map shell-maker-mode-map
+        "s-<return>" #'shell-maker-submit
+        "<return>" #'+default/newline))
