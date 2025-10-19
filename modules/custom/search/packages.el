@@ -9,3 +9,5 @@
   )
 
 (package! tldr)
+
+(package! slack-search :recipe (:local-repo "slack-search" :files ("*.el")))
