@@ -56,8 +56,8 @@
   ["Layouts"
    ["" "" "" ""
     ("<tab>" "recent" tab-bar-switch-to-recent-tab)]
-   [("k" "prev" tab-bar-switch-to-prev-tab)
-    ("j" "next" tab-bar-switch-to-next-tab)
+   [("j" "prev" tab-bar-switch-to-prev-tab)
+    ("k" "next" tab-bar-switch-to-next-tab)
     ("<" "move left" +tab-bar-tab-move-left :transient t)
     (">" "move right" +tab-bar-tab-move-right :transient t)
     ("w" "move window to new tab" tab-bar-move-window-to-tab)]

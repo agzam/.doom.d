@@ -93,4 +93,11 @@
   ["Clojure"
    :if (lambda () (derived-mode-p 'clojure-mode))
    :hide (lambda () (not transient-show-common-commands))
-   [("; c" "wrap comment" clojure-wrap-rich-comment)]])
+   [("; c" "wrap comment" clojure-wrap-rich-comment)]]
+  ["Magit"
+   :if (lambda () (derived-mode-p 'magit-mode))
+   :hide always
+   [("s" "stage" (lambda () (interactive) (general--simulate-keys nil "s")))
+    ("u" "unstage" (lambda () (interactive) (general--simulate-keys nil "u")))
+    ("x" "discard" (lambda () (interactive) (general--simulate-keys nil "x")))
+    ("a" "apply" (lambda () (interactive) (general--simulate-keys nil "a")))]])

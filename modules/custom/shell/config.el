@@ -104,5 +104,5 @@
 
 (use-package! mise
   :defer t
-  :hook (doom-init-ui . global-mise-mode)
+  ;; :hook (doom-init-ui . global-mise-mode)
   :when (executable-find "mise"))

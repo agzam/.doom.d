@@ -25,7 +25,7 @@
 
 (defvar jira-browse-ticket-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "C-c C-o") #'jira-browse-ticket-url)
+    (define-key map (kbd "C-c C-o") #'jira--browse-ticket-mode-open-browser)
     (define-key map (kbd "q") #'kill-buffer-and-window)
     map)
   "Keymap for `jira-browse-ticket-mode' minor mode. ")
@@ -213,6 +213,13 @@ becomes SAC-28812__add_new_metadata_tap-asana"
       (goto-char (point-min)))
     (display-buffer buf)
     (select-window (get-buffer-window buf))))
+
+(defun jira--browse-ticket-mode-open-browser ()
+  (interactive)
+  (let ((ticket
+         (buffer-local-value
+          'jira--ticket-number (current-buffer))))
+    (jira-browse-ticket-url ticket)))
 
 ;;;###autoload
 (defun jira-browse-ticket-url (ticket)
