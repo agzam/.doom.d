@@ -175,3 +175,7 @@ enclose them in markdown quotes.
   (map! :map shell-maker-mode-map
         "s-<return>" #'shell-maker-submit
         "<return>" #'+default/newline))
+
+(use-package! claude-code-ide
+  :defer t
+  :config)
