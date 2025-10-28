@@ -124,7 +124,7 @@
 (setq +doom-yank-indent-modes '())
 (setq +doom-yank-indent-threshold 1000)
 
-(defadvice! +yank-indent-region-a (yank-fn &rest args)
+(undefadvice! +yank-indent-region-a (yank-fn &rest args)
   :around #'yank
   :around #'yank-pop
   :around #'evil-paste-before
