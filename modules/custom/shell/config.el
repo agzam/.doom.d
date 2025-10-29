@@ -106,3 +106,9 @@
   :defer t
   ;; :hook (doom-init-ui . global-mise-mode)
   :when (executable-find "mise"))
+
+(defun on-mxp-buffer-update-h (buffer-name beg end)
+  (with-current-buffer buffer-name
+    (ansi-color-apply-on-region beg end)))
+
+(add-hook 'mxp-buffer-update-hook #'on-mxp-buffer-update-h)
