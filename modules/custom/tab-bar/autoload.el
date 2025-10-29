@@ -90,7 +90,13 @@
                (lambda ()
                  (interactive)
                  (+tab-bar-switch-to-tab-number n))))
-       (number-sequence 1 9))))])
+       (number-sequence 1 9))))]
+  (interactive)
+  (setq tab-bar-tab-hints t)
+  (transient-setup 'tab-bar-transient)
+  (add-hook 'transient-exit-hook
+            (lambda ()
+              (setq tab-bar-tab-hints nil))))
 
 ;;;###autoload
 (defun +tab-bar-switch-to-tab-number (num)
@@ -212,6 +218,20 @@
                  ((not (string-match-p "\\*Minibuf" buf-name))
                   buf-name))))
     (concat label (when branch (format "󠀠 ▸ %s" branch)))))
+
+;;;###autoload
+(defun +tab-bar-fmt-show-index-fn (name _tab idx)
+  "Add styled tab number if tab-bar-tab-hints is enabled."
+  (if tab-bar-tab-hints
+      (concat
+       (propertize (number-to-string idx)
+                   'display '(raise -0.5)
+                   'face '(:height 1.2
+                           :weight bold
+                           :foreground "orange"))
+       ""
+       name)
+    name))
 
 ;;;###autoload
 (defun +tab-bar-move-buffer-to-tab ()

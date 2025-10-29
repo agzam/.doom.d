@@ -7,8 +7,15 @@
         tab-bar-separator " ❘ "
         tab-bar-format '(tab-bar-format-tabs tab-bar-separator)
         tab-bar-auto-width nil)
+
+  (add-hook! 'tab-bar-tab-name-format-functions
+             #'+tab-bar-fmt-show-index-fn)
+  (remove-hook!
+    'tab-bar-tab-name-format-functions
+    #'tab-bar-tab-name-format-hints)
+
   (unless (featurep :system 'macos)
-    (setq tab-bar-tab-name-function #'+tab-bar-name-fn)
+    (setopt tab-bar-tab-name-function #'+tab-bar-name-fn)
     (tab-bar-history-mode +1))
 
   (map!
