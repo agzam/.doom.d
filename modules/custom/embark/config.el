@@ -73,8 +73,8 @@
                  ("RET" . reddigg-view-comments)))
       (hackernews-link
        :pattern "https\\:\\/\\/news.ycombinator.com\\/.*"
-       :actions (("b b" . hnreader-read-page)
-                 ("RET" . hnreader-read-page)))
+       :actions (("b b" . hnreader-comment)
+                 ("RET" . hnreader-comment)))
       (circle-ci-log
        :pattern "https\\:\\/\\/circleci.com\\/api\\/.*"
        :actions (("b b" . open-circleci-log)

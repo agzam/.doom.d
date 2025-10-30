@@ -223,6 +223,7 @@
         "C-c C-o" #'hnreader-browse-nh-story-url
         :n "yy" #'hnreader-copy-hn-story-url
         :n "q" #'kill-buffer-and-window
+        :n "^" #'hnreader-goto-parent
         (:localleader
          (:prefix ("u" . "urls")
           :desc "urls" "s" (cmd! (consult-line-collect-urls "ycombinator\\.com\\|view story in eww"))))))

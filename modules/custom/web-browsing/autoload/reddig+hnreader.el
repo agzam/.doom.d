@@ -55,18 +55,38 @@
 ;;;###autoload
 (defun reddigg-hnreader-show-all-h ()
   "Expands all the comments."
-  (unless (string-match-p
-           "\\*HN\\*\\|\\*reddigg\\*"
-           (buffer-name))
-    (org-fold-show-all))
+  (goto-char (point-min))
+  (jinx-mode -1)
   (setq-local org-link-elisp-confirm-function nil)
   (run-with-timer
    0.3 nil
-   (lambda ()
-     (goto-char (point-min))
-     (jinx-mode -1)
-     (ignore-errors
-       (org-next-visible-heading 1)))))
+   (lambda (b)
+     (ignore-errors (org-next-visible-heading 1))
+     ;; don't expand headings on home page
+     (unless (string-match-p
+              "\\*HN\\*\\|\\*reddigg\\*"
+              (buffer-name b))
+       (with-current-buffer b
+         (org-fold-show-all))))
+   (current-buffer)))
+
+;; (add-hook! 'hnreader-mode-hook #'reddigg-hnreader-show-all-h) 
+
+;;;###autoload
+(defun hnreader-goto-parent ()
+  "Find and follow the parent link."
+  (interactive)
+  (let* ((line-number (line-number-at-pos))
+         (parent-link-regex "\\[\\[elisp:(hnreader-comment \"\\([^\"]+\\)\")\\]\\[parent\\]\\]")
+         (search-fn (if (< line-number 5) 're-search-forward 're-search-backward)))
+    
+    ;; Search for the pattern
+    (if (funcall search-fn parent-link-regex nil t)
+        ;; Found it - go to the start of the link and open it
+        (progn
+          (goto-char (match-beginning 0))
+          (org-open-at-point))
+      (message "Parent link not found"))))
 
 ;;;###autoload
 (defun consult-line-collect-urls (&optional ignore-regexp)
