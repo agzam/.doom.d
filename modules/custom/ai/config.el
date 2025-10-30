@@ -176,6 +176,7 @@ enclose them in markdown quotes.
         "s-<return>" #'shell-maker-submit
         "<return>" #'+default/newline))
 
-(use-package! claude-code-ide
+(use-package! claude-code
   :defer t
-  :config)
+  :config
+  (setopt claude-code-terminal-backend 'eat))
