@@ -17,7 +17,7 @@
           calendar-longitude -96.93)
   (setopt circadian-themes
         `(("6:00" . ag-themes-spacemacs-light)
-          ("14:00" . ag-themes-doom-feather-light)
+          ("16:00" . ag-themes-doom-feather-light)
           ("20:00" . ag-themes-base16-ocean)
           ("21:30" . ag-themes-base16-ashes)
           ("23:00" . ag-themes-doom-plain-dark))))

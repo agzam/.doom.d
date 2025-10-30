@@ -104,3 +104,30 @@ Leaves single window per buffer, removing all duplicates."
   (with-selected-window (other-window-for-scrolling)
     (funcall (doom-lookup-key (kbd "C-y")) count)))
 
+;;;###autoload
+(defun +window-undo ()
+  "Undo windows."
+  (interactive)
+  (if (and (bound-and-true-p tab-bar-history-mode)
+           (bound-and-true-p tab-bar-mode))
+      (let* ((back-ring (gethash (selected-frame) tab-bar-history-back))
+             (forward-ring (gethash (selected-frame) tab-bar-history-forward)))
+        (tab-bar-history-back)
+        (message "Tab history undo (%d back / %d forward)"
+                 (length back-ring)
+                 (length forward-ring)))
+    (winner-undo)))
+
+;;;###autoload
+(defun +window-redo ()
+  "Redo windows."
+  (interactive)
+  (if (and (bound-and-true-p tab-bar-history-mode)
+           (bound-and-true-p tab-bar-mode))
+      (let* ((back-ring (gethash (selected-frame) tab-bar-history-back))
+             (forward-ring (gethash (selected-frame) tab-bar-history-forward)))
+        (tab-bar-history-forward)
+        (message "Tab history redo (%d back / %d forward)"
+                 (length back-ring)
+                 (length forward-ring)))
+    (winner-redo)))

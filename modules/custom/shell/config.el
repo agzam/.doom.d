@@ -81,7 +81,8 @@
 
 (use-package! eat
   :defer t
-  :hook ((eshell-load . eat-eshell-mode)))
+  ;; :hook ((eshell-load . eat-eshell-mode))
+  :config)
 
 (use-package! eshell-atuin
   :when (executable-find "atuin")

@@ -26,7 +26,6 @@
             :n (concat "w" wn) f)
       (global-set-key (kbd k) f))))
 
-
 (use-package! info+
   :defer t
   :commands (info info-display-manual)

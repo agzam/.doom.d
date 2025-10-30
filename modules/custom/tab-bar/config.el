@@ -6,7 +6,8 @@
         tab-bar-close-button-show nil
         tab-bar-separator " ❘ "
         tab-bar-format '(tab-bar-format-tabs tab-bar-separator)
-        tab-bar-auto-width nil)
+        tab-bar-auto-width t
+        tab-bar-auto-width-max '((150) 10))
 
   (add-hook! 'tab-bar-tab-name-format-functions
              #'+tab-bar-fmt-show-index-fn)
@@ -14,9 +15,9 @@
     'tab-bar-tab-name-format-functions
     #'tab-bar-tab-name-format-hints)
 
+  (tab-bar-history-mode +1)
   (unless (featurep :system 'macos)
-    (setopt tab-bar-tab-name-function #'+tab-bar-name-fn)
-    (tab-bar-history-mode +1))
+    (setopt tab-bar-tab-name-function #'+tab-bar-name-fn))
 
   (map!
    "s-[" #'tab-bar-switch-to-prev-tab

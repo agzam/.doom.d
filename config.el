@@ -535,8 +535,9 @@
                "_" #'delete-other-windows-horizontally
                "m" #'toggle-maximize-buffer
                "|" #'delete-other-windows-vertically
-               "r" #'balance-windows-area
-               "=" #'balance-windows-area)
+               "=" #'balance-windows-area
+               "u" #'+window-undo
+               "r" #'+window-redo)
       "x" nil
       (:prefix ("x" ."text")
                "x" #'jinx-correct-word
