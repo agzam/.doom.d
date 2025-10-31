@@ -294,6 +294,7 @@
         (:prefix ";"
          "." #'evil-insert-state
          "i" #'vertico-quick-insert
+         "j" #'vertico-quick-jump
          "g" #'vertico-multiform-grid
          "b" #'vertico-multiform-buffer
          "f" #'vertico-multiform-flat
