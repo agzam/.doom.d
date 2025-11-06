@@ -18,10 +18,14 @@
   (setopt lsp-pyright-multi-root nil)
   :config
   (setopt
-   ;; don't forget to `pip install basedpyright'
+   ;; don't forget to:
+   ;; uv tool install basedpyright
+   ;; uv tool install ruff
    lsp-pyright-langserver-command "basedpyright"
    lsp-pyright-venv-path "."
-   lsp-pyright-venv-directory ".venv")
+   lsp-pyright-venv-directory ".venv"
+   lsp-ruff-python-path "python"
+   python-shell-interpreter "python")
 
   (setopt lsp-pyright-type-checking-mode "off")
 
@@ -42,4 +46,8 @@
              "r" #'python-format)
     (:prefix ("c" . "convert")
              "j" #'python-to-json
-             "e" #'python-to-edn))))
+             "e" #'python-to-edn)
+    (:prefix ("e" . "errors")
+             "f" #'python-fix-all)
+    (:prefix ("f" . "format")
+             "i" #'python-fix-imports))))

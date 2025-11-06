@@ -106,3 +106,24 @@
                           out (error "Can't format: %s" out))))))
         (delete-region beg end)
         (insert out)))))
+
+(defadvice! python--fix-imports-with-ruff-a (&optional _beg _end)
+  "Use Ruff instead of pyflakes."
+  :override #'python-fix-imports
+  (save-buffer)
+  (shell-command (concat "ruff check --select F401 --fix " (buffer-file-name)))
+  (revert-buffer t t t))
+
+;;;###autoload
+(defun python-fix-all ()
+  "Use Ruff to fix Python issues.
+
+  - Unused imports (F401)
+  - Unused variables (F841)
+  - Undefined names (F821)
+  - Whitespace issues
+  - And other rules depending on your .ruff.toml or pyproject.toml"
+  (interactive)
+  (save-buffer)
+  (shell-command (concat "ruff check --select F401 --fix " (buffer-file-name)))
+  (revert-buffer t t t))

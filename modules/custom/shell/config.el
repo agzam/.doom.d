@@ -82,7 +82,10 @@
 (use-package! eat
   :defer t
   ;; :hook ((eshell-load . eat-eshell-mode))
-  :config)
+  :config
+  (map! :map eat-mode-map
+   :i "C-j" #'eat-self-input
+   "s-v" #'eat-yank-from-kill-ring))
 
 (use-package! eshell-atuin
   :when (executable-find "atuin")
