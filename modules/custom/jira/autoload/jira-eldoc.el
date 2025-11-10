@@ -104,15 +104,16 @@
   "Hide popup if it's visible but we're not in the source buffer anymore."
   (when (and jira--posframe-available-p
              (posframe-workable-p)
-             (get-buffer jira-popup-buffer)
-             (frame-visible-p (buffer-local-value 'posframe--frame
-                                                  (get-buffer jira-popup-buffer))))
-    (let ((source-buf (buffer-local-value 'jira--popup-source-buffer
-                                         (get-buffer jira-popup-buffer))))
-      ;; Hide if we're not in the source buffer or source buffer isn't visible
-      (when (or (not (eq (current-buffer) source-buf))
-                (not (get-buffer-window source-buf)))
-        (jira-popup--hide)))))
+             (get-buffer jira-popup-buffer))
+    (let* ((popup-buf (get-buffer jira-popup-buffer))
+           (frame (buffer-local-value 'posframe--frame popup-buf)))
+      ;; Check if frame is alive before using it
+      (when (and frame (frame-live-p frame) (frame-visible-p frame))
+        (let ((source-buf (buffer-local-value 'jira--popup-source-buffer popup-buf)))
+          ;; Hide if we're not in the source buffer or source buffer isn't visible
+          (when (or (not (eq (current-buffer) source-buf))
+                    (not (get-buffer-window source-buf)))
+            (jira-popup--hide)))))))
 
 (defun jira-popup--show (ticket description)
   "Show DESCRIPTION for TICKET in a posframe popup."
