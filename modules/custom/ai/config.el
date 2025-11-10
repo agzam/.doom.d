@@ -62,7 +62,7 @@
              "m" #'gptel-menu
              "," #'gptel-menu
              (:prefix ("s" . "session")
-              :desc "clear" "l" #'gptel-clear-buffer+)))))
+              :desc "clear" "L" #'gptel-clear-buffer+)))))
 
   (add-hook! 'kill-emacs-hook
     (defun persist-gptel-model ()
