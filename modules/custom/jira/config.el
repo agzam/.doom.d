@@ -30,9 +30,8 @@
 (map! :map jira-browse-ticket-mode-map
       :n "yy" #'jira--browser-ticket-mode-get-url)
 
-;; Enable Jira eldoc to show ticket descriptions on hover
 (add-hook! '(org-mode-hook
              markdown-mode-hook
              prog-mode-hook
              text-mode-hook)
-           #'jira-eldoc-enable)
+           #'jira-enable-popup+eldoc)
