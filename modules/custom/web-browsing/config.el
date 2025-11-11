@@ -226,7 +226,11 @@
         :n "^" #'hnreader-goto-parent
         (:localleader
          (:prefix ("u" . "urls")
-          :desc "urls" "s" (cmd! (consult-line-collect-urls "ycombinator\\.com\\|view story in eww"))))))
+          :desc "urls" "s" (cmd! (consult-line-collect-urls "ycombinator\\.com\\|view story in eww")))))
+
+  ;; no ranking numbers on front page
+  (advice-add 'hnreader--print-frontpage-item 
+              :around #'hnreader-frontpage-item-no-rank-a))
 
 (use-package! reddigg
   :defer t

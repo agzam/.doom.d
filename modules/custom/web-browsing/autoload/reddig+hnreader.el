@@ -120,3 +120,16 @@
           (goto-char (point-min))
           (forward-line (1- line-num))
           (recenter))))))
+
+;;;###autoload
+(defun hnreader-frontpage-item-no-rank-a (orig-fn thing subtext)
+  "I don't like ranking numbers in the hnreader buffer.
+They shift the titles making them harder to read."
+  (let ((content (with-temp-buffer
+                   (funcall orig-fn thing subtext)
+                   (buffer-string))))
+    (setq content (replace-regexp-in-string "^\\* [0-9]+\\. " "* " content))
+    (setq content (replace-regexp-in-string "\u00A0" " " content))
+    (insert content)))
+
+
