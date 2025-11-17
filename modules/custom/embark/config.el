@@ -25,7 +25,8 @@
     '((nil :actions (("b e" . +eww-open-in-other-window)
                      ("b o" . +browse-url)
                      ("c m" .  +link-plain->link-markdown)
-                     ("c o" . +link-plain->link-org-mode)))
+                     ("c o" . +link-plain->link-org-mode)
+                     ("RET" . +eww-open-in-other-window)))
       (yt-video
        :pattern "\\(youtube\\.com/watch\\|youtu\\.be/\\)"
        :actions (("b b" . mpv-open+)

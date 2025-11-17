@@ -115,8 +115,10 @@ convert from JSON."
   "Edit Clojure ns header in an indirect buffer."
   (interactive)
   (save-mark-and-excursion
-    (let ((edit-indirect-guess-mode-function (lambda (buf b_ e_)
-                                               (funcall (buffer-local-value 'major-mode buf)))))
+    (let* ((display-buffer-overriding-action
+            '(display-buffer-pop-up-window))
+           (edit-indirect-guess-mode-function (lambda (buf _b _e)
+                                                (funcall (buffer-local-value 'major-mode buf)))))
       (cljr--goto-ns)
       (sp-select-next-thing)
       (map! :map cider-mode-map "C-c C-k" nil)
