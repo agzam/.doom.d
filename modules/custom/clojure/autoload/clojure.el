@@ -157,6 +157,7 @@ convert from JSON."
 (defun clj-fully-qualified-symbol-with-gh-link (&optional main-branch?)
   "Returns a markdown link to line number on GH with a Symbol Name"
   (interactive "P")
+  (require 'git-link)
   (let* ((git-link-default-branch (when main-branch? (magit-main-branch)))
          (url (url-unhex-string (git-link-kill)))
          (symbol (let ((inhibit-message t))

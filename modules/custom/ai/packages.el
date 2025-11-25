@@ -28,3 +28,6 @@
 (package! claude-code
   :recipe (:host github :repo "stevemolitor/claude-code.el"
            :files ("*.el" (:exclude "images/*"))))
+
+(package! eca
+  :recipe (:host github :repo "editor-code-assistant/eca-emacs" :files ("*.el")))

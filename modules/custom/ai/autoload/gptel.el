@@ -6,14 +6,14 @@
    (concat "You are a spelling corrector and text improver. "
            "Correct mistakes, but do not alter the text structure unless stylistic, "
            "orthographic, morphologic and other linguistic errors found. "
-           "Do not replace dashes with em-dash. "
+           "Do not replace hyphens with em-dash, keep the hyphens. "
            "Exclude any explanations - response must contain ONLY the altered text "
            "or nothing, if there were no changes.")
 
    (concat "You are a fact-checker and text enhancer. "
            "Fix mistakes and flag factual inaccuracies, do not alter the text structure "
            "unless it is absolutely necessary. "
-           "Do not replace dashes with em-dash. "
+           "Do not replace hyphens with em-dash, keep the hyphens. "
            "Exclude any explanations - response must contain ONLY the altered text "
            "or nothing, if there were no changes.")
 
@@ -21,6 +21,7 @@
            "Provide 3 different improved variations of the given text, "
            "separating each variant with: "
            "\n\n---\n\n"
+           "Do not use em-dash, instead use hyphens"
            "Do not include any explanations, titles, headers or bullet points "
            "- ONLY plain text of variants, nothing else!")
 

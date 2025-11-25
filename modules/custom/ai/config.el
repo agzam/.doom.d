@@ -172,11 +172,30 @@ enclose them in markdown quotes.
         (agent-shell-anthropic-make-authentication
          :api-key (lambda () (auth-host->pass "antropic.com"))))
 
-  (map! :map shell-maker-mode-map
-        "s-<return>" #'shell-maker-submit
-        "<return>" #'+default/newline))
+  ;; (map! :map shell-maker-mode-map
+  ;;       "s-<return>" #'shell-maker-submit
+  ;;       "<return>" #'+default/newline)
+  )
 
 (use-package! claude-code
   :defer t
   :config
   (setopt claude-code-terminal-backend 'eat))
+
+(use-package! eca
+  :defer t
+  :config
+  (setopt eca-chat-use-side-window nil
+          eca-chat-custom-behavior nil)
+  (map! :map eca-chat-mode-map
+        "RET" nil
+        "<return>" nil
+        :in "s-<return>"  #'eca-chat--key-pressed-return
+        "C-c C-y" #'eca-chat-tool-call-accept-all
+        :n "<tab>"  #'eca-chat-toggle-expandable-block
+        :n "TAB" #'eca-chat-toggle-expandable-block)
+  (map! :map (markdown-mode-map
+              evil-markdown-mode-map)
+        "TAB" nil
+        :n "<tab>" nil))
+
