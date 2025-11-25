@@ -34,8 +34,8 @@
                  ("b t" . youtube-sub-extractor-extract-subs)))
       (github-repo
        :pattern "github\\.com/[^/]+/[^/]+/?$"
-       :actions (("b b" . (lambda (x) (forge-visit-topic-via-url x)))
-                 ("RET" . (lambda (x) (forge-visit-topic-via-url x)))
+       :actions (("b b" . forge-visit-topic-via-url)
+                 ("RET" . forge-visit-topic-via-url)
                  ("c s" . git-https-url->ssh)
                  ("g c" . magit-clone-regular+)))
       (github-pulls
@@ -48,14 +48,14 @@
                  ("RET" . +forge-browse-topics)))
       (github-pr
        :pattern "github\\.com/[^/]+/[^/]+/pull/[0-9]+"
-       :actions (("b b" . (lambda (x) (forge-visit-topic-via-url x)))
-                 ("RET" . (lambda (x) (forge-visit-topic-via-url x)))
+       :actions (("b b" . forge-visit-topic-via-url)
+                 ("RET" . forge-visit-topic-via-url)
                  ("c b" . +link-plain->link-bug-reference)
                  ("g c" . magit-clone-regular+)))
       (github-issue
        :pattern "github\\.com/[^/]+/[^/]+/issues/[0-9]+"
-       :actions (("b b" . (lambda (x) (forge-visit-topic-via-url x)))
-                 ("RET" . (lambda (x) (forge-visit-topic-via-url x)))
+       :actions (("b b" . forge-visit-topic-via-url)
+                 ("RET" . forge-visit-topic-via-url)
                  ("c b" . +link-plain->link-bug-reference)
                  ("g c" . magit-clone-regular+)))
       (github-file
@@ -145,6 +145,7 @@
 
    (:map
     embark-url-map
+    "RET" #'+eww-open-in-other-window
     (:prefix
      ("b" . "browse")
      :desc "browser" "o" #'browse-url

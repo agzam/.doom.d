@@ -269,38 +269,16 @@ targets."
   (embark-org-block-convert "quote"))
 
 ;;;###autoload
-(defun embark--ephemeral-cleanup (&rest _)
-  (setq embark-post-action-hooks
-        (remove (list t 'embark--ephemeral-cleanup)
-                embark-post-action-hooks))
-  (thread-last
-    (buffer-list)
-    (seq-filter (lambda (b) (string-prefix-p "* embark-ephemeral *" (buffer-name b))))
-    (seq-do (lambda (b)
-              (when-let* ((w (get-buffer-window b)))
-                (delete-window w))
-              (kill-buffer b)))))
-
-;;;###autoload
 (defun embark-ephemeral-act (text)
-  "Creates short-lived buffer for something to act on.
-
-Embark acts on things-at-point, and as far as I know, there's no good
-way of making it act on anything that doesn't exist `at-point` - things
-you pull out of thin air, i.e., a result of an http request, or data
-fetched from some external process. This creates a provisional buffer
-that gets destroyed shortly after acted on."
+  "Act on TEXT using Embark via minibuffer interaction."
   (interactive)
-  (push (list t 'embark--ephemeral-cleanup) embark-post-action-hooks)
-  (let ((buf (generate-new-buffer "* embark-ephemeral *")))
-    (with-current-buffer buf
-      (insert text)
-      (goto-char (point-min))
-      (let ((win (display-buffer
-                  buf
-                  '(display-buffer-at-bottom
-                    (window-height . 1)))))
-        (set-window-dedicated-p win t)
-        (set-window-parameter win 'mode-line-format 'none)
-        (select-window win))
-      (call-interactively #'embark-act))))
+  (define-key minibuffer-local-map "RET" nil)
+  ;; I have to override default-action, otherwise it's hijacking
+  ;; whatever calls this function, making "RET" not to work in embark-act
+  (cl-letf (((symbol-function 'embark--default-action)
+             (lambda (x)
+               (lookup-key (embark--raw-action-keymap x) "\r")))
+            (embark-quit-after-action nil))
+    (run-with-timer 0.1 nil #'embark-act)
+    (read-from-minibuffer "Act on: " text)))
+

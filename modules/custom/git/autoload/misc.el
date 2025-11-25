@@ -149,7 +149,10 @@ If URL is a link to a file, it extracts its raw form and tries to open in a buff
                           (when-let* ((line (plist-get parts :line))
                                       (line-num (1- (string-to-number line))))
                             (forward-line line-num))
-                          (switch-to-buffer-other-window
+                          (run-with-timer
+                           0.1 nil
+                           (lambda (b)
+                             (switch-to-buffer-other-window b))
                            (current-buffer)))))))))))
 
 ;;;###autoload
