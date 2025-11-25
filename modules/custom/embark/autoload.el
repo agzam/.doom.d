@@ -268,6 +268,21 @@ targets."
   (interactive)
   (embark-org-block-convert "quote"))
 
+(defun embark--ephemeral-cleanup (&rest _)
+  (setq embark-post-action-hooks 
+        (remove (list t 'embark--ephemeral-cleanup) 
+                embark-post-action-hooks))
+  ;; Save the current window (the action's target, like eww)
+  ;; and kill minibuffer
+  (run-with-timer
+   0.1 nil
+   (lambda ()
+     (let ((w (selected-window)))
+       (run-with-timer
+        0.1 nil
+        (lambda (w) (select-window w)) w)
+       (exit-minibuffer)))))
+
 ;;;###autoload
 (defun embark-ephemeral-act (text)
   "Act on TEXT using Embark via minibuffer interaction."
@@ -278,7 +293,12 @@ targets."
   (cl-letf (((symbol-function 'embark--default-action)
              (lambda (x)
                (lookup-key (embark--raw-action-keymap x) "\r")))
-            (embark-quit-after-action nil))
+            (embark-quit-after-action nil)
+            ;; Prevent minibuffer from restoring window config on exit
+            (read-minibuffer-restore-windows nil)
+            (minibuffer-exit-hook nil))
+    (push (list t 'embark--ephemeral-cleanup) embark-post-action-hooks)
     (run-with-timer 0.1 nil #'embark-act)
-    (read-from-minibuffer "Act on: " text)))
+    (read-string "Act on: " text)))
+
 
