@@ -222,12 +222,13 @@ becomes SAC-28812__add_new_metadata_tap-asana"
 
 ;;;###autoload
 (defun go-jira-view-ticket (ticket)
-  "View the TICKET in a buffer."
+  "View the TICKET in a buffer with Jira markup converted to Org-mode."
   (interactive "sJira ticket number: ")
+  (require 'go-jira-markup)
   (let* ((j (go-jira--find-exe))
-         (buf (get-buffer-create (format "%s" ticket)))
-         (cmd (format "%s view %s" j ticket))
-         (output (ansi-color-apply (shell-command-to-string cmd)))
+         (buf (get-buffer-create (format "*Jira: %s*" ticket)))
+         (json-cmd (format "%s view %s --template json" j ticket))
+         (json-output (shell-command-to-string json-cmd))
          (subtasks-out (thread-last
                          ticket
                          (format "%s list --query 'parent = %s'" j)
@@ -236,22 +237,36 @@ becomes SAC-28812__add_new_metadata_tap-asana"
                          ticket
                          (format "%s list --query 'issue in linkedIssues(%s)'" j)
                          shell-command-to-string ansi-color-apply)))
-    (with-current-buffer buf
-      (erase-buffer)
-      (put 'go-jira--ticket-number 'permanent-local t)
-      (setq-local go-jira--ticket-number ticket)
-      (insert (replace-regexp-in-string "\r" "" output))
-      (unless (s-blank-p subtasks-out)
-        (insert "Subtasks:\n")
-        (insert subtasks-out))
-      (unless (s-blank-p linked-items)
-        (insert "Linked work items:\n")
-        (insert linked-items))
-      (markdown-mode)
-      (go-jira-browse-ticket-mode)
-      (goto-char (point-min)))
-    (display-buffer buf)
-    (select-window (get-buffer-window buf))))
+    (condition-case err
+        (let* ((json-object-type 'hash-table)
+               (json-key-type 'symbol)
+               (json-array-type 'list)
+               (parsed (json-read-from-string json-output))
+               (key (gethash 'key parsed))
+               (fields (gethash 'fields parsed))
+               (summary (when fields (gethash 'summary fields)))
+               (description (when fields (gethash 'description fields))))
+          (with-current-buffer buf
+            (erase-buffer)
+            (org-mode)
+            (insert (format "* %s: %s\n\n" key summary))
+            (when description
+              (insert "** Description\n\n")
+              (insert (go-jira-markup-to-org description))
+              (insert "\n\n"))
+            (unless (s-blank-p subtasks-out)
+              (insert "** Subtasks\n\n")
+              (insert subtasks-out)
+              (insert "\n"))
+            (unless (s-blank-p linked-items)
+              (insert "** Linked work items\n\n")
+              (insert linked-items)
+              (insert "\n"))
+            (goto-char (point-min)))
+          (display-buffer buf)
+          (select-window (get-buffer-window buf)))
+      (error
+       (message "Failed to parse issue JSON: %s" (error-message-string err))))))
 
 
 ;;;###autoload
