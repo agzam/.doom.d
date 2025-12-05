@@ -1,59 +1,62 @@
-;;; go-jira.el --- go-jira helper -*- lexical-binding: t; -*-
-;;
+;;; go-jira.el --- Emacs interface to go-jira CLI tool -*- lexical-binding: t; -*-
+
 ;; Copyright (C) 2024 Ag Ibragimov
-;;
+
 ;; Author: Ag Ibragimov <agzam.ibragimov@gmail.com>
-;; Created: October 2024
-;; Version: 0.0.1
-;; Keywords: tools extensions
-;; Homepage: https://github.com/agzam/ag-themes.el
-;; Package-Requires: ((emacs "29"))
-;;
+;; Version: 0.1.0
+;; Package-Requires: ((emacs "29.1") (consult "1.0") (s "1.13.1"))
+;; Keywords: tools, jira
+;; URL: https://github.com/agzam/go-jira.el
+;; SPDX-License-Identifier: GPL-3.0-or-later
+
 ;; This file is not part of GNU Emacs.
-;;
+
 ;;; Commentary:
+
+;; This package provides an Emacs interface to the go-jira CLI tool
+;; (https://github.com/go-jira/jira), allowing you to interact with
+;; Jira issues directly from Emacs.
 ;;
-;;  Description
-;;
-;;  Helper functions to work with go-jira: https://github.com/go-jira/jira
+;; Features:
+;; - Search and browse Jira issues
+;; - View issue details
+;; - Convert issue keys to org-mode/markdown links
+;; - Generate git branch names from issues
+;; - Integration with consult for fuzzy searching
+
 ;;; Code:
 
-(defcustom jira-default-search-format-string "text ~ \"%s\""
+(require 'json)
+(require 'consult)
+(require 'thingatpt)
+(require 'ansi-color)
+(require 'markdown-mode)
+(require 's)
+
+(defgroup go-jira nil
+  "Emacs interface to go-jira CLI tool."
+  :group 'tools
+  :prefix "go-jira-")
+
+(defcustom go-jira-default-search-format-string "text ~ \"%s\""
   "Default, initial format string for search."
   :type 'string
-  :group 'jira)
+  :group 'go-jira)
 
-(defvar jira-browse-ticket-mode-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "C-c C-o") #'jira--browse-ticket-mode-open-browser)
-    (define-key map (kbd "q") #'kill-buffer-and-window)
-    map)
-  "Keymap for `jira-browse-ticket-mode' minor mode. ")
+;;; Internal utilities
 
-(define-minor-mode jira-browse-ticket-mode
-  "Minor mode for buffer with jira ticket content."
-  :group 'jira
-  :lighter " jira"
-  :init-value nil
-  :keymap jira-browse-ticket-mode-map)
-
-(defun jira--find-exe (&optional exe)
-  "Find and return executable EXE or throw a message."
+(defun go-jira--find-exe (&optional exe)
+  "Find and return executable EXE or throw an error.
+Defaults to \"jira\" if EXE is not provided."
   (if-let ((ex (executable-find (or exe "jira"))))
       ex
-    (error "ERROR: Could not locate %s" exe)))
+    (error "ERROR: Could not locate %s" (or exe "jira"))))
 
-(defun jira-summary (ticket)
-  "Retrieves the summary of TICKET number."
-  (interactive)
-  (let ((j (jira--find-exe)))
-    (string-trim
-     (shell-command-to-string
-      (format "%s view %s --gjq 'fields.summary'" j ticket)))))
-
-;;;###autoload
-(defun jira--ticket-arg-or-ticket-at-point (&optional ticket)
-  "Resolves ticket based on argument or symbol-at-point"
+(defun go-jira--ticket-arg-or-ticket-at-point (&optional ticket)
+  "Resolve TICKET based on argument or `symbol-at-point'.
+If TICKET is provided, return it.
+Otherwise, check for a ticket at point.
+Falls back to last kill in `kill-ring' if it's a valid ticket."
   (let* ((ticket-pattern "\\`[A-Z]\\{2,10\\}-[0-9]+\\'")
          (satp (thing-at-point 'symbol t))
          (ticket-at-point (when (and satp
@@ -67,22 +70,21 @@
                                  last-kill)))))
     (or ticket ticket-at-point kill-ring-ticket)))
 
-;;;###autoload
-(defun jira-ticket->url (ticket)
-  "Extracts browsable url for the TICKET number."
-  (let* ((j (jira--find-exe))
-         (jq (jira--find-exe "jq"))
-         (cmd (format "%s view %s --template json | %s -r '\"\\(.self | split(\"/rest\")[0])/browse/\\(.key)\"'"
-                      j ticket jq))
-         (res (shell-command-to-string cmd)))
-    (if (string-match-p "jq: .* error:" res)
-        (user-error res)
-      (string-trim res))))
+(defun go-jira--url (ticket)
+  "Get the browsable URL for TICKET."
+  (let* ((j (go-jira--find-exe))
+         (jq (go-jira--find-exe "jq"))
+         (cmd (format (concat
+                       "%s view %s --template json | %s -r '"
+                       "\"\\( .self | split(\"/rest\")[0] )/browse/\\( .key )\"'")
+                      j ticket jq)))
+    (string-trim (shell-command-to-string cmd))))
 
-(defun jira--summary+url (ticket)
-  "Fetch summary and url for a given TICKET."
-  (let* ((j (jira--find-exe))
-         (jq (jira--find-exe "jq"))
+(defun go-jira--summary+url (ticket)
+  "Fetch summary and url for a given TICKET.
+Returns a plist with :ticket, :url, and :summary."
+  (let* ((j (go-jira--find-exe))
+         (jq (go-jira--find-exe "jq"))
          (cmd (format (concat
                        "%s view %s --template json | %s -r '{"
                        "summary: .fields.summary,"
@@ -99,27 +101,34 @@
              (url (gethash 'url parsed)))
         (list :ticket ticket :url url :summary summary)))))
 
-(defun jira--url (ticket)
-  (let* ((j (jira--find-exe))
-         (jq (jira--find-exe "jq"))
-         (cmd (format (concat
-                       "%s view %s --template json | %s -r '"
-                       "\"\\( .self | split(\"/rest\")[0] )/browse/\\( .key )\"'")
-                      j ticket jq)))
-    (string-trim (shell-command-to-string cmd))))
+;;; Public API - Ticket information
+
+(defun go-jira-summary (ticket)
+  "Retrieve the summary of TICKET number."
+  (interactive)
+  (let ((j (go-jira--find-exe)))
+    (string-trim
+     (shell-command-to-string
+      (format "%s view %s --gjq 'fields.summary'" j ticket)))))
 
 ;;;###autoload
-(defun jira--browser-ticket-mode-get-url ()
-  (interactive)
-  (let ((ticket (buffer-local-value 'jira--ticket-number (current-buffer))))
-    (kill-new (jira--url ticket))))
+(defun go-jira-ticket->url (ticket)
+  "Extract browsable url for the TICKET number."
+  (let* ((j (go-jira--find-exe))
+         (jq (go-jira--find-exe "jq"))
+         (cmd (format "%s view %s --template json | %s -r '\"\\(.self | split(\"/rest\")[0])/browse/\\(.key)\"'"
+                      j ticket jq))
+         (res (shell-command-to-string cmd)))
+    (if (string-match-p "jq: .* error:" res)
+        (user-error res)
+      (string-trim res))))
 
 ;;;###autoload
-(defun jira-ticket->link (&optional ticket-arg)
-  "Convert the TICKET-ARG number at point to org-mode link."
+(defun go-jira-ticket->link (&optional ticket-arg)
+  "Convert the TICKET-ARG number at point to 'org-mode' link."
   (interactive)
-  (let* ((ticket (jira--ticket-arg-or-ticket-at-point ticket-arg))
-         (sum+url (jira--summary+url ticket))
+  (let* ((ticket (go-jira--ticket-arg-or-ticket-at-point ticket-arg))
+         (sum+url (go-jira--summary+url ticket))
          (ticket (plist-get sum+url :ticket))
          (url (plist-get sum+url :url))
          (summary (plist-get sum+url :summary))
@@ -133,17 +142,17 @@
         (insert result)))))
 
 ;;;###autoload
-(defun jira-ticket->num+description (&optional ticket-arg)
+(defun go-jira-ticket->num+description (&optional ticket-arg)
   "Convert the TICKET-ARG to number and description.
-e.g., XYZ-1234 becomes XYZ-1234 - \='This ticket does nothing\='"
+e.g., XYZ-1234 becomes XYZ-1234 - This ticket does nothing"
   (interactive)
   (let* ((ticket-regex "\\b[A-Z]+-[0-9]+\\b")
-         (ticket (jira--ticket-arg-or-ticket-at-point ticket-arg))
+         (ticket (go-jira--ticket-arg-or-ticket-at-point ticket-arg))
          (already-desc-p (unless ticket-arg
                            (save-excursion
                              (beginning-of-thing 'symbol)
                              (looking-at-p (concat ticket-regex " - '.*'")))))
-         (sum+url (jira--summary+url ticket))
+         (sum+url (go-jira--summary+url ticket))
          (summary (plist-get sum+url :summary))
          (result (format "%s - '%s'" ticket summary)))
     (if ticket-arg
@@ -154,13 +163,13 @@ e.g., XYZ-1234 becomes XYZ-1234 - \='This ticket does nothing\='"
           (insert result))))))
 
 ;;;###autoload
-(defun jira-ticket->git-branch-name (&optional ticket-arg)
+(defun go-jira-ticket->git-branch-name (&optional ticket-arg)
   "Convert TICKET-ARG to a git branch name.
 e.g., SAC-28812 with Add New Metadata to tap-asana
 becomes SAC-28812__add_new_metadata_tap-asana"
   (interactive)
-  (let* ((ticket (jira--ticket-arg-or-ticket-at-point ticket-arg))
-         (sum+url (jira--summary+url ticket))
+  (let* ((ticket (go-jira--ticket-arg-or-ticket-at-point ticket-arg))
+         (sum+url (go-jira--summary+url ticket))
          (summary (plist-get sum+url :summary))
          ;; Clean and format the summary
          (clean-summary
@@ -181,11 +190,41 @@ becomes SAC-28812__add_new_metadata_tap-asana"
     (message "Branch name copied: '%s'" branch-name)
     branch-name))
 
+;;; Ticket viewing and browsing
+
+(defvar go-jira-browse-ticket-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-c C-o") #'go-jira--browse-ticket-mode-open-browser)
+    (define-key map (kbd "q") #'kill-buffer-and-window)
+    map)
+  "Keymap for `go-jira-browse-ticket-mode' minor mode.")
+
+(define-minor-mode go-jira-browse-ticket-mode
+  "Minor mode for buffer with jira ticket content."
+  :group 'go-jira
+  :lighter " jira"
+  :init-value nil
+  :keymap go-jira-browse-ticket-mode-map)
+
+(defun go-jira--browse-ticket-mode-open-browser ()
+  "Open ticket in browser from browse ticket mode."
+  (interactive)
+  (let ((ticket
+         (buffer-local-value
+          'go-jira--ticket-number (current-buffer))))
+    (go-jira-browse-ticket-url ticket)))
+
+(defun go-jira--browser-ticket-mode-get-url ()
+  "Get URL for ticket in current buffer."
+  (interactive)
+  (let ((ticket (buffer-local-value 'go-jira--ticket-number (current-buffer))))
+    (kill-new (go-jira--url ticket))))
+
 ;;;###autoload
-(defun jira-view-simple (ticket)
+(defun go-jira-view-ticket (ticket)
   "View the TICKET in a buffer."
   (interactive "sJira ticket number: ")
-  (let* ((j (jira--find-exe))
+  (let* ((j (go-jira--find-exe))
          (buf (get-buffer-create (format "%s" ticket)))
          (cmd (format "%s view %s" j ticket))
          (output (ansi-color-apply (shell-command-to-string cmd)))
@@ -199,8 +238,8 @@ becomes SAC-28812__add_new_metadata_tap-asana"
                          shell-command-to-string ansi-color-apply)))
     (with-current-buffer buf
       (erase-buffer)
-      (put 'jira--ticket-number 'permanent-local t)
-      (setq-local jira--ticket-number ticket)
+      (put 'go-jira--ticket-number 'permanent-local t)
+      (setq-local go-jira--ticket-number ticket)
       (insert (replace-regexp-in-string "\r" "" output))
       (unless (s-blank-p subtasks-out)
         (insert "Subtasks:\n")
@@ -209,42 +248,16 @@ becomes SAC-28812__add_new_metadata_tap-asana"
         (insert "Linked work items:\n")
         (insert linked-items))
       (markdown-mode)
-      (jira-browse-ticket-mode)
+      (go-jira-browse-ticket-mode)
       (goto-char (point-min)))
     (display-buffer buf)
     (select-window (get-buffer-window buf))))
 
-(defun jira--browse-ticket-mode-open-browser ()
-  (interactive)
-  (let ((ticket
-         (buffer-local-value
-          'jira--ticket-number (current-buffer))))
-    (jira-browse-ticket-url ticket)))
 
 ;;;###autoload
-(defun jira-browse-ticket-url (ticket)
-  (interactive "sJira ticket number: ")
-  (let ((j (jira--find-exe))
-        (ticket (or ticket
-                    (buffer-local-value 'jira--ticket-number (current-buffer)))))
-
-    ;; let's not open a new tab if got one in browser already
-    (if-let* ((_ (eq system-type 'darwin))
-              (ticket-url (jira-ticket->url ticket))
-              (btab
-               (thread-last
-                 (browser-get-tabs)
-                 (seq-filter
-                  (lambda (x)
-                    (string= ticket-url (plist-get x :url))))
-                 (seq-first)))
-              (win-idx (plist-get btab :windowIndex))
-              (tab-idx (plist-get btab :tabIndex)))
-        (browser-activate-tab win-idx tab-idx)
-      (shell-command-to-string (format "%s browse %s" j ticket)))))
-
-;;;###autoload
-(defun jira-search (&optional query)
+(defun go-jira-search (&optional query)
+  "Search Jira issues using QUERY.
+If QUERY is not provided, uses `go-jira-default-search-format-string'."
   (interactive)
   (minibuffer-with-setup-hook
       (lambda ()
@@ -257,13 +270,13 @@ becomes SAC-28812__add_new_metadata_tap-asana"
        (lambda (input)
          (when (not (string-match-p "\"\"" input)) ; query has no empty quote blocks
            (list "jira" "list" "--query" input)))))
-     :initial (or query (format jira-default-search-format-string ""))
+     :initial (or query (format go-jira-default-search-format-string ""))
      :sort nil ; records must be of the exact order as the go-jira app output
      :state (lambda (action cand)
               (when (and cand (member action '(preview return)))
                 (when-let ((ticket (progn (string-match "^[^:]+" cand)
                                           (match-string 0 cand))))
-                  (jira-view-simple ticket)))))))
+                  (go-jira-view-ticket ticket)))))))
 
-
+(provide 'go-jira)
 ;;; go-jira.el ends here

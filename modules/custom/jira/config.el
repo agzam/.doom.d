@@ -1,37 +1,41 @@
 ;;; custom/jira/config.el -*- lexical-binding: t; -*-
 
-(setopt jira-default-search-format-string
-        "project = SAC AND status NOT IN (Closed, Done) AND text ~ \"%s\"")
 
-(map! :map jira-browse-ticket-mode-map
-      :n "q" #'kill-buffer-and-window)
 
-(after! embark
-  (defvar-keymap embark-jira-ticket-map
-    :doc "Keymap for Jira ticket actions."
-    :parent embark-general-map)
+(use-package! go-jira
+  :defer t
+  :config
 
-  (dolist (finder '(+embark-target-jira-ticket-at-point))
-    (add-to-list 'embark-target-finders finder))
+  (setopt go-jira-default-search-format-string
+          "project = SAC AND status NOT IN (Closed, Done) AND text ~ \"%s\"")
 
-  (add-to-list 'embark-keymap-alist '(jira-ticket embark-jira-ticket-map))
+  (map! :map go-jira-browse-ticket-mode-map
+        :n "q" #'kill-buffer-and-window
+        :n "yy" #'go-jira--browser-ticket-mode-get-url)
 
-  (map! :map embark-jira-ticket-map
-        (:prefix ("b" . "browse")
-         :desc "view" "b" #'jira-view-simple
-         :desc "in browser" "o" #'jira-browse-ticket-url)
-        (:prefix ("f" . "find")
-         :desc "GH PRs" "g" #'jira-find-pull-requests-on-github)
-        (:prefix ("c" . "convert")
-         :desc "link" "l" #'jira-ticket->link
-         :desc "link+desc" "d" #'jira-ticket->num+description
-         :desc "git branch" "g" #'jira-ticket->git-branch-name)))
+  (add-hook! '(org-mode-hook
+               markdown-mode-hook
+               prog-mode-hook
+               text-mode-hook)
+             #'go-jira-enable-popup+eldoc)
 
-(map! :map jira-browse-ticket-mode-map
-      :n "yy" #'jira--browser-ticket-mode-get-url)
+  (after! embark
+    (defvar-keymap embark-jira-ticket-map
+      :doc "Keymap for Jira ticket actions."
+      :parent embark-general-map)
 
-(add-hook! '(org-mode-hook
-             markdown-mode-hook
-             prog-mode-hook
-             text-mode-hook)
-           #'jira-enable-popup+eldoc)
+    (dolist (finder '(go-jira-embark-target-ticket-at-point))
+      (add-to-list 'embark-target-finders finder))
+
+    (add-to-list 'embark-keymap-alist '(jira-ticket embark-jira-ticket-map))
+
+    (map! :map embark-jira-ticket-map
+          (:prefix ("b" . "browse")
+           :desc "view" "b" #'go-jira-view-ticket
+           :desc "in browser" "o" #'go-jira-browse-ticket-url)
+          (:prefix ("f" . "find")
+           :desc "GH PRs" "g" #'go-jira-find-pull-requests-on-github)
+          (:prefix ("c" . "convert")
+           :desc "link" "l" #'go-jira-ticket->link
+           :desc "link+desc" "d" #'go-jira-ticket->num+description
+           :desc "git branch" "g" #'go-jira-ticket->git-branch-name))))
