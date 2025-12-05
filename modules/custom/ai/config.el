@@ -193,9 +193,13 @@ enclose them in markdown quotes.
         :in "s-<return>"  #'eca-chat--key-pressed-return
         "C-c C-y" #'eca-chat-tool-call-accept-all
         :n "<tab>"  #'eca-chat-toggle-expandable-block
-        :n "TAB" #'eca-chat-toggle-expandable-block)
+        :n "TAB" #'eca-chat-toggle-expandable-block
+        :n ",," #'eca-transient-menu)
   (map! :map (markdown-mode-map
               evil-markdown-mode-map)
         "TAB" nil
         :n "<tab>" nil))
 
+(use-package! gptel-agent
+  :defer t
+  :config)

@@ -31,3 +31,7 @@
 
 (package! eca
   :recipe (:host github :repo "editor-code-assistant/eca-emacs" :files ("*.el")))
+
+(package! gptel-agent
+  :recipe (:host github :repo "karthink/gptel-agent"
+                 :files ("*.el" "agents")))
