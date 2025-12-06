@@ -20,6 +20,7 @@
 (require 'json)
 (require 'consult)
 (require 'go-jira)
+(require 'go-jira-markup)
 
 (defcustom go-jira-default-project "SAC"
   "Default Jira project key for board browsing."
@@ -30,6 +31,13 @@
   "When non-nil, show only issues in the active sprint.
 When nil, show all issues matching the board's filter."
   :type 'boolean
+  :group 'go-jira)
+
+(defcustom go-jira-board-cache-duration 120
+  "Number of seconds to cache issue content before refetching.
+When expanding an issue heading, content will be fetched only if the cache
+has expired. Set to 0 to always fetch fresh data."
+  :type 'integer
   :group 'go-jira)
 
 ;;; Internal board API functions
@@ -226,15 +234,15 @@ Returns an alist of (column-name . (issue-list))."
     (nreverse grouped)))
 
 (defun go-jira--build-board-buffer (board-data issues)
-  "Build and return org-mode buffer for BOARD-DATA with ISSUES."
+  "Build and return 'org-mode' buffer for BOARD-DATA with ISSUES."
   (let* ((board-name (plist-get board-data :name))
          (columns (plist-get board-data :columns))
          (grouped (go-jira--group-issues-by-column issues columns))
          (buf-name (format "*Jira Board: %s*" board-name))
          (buf (get-buffer-create buf-name)))
     (with-current-buffer buf
+      (setq-local buffer-read-only nil)
       (erase-buffer)
-      (org-mode)
       
       ;; Insert org-columns setup
       (insert "#+COLUMNS: %50ITEM %12TODO %15ASSIGNEE %12PRIORITY %10ISSUETYPE %25LABELS\n")
@@ -249,12 +257,10 @@ Returns an alist of (column-name . (issue-list))."
             (dolist (issue col-issues)
               (go-jira--insert-issue issue)))))
       
-      ;; Enable board view mode
       (go-jira-board-view-mode)
       (setq-local go-jira--board-data board-data)
       (goto-char (point-min))
-      ;; Show all headings (level 1 and 2) but hide property drawers
-      (org-content 2))
+      (org-global-cycle 2))
     buf))
 
 (defun go-jira--insert-issue (issue)
@@ -282,6 +288,9 @@ Returns an alist of (column-name . (issue-list))."
 (defvar go-jira--board-data nil
   "Buffer-local variable storing board data plist.")
 
+(defvar go-jira--expanded-issues nil
+  "Buffer-local hash table tracking which issues have been expanded and fetched.")
+
 (defvar go-jira-board-view-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "RET") #'go-jira-board-view-issue)
@@ -292,12 +301,129 @@ Returns an alist of (column-name . (issue-list))."
     map)
   "Keymap for `go-jira-board-view-mode'.")
 
+(defun go-jira--on-cycle-expand-issue (state)
+  "Hook function to fetch issue content on heading expansion.
+STATE is the visibility state after cycling."
+  (when (and (eq major-mode 'go-jira-board-view-mode)
+             (eq state 'subtree)
+             (= (org-outline-level) 2))
+    (when-let* ((props (org-entry-properties))
+                (key (cdr (assoc "ISSUE_KEY" props))))
+      (let* ((last-fetch-time (gethash key go-jira--expanded-issues))
+             (current-time (float-time))
+             (cache-expired (or (not last-fetch-time)
+                                (< (+ last-fetch-time go-jira-board-cache-duration)
+                                   current-time))))
+        (when cache-expired
+          (message "Fetching content for %s..." key)
+          (save-excursion
+            (go-jira--fetch-and-insert-issue-content key))
+          (org-cycle-hide-drawers nil)
+          (puthash key current-time go-jira--expanded-issues))))))
+
+(defun go-jira--fetch-issue-details (issue-key)
+  "Fetch detailed issue information for ISSUE-KEY as JSON.
+Returns a plist with :description, :comments, etc."
+  (let* ((j (go-jira--find-exe))
+         (cmd (format "%s view %s --template json" j issue-key))
+         (output (shell-command-to-string cmd)))
+    (condition-case err
+        (let* ((json-object-type 'hash-table)
+               (json-key-type 'symbol)
+               (json-array-type 'list)
+               (parsed (json-read-from-string output))
+               (fields (gethash 'fields parsed))
+               (description (when fields (gethash 'description fields)))
+               (comment-data (when fields (gethash 'comment fields)))
+               (comments (when comment-data (gethash 'comments comment-data))))
+          (list :description description
+                :comments comments))
+      (error
+       (message "Warning: Failed to fetch issue details: %s" (error-message-string err))
+       nil))))
+
+(defun go-jira--adjust-heading-levels (text base-level)
+  "Adjust org-mode heading levels in TEXT to be relative to BASE-LEVEL.
+Any line starting with one or more asterisks followed by a space
+will have BASE-LEVEL asterisks added to it."
+  (with-temp-buffer
+    (insert text)
+    (goto-char (point-min))
+    (let ((stars (make-string base-level ?*)))
+      (while (re-search-forward "^\\(\\*+\\) " nil t)
+        (replace-match (concat stars "\\1 "))))
+    (buffer-string)))
+
+(defun go-jira--fetch-and-insert-issue-content (issue-key)
+  "Fetch and insert content for ISSUE-KEY at current heading."
+  (let ((details (go-jira--fetch-issue-details issue-key)))
+    (when details
+      (save-excursion
+        (org-back-to-heading t)
+        (let* ((heading-pos (point))
+               (current-level (org-outline-level))
+               ;; Description and Comments are always 1 level below the issue
+               (description-level (1+ current-level))
+               ;; Comment authors are 1 level below Comments
+               (comment-author-level (+ current-level 2)))
+          (org-end-of-meta-data t)
+          (when (looking-at org-property-drawer-re)
+            (goto-char (match-end 0))
+            (forward-line 1))
+          (let ((inhibit-read-only t)
+                (description (plist-get details :description))
+                (comments (plist-get details :comments))
+                ;; Temporarily remove org-fold hook to prevent it from "fixing" visibility
+                (after-change-functions (remove 'org-fold-core--fix-folded-region after-change-functions)))
+            
+            ;; Insert description
+            (when description
+              (insert (format "\n%s Description\n" (make-string description-level ?*)))
+              (let ((converted (go-jira-markup-to-org description)))
+                (when converted
+                  (insert (go-jira--adjust-heading-levels converted description-level)))
+                (insert "\n")))
+            
+            ;; Insert comments
+            (when comments
+              (insert (format "%s Comments\n" (make-string description-level ?*)))
+              (dolist (comment (reverse comments))
+                (let* ((author (gethash 'author comment))
+                       (author-name (when author (gethash 'displayName author)))
+                       (created (gethash 'created comment))
+                       (body (gethash 'body comment))
+                       (comment-id (gethash 'id comment)))
+                  (when body
+                    (let* ((timestamp (when created
+                                        (condition-case nil
+                                            (format-time-string "[%Y-%m-%d %a %H:%M]" (date-to-time created))
+                                          (error created))))
+                           ;; Create comment link if we have the comment ID
+                           (timestamp-link (if comment-id
+                                               (let ((base-url (go-jira-ticket->url issue-key)))
+                                                 (format "[[%s?focusedCommentId=%s&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-%s][%s]]"
+                                                         base-url comment-id comment-id timestamp))
+                                             timestamp)))
+                      (insert (format "%s %s - %s\n"
+                                      (make-string comment-author-level ?*)
+                                      (or author-name "Unknown")
+                                      (or timestamp-link timestamp "")))
+                      (let ((converted (go-jira-markup-to-org body)))
+                        (when converted
+                          (insert (go-jira--adjust-heading-levels converted comment-author-level))))
+                      (insert "\n"))))))
+            
+            ;; Ensure proper separation from next heading
+            (unless (looking-at-p "^\\s-*$")
+              (insert "\n"))))))))
+
 (define-derived-mode go-jira-board-view-mode org-mode "Jira-Board"
-  "Major mode for viewing Jira boards in org-mode format.
+  "Major mode for viewing Jira boards in 'org-mode' format.
 \\{go-jira-board-view-mode-map}"
   :group 'go-jira
   (setq-local buffer-read-only t)
-  (setq-local org-startup-folded 'overview)
+  (setq-local go-jira--expanded-issues (make-hash-table :test 'equal))
+  (add-hook 'org-cycle-hook #'go-jira--on-cycle-expand-issue nil t)
   (message "Press 'C-c C-c' to toggle columns view, 'RET' to view issue, 'b' to browse in browser, 'r' to refresh, 'q' to quit"))
 
 (defun go-jira-board-view-issue ()
@@ -373,7 +499,7 @@ to display the board immediately."
 
 ;;;###autoload
 (defun go-jira-display-board (&optional board-data)
-  "Display a Jira board in org-mode format.
+  "Display a Jira board in 'org-mode' format.
 If BOARD-DATA is not provided, prompts for board selection via
 `go-jira-browse-boards'. BOARD-DATA should be a plist with :jql
 and :columns keys.
@@ -408,7 +534,7 @@ only shows issues in the active sprint."
       (message "Fetching issues for board: %s..." (plist-get board-data :name))
       (let* ((issues (go-jira--fetch-issues-by-jql jql))
              (buf (go-jira--build-board-buffer board-data issues)))
-        (pop-to-buffer buf)
+        (switch-to-buffer buf)
         (message "Loaded %d issues. Press 'C-c C-c' for columns view." (length issues))))))
 
 (provide 'go-jira-board)

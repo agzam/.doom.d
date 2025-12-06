@@ -192,33 +192,40 @@ becomes SAC-28812__add_new_metadata_tap-asana"
 
 ;;; Ticket viewing and browsing
 
-(defvar go-jira-browse-ticket-mode-map
+(defvar go-jira-view-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "C-c C-o") #'go-jira--browse-ticket-mode-open-browser)
+    (define-key map (kbd "C-c C-o") #'go-jira-view-mode-open-browser)
+    (define-key map (kbd "C-c C-u") #'go-jira-view-mode-copy-url)
+    (define-key map (kbd "r") #'go-jira-view-mode-refresh)
     (define-key map (kbd "q") #'kill-buffer-and-window)
     map)
-  "Keymap for `go-jira-browse-ticket-mode' minor mode.")
+  "Keymap for `go-jira-view-mode'.")
 
-(define-minor-mode go-jira-browse-ticket-mode
-  "Minor mode for buffer with jira ticket content."
+(define-derived-mode go-jira-view-mode org-mode "Jira-View"
+  "Major mode for viewing Jira tickets in 'org-mode' format.
+\\{go-jira-view-mode-map}"
   :group 'go-jira
-  :lighter " jira"
-  :init-value nil
-  :keymap go-jira-browse-ticket-mode-map)
+  (setq-local buffer-read-only t)
+  (message "Press 'C-c C-o' to open in browser, 'r' to refresh, 'q' to quit"))
 
-(defun go-jira--browse-ticket-mode-open-browser ()
-  "Open ticket in browser from browse ticket mode."
+(defun go-jira-view-mode-open-browser ()
+  "Open ticket in browser from jira view mode."
   (interactive)
-  (let ((ticket
-         (buffer-local-value
-          'go-jira--ticket-number (current-buffer))))
-    (go-jira-browse-ticket-url ticket)))
+  (when-let ((ticket (buffer-local-value 'go-jira--ticket-number (current-buffer))))
+    (browse-url (go-jira-ticket->url ticket))))
 
-(defun go-jira--browser-ticket-mode-get-url ()
-  "Get URL for ticket in current buffer."
+(defun go-jira-view-mode-copy-url ()
+  "Copy URL for ticket in current buffer."
   (interactive)
-  (let ((ticket (buffer-local-value 'go-jira--ticket-number (current-buffer))))
-    (kill-new (go-jira--url ticket))))
+  (when-let ((ticket (buffer-local-value 'go-jira--ticket-number (current-buffer))))
+    (kill-new (go-jira-ticket->url ticket))
+    (message "Copied URL for %s" ticket)))
+
+(defun go-jira-view-mode-refresh ()
+  "Refresh the current ticket view."
+  (interactive)
+  (when-let ((ticket (buffer-local-value 'go-jira--ticket-number (current-buffer))))
+    (go-jira-view-ticket ticket)))
 
 ;;;###autoload
 (defun go-jira-view-ticket (ticket)
@@ -245,23 +252,44 @@ becomes SAC-28812__add_new_metadata_tap-asana"
                (key (gethash 'key parsed))
                (fields (gethash 'fields parsed))
                (summary (when fields (gethash 'summary fields)))
-               (description (when fields (gethash 'description fields))))
+               (description (when fields (gethash 'description fields)))
+               (comment-data (when fields (gethash 'comment fields)))
+               (comments (when comment-data (gethash 'comments comment-data))))
           (with-current-buffer buf
             (erase-buffer)
-            (org-mode)
-            (insert (format "* %s: %s\n\n" key summary))
+            (insert (format "* %s: %s\n" key summary))
             (when description
-              (insert "** Description\n\n")
+              (insert "** Description\n")
               (insert (go-jira-markup-to-org description))
               (insert "\n\n"))
             (unless (s-blank-p subtasks-out)
-              (insert "** Subtasks\n\n")
-              (insert subtasks-out)
-              (insert "\n"))
+              (insert "** Subtasks\n")
+              (insert (string-trim subtasks-out))
+              (insert "\n\n"))
             (unless (s-blank-p linked-items)
-              (insert "** Linked work items\n\n")
-              (insert linked-items)
-              (insert "\n"))
+              (insert "** Linked work items\n")
+              (insert (string-trim linked-items))
+              (insert "\n\n"))
+            (when comments
+              (insert "** Comments\n")
+              (dolist (comment (reverse comments))
+                (let* ((author (gethash 'author comment))
+                       (author-name (when author (gethash 'displayName author)))
+                       (created (gethash 'created comment))
+                       (body (gethash 'body comment)))
+                  (when body
+                    (let ((timestamp (when created
+                                       (condition-case nil
+                                           (format-time-string "[%Y-%m-%d %a %H:%M]" (date-to-time created))
+                                         (error created)))))
+                      (insert (format "*** %s - %s\n"
+                                      (or author-name "Unknown")
+                                      (or timestamp created "")))
+                      (insert (go-jira-markup-to-org body))
+                      (insert "\n\n"))))))
+            (go-jira-view-mode)
+            (put 'go-jira--ticket-number 'permanent-local t)
+            (setq-local go-jira--ticket-number ticket)
             (goto-char (point-min)))
           (display-buffer buf)
           (select-window (get-buffer-window buf)))
