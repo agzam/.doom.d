@@ -5,4 +5,6 @@
 (package! posframe)
 
 (package! go-jira :recipe
-  (:local-repo "go-jira" :files ("*.el")))
+  (:recipe (:host github :repo "agzam/go-jira.el" :files ("*.el")))
+  ;; (:local-repo "go-jira" :files ("*.el"))
+  )
