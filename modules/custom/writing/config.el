@@ -232,8 +232,13 @@
        state)))
 
   (map! :map wiktionary-bro-mode-map
-        :nvi  "<return>" #'wiktionary-bro-dwim
+        ;; :nvi  "<return>" #'wiktionary-bro-dwim
         :n "q" #'kill-current-buffer)
+
+  (add-hook! 'wiktionary-bro-mode-hook
+    (defun jinx-mode-off () (jinx-mode -1))
+    (defun wiktionary-bro-use-eww-open-in-other-window-h ()
+      (setq-local browse-url-browser-function #'+eww-open-in-other-window)))
 
   (add-to-list
    'display-buffer-alist
@@ -242,7 +247,7 @@
       display-buffer-reuse-mode-window
       display-buffer-in-quadrant)
      (direction . right)
-     (init-width . 0.15)
+     (init-width . 0.25)
      (window . root))))
 
 (use-package! jinx

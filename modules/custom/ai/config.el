@@ -186,7 +186,8 @@ enclose them in markdown quotes.
   :defer t
   :config
   (setopt eca-chat-use-side-window nil
-          eca-chat-custom-behavior nil)
+          eca-chat-custom-behavior nil
+          eca-chat-parent-mode 'markdown-mode)
   (map! :map eca-chat-mode-map
         "RET" nil
         "<return>" nil
@@ -198,7 +199,10 @@ enclose them in markdown quotes.
   (map! :map (markdown-mode-map
               evil-markdown-mode-map)
         "TAB" nil
-        :n "<tab>" nil))
+        :n "<tab>" nil)
+  (add-hook! 'eca-chat-mode-hook
+    (defun eca-chat-mode-markup-no-hiding-h ()
+      (markdown-toggle-markup-hiding -1))))
 
 (use-package! gptel-agent
   :defer t

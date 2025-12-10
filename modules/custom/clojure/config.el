@@ -133,7 +133,7 @@
    clojure-align-forms-automatically nil
    cljr-favor-prefix-notation nil
    cider-repl-display-in-current-window nil
-   cider-comment-prefix  " \n;; => "
+   cider-comment-prefix  "; => "
    cider-inject-dependencies-at-jack-in t
    cider-repl-display-in-current-window nil
    cider-eldoc-display-for-symbol-at-point nil
