@@ -106,28 +106,58 @@ Leaves single window per buffer, removing all duplicates."
 
 ;;;###autoload
 (defun +window-undo ()
-  "Undo windows."
+  "Undo windows until the window configuration actually changes."
   (interactive)
   (if (and (bound-and-true-p tab-bar-history-mode)
            (bound-and-true-p tab-bar-mode))
-      (let* ((back-ring (gethash (selected-frame) tab-bar-history-back))
-             (forward-ring (gethash (selected-frame) tab-bar-history-forward)))
-        (tab-bar-history-back)
-        (message "Tab history undo (%d back / %d forward)"
-                 (length back-ring)
-                 (length forward-ring)))
+      (let* ((initial-state (mapcar (lambda (w) (cons (window-buffer w) (window-edges w)))
+                                    (window-list)))
+             (back-ring (gethash (selected-frame) tab-bar-history-back))
+             (max-iterations (length back-ring))
+             (iterations 0)
+             changed)
+        (while (and (< iterations max-iterations)
+                    (not changed))
+          (tab-bar-history-back)
+          (setq iterations (1+ iterations))
+          (let ((new-state (mapcar (lambda (w) (cons (window-buffer w) (window-edges w)))
+                                   (window-list))))
+            (setq changed (not (equal initial-state new-state)))))
+        (let* ((back-ring (gethash (selected-frame) tab-bar-history-back))
+               (forward-ring (gethash (selected-frame) tab-bar-history-forward)))
+          (if changed
+              (message "Tab history undo: skipped %d cursor-only changes (%d back / %d forward)"
+                       iterations
+                       (length back-ring)
+                       (length forward-ring))
+            (message "No more window configuration changes in history"))))
     (winner-undo)))
 
 ;;;###autoload
 (defun +window-redo ()
-  "Redo windows."
+  "Redo windows until the window configuration actually changes."
   (interactive)
   (if (and (bound-and-true-p tab-bar-history-mode)
            (bound-and-true-p tab-bar-mode))
-      (let* ((back-ring (gethash (selected-frame) tab-bar-history-back))
-             (forward-ring (gethash (selected-frame) tab-bar-history-forward)))
-        (tab-bar-history-forward)
-        (message "Tab history redo (%d back / %d forward)"
-                 (length back-ring)
-                 (length forward-ring)))
+      (let* ((initial-state (mapcar (lambda (w) (cons (window-buffer w) (window-edges w)))
+                                    (window-list)))
+             (forward-ring (gethash (selected-frame) tab-bar-history-forward))
+             (max-iterations (length forward-ring))
+             (iterations 0)
+             changed)
+        (while (and (< iterations max-iterations)
+                    (not changed))
+          (tab-bar-history-forward)
+          (setq iterations (1+ iterations))
+          (let ((new-state (mapcar (lambda (w) (cons (window-buffer w) (window-edges w)))
+                                   (window-list))))
+            (setq changed (not (equal initial-state new-state)))))
+        (let* ((back-ring (gethash (selected-frame) tab-bar-history-back))
+               (forward-ring (gethash (selected-frame) tab-bar-history-forward)))
+          (if changed
+              (message "Tab history redo: skipped %d cursor-only changes (%d back / %d forward)"
+                       iterations
+                       (length back-ring)
+                       (length forward-ring))
+            (message "No more window configuration changes in history"))))
     (winner-redo)))
