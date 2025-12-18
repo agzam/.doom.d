@@ -247,7 +247,7 @@
       display-buffer-reuse-mode-window
       display-buffer-in-quadrant)
      (direction . right)
-     (init-width . 0.25)
+     (init-width . 0.30)
      (window . root))))
 
 (use-package! jinx

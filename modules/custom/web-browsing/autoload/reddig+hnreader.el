@@ -61,12 +61,12 @@
   (run-with-timer
    0.3 nil
    (lambda (b)
-     (ignore-errors (org-next-visible-heading 1))
      ;; don't expand headings on home page
      (unless (string-match-p
               "\\*HN\\*\\|\\*reddigg\\*"
               (buffer-name b))
        (with-current-buffer b
+         (ignore-errors (org-next-visible-heading 1))
          (org-fold-show-all))))
    (current-buffer)))
 

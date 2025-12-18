@@ -45,7 +45,15 @@
 
   ;; Don't display parent/related refs in commit buffers; they are rarely
   ;; helpful and only add to runtime costs.
-  (setq magit-revision-insert-related-refs nil)
+  (setopt magit-revision-insert-related-refs nil)
+
+  ;; Disable some hooks on Mac - Magit is a bit slow otherwise
+  (when (featurep :system 'macos) 
+    (remove-hook! 'magit-status-sections-hook
+      #'magit-insert-unpulled-from-upstream)
+    (remove-hook! 'magit-status-headers-hook
+      #'magit-insert-head-branch-header
+      #'magit-insert-push-branch-header))
 
   ;; Add `git log ORIG_HEAD..HEAD` to magit
   ;; that lets you log only changes since the last pull
