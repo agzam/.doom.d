@@ -50,13 +50,13 @@
        :pattern "github\\.com/[^/]+/[^/]+/pull/[0-9]+"
        :actions (("b b" . forge-visit-topic-via-url)
                  ("RET" . forge-visit-topic-via-url)
-                 ("c b" . +link-plain->link-bug-reference)
+                 ("c b" . +link->link-bug-reference)
                  ("g c" . magit-clone-regular+)))
       (github-issue
        :pattern "github\\.com/[^/]+/[^/]+/issues/[0-9]+"
        :actions (("b b" . forge-visit-topic-via-url)
                  ("RET" . forge-visit-topic-via-url)
-                 ("c b" . +link-plain->link-bug-reference)
+                 ("c b" . +link->link-bug-reference)
                  ("g c" . magit-clone-regular+)))
       (github-file
        :pattern "github\\.com/[^/]+/[^/]+/blob/[^/]+/.+"

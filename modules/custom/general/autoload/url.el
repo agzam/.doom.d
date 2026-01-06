@@ -262,6 +262,16 @@ anything like: RFC 123, rfc-123, RFC123 or rfc123."
     (insert link)))
 
 ;;;###autoload
+(defun +link->link-bug-reference ()
+  "Mode-aware version."
+  (interactive)
+  (cond ((eq major-mode 'org-mode)
+         (+link-org->link-bug-reference))
+        ((eq major-mode 'markdown-mode)
+         (+link-markdown->link-bug-reference))
+        (t (+link-plain->link-bug-reference))))
+
+;;;###autoload
 (defun +open-link-in-vlc ()
   "Open link at point in VLC player."
   (interactive)
