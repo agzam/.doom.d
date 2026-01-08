@@ -161,7 +161,9 @@
         "g" nil
         "SPC" nil
         :n "i" nil
-        "DEL" nil)
+        "DEL" nil
+        [remap text-scale-increase] #'nov-text-scale-increase
+        [remap text-scale-decrease] #'nov-text-scale-decrease)
   (map! :map nov-button-map
         "l" #'evil-forward-char
         "v" #'evil-visual-char
