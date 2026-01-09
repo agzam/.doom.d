@@ -34,6 +34,7 @@
         (map!
          :map go-jira-view-mode-map
          :nv "C" #'go-jira-add-comment
+         :n "q" #'kill-buffer-and-window
          (:prefix ("g" . "go")
                   "r" #'go-jira-view-mode-refresh))))
 
@@ -41,6 +42,7 @@
       (defun go-jira-board-view-mode-h ()
         (map!
          :map go-jira-board-view-mode-map
+         :n "q" #'kill-buffer-and-window
          :nv "C" #'go-jira-add-comment
          (:prefix ("g" . "go")
                   "r" #'go-jira-board-refresh))))

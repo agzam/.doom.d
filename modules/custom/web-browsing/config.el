@@ -225,6 +225,8 @@
         :n "q" #'kill-buffer-and-window
         :n "^" #'hnreader-goto-parent
         (:localleader
+         "[[" #'hnreader-back
+         "]]" #'hnreader-more
          (:prefix ("u" . "urls")
           :desc "urls" "s" (cmd! (consult-line-collect-urls "ycombinator\\.com\\|view story in eww")))))
 

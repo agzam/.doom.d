@@ -193,6 +193,7 @@ enclose them in markdown quotes.
         "<return>" nil
         :in "s-<return>"  #'eca-chat--key-pressed-return
         "C-c C-y" #'eca-chat-tool-call-accept-all
+        :i "M-RET" #'eca-chat--key-pressed-return
         :n "<tab>"  #'eca-chat-toggle-expandable-block
         :n "TAB" #'eca-chat-toggle-expandable-block
         :n ",," #'eca-transient-menu)

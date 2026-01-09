@@ -307,6 +307,7 @@
          "e" #'embark-export
          "C-;" #'embark-act
          :desc "insert ;" "SPC" (cmd! (insert ";")))
+        "DEL" #'delete-backward-char
         "C-h" #'vertico-directory-delete-word
         "M-h" #'vertico-grid-left
         "M-l" #'vertico-grid-right
