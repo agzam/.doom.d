@@ -332,7 +332,8 @@
    +default/search-cwd +default/search-other-cwd
    +default/search-notes-for-symbol-at-point
    +default/search-emacsd
-   consult--source-recent-file consult--source-project-recent-file consult--source-bookmark
+   ;; consult--source-recent-file
+   consult--source-project-recent-file consult--source-bookmark
    :preview-key 'any)
 
   (setq consult-preview-key "C-SPC")
