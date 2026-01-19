@@ -92,12 +92,32 @@
   (setq dabbrev-ignored-buffer-modes '(pdf-view-mode dired-mode vterm-mode)))
 
 (use-package! orderless
-  :defer t
+  :after-call doom-first-input-hook
   :config
-  (setq completion-styles '(orderless partial-completion basic)
-        completion-category-defaults nil
-        completion-category-overrides '((file (styles . (partial-completion)))
-                                        (symbol (styles . (partial-completion))))))
+;;   (defadvice! +vertico--company-capf--candidates-a (fn &rest args)
+;;     "Highlight company matches correctly, and try default completion styles before
+;; orderless."
+;;     :around #'company-capf--candidates
+;;     (let ((orderless-match-faces [completions-common-part])
+;;           (completion-styles +vertico-company-completion-styles))
+;;       (apply fn args)))
+
+  (setopt orderless-affix-dispatch-alist
+          '((?! . orderless-without-literal)
+            (?& . orderless-annotation)
+            (?% . char-fold-to-regexp)
+            (?` . orderless-initialism)
+            (?= . orderless-literal)
+            (?^ . orderless-literal-prefix)
+            (?~ . orderless-flex))
+          orderless-style-dispatchers
+          '(+vertico-orderless-dispatch
+            +vertico-orderless-disambiguation-dispatch))
+
+  (setopt completion-styles '(orderless partial-completion basic)
+          completion-category-defaults nil
+          completion-category-overrides '((file (styles . (partial-completion)))
+                                          (symbol (styles . (partial-completion))))))
 
 (use-package! corfu-terminal
   :defer t
@@ -214,6 +234,84 @@
 ;; vertico stuff ;;
 ;;;;;;;;;;;;;;;;;;;
 
+(use-package! vertico
+  :hook (doom-first-input . vertico-mode)
+  :init
+  (defadvice! +vertico-crm-indicator-a (args)
+    :filter-args #'completing-read-multiple
+    (cons (format "[CRM%s] %s"
+                  (replace-regexp-in-string
+                   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                   crm-separator)
+                  (car args))
+          (cdr args)))
+  :config
+  (setq vertico-resize nil
+        vertico-count 17
+        vertico-cycle t)
+  (setq-default completion-in-region-function
+                (lambda (&rest args)
+                  (apply (if vertico-mode
+                             #'consult-completion-in-region
+                           #'completion--in-region)
+                         args)))
+
+  (add-hook 'minibuffer-setup-hook #'vertico-repeat-save)
+  (map! :map vertico-map "DEL" #'vertico-directory-delete-char)
+
+  ;; These commands are problematic and automatically show the *Completions* buffer
+  (advice-add #'tmm-add-prompt :after #'minibuffer-hide-completions)
+  (defadvice! +vertico--suppress-completion-help-a (fn &rest args)
+    :around #'ffap-menu-ask
+    (letf! ((#'minibuffer-completion-help #'ignore))
+      (apply fn args)))
+  (setq completion-ignore-case t
+        read-buffer-completion-ignore-case t)
+
+  (defadvice! vertico-current-with-arrow-a
+    ;; Prefix current candidate with arrow
+    (orig cand prefix suffix index _start)
+    :around #'vertico--format-candidate
+    (setq cand (funcall orig cand prefix suffix index _start))
+    (concat
+     (if (= vertico--index index)
+         (propertize "» " 'face 'vertico-current)
+       "  ")
+     cand))
+
+  (map! :map vertico-map
+        (:prefix ";"
+         "." #'evil-insert-state
+         "i" #'vertico-quick-insert
+         "j" #'vertico-quick-jump
+         "g" #'vertico-multiform-grid
+         "b" #'vertico-multiform-buffer
+         "f" #'vertico-multiform-flat
+         "u" #'vertico-multiform-unobtrusive
+         "r" #'vertico-multiform-reverse
+         "t" #'vertico-posframe-briefly-tall
+         ";" #'vertico-posframe-briefly-tall
+         "p" #'vertico-multiform-posframe
+         "s" #'embark-collect
+         "e" #'embark-export
+         "C-;" #'embark-act
+         :desc "insert ;" "SPC" (cmd! (insert ";")))
+        "DEL" #'delete-backward-char
+        "C-h" #'vertico-directory-delete-word
+        "M-h" #'vertico-grid-left
+        "M-l" #'vertico-grid-right
+        "M-j" #'vertico-next
+        "M-k" #'vertico-previous
+        "C-e" #'vertico-scroll-up
+        "C-y" #'vertico-scroll-down
+        "]" #'vertico-next-group
+        "[" #'vertico-previous-group
+        "~" #'vertico-jump-to-home-dir-on~
+        "C-/" #'vertico-jump-root
+        "C-?" #'vertico-jump-sudo
+        "M-m" #'embark-select
+        "C-SPC" #'embark-preview+))
+
 ;; Add vertico extensions load path
 (add-to-list 'load-path (format "%sstraight/build-%s/vertico/extensions/" (file-truename doom-local-dir) emacs-version))
 
@@ -275,55 +373,28 @@
     (defun vertico-buffer-h ()
       (vertico-posframe-mode (if vertico-buffer-mode -1 +1)))))
 
-(after! vertico
-  (setq completion-ignore-case t
-        read-buffer-completion-ignore-case t)
+(use-package consult
+  :defer t
+  :preface
+  (define-key!
+    [remap bookmark-jump]                 #'consult-bookmark
+    [remap evil-show-marks]               #'consult-mark
+    ;; [remap evil-show-jumps]               #'+vertico/jump-list
+    [remap evil-show-registers]           #'consult-register
+    [remap goto-line]                     #'consult-goto-line
+    [remap imenu]                         #'consult-imenu
+    [remap Info-search]                   #'consult-info
+    [remap locate]                        #'consult-locate
+    [remap load-theme]                    #'consult-theme
+    [remap recentf-open-files]            #'consult-recent-file
+    [remap switch-to-buffer]              #'consult-buffer
+    [remap switch-to-buffer-other-window] #'consult-buffer-other-window
+    [remap switch-to-buffer-other-frame]  #'consult-buffer-other-frame
+    [remap yank-pop]                      #'consult-yank-pop
+    [remap persp-switch-to-buffer]        #'+vertico/switch-workspace-buffer)
 
-  (defadvice! vertico-current-with-arrow-a
-    ;; Prefix current candidate with arrow
-    (orig cand prefix suffix index _start)
-    :around #'vertico--format-candidate
-    (setq cand (funcall orig cand prefix suffix index _start))
-    (concat
-     (if (= vertico--index index)
-         (propertize "» " 'face 'vertico-current)
-       "  ")
-     cand))
+  :config
 
-  (map! :map vertico-map
-        (:prefix ";"
-         "." #'evil-insert-state
-         "i" #'vertico-quick-insert
-         "j" #'vertico-quick-jump
-         "g" #'vertico-multiform-grid
-         "b" #'vertico-multiform-buffer
-         "f" #'vertico-multiform-flat
-         "u" #'vertico-multiform-unobtrusive
-         "r" #'vertico-multiform-reverse
-         "t" #'vertico-posframe-briefly-tall
-         ";" #'vertico-posframe-briefly-tall
-         "p" #'vertico-multiform-posframe
-         "s" #'embark-collect
-         "e" #'embark-export
-         "C-;" #'embark-act
-         :desc "insert ;" "SPC" (cmd! (insert ";")))
-        "DEL" #'delete-backward-char
-        "C-h" #'vertico-directory-delete-word
-        "M-h" #'vertico-grid-left
-        "M-l" #'vertico-grid-right
-        "M-j" #'vertico-next
-        "M-k" #'vertico-previous
-        "C-e" #'vertico-scroll-up
-        "C-y" #'vertico-scroll-down
-        "]" #'vertico-next-group
-        "[" #'vertico-previous-group
-        "~" #'vertico-jump-to-home-dir-on~
-        "C-/" #'vertico-jump-root
-        "C-?" #'vertico-jump-sudo
-        "M-m" #'embark-select
-        "C-SPC" #'embark-preview+))
-
-(after! consult
   (consult-customize
    consult-ripgrep consult-git-grep consult-grep
    consult-bookmark consult-recent-file
@@ -332,8 +403,6 @@
    +default/search-cwd +default/search-other-cwd
    +default/search-notes-for-symbol-at-point
    +default/search-emacsd
-   ;; consult--source-recent-file
-   consult--source-project-recent-file consult--source-bookmark
    :preview-key 'any)
 
   (setq consult-preview-key "C-SPC")
@@ -351,6 +420,50 @@
   (remove-hook! 'consult-after-jump-hook 'consult--maybe-recenter)
   (add-hook! 'consult-after-jump-hook 'recenter))
 
+
+(use-package! consult-dir
+  :defer t
+  :init
+  (map! [remap list-directory] #'consult-dir
+        (:after vertico
+         :map vertico-map
+         "C-x C-d" #'consult-dir
+         "C-x C-j" #'consult-dir-jump-file))
+  :config
+  (setq consult-dir-project-list-function #'consult-dir-projectile-dirs)
+
+  ;; (add-to-list 'consult-dir-sources 'consult-dir--source-tramp-ssh t)
+  ;; (add-to-list 'consult-dir-sources 'consult-dir--source-tramp-local t)
+  )
+
+(use-package! consult-flycheck
+  :after (consult flycheck))
+
+(use-package! marginalia
+  :hook (doom-first-input . marginalia-mode)
+  :init
+  (map! :map minibuffer-local-map
+        :desc "Cycle marginalia views" "M-A" #'marginalia-cycle)
+  :config
+  (when (modulep! +icons)
+    (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
+  (advice-add #'marginalia--project-root :override #'doom-project-root)
+  (pushnew! marginalia-command-categories
+            '(+default/find-file-under-here . file)
+            '(doom/find-file-in-emacsd . project-file)
+            '(doom/find-file-in-other-project . project-file)
+            '(doom/find-file-in-private-config . file)
+            '(doom/describe-active-minor-mode . minor-mode)
+            '(flycheck-error-list-set-filter . builtin)
+            '(persp-switch-to-buffer . buffer)
+            '(projectile-find-file . project-file)
+            '(projectile-recentf . project-file)
+            '(projectile-switch-to-buffer . buffer)
+            '(projectile-switch-project . project-file)))
+
+(use-package! wgrep
+  :commands wgrep-change-to-wgrep-mode
+  :config (setopt wgrep-auto-save-buffer t))
 
 (use-package! yasnippet
   :defer-incrementally eldoc easymenu help-mode

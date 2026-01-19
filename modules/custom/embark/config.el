@@ -1,15 +1,32 @@
 ;;; custom/embark/config.el -*- lexical-binding: t; -*-
 
-(after! embark
-  (require 'org)
-  (setq embark-cycle-key "C-;"
-        embark-help-key "M-h"
-        embark-confirm-act-all nil
-        embark-quit-after-action t)
+(use-package! embark
+  :defer t
+  :init
+  (setopt which-key-use-C-h-commands nil
+          prefix-help-command #'embark-prefix-help-command)
 
-  (setq embark-indicators '(embark-which-key-indicator
-                            embark-highlight-indicator
-                            embark-isearch-highlight-indicator))
+  :config
+  (require 'consult)
+  (require 'org)
+  (map! [remap describe-bindings] #'embark-bindings
+        "C-;" #'embark-act  
+        (:map minibuffer-local-map
+         "C-;"  #'embark-act
+         "C-c C-;" #'embark-export
+         "C-c C-l" #'embark-collect
+         :desc "Export to writable buffer" "C-c C-e" #'+vertico/embark-export-write)
+        (:leader
+         :desc "Actions" "a" #'embark-act))
+
+  (setopt embark-cycle-key "C-;"
+          embark-help-key "M-h"
+          embark-confirm-act-all nil
+          embark-quit-after-action t)
+
+  (setopt embark-indicators '(embark-which-key-indicator
+                              embark-highlight-indicator
+                              embark-isearch-highlight-indicator))
 
   (advice-add #'embark-completing-read-prompter
               :around #'embark-hide-which-key-indicator)

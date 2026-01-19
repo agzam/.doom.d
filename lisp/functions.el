@@ -1,5 +1,6 @@
 ;;; lisp/functions.el -*- lexical-binding: t; -*-
 
+;;;###autoload
 (defun display-buffer-in-quadrant (buffer alist)
   "Display BUFFER in a side window while preserving existing window dimensions.
 When displaying BUFFER for the first time, creates a new window using a quarter

@@ -26,7 +26,6 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 
-(load! "lisp/functions")
 (load! "lisp/sexp-transient")
 
 (setopt doom-theme 'ag-themes-spacemacs-light)
@@ -362,6 +361,7 @@
       "TAB" #'alternate-buffer
       "v" #'expreg-transient
       "k" #'sexp-transient
+      "/" #'consult-ripgrep
       :nv ";" (cmd! (call-interactively
                        (if (evil-visual-state-p)
                            #'comment-or-uncomment-region
@@ -502,6 +502,7 @@
         :desc "corfu reset" "c" #'+corfu-kill-frames))
 
       (:prefix ("s" . "search/symbol")
+       :desc "in buffer"  "s" #'consult-line
        :desc "search" "/" #'consult-omni-transient
        :desc "eww search" "e" #'eww-search-words
        :desc "find-name-dired" "f" #'find-name-dired

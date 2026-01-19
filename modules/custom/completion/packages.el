@@ -1,6 +1,23 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; custom/completion/packages.el
 
+(package! vertico)
+(package! orderless)
+(package! consult)
+(package! consult-dir)
+(package! consult-flycheck)
+(package! marginalia)
+(package! wgrep)
+
+(when (modulep! +icons)
+  (package! nerd-icons-completion))
+
+(when (modulep! +childframe)
+  (package! vertico-posframe
+    :recipe (:host github :repo "tumashu/vertico-posframe")))
+
+(package! consult-yasnippet)
+
 (package! corfu
   :recipe (:files (:defaults "extensions/*.el")))
 
@@ -23,9 +40,7 @@
 (package! consult :recipe (:host github :repo "minad/consult"))
 
 (unpin! compat
-        consult
         posframe
-        vertico
         vertico-posframe)
 
 (package! yasnippet-capf :recipe (:host github :repo "elken/yasnippet-capf"))

@@ -20,6 +20,8 @@
 
 (setenv "LSP_USE_PLISTS" "true")
 
+(load! "lisp/functions")
+
 (doom! :input
        ;;chinese
        ;;japanese
@@ -31,7 +33,7 @@
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        ;; ivy               ; a search engine for love and life
-       (vertico +icons +childframe)   ; the search engine of the future
+       ;; (vertico +icons +childframe)   ; the search engine of the future
 
        :ui
        ;;deft              ; notational velocity for Emacs
@@ -201,9 +203,10 @@
        (default +bindings +smartparens)
 
        :custom
+
        git
        general
-       (completion +icons +minibuffer)
+       (completion +icons +minibuffer +childframe)
        embark
        colors
        modeline
@@ -235,4 +238,5 @@
        shell
        webdev
        yaml
-       rust)
+       rust
+       )
