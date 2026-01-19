@@ -172,7 +172,13 @@ text like: \"2023 was a better year than 2021\" would translate to:
                      (transient-reset))
      :transient t)
     (translate--minibuffer)]
-   ["" ("RET" "Go!" translate--translate)]]
+   [""
+    ("p" (lambda ()
+           (concat "translate popup: "
+                   (if (buffer-local-value 'translate-popup-mode (current-buffer))
+                       "on" "off")))
+     translate-popup-mode)
+    ("RET" "Go!" translate--translate)]]
   [:hide always
    [("<return>" "Go!" translate--translate)]]
   (interactive)

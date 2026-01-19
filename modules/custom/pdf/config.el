@@ -152,33 +152,28 @@
   :hook (nov-mode . variable-pitch-mode)
   :config
   (setq nov-text-width 100)
-  (map! :map nov-mode-map
-        :n "q" #'nov-back-or-quit
-        "l" #'evil-forward-char
-        "v" #'evil-visual-char
-        "V" #'evil-visual-line
-        "n" #'evil-ex-search-next
-        "g" nil
-        "SPC" nil
-        :n "i" nil
-        "DEL" nil
-        [remap text-scale-increase] #'nov-text-scale-increase
-        [remap text-scale-decrease] #'nov-text-scale-decrease
-        :n "]]" #'forward-paragraph
-        :n "[[" #'backward-paragraph)
-  (map! :map nov-button-map
-        "l" #'evil-forward-char
-        "v" #'evil-visual-char
-        "V" #'evil-visual-line
-        "n" #'evil-ex-search-next
-        "g" nil
-        "SPC" nil
-        :n "i" nil
-        "DEL" nil)
-
-(defadvice! +nov-paragraph-to-text-a (&rest _)
-  "Move to first character of paragraph text in nov-mode."
-  :after #'forward-paragraph
-  :after #'backward-paragraph
-  (when (eq major-mode 'nov-mode)
-    (skip-chars-forward " \t\n"))))
+  (add-hook! 'nov-mode-hook
+    (defun nov-mode--keys-h ()
+      (map! :map nov-mode-map
+            :n "q" #'nov-back-or-quit
+            "l" #'evil-forward-char
+            "v" #'evil-visual-char
+            "V" #'evil-visual-line
+            "n" #'evil-ex-search-next
+            "g" nil
+            "SPC" nil
+            :n "i" nil
+            "DEL" nil
+            [remap text-scale-increase] #'nov-text-scale-increase
+            [remap text-scale-decrease] #'nov-text-scale-decrease
+            :n "]]" #'forward-paragraph
+            :n "[[" #'backward-paragraph)
+      (map! :map nov-button-map
+            "l" #'evil-forward-char
+            "v" #'evil-visual-char
+            "V" #'evil-visual-line
+            "n" #'evil-ex-search-next
+            "g" nil
+            "SPC" nil
+            :n "i" nil
+            "DEL" nil))))

@@ -31,8 +31,12 @@
         :n "zj" #'+eww-decrease-font-size
         :n "q" #'kill-buffer-and-window
         [remap imenu] #'+eww-jump-to-url-on-page
+        :n "[[" #'backward-paragraph
+        :n "]]" #'forward-paragraph
 
         (:localleader
+         :desc "prev-url" "[[" #'eww-previous-url
+         :desc "next-url" "]]" #'eww-next-url
          :desc "zoom" "z" #'eww-zoom-transient
          :desc "external browser" "e" #'eww-browse-with-external-browser
          :desc "buffers" "b" #'eww-switch-to-buffer

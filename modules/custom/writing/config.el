@@ -265,3 +265,17 @@
         :i ", SPC" #'insert-comma
         :i ",," #'jinx-autocorrect-last+
         :i ",." (cmd! (jinx-autocorrect-last+ :prompt))))
+
+(use-package! translate-popup
+  :after (google-translate))
+
+(defadvice! forward-paragraph-fix-a (&rest _)
+  "Move to first character of paragraph not the space before it"
+  :after #'forward-paragraph
+  (skip-chars-forward " \t\n"))
+
+(defadvice! backward-paragraph-fix-a (ofn &rest _)
+  "Move to first character of paragraph not the space after it"
+  :around #'backward-paragraph
+  (skip-chars-backward " \n")
+  (funcall ofn))

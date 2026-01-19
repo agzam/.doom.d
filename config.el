@@ -554,7 +554,8 @@
                   :desc "ru->en" "r" #'google-translate-query-translate
                   :desc "es->en" "s" #'+google-translate-es->en
                   :desc "en->es" "S" #'+google-translate-en->es
-                  :desc "translate" "t" #'translate-transient))
+                  :desc "translate" "t" #'translate-transient
+                  :desc "popup" "p" #'translate-popup-translate-at-point))
                (:when (modulep! :custom ai)
                  (:prefix ("g" . "gptel")
                   :desc "gptel-menu" "g" #'gptel-menu
