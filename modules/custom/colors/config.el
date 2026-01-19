@@ -38,6 +38,7 @@
    (beacon-mode +1)))
 
 (use-package! ef-themes
+  :disabled t
   :config
   (setopt ef-themes-mixed-fonts nil
           ef-themes-variable-pitch-ui nil))

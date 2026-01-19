@@ -20,3 +20,5 @@
 (package! wiktionary-bro :recipe (:local-repo "wiktionary-bro"))
 
 (package! jinx :recipe (:host github :repo "minad/jinx"))
+
+(package! translate-popup :recipe (:local-repo "translate-popup"))

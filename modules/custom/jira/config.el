@@ -3,7 +3,7 @@
 
 
 (use-package! go-jira
-  :defer t
+  :after (org org-roam)
   :config
 
   (setopt go-jira-default-search-format-string

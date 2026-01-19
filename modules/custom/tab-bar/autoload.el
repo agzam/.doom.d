@@ -38,6 +38,8 @@
    [("hn" "NH" (lambda () (interactive) (hnreader-news)))
     ("rd" "Reddit" (lambda () (interactive) (reddigg-view-frontpage)))]
 
+   [("jb" "def. jira board" go-jira-browse-default-board)]
+
    [("p" "projects" (lambda ()
                       (interactive)
                       (switch-to-buffer
