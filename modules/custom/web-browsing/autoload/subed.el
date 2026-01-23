@@ -1,34 +1,57 @@
 ;;; custom/web-browsing/autoload/subed.el -*- lexical-binding: t; -*-
-(defvar-local subed--srt-metadata-hidden nil
-  "Whether SRT metadata is currently hidden.")
+(defvar-local subed--subtitle-metadata-hidden nil
+  "Whether subtitle metadata is currently hidden.")
 
 ;;;###autoload
 (defun subed-toggle-srt-metadata ()
-  "Hide timestamps behind overlays in a .srt file."
+  "Hide timestamps behind overlays in subtitle files (.srt or .vtt)."
   (interactive)
-  (if subed--srt-metadata-hidden
-      (remove-overlays nil nil 'srt-metadata t)
+  (if subed--subtitle-metadata-hidden
+      (remove-overlays nil nil 'subtitle-metadata t)
     (save-excursion
       (goto-char (point-min))
-      (while (re-search-forward "^\\([0-9]+\n[0-9:.,-]+ --> [0-9:.,-]+\\)\n\\(.*\\(?:\n.*\\)*?\\)\n\n" nil t)
-        (let ((ov-metadata (make-overlay (match-beginning 1) (match-beginning 2)))
-              (ov-extra-newline (make-overlay (1+ (match-end 2)) (match-end 0))))
+      ;; Skip VTT header if present
+      (when (looking-at "WEBVTT")
+        (forward-line 1)
+        (while (looking-at "^\\(NOTE\\|Kind:\\|Language:\\)")
+          (forward-line 1))
+        (when (looking-at "^$")
+          (forward-line 1)))
+      ;; Match both SRT and VTT subtitle entries
+      ;; SRT: number\ntimestamp --> timestamp\ntext\n\n
+      ;; VTT with ID: id\ntimestamp --> timestamp\ntext\n\n
+      ;; VTT without ID: timestamp --> timestamp\ntext\n\n
+      (while (re-search-forward "^\\(\\(?:[0-9]+\n\\)?\\([0-9:.,-]+ --> [0-9:.,-]+\\(?: .*\\)?\\)\\)\n\\(.*\\(?:\n.*\\)*?\\)\n\n" nil t)
+        (let ((ov-metadata (make-overlay (match-beginning 1) (match-beginning 3)))
+              (ov-extra-newline (make-overlay (1+ (match-end 3)) (match-end 0))))
           (overlay-put ov-metadata 'invisible t)
-          (overlay-put ov-metadata 'srt-metadata t)
+          (overlay-put ov-metadata 'subtitle-metadata t)
           (overlay-put ov-extra-newline 'invisible t)
-          (overlay-put ov-extra-newline 'srt-metadata t)))))
-  (setq subed--srt-metadata-hidden (not subed--srt-metadata-hidden))
+          (overlay-put ov-extra-newline 'subtitle-metadata t)))))
+  (setq subed--subtitle-metadata-hidden (not subed--subtitle-metadata-hidden))
   (redraw-display))
 
 ;;;;;###autoload
 (defun subed-view-plain-text ()
-  "Show only subtitle text (without timestamp metadata) in a separate buffer."
+  "Show only subtitle text (without timestamp metadata) in a separate buffer.
+Works with both .srt and .vtt files."
   (interactive)
   (let ((text-content "")
         (buf (get-buffer-create "*Subtitle Text Only*")))
     (save-excursion
       (goto-char (point-min))
-      (while (re-search-forward "^[0-9]+\n[0-9:.,-]+ --> [0-9:.,-]+\n\\(.*\\(?:\n.*\\)*?\\)\n\n" nil t)
+      ;; Skip VTT header if present
+      (when (looking-at "WEBVTT")
+        (forward-line 1)
+        (while (looking-at "^\\(NOTE\\|Kind:\\|Language:\\)")
+          (forward-line 1))
+        (when (looking-at "^$")
+          (forward-line 1)))
+      ;; Match both SRT and VTT subtitle entries
+      ;; SRT: number\ntimestamp --> timestamp\ntext\n\n
+      ;; VTT with ID: id\ntimestamp --> timestamp\ntext\n\n
+      ;; VTT without ID: timestamp --> timestamp\ntext\n\n
+      (while (re-search-forward "^\\(?:[0-9]+\n\\)?[0-9:.,-]+ --> [0-9:.,-]+\\(?: .*\\)?\n\\(.*\\(?:\n.*\\)*?\\)\n\n" nil t)
         (let ((subtitle-text (match-string 1)))
           ;; Add spacing between subtitles but avoid consecutive empty lines
           (when (> (length text-content) 0)
