@@ -131,3 +131,10 @@
 
 (use-package! elisp-format
   :after elisp-mode)
+
+(after! helpful
+  (defadvice! helpful-for-describe-function-a (_fn &rest args)
+    "Replace describe-function with better alternative.
+Works in the Profiler and Transients."
+    :around #'describe-function
+    (apply #'helpful-symbol args)))
