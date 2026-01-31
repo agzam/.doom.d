@@ -91,8 +91,9 @@
         :n "v" #'backtrace-toggle-locals))
 
 (after! edebug
-  (setq edebug-print-level nil
-        edebug-print-length nil))
+  (setopt edebug-print-level nil
+          edebug-print-length nil
+          edebug-save-windows nil))
 
 (after! info
   (map! :map Info-mode-map
@@ -132,9 +133,8 @@
 (use-package! elisp-format
   :after elisp-mode)
 
-(after! helpful
-  (defadvice! helpful-for-describe-function-a (_fn &rest args)
+(defadvice! helpful-for-describe-function-a (_fn &rest args)
     "Replace describe-function with better alternative.
 Works in the Profiler and Transients."
     :around #'describe-function
-    (apply #'helpful-symbol args)))
+    (apply #'helpful-symbol args))
