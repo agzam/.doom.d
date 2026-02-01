@@ -71,3 +71,8 @@
 (package! toc-org)
 
 (package! ob-mermaid)
+
+(package! vulpea)
+(package! vulpea-ui)
+(package! vulpea-journal)
+(package! consult-vulpea)

@@ -64,7 +64,8 @@
              (:prefix ("l" . "links")
                       "i" #'org-id-store-link
                       "n" #'org-next-link
-                      "p" #'org-previous-link)
+                      "p" #'org-previous-link
+                      "x" #'org-remove-link-at-point)
              "n" #'org-noter-transient
              (:prefix ("o" . "open/Org")
                       "l" #'org-id-store-link
@@ -72,7 +73,7 @@
              (:prefix ("r" . "roam")
               "b" #'consult-org-roam-backlinks
               "i" #'org-roam-node-insert+
-              "l" #'org-roam-buffer-toggle
+              "l" #'vulpea-ui-sidebar-toggle
               :desc "org-roam-ui in xwidget" "w" #'org-roam-toggle-ui-xwidget
               :desc "org-roam-ui in browser" "W" #'org-roam-ui-browser+
               "f" #'org-roam-node-find
@@ -544,3 +545,34 @@
   ;; install https://github.com/mermaid-js/mermaid-cli
   (when-let* ((mmdc (executable-find "mmdc")))
     (setopt ob-mermaid-cli-path mmdc)))
+
+(use-package! vulpea
+  :after org
+  :config
+  (setopt vulpea-db-sync-directories (list org-default-folder)
+          vulpea-buffer-alias-property "ROAM_ALIASES")
+  (vulpea-db-autosync-mode +1))
+
+(use-package! vulpea-ui
+  :after vulpea
+  :config
+  (setopt vulpea-ui-backlinks-show-preview t
+          vulpea-ui-outline-max-depth 1
+          vulpea-ui-default-widget-collapsed nil
+          vulpea-ui-backlinks-show-preview t
+          vulpea-ui-sidebar-auto-hide nil)
+  (map! :map vulpea-ui-sidebar-mode-map
+        (:localleader
+         (:prefix ("r" . "roam")
+                  "l" #'vulpea-ui-sidebar-toggle))))
+
+(use-package! vulpea-journal
+  :after (vulpea vulpea-ui)
+  :config
+  (setopt vulpea-directory org-default-folder)
+  (vulpea-journal-setup))
+
+(use-package! consult-vulpea
+  :after (consult vulpea)
+  :config
+  (consult-vulpea-mode 1))
