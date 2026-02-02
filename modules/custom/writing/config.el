@@ -272,10 +272,28 @@
 (defadvice! forward-paragraph-fix-a (&rest _)
   "Move to first character of paragraph not the space before it"
   :after #'forward-paragraph
-  (skip-chars-forward " \t\n"))
+  (when (called-interactively-p 'any)
+    (skip-chars-forward " \t\n")))
 
 (defadvice! backward-paragraph-fix-a (ofn &rest _)
   "Move to first character of paragraph not the space after it"
   :around #'backward-paragraph
-  (skip-chars-backward " \n")
-  (funcall ofn))
+  (if (and (called-interactively-p 'any))
+      (progn
+        (skip-chars-backward " \n")
+        (funcall ofn)
+        (when (looking-at-p "[[:blank:]]*$")
+          (skip-chars-forward " \t\n")))
+    (funcall ofn)))
+
+(defadvice! recenter-on-paragraph-a (&rest _)
+  :after #'forward-paragraph
+  :after #'backward-paragraph
+  (when (called-interactively-p 'any)
+    (recenter)
+    (pulse-momentary-highlight-one-line)))
+
+(defadvice! flash-on-recenter-a (&rest _)
+  :after #'recenter-top-bottom
+  (when (called-interactively-p 'any)
+    (pulse-momentary-highlight-one-line)))
