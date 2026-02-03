@@ -129,6 +129,22 @@ from SOURCE-LANG to TARGET-LANG."
 
 ;;; Text detection functions
 
+(defun translate-popup--truncate-to-max-length (text)
+  "Truncate TEXT to fit within `translate-popup-max-paragraph-length'.
+Removes complete sentences from the end until length is acceptable.
+Returns truncated text or original if already short enough."
+  (if (<= (length text) translate-popup-max-paragraph-length)
+      text
+    (with-temp-buffer
+      (insert text)
+      (goto-char (point-max))
+      ;; Remove sentences from the end until we're under the limit
+      (while (and (< translate-popup-max-paragraph-length (point-max))
+                  (< (point-min) (point)))
+        (backward-sentence)
+        (delete-region (point) (point-max)))
+      (string-trim (buffer-substring-no-properties (point-min) (point-max))))))
+
 (defun translate-popup--at-paragraph-boundary-p ()
   "Return non-nil if point is at the beginning or end of a paragraph.
 Specifically, returns t if point is within 5 characters of a paragraph boundary."
@@ -150,25 +166,24 @@ Specifically, returns t if point is within 5 characters of a paragraph boundary.
 
 (defun translate-popup--get-paragraph-text ()
   "Get the text of the current paragraph.
-Returns nil if paragraph is too long."
+Truncates intelligently if too long by removing complete sentences from the end."
   (save-excursion
-    (let ((start (save-excursion
-                   ;; Move forward then backward to reliably get start of current paragraph
-                   ;; This handles the case when cursor is at first character
-                   (forward-paragraph 1)
-                   (backward-paragraph 1)
-                   (point)))
-          (end (save-excursion
-                 (forward-paragraph 1)
-                 (point))))
-      (when (and start end
-                 (< (- end start) translate-popup-max-paragraph-length))
-        (string-trim (buffer-substring-no-properties start end))))))
+    (let* ((start (save-excursion
+                    ;; Move forward then backward to reliably get start of current paragraph
+                    ;; This handles the case when cursor is at first character
+                    (forward-paragraph 1)
+                    (backward-paragraph 1)
+                    (point)))
+           (end (save-excursion
+                  (forward-paragraph 1)
+                  (point)))
+           (text (string-trim (buffer-substring-no-properties start end))))
+      (translate-popup--truncate-to-max-length text))))
 
 (defun translate-popup--get-text-to-translate ()
   "Get text to translate based on context.
 Returns text string or nil if nothing appropriate to translate.
-Priority: active region > paragraph (if at boundary) > word at point."
+Priority: active region > paragraph (if at boundary) > sentence (if at beginning) > word at point."
   (cond
    ;; Active region
    ((use-region-p)
@@ -177,6 +192,14 @@ Priority: active region > paragraph (if at boundary) > word at point."
    ;; Paragraph if at boundary
    ((translate-popup--at-paragraph-boundary-p)
     (translate-popup--get-paragraph-text))
+   ;; Sentence if at beginning: capital letter or digit, preceded by sentence-ending punctuation
+   ((and (looking-at "[A-Z0-9]")
+         (looking-back "[.?!]\\s-+" (line-beginning-position)))
+    (save-excursion
+      (let* ((start (point))
+             (end (progn (forward-sentence) (point)))
+             (text (string-trim (buffer-substring-no-properties start end))))
+        (translate-popup--truncate-to-max-length text))))
    ;; Word at point
    ((word-at-point)
     (substring-no-properties (word-at-point)))
@@ -296,9 +319,10 @@ Used when popup is shown via explicit commands (not minor mode)."
 (defun translate-popup--update ()
   "Update translation popup for text at point."
   (if-let* ((text (translate-popup--get-text-to-translate))
-            ;; Only show in normal state (evil) or when not actively typing
+            ;; Only show in normal/visual state (evil) or when not actively typing
             (_ (or (not (bound-and-true-p evil-mode))
-                   (evil-normal-state-p)))
+                   (evil-normal-state-p)
+                   (evil-visual-state-p)))
             ;; Get language settings
             (source-lang google-translate-default-source-language)
             (target-lang google-translate-default-target-language))
