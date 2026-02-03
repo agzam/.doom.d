@@ -151,8 +151,12 @@
   :mode ("\\.epub\\'" . nov-mode)
   :hook (nov-mode . variable-pitch-mode)
   :config
-  (setq nov-text-width 100)
+  (setopt nov-text-width 100
+          nov-variable-pitch nil
+          nov-text-width t)
   (add-hook! 'nov-mode-hook
+    #'jinx-mode-off
+    #'visual-line-mode
     (defun nov-mode--keys-h ()
       (map! :map nov-mode-map
             :n "q" #'nov-back-or-quit

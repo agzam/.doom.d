@@ -146,17 +146,13 @@ exist, and `org-link' otherwise."
 ;;; Commands
 
 ;;;###autoload
-(defun +org/remove-link ()
-  "Unlink the text at point."
+(defun org-remove-link-at-point ()
+  "Remove link at point."
   (interactive)
   (unless (org-in-regexp org-link-bracket-re 1)
     (user-error "No link at point"))
   (save-excursion
-    (let ((label (if (match-end 2)
-                     (match-string-no-properties 2)
-                   (org-link-unescape (match-string-no-properties 1)))))
-      (delete-region (match-beginning 0) (match-end 0))
-      (insert label))))
+    (delete-region (match-beginning 0) (match-end 0))))
 
 ;;;###autoload
 (defun +org/play-gif-at-point ()

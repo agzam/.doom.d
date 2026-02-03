@@ -21,9 +21,13 @@
 ;;;###autoload
 (defun nov-text-scale-increase ()
   (interactive)
-  (nov--text-scale-adjust 0.5))
+  (if nov-variable-pitch
+      (nov--text-scale-adjust 0.5)
+    (text-scale-increase 0.5)))
 
 ;;;###autoload
 (defun nov-text-scale-decrease ()
   (interactive)
-  (nov--text-scale-adjust -0.5))
+  (if nov-variable-pitch
+      (nov--text-scale-adjust -0.5)
+    (text-scale-decrease 0.5)))

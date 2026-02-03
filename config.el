@@ -469,7 +469,7 @@
                   :desc "gptel" "g" #'gptel+))
        "r" nil
        (:prefix ("r" . "roam")
-        "r" #'org-roam-node-find
+        "r" #'vulpea-find
         "b" #'consult-org-roam-backlinks
         :desc "work today" "t" (cmd! (funcall-interactively #'org-roam-dailies-goto-today '("w")))
         :desc "journal today" "T" (cmd! (funcall-interactively #'org-roam-dailies-goto-today '("j")))
@@ -481,6 +481,7 @@
       (:prefix ("p" . "projects")
                "b" #'consult-projectile
                "f" #'consult-projectile-find-file
+               "k" #'project-kill-buffers
                (:after projectile
                 :desc "Invalidate project cache" "I" #'projectile-invalidate-cache
                 :desc "project IBuffer" "i" #'projectile-ibuffer
@@ -493,7 +494,7 @@
 
       (:prefix ("r" . "reset/resume/ring/roam")
        "d" (cmd! (call-interactively #'redraw-display))
-       "r" #'org-roam-node-find
+       "r" #'vulpea-find
        :desc "yank from kill-ring" "y" #'consult-yank-from-kill-ring
        (:after vertico
         :desc "vertico repeat" "l" #'vertico-repeat

@@ -70,7 +70,7 @@
     ("; +" "strikethrough" (lambda () (interactive) (org-emphasize ?+)))]
    [("C-c l" "insert link" org-insert-link)
     ("C-c L" "insert browser url" expreg-transient--insert-browser-url)
-    ("C-c i" "insert org-roam link" org-roam-node-insert+)
+    ("C-c i" "insert org-roam link" vulpea-insert)
     ("; l" "insert link" org-insert-link)
     ("; L" "insert browser url" expreg-transient--insert-browser-url)
     ("; q" "wrap in quote block"

@@ -41,8 +41,8 @@
             :n "[[" #'org-previous-visible-heading
             :n "]]" #'org-next-visible-heading
             [remap imenu] #'consult-outline
-            "C-c C-f f" #'org-roam-node-find
-            "C-c C-i" #'org-roam-node-insert+
+            "C-c C-f f" #'vulpea-find
+            "C-c C-i" #'vulpea-insert
             :n "zk" #'text-scale-increase
 
             ;; tilde insead of backtick
@@ -72,11 +72,11 @@
                       "L" #'org-store-link-id-optional)
              (:prefix ("r" . "roam")
               "b" #'consult-org-roam-backlinks
-              "i" #'org-roam-node-insert+
+              "i" #'vulpea-insert
               "l" #'vulpea-ui-sidebar-toggle
               :desc "org-roam-ui in xwidget" "w" #'org-roam-toggle-ui-xwidget
               :desc "org-roam-ui in browser" "W" #'org-roam-ui-browser+
-              "f" #'org-roam-node-find
+              "f" #'vulpea-find
               "F" #'consult-org-roam-forward-links
               "d" #'org-roam-dailies-find-date
               (:prefix ("r" . "refile")
@@ -177,7 +177,7 @@
    org-roam-file-exclude-regexp '("data/" ".sync/"))
   :config
   (map! :map org-mode-map
-        :i "[[" #'org-roam-node-insert+
+        :i "[[" #'vulpea-insert
         :i "[ SPC" (cmd! (insert "[]")
                          (backward-char)))
   (map! :map org-roam-mode-map
@@ -550,7 +550,9 @@
   :after org
   :config
   (setopt vulpea-db-sync-directories (list org-default-folder)
-          vulpea-buffer-alias-property "ROAM_ALIASES")
+          vulpea-buffer-alias-property "ROAM_ALIASES"
+          vulpea-db-parse-method 'single-temp-buffer
+          vulpea-db-sync-scan-on-enable 'async)
   (vulpea-db-autosync-mode +1))
 
 (use-package! vulpea-ui
@@ -564,7 +566,11 @@
   (map! :map vulpea-ui-sidebar-mode-map
         (:localleader
          (:prefix ("r" . "roam")
-                  "l" #'vulpea-ui-sidebar-toggle))))
+                  "l" #'vulpea-ui-sidebar-toggle)))
+
+  ;; remove the stats from the ui buffer
+  ;; (remhash 'stats vulpea-ui--widget-registry)
+  )
 
 (use-package! vulpea-journal
   :after (vulpea vulpea-ui)

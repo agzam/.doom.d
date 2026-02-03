@@ -155,7 +155,7 @@ jump to selected tab, activating it in the browser."
     (browser-copy-tab-link)
     (print (car kill-ring))
     (cond
-     ((eq major-mode 'org-mode)
+     ((derived-mode-p 'org-mode)
       (org-cliplink))
      (t (insert (car kill-ring)))))
    ((featurep :system 'macos)
@@ -170,9 +170,9 @@ jump to selected tab, activating it in the browser."
       (when (use-region-p)
         (delete-region (region-beginning) (region-end)))
       (cond
-       ((eq major-mode 'markdown-mode)
+       ((derived-mode-p 'markdown-mode)
         (insert (format "[%s](%s)" title url)))
-       ((eq major-mode 'org-mode)
+       ((derived-mode-p 'org-mode)
         (insert (format "[[%s][%s]]" url title)))
        (t (insert url)))))))
 
