@@ -197,3 +197,12 @@ text like: \"2023 was a better year than 2021\" would translate to:
   (interactive)
   (goto-char (point-min))
   (push-button (forward-button 2)))
+
+;;;###autoload
+(defun translate-at-point-smart ()
+  (interactive)
+  (when-let* ((text (translate-popup--get-text-to-translate)))
+    (google-translate-translate
+     google-translate-default-source-language
+     google-translate-default-target-language
+     text)))

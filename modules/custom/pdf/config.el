@@ -164,6 +164,7 @@
             "v" #'evil-visual-char
             "V" #'evil-visual-line
             "n" #'evil-ex-search-next
+            :n "t" nil
             "g" nil
             "SPC" nil
             :n "i" nil
@@ -171,7 +172,10 @@
             [remap text-scale-increase] #'nov-text-scale-increase
             [remap text-scale-decrease] #'nov-text-scale-decrease
             :n "]]" #'forward-paragraph
-            :n "[[" #'backward-paragraph)
+            :n "[[" #'backward-paragraph
+            (:localleader
+             "t" #'translate-popup-translate-at-point
+             "T" #'translate-at-point-smart))
       (map! :map nov-button-map
             "l" #'evil-forward-char
             "v" #'evil-visual-char
