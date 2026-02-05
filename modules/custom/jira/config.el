@@ -1,7 +1,5 @@
 ;;; custom/jira/config.el -*- lexical-binding: t; -*-
 
-
-
 (use-package! go-jira
   :after (org org-roam)
   :config

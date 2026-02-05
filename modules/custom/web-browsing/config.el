@@ -16,40 +16,41 @@
     :after #'eww-forward-url
     (eww--rename-buffer))
 
-  (map! :map shr-map
-        "v" nil)
+  (add-hook! 'eww-mode-hook
+    (defun eww-set-local-keys-h ()
+      (map! :map shr-map
+            "v" nil)
+      (map! :map eww-mode-map
+            "C-c C-o" #'eww-browse-with-external-browser
+            :n "C-j" (cmd! () (pixel-scroll-precision-scroll-down 50))
+            :n "C-k" (cmd! () (pixel-scroll-precision-scroll-up 50))
+            :n "j" #'evil-next-visual-line
+            :n "k" #'evil-previous-visual-line
+            :ni "C-<return>" #'+eww-open-in-other-window
+            :n "yy" #'+eww-copy-current-url
+            :n "zk" #'+eww-increase-font-size
+            :n "zj" #'+eww-decrease-font-size
+            :n "q" #'kill-buffer-and-window
+            [remap imenu] #'+eww-jump-to-url-on-page
+            :n "[[" #'backward-paragraph
+            :n "]]" #'forward-paragraph
 
-  (map! :map eww-mode-map
-        "C-c C-o" #'eww-browse-with-external-browser
-        :n "C-j" (cmd! () (pixel-scroll-precision-scroll-down 50))
-        :n "C-k" (cmd! () (pixel-scroll-precision-scroll-up 50))
-        :n "j" #'evil-next-visual-line
-        :n "k" #'evil-previous-visual-line
-        :ni "C-<return>" #'+eww-open-in-other-window
-        :n "yy" #'+eww-copy-current-url
-        :n "zk" #'+eww-increase-font-size
-        :n "zj" #'+eww-decrease-font-size
-        :n "q" #'kill-buffer-and-window
-        [remap imenu] #'+eww-jump-to-url-on-page
-        :n "[[" #'backward-paragraph
-        :n "]]" #'forward-paragraph
+            (:localleader
+             :desc "prev-url" "[[" #'eww-previous-url
+             :desc "next-url" "]]" #'eww-next-url
+             :desc "zoom" "z" #'eww-zoom-transient
+             :desc "external browser" "e" #'eww-browse-with-external-browser
+             :desc "buffers" "b" #'eww-switch-to-buffer
+             :desc "reload" "r" #'eww-reload
+             (:prefix ("t" . "toggle")
+              :desc "readable" "r" #'eww-readable
+              :desc "colors" "c" #'eww-toggle-colors
+              :desc "fonts" "f" #'eww-toggle-fonts
+              :desc "images" "i" #'eww-toggle-images)
 
-        (:localleader
-         :desc "prev-url" "[[" #'eww-previous-url
-         :desc "next-url" "]]" #'eww-next-url
-         :desc "zoom" "z" #'eww-zoom-transient
-         :desc "external browser" "e" #'eww-browse-with-external-browser
-         :desc "buffers" "b" #'eww-switch-to-buffer
-         :desc "reload" "r" #'eww-reload
-         (:prefix ("t" . "toggle")
-          :desc "readable" "r" #'eww-readable
-          :desc "colors" "c" #'eww-toggle-colors
-          :desc "fonts" "f" #'eww-toggle-fonts
-          :desc "images" "i" #'eww-toggle-images)
-
-         (:prefix ("y" . "copy")
-          :desc "copy url" "y" #'+eww-copy-current-url
-          :desc "copy for Org" "o" #'org-eww-copy-for-org-mode)))
+             (:prefix ("y" . "copy")
+              :desc "copy url" "y" #'+eww-copy-current-url
+              :desc "copy for Org" "o" #'org-eww-copy-for-org-mode)))))
 
   ;; (advice-add #'eww-display-html :around #'eww-make-readable-a)
   )

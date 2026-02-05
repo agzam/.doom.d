@@ -552,7 +552,8 @@
   (setopt vulpea-db-sync-directories (list org-default-folder)
           vulpea-buffer-alias-property "ROAM_ALIASES"
           vulpea-db-parse-method 'single-temp-buffer
-          vulpea-db-sync-scan-on-enable 'async)
+          vulpea-db-sync-scan-on-enable 'async
+          vulpea-db-location (concat doom-local-dir "vulpea.db"))
   (vulpea-db-autosync-mode +1))
 
 (use-package! vulpea-ui
