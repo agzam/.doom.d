@@ -149,7 +149,6 @@
 (use-package! nov
   :defer t
   :mode ("\\.epub\\'" . nov-mode)
-  :hook (nov-mode . variable-pitch-mode)
   :config
   (setopt nov-text-width 100
           nov-variable-pitch nil

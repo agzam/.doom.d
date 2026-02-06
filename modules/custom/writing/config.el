@@ -12,7 +12,6 @@
    'display-buffer-alist
    '("\\* spacehammer-edit.*"
      (display-buffer-reuse-window
-      display-buffer-reuse-mode-window
       display-buffer-in-quadrant)
      (direction . right)
      (window . root))))
@@ -236,7 +235,7 @@
         :n "q" #'kill-current-buffer)
 
   (add-hook! 'wiktionary-bro-mode-hook
-    (defun jinx-mode-off () (jinx-mode -1))
+    #'jinx-mode-off 
     (defun wiktionary-bro-use-eww-open-in-other-window-h ()
       (setq-local browse-url-browser-function #'+eww-open-in-other-window)))
 

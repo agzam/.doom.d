@@ -113,3 +113,7 @@ ago. With a prefix argument opens `jinx-correct-word' dialog."
         (delete-char -2)
         (insert "— "))
     (insert "-")))
+
+;;;###autoload
+(defun jinx-mode-off ()
+  (jinx-mode -1))
