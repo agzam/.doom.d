@@ -325,7 +325,9 @@
    ;; vertico-count 15
    vertico-posframe-width 150
    marginalia-margin-threshold 500
-   vertico-posframe-parameters `((alpha . 1.0)))
+   vertico-posframe-parameters `((alpha . 1.0))
+   ;; Ignore buffer-local text-scale and use frame's default font size
+   posframe-text-scale-factor-function (lambda (_) 0))
   (vertico-posframe-mode +1)
 
   ;; disable and restore posframe when emacslient connects in terminal
