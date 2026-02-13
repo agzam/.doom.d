@@ -8,8 +8,8 @@
           "project = SAC AND status NOT IN (Closed, Done) AND text ~ \"%s\"")
 
   (map! :map go-jira-browse-ticket-mode-map
-        :n "q" #'kill-buffer-and-window
-        :n "yy" #'go-jira--browser-ticket-mode-get-url)
+        :nv "q" #'kill-buffer-and-window
+        :nv "yy" #'go-jira--browser-ticket-mode-get-url)
 
   (add-hook! '(org-mode-hook
                markdown-mode-hook
@@ -31,19 +31,17 @@
       (defun go-jira-view-mode-h ()
         (map!
          :map go-jira-view-mode-map
-         :nv "C" #'go-jira-add-comment
-         :n "q" #'kill-buffer-and-window
-         (:prefix ("g" . "go")
-                  "r" #'go-jira-view-mode-refresh))))
+         :nv "E" #'go-jira-edit
+         :nv "q" #'kill-buffer-and-window
+         :nv "gr" #'go-jira-view-mode-refresh)))
 
     (add-hook! 'go-jira-board-view-mode-hook
       (defun go-jira-board-view-mode-h ()
         (map!
          :map go-jira-board-view-mode-map
-         :n "q" #'kill-buffer-and-window
-         :nv "C" #'go-jira-add-comment
-         (:prefix ("g" . "go")
-                  "r" #'go-jira-board-refresh))))
+         :nv "q" #'kill-buffer-and-window
+         :nv "E" #'go-jira-edit
+         :nv "gr" #'go-jira-board-refresh)))
 
     (map! :map embark-jira-ticket-map
           (:prefix ("b" . "browse")

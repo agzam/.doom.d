@@ -51,6 +51,7 @@
   (map! "C-c C-g" #'gptel-abort)
 
   (add-hook! 'gptel-mode-hook
+    #'gptel-highlight-mode
     (defun gptel-mode-set-local-keys ()
       (map! :map gptel-mode-map
             :i "s-<return>" #'gptel-send
@@ -183,7 +184,7 @@ enclose them in markdown quotes.
   (setopt claude-code-terminal-backend 'eat))
 
 (use-package! eca
-  :defer t
+  :after markdown-mode
   :config
   (setopt eca-chat-use-side-window nil
           eca-chat-custom-behavior nil
