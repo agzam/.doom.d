@@ -175,9 +175,9 @@ text like: \"2023 was a better year than 2021\" would translate to:
    [""
     ("p" (lambda ()
            (concat "translate popup: "
-                   (if (buffer-local-value 'translate-popup-mode (current-buffer))
+                   (if (buffer-local-value 'google-translate-posframe-mode (current-buffer))
                        "on" "off")))
-     translate-popup-mode)
+     google-translate-posframe-mode)
     ("RET" "Go!" translate--translate)]]
   [:hide always
    [("<return>" "Go!" translate--translate)]]
@@ -201,7 +201,7 @@ text like: \"2023 was a better year than 2021\" would translate to:
 ;;;###autoload
 (defun translate-at-point-smart ()
   (interactive)
-  (when-let* ((text (translate-popup--get-text-to-translate)))
+  (when-let* ((text (google-translate-posframe--get-text-to-translate)))
     (google-translate-translate
      google-translate-default-source-language
      google-translate-default-target-language

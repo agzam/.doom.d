@@ -173,7 +173,7 @@
             :n "]]" #'forward-paragraph
             :n "[[" #'backward-paragraph
             (:localleader
-             "t" #'translate-popup-translate-at-point
+             "t" #'google-translate-posframe-at-point
              "T" #'translate-at-point-smart))
       (map! :map nov-button-map
             "l" #'evil-forward-char

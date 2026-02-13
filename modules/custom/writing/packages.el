@@ -4,7 +4,7 @@
 (package! sdcv)
 (package! google-translate :recipe
   (:host github :repo "agzam/google-translate"
-         :branch "player-args"))
+         :branch "improvements"))
 
 (package! define-it)
 
@@ -21,4 +21,5 @@
 
 (package! jinx :recipe (:host github :repo "minad/jinx"))
 
-(package! translate-popup :recipe (:local-repo "translate-popup"))
+;; translate-popup retired - functionality now in google-translate-posframe-ui
+;; (package! translate-popup :recipe (:local-repo "translate-popup"))

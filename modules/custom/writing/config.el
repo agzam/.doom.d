@@ -265,7 +265,7 @@
         :i ",," #'jinx-autocorrect-last+
         :i ",." (cmd! (jinx-autocorrect-last+ :prompt))))
 
-(use-package! translate-popup
+(use-package! google-translate-posframe
   :after (google-translate))
 
 (defadvice! forward-paragraph-fix-a (&rest _)
