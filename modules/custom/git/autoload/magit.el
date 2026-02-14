@@ -335,15 +335,11 @@ be used as a git branch name."
           (delete-directory cwd))))))
 
 
-(defadvice! magit-python-strip-class-name-a (orig-fun &rest args)
-  :around #'magit-which-function
-  "Strip class prefix from Python function names for git log -L.
+;;;###autoload
+(defun magit-python-which-function ()
+  "Like `magit-which-function' but strip class prefix from Python names.
 Git's -L flag doesn't support Class.method notation for Python."
-  (let ((name (apply orig-fun args)))
-    (if (and name
-             (derived-mode-p 'python-mode 'python-ts-mode)
-             (string-match "\\." name))
-        ;; Strip everything before the last dot for Python
+  (when-let ((name (magit-which-function)))
+    (if (string-match "\\." name)
         (replace-regexp-in-string ".*\\." "" name)
-      ;; Return unchanged for other modes
       name)))

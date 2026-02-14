@@ -9,7 +9,10 @@
              #'lsp!
              #'+python-mode-lookup-handlers
              (defun activate-python-dash-docset-h ()
-               (dash-docs-activate-docset "Python 3"))))
+               (dash-docs-activate-docset "Python 3"))
+             (defun set-python-trace-definition-h ()
+               (setq-local magit-log-trace-definition-function
+                           #'magit-python-which-function))))
 
 (use-package! lsp-pyright
   :defer t
