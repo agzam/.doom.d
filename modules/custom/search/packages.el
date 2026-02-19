@@ -10,6 +10,6 @@
 
 (package! tldr)
 
-(package! slack-search :recipe
-  ;; (:local-repo "slack-search" :files ("*.el"))
-  (:host github :repo "agzam/slack-search.el"))
+(package! slacko :recipe
+  ;; (:local-repo "slacko.el" :files ("*.el"))
+  (:host github :repo "agzam/slacko.el"))

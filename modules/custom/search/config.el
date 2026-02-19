@@ -59,13 +59,6 @@
   :config
   (setopt tldr-use-word-at-point t))
 
-(use-package! slack-search
+(use-package! slacko
   :defer t
-  :config
-  (defun slack-search-creds-fn (kind)
-    (let ((auth-sources `(,(expand-file-name "~/.doom.d/.secrets.gpg"))))
-      (auth-source-pick-first-password :host "qlikdev.slack.com" :user kind)))
-  (setopt slack-search-token-function
-          (lambda () (slack-search-creds-fn "token")))
-  (setopt slack-search-cookie-function
-          (lambda () (slack-search-creds-fn "cookie"))))
+  :config)

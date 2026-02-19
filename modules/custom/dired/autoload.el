@@ -150,3 +150,19 @@
           (dired-do-rsync dest)
           (revert-buffer))
       (funcall orig-fun arg))))
+
+;;;###autoload
+(defadvice! +dired--yank-item-path-a (orig-fn &optional root)
+  "In Dired, yank the path of the item at point instead of the directory."
+  :around #'+default/yank-buffer-path
+  (if (derived-mode-p 'dired-mode)
+      (let ((filename (dired-get-filename nil t)))
+        (if filename
+            (let ((path (abbreviate-file-name
+                         (if root
+                             (file-relative-name filename root)
+                           filename))))
+              (kill-new path)
+              (message "Copied path: %s" path))
+          (funcall orig-fn root)))
+    (funcall orig-fn root)))
