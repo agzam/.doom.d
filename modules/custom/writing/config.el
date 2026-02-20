@@ -285,14 +285,9 @@
           (skip-chars-forward " \t\n")))
     (funcall ofn)))
 
-(defadvice! recenter-on-paragraph-a (&rest _)
-  :after #'forward-paragraph
-  :after #'backward-paragraph
-  (when (called-interactively-p 'any)
-    (recenter)
-    (pulse-momentary-highlight-one-line)))
-
 (defadvice! flash-on-recenter-a (&rest _)
   :after #'recenter-top-bottom
   (when (called-interactively-p 'any)
-    (pulse-momentary-highlight-one-line)))
+    (let ((face (make-face (gensym "pulse-"))))
+      (set-face-background face "LightGreen")
+      (pulse-momentary-highlight-one-line (point) face))))

@@ -209,7 +209,13 @@
     :after #'evil-backward-paragraph
     :after #'org-previous-visible-heading
     :after #'org-next-visible-heading
-    (recenter)))
+    :after #'forward-paragraph
+    :after #'backward-paragraph
+    (when (called-interactively-p 'any)
+      (recenter)
+      (let ((face (make-face (gensym "pulse-"))))
+        (set-face-background face "LightGreen")
+        (pulse-momentary-highlight-one-line (point) face)))))
 
 (after! better-jumper
   (setopt better-jumper-context 'window))
