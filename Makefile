@@ -85,5 +85,5 @@ dash-docsets:
 update:
 	doom up --force --verbose \
 	&& doom sync -u --force --verbose \
-    && make org-roam-db-sync pdf-tools vterm dash-docsets \
-    && emacsclient -e "(progn (doom/reload-packages) (org-roam-db-sync))"
+    && emacsclient -e "(progn (doom/reload-packages) (org-roam-db-sync))" \
+    && make org-roam-db-sync pdf-tools vterm dash-docsets 
