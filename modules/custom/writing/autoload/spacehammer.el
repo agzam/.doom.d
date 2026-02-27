@@ -7,6 +7,8 @@
     (set-visited-file-name (format "/tmp/%s_%s_%s" buffer-name pid title))
     (set-buffer-modified-p nil)
     (markdown-mode)
+    ;; major-mode change wipes buffer-locals; permanent-local property
+    ;; should preserve ours, but re-set pid just in case
     (setq-local spacehammer--caller-pid pid)
     (evil-insert-state)))
 

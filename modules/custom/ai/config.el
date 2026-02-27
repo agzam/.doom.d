@@ -189,7 +189,8 @@ enclose them in markdown quotes.
   (setopt eca-chat-use-side-window nil
           eca-chat-custom-behavior nil
           eca-chat-parent-mode 'markdown-mode
-          eca-api-response-timeout 15)
+          eca-api-response-timeout 15
+          eca-extra-args '("--log-level" "debug"))
   (map! :map eca-chat-mode-map
         "RET" nil
         "<return>" nil

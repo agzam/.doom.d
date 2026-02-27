@@ -83,9 +83,79 @@
   :defer t
   ;; :hook ((eshell-load . eat-eshell-mode))
   :config
+  ;; macOS ncurses can't read the 32-bit terminfo entries bundled with eat.
+  ;; We compile them with the system tic (see below) and point eat at ~/.terminfo.
+  (when (eq system-type 'darwin)
+    (let ((user-terminfo (expand-file-name "~/.terminfo")))
+      (unless (file-exists-p (expand-file-name "65/eat-truecolor" user-terminfo))
+        (let ((ti-src (expand-file-name "eat.ti"
+                        (file-name-directory (locate-library "eat")))))
+          (when (file-exists-p ti-src)
+            (make-directory user-terminfo t)
+            (call-process "tic" nil nil nil "-o" user-terminfo ti-src))))
+      (setq eat-term-terminfo-directory user-terminfo)))
+
+  ;; Disable modes that add per-keystroke overhead in a terminal buffer.
+  (add-hook! 'eat-mode-hook
+    (defun +eat-disable-noisy-modes-h ()
+      (flycheck-mode -1)
+      (smartparens-mode -1)
+      (jinx-mode -1)
+      (font-lock-mode -1)
+      (yas-minor-mode -1)
+      (corfu-mode -1)))
+
+  ;; In char mode, evil must get out of the way entirely - every keystroke
+  ;; goes to the terminal (including ESC). This is required for TUI apps
+  ;; like claude, htop, etc. The only escape hatch is C-M-m (back to semi-char).
+  (evil-define-key* '(insert normal visual) eat-char-mode-map
+    [escape] #'eat-self-input)
+  (evil-set-initial-state 'eat-char-mode 'emacs)
+
+  ;; Protect point/mark during eat terminal resizes.
+  ;; Any popup (transient, which-key, etc.) that resizes the eat window
+  ;; triggers eat-term-resize -> eat--t-break-long-line that reflows
+  ;; terminal text and moves point as a side effect.
+  (defadvice! +eat-preserve-point-on-resize-a (ofn process windows)
+    :around #'eat--adjust-process-window-size
+    (let ((buf (process-buffer process)))
+      (if (and buf (buffer-live-p buf)
+               (buffer-local-value 'eat-terminal buf))
+          (with-current-buffer buf
+            (let ((pt (point))
+                  (mk (mark t)))
+              (funcall ofn process windows)
+              (goto-char (min pt (point-max)))
+              (when mk (set-mark (min mk (point-max))))))
+        (funcall ofn process windows))))
+
+  ;; Suppress eat's scroll-sync while in visual state - otherwise
+  ;; eat--synchronize-scroll snaps point back to the terminal cursor
+  ;; every time output arrives, destroying the selection.
+  (add-hook! 'evil-visual-state-entry-hook
+    (defun +eat-suppress-scroll-sync-h ()
+      (when (derived-mode-p 'eat-mode)
+        (setq-local eat--synchronize-scroll-function #'ignore))))
+
+  (add-hook! 'evil-visual-state-exit-hook
+    (defun +eat-restore-scroll-sync-h ()
+      (when (derived-mode-p 'eat-mode)
+        (setq-local eat--synchronize-scroll-function #'eat--synchronize-scroll))))
+
+  ;; When switching between eat input modes, sync evil state accordingly.
+  (add-hook! 'eat-char-mode-hook
+    (defun +eat-char-mode-sync-evil-h ()
+      (if eat-char-mode
+          (evil-emacs-state)
+        (evil-insert-state))))
+
   (map! :map eat-mode-map
    :i "C-j" #'eat-self-input
-   "s-v" #'eat-yank-from-kill-ring))
+   ;; Quick toggle into char mode for TUI apps (claude, etc.)
+   :i "C-c C-d" #'eat-char-mode
+   "s-v" #'eat-yank-from-kill-ring
+   ;; Also available from normal state
+   :n "C-c C-d" #'eat-char-mode))
 
 (use-package! eshell-atuin
   :when (executable-find "atuin")
