@@ -77,7 +77,7 @@
               :desc "org-roam-ui in xwidget" "w" #'org-roam-toggle-ui-xwidget
               :desc "org-roam-ui in browser" "W" #'org-roam-ui-browser+
               "f" #'vulpea-find
-              "F" #'consult-org-roam-forward-links
+              "F" #'vulpea-forward-links
               "d" #'org-roam-dailies-find-date
               (:prefix ("r" . "refile")
                        "n" #'org-roam-refile-to-node))
@@ -272,7 +272,6 @@
     :around #'org-entry-put
     (funcall orig-fn pom (downcase prop) value))
 
-  (org-roam-db-autosync-mode +1)
 
   (add-to-list
    'display-buffer-alist
@@ -434,10 +433,6 @@
   :config
   (setopt edit-indirect-guess-mode-function #'edit-indirect-guess-mode-fn+))
 
-(use-package! consult-org-roam
-  :after org-roam
-  :config
-  (setopt consult-org-oram-grep-func #'consult-ripgrep))
 
 (use-package! ox-gfm
   :after org

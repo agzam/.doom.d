@@ -60,7 +60,6 @@
 (package! ob-http)
 (package! ox-gfm)
 
-(package! consult-org-roam :recipe (:host github :repo "jgru/consult-org-roam"))
 
 (package! org-pomodoro)
 (package! verb :recipe (:host github :repo "federicotdn/verb"))

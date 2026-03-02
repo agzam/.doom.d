@@ -139,6 +139,29 @@
 
 
 ;;;###autoload
+(defun vulpea-forward-links (&optional other-window)
+  "Select and visit a note linked from the current note."
+  (interactive "P")
+  (let* ((id (or (when-let* ((link (org-element-context))
+                             ((eq (org-element-type link) 'link))
+                             ((string= (org-element-property :type link) "id")))
+                   (org-element-property :path link))
+                 (org-entry-get nil "ID" t)
+                 (user-error "No note at point")))
+         (links (seq-filter
+                 (lambda (l) (string= (plist-get l :type) "id"))
+                 (vulpea-db-query-links-from id)))
+         (dest-ids (seq-uniq (mapcar (lambda (l) (plist-get l :dest)) links)))
+         (dest-notes (delq nil (mapcar #'vulpea-db-get-by-id dest-ids)))
+         (chosen (if dest-notes
+                     (let ((consult-preview-key 'any))
+                       (vulpea-select-from "Forward link: " dest-notes
+                                           :require-match t))
+                   (user-error "No forward links found"))))
+    (when (and chosen (vulpea-note-id chosen))
+      (vulpea-visit chosen other-window))))
+
+;;;###autoload
 (defun vulpea-backlinks (&optional other-window)
   "Select from list of all notes that link to a chosen note.
 When visiting a source, creates a sparse tree showing all backlink locations.
