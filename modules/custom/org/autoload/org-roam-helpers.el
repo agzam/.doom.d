@@ -223,11 +223,23 @@ target — showing every backlink location, not just the first."
               (user-error "No backlinks found"))))
       (when (and chosen-note (vulpea-note-id chosen-note))
         (vulpea-visit chosen-note other-window)
-        (let ((pos (point)))
-          ;; Sparse tree: reveal all headings containing links to target
-          (org-occur (format "\\[\\[id:%s\\]" (regexp-quote target-id)))
-          ;; Restore position and scroll — org-occur folds everything
-          ;; via org-cycle-overview, which leaves the window at the top
+        (let ((pos (point))
+              (regexp (format "\\[\\[id:%s\\]" (regexp-quote target-id))))
+          ;; Build a sparse tree showing all backlink locations.
+          ;; We use org-overview + manual search + org-fold-show-context
+          ;; with 'lineage detail so that each match reveals the full
+          ;; heading ancestry *and* sibling headings — giving much
+          ;; better orientation than org-occur's default 'ancestors.
+          (org-cycle-overview)
+          (save-excursion
+            (goto-char (point-min))
+            (while (re-search-forward regexp nil t)
+              (org-highlight-new-match (match-beginning 0) (match-end 0))
+              (org-fold-show-context 'occur-tree)))
+          ;; Enable next/prev match navigation via M-g M-n / M-g M-p
+          (setq-local next-error-function #'org-occur-next-match)
+          (setq next-error-last-buffer (current-buffer))
+          ;; Restore position and show it
           (goto-char pos)
-          (org-reveal)
+          (org-fold-show-context 'occur-tree)
           (recenter))))))

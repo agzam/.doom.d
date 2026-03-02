@@ -35,6 +35,11 @@
 
   (setopt org-link-make-description-function #'+org-link-make-description-function)
 
+  ;; Better context for sparse-tree/occur matches — 'lineage reveals
+  ;; the full ancestor chain *and* sibling headings at each level,
+  ;; so backlink sparse trees show surrounding structure for orientation.
+  (add-to-list 'org-fold-show-context-detail '(occur-tree . lineage))
+
   (add-hook! org-mode
     (defun org-init-keybinds-h ()
       (map! :map org-mode-map
@@ -44,6 +49,7 @@
             "C-c C-f f" #'vulpea-find
             "C-c C-i" #'vulpea-insert
             :n "zk" #'text-scale-increase
+
 
             ;; tilde insead of backtick
             :iv "`" (cmd! (self-insert-command 1 126))
