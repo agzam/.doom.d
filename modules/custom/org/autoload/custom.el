@@ -76,13 +76,13 @@ NODE-LINK  - which is title or id or a node."
       "")))
 
 ;;;###autoload
-(cl-defun org-roam-node-insert+ (&optional lines-before lines-after &key templates info)
-  "Improved org-roam-node-insert that additionally also removes conflicting and
-duplicating links around the context.  If a node has `collides_with:' property,
-inserting a link to that node would remove any links to nodes with IDs contained
-in that prop."
+(defun vulpea-insert+ (&optional lines-before lines-after)
+  "Insert a link to a vulpea note, removing conflicting links.
+If the selected note has a `collides_with' property, any existing links
+to nodes with IDs listed in that property are removed from the surrounding
+context (defined by LINES-BEFORE and LINES-AFTER, defaulting to 0).
+Also ensures adjacent links are separated by a space."
   (interactive)
-  (require 'a)
   (atomic-change-group
     (let* (region-text
            beg end
@@ -90,24 +90,25 @@ in that prop."
                 (setq beg (set-marker (make-marker) (region-beginning)))
                 (setq end (set-marker (make-marker) (region-end)))
                 (setq region-text (org-link-display-format (buffer-substring-no-properties beg end)))))
-           (node-to-insert (org-roam-node-read region-text))   ; first we choose a node to insert
-           (description (or region-text (org-roam-node-title node-to-insert)))
-           ;; then we find the IDs of nodes, links that need to be removed if that link to be inserted
+           (note (vulpea-select "Note" :initial-prompt region-text))
+           (description (or region-text (vulpea-note-title note)))
+           ;; Find IDs of nodes whose links should be removed
            (id+collides (seq-remove
                          'string-empty-p
-                         (-> node-to-insert
-                             (org-roam-node-properties)
-                             (a-get "COLLIDES_WITH")
-                             (concat " " (org-roam-node-id node-to-insert))
-                             (split-string " "))))
-           (re (concat "\\(\\[\\[\\)\\(id:\\|roam:\\)"
+                         (split-string
+                          (concat (or (cdr (assoc "COLLIDES_WITH" (vulpea-note-properties note))) "")
+                                  " " (or (vulpea-note-id note) ""))
+                          " ")))
+           ;; Matches [[id:ID][any description]] and [[id:ID]] (no description)
+           (re (concat "\\[\\[\\(id:\\|roam:\\)"
                        "\\(" (mapconcat 'identity id+collides "\\|")
-                       "\\)\\]\\[\\w*\\]\\]"))
+                       "\\)\\]\\(?:\\[[^]]*\\]\\)?\\]"))
            (before (or lines-before 0))
-           (after (or lines-after 0)))
+           (after (or lines-after 0))
+           (insert-pos nil))
       (save-mark-and-excursion
         (unless region-text
-          (setq prev-pos (point))
+          (setq insert-pos (copy-marker (point)))
           (forward-line (- before))
           (beginning-of-line)
           (set-mark (point))
@@ -115,35 +116,32 @@ in that prop."
           (end-of-line))
         (save-restriction
           (narrow-to-region (region-beginning) (region-end))
-          (if (org-roam-node-id node-to-insert)
+          (if (vulpea-note-id note)
               (progn
                 (when region-text
                   (delete-region beg end)
                   (set-marker beg nil)
                   (set-marker end nil))
                 (unless region-text
-                  (goto-char 0)
+                  (goto-char (point-min))
                   (while (re-search-forward re nil :no-error)
                     (replace-match ""))
-                  (goto-char prev-pos))
-                (makunbound 'prev-pos)
+                  (goto-char insert-pos)
+                  (set-marker insert-pos nil))
                 (insert (org-link-make-string
-                         (concat "id:" (org-roam-node-id node-to-insert))
+                         (concat "id:" (vulpea-note-id note))
                          description)))
-            (org-roam-capture-
-             :node node-to-insert
-             :info info
-             :templates templates
-             :props (append
-                     (when (and beg end)
-                       (list :region (cons beg end)))
-                     (list :insert-at (point-marker)
-                           :link-description description
-                           :finalize 'insert-link
-                           :immediate-finish t
-                           :jump-to-captured nil))))
-          ;; make sure links always separated by a single space
-          (goto-char 0)
+            ;; New note — create it, then insert link
+            (let ((new-note (vulpea-create (vulpea-note-title note))))
+              (when region-text
+                (delete-region beg end)
+                (set-marker beg nil)
+                (set-marker end nil))
+              (insert (org-link-make-string
+                       (concat "id:" (vulpea-note-id new-note))
+                       description))))
+          ;; Make sure links are always separated by a single space
+          (goto-char (point-min))
           (while (re-search-forward "\\]\\]\\[\\[" nil :no-error)
             (replace-match "]] [[")))))))
 
