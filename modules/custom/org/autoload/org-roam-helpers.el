@@ -72,14 +72,21 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defface org-roam-count-overlay-face
-  '((t :inherit org-list-dt :height 0.6 :underline nil :weight light))
+  '((t :inherit shadow :height 1.3 :underline nil :weight light))
   "Face for Org Roam count overlay.")
+
+(defconst org-roam--superscript-digits
+  (vector "⁰" "¹" "²" "³" "⁴" "⁵" "⁶" "⁷" "⁸" "⁹"))
+
+(defun org-roam--number-to-superscript (n)
+  "Convert integer N to a string of Unicode superscript digits."
+  (mapconcat (lambda (c) (aref org-roam--superscript-digits (- c ?0)))
+             (number-to-string n) ""))
 
 (defun org-roam--count-overlay-make (pos count)
   (let* ((overlay-value (propertize
-                         (format "│%d│ " count)
-                         'face 'org-roam-count-overlay-face
-                         'display '(raise 0.3)))
+                         (org-roam--number-to-superscript count)
+                         'face 'org-roam-count-overlay-face))
          (ov (make-overlay pos pos (current-buffer) nil t)))
     (overlay-put ov 'roam-backlinks-count count)
     (overlay-put ov 'priority 1)
@@ -90,20 +97,32 @@
     (when (overlay-get ov 'roam-backlinks-count)
       (delete-overlay ov))))
 
+(defun org-roam--count-overlay-query (id)
+  "Return backlink count for node with ID."
+  (caar (emacsql (vulpea-db)
+                 [:select (funcall count source)
+                  :from links
+                  :where (and (= dest $s1)
+                              (= type "id"))]
+                 id)))
+
 (defun org-roam--count-overlay-make-all ()
   (save-excursion
     (goto-char (point-min))
     (org-roam--count-overlay-remove-all)
+    ;; File-level node: :PROPERTIES: drawer at top with #+title: below
+    (when (looking-at "^:properties:\n\\(?:.*\n\\)*?:id:\\s-+\\([^[:space:]\n]+\\)")
+      (when-let* ((id (string-trim (substring-no-properties (match-string 1))))
+                  (count (org-roam--count-overlay-query id)))
+        (when (and (< 0 count)
+                   (re-search-forward "^#\\+title:\\s-+" nil t))
+          (org-roam--count-overlay-make (point) count)
+          (goto-char (point-min)))))
+    ;; Heading-level nodes
     (while (re-search-forward "^\\(*+ \\)\\(.*$\\)\n\\(:properties:\\)\n\\(?:.*\n\\)*?:id:\\s-+\\([^[:space:]\n]+\\)" nil :no-error)
       (when-let* ((pos (match-beginning 2))
                   (id (string-trim (substring-no-properties (match-string 4))))
-                  (count (caar
-                          (org-roam-db-query
-                           [:select (funcall count source)
-                            :from links
-                            :where (= dest $s1)
-                            :and (= type "id")]
-                           id))))
+                  (count (org-roam--count-overlay-query id)))
         (when (< 0 count)
           (org-roam--count-overlay-make pos count))))))
 
