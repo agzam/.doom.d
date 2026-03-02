@@ -71,7 +71,7 @@
                       "l" #'org-id-store-link
                       "L" #'org-store-link-id-optional)
              (:prefix ("r" . "roam")
-              "b" #'consult-org-roam-backlinks
+              "b" #'vulpea-backlinks
               "i" #'vulpea-insert
               "l" #'vulpea-ui-sidebar-toggle
               :desc "org-roam-ui in xwidget" "w" #'org-roam-toggle-ui-xwidget
@@ -267,7 +267,6 @@
 
   (advice-add #'org-roam-dailies--capture :around #'org-roam-capture-dont-create-id-a)
 
-  (advice-add #'consult-org-roam-backlinks :override #'consult-org-roam-backlinks*)
 
   (defadvice! org-property-lowecase-a (orig-fn pom prop value)
     :around #'org-entry-put

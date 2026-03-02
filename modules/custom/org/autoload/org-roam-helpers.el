@@ -139,52 +139,72 @@
 
 
 ;;;###autoload
-(defun consult-org-roam-backlinks* (&optional other-window)
-  "Select from list of all notes that link to
-the current note with precise positions."
-  ;; this is an attempt to fix: jgru/consult-org-roam#38
-  (interactive current-prefix-arg)
-  (let* ((node-ids-w-backlinks
-          (mapcar #'car (org-roam-db-query [:select [nodes:id]
-                                            :from links
-                                            :inner :join nodes :on (= links:dest nodes:id)
-                                            :group :by nodes:id])))
-         (node-at-point (if-let* ((link (org-element-context)) ; thing-at-point is an org-link
-                                  ((eq (org-element-type link) 'link))
-                                  (type (org-element-property :type link))
-                                  (id (org-element-property :path link)))
-                            (org-roam-node-from-id id)
-                          (org-roam-node-at-point)))
-         (node (if (called-interactively-p 'any)
-                   (consult-org-roam-node-read
-                    (ignore-errors
-                      (org-roam-node-title node-at-point))
-                    (lambda (node) (member (org-roam-node-id node) node-ids-w-backlinks))
-                    nil t "Backlinks for the node: ")))
-         (backlinks (org-roam-db-query
-                     [:select [source pos]
-                      :from links
-                      :where (= dest $s1)
-                      :and (= type "id")]
-                     (if node
-                         (org-roam-node-id node)
-                       (user-error "Buffer does not contain org-roam-nodes"))))
-         (source-ids (mapcar #'car backlinks))
-         (pos-map (make-hash-table :test 'equal))
-         (_ (dolist (link backlinks)
-              (puthash (car link) (cadr link) pos-map)))
-         (chosen-node-or-str
-          (if source-ids
-              (let ((consult-preview-key 'any))
-                (consult-org-roam-node-read
-                 nil
-                 (lambda (n)
-                   (when (and n (org-roam-node-p n))
-                     (member (org-roam-node-id n) source-ids)))
-                 nil nil
-                 (format "Go to backlink for '%s' " (oref node title))))
-            (user-error "No backlinks found"))))
-    (when chosen-node-or-str
-      (org-roam-node-visit chosen-node-or-str other-window)
-      (goto-char (gethash (org-roam-node-id chosen-node-or-str) pos-map))
-      (org-reveal))))
+(defun vulpea-backlinks (&optional other-window)
+  "Select from list of all notes that link to a chosen note.
+When visiting a source, creates a sparse tree showing all backlink locations.
+
+Intelligently detects the note at point: if point is on an org ID link,
+uses the link target; otherwise uses the current entry's ID (inherited).
+The detected note pre-fills the first selection prompt.
+
+After selecting the target note and a source note, visits the source
+and calls `org-occur' to reveal all headings containing links to the
+target — showing every backlink location, not just the first."
+  (interactive "P")
+  (let* (;; Detect note at point from link context or current entry ID
+         (note-at-point
+          (ignore-errors
+            (if-let* ((link (org-element-context))
+                      ((eq (org-element-type link) 'link))
+                      ((string= (org-element-property :type link) "id"))
+                      (id (org-element-property :path link)))
+                (vulpea-db-get-by-id id)
+              (when-let ((id (org-entry-get nil "ID" t)))
+                (vulpea-db-get-by-id id)))))
+         ;; Pre-compute note IDs that have backlinks (hash table for O(1) lookup)
+         (ids-with-backlinks
+          (let ((ht (make-hash-table :test 'equal)))
+            (dolist (row (emacsql (vulpea-db)
+                                  [:select :distinct [dest]
+                                   :from links
+                                   :where (= type "id")]))
+              (puthash (car row) t ht))
+            ht))
+         ;; First selection: pick target note (filtered to those with backlinks)
+         (target-note
+          (vulpea-select "Backlinks for: "
+                         :require-match t
+                         :initial-prompt
+                         (ignore-errors (vulpea-note-title note-at-point))
+                         :filter-fn
+                         (lambda (note)
+                           (gethash (vulpea-note-id note) ids-with-backlinks))))
+         (target-id (vulpea-note-id target-note)))
+    (unless target-id
+      (user-error "No valid note selected"))
+    ;; Get backlinks and resolve source notes
+    (let* ((backlinks (seq-filter
+                       (lambda (l) (string= (plist-get l :type) "id"))
+                       (vulpea-db-query-links-to target-id)))
+           (source-ids (seq-uniq
+                        (mapcar (lambda (l) (plist-get l :source)) backlinks)))
+           (source-notes (delq nil (mapcar #'vulpea-db-get-by-id source-ids)))
+           ;; Second selection: pick source to visit (with instant preview)
+           (chosen-note
+            (if source-notes
+                (let ((consult-preview-key 'any))
+                  (vulpea-select-from
+                   (format "Backlink to '%s': " (vulpea-note-title target-note))
+                   source-notes
+                   :require-match t))
+              (user-error "No backlinks found"))))
+      (when (and chosen-note (vulpea-note-id chosen-note))
+        (vulpea-visit chosen-note other-window)
+        (let ((pos (point)))
+          ;; Sparse tree: reveal all headings containing links to target
+          (org-occur (format "\\[\\[id:%s\\]" (regexp-quote target-id)))
+          ;; Restore position and scroll — org-occur folds everything
+          ;; via org-cycle-overview, which leaves the window at the top
+          (goto-char pos)
+          (org-reveal)
+          (recenter))))))

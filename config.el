@@ -476,7 +476,7 @@
        "r" nil
        (:prefix ("r" . "roam")
         "r" #'vulpea-find
-        "b" #'consult-org-roam-backlinks
+        "b" #'vulpea-backlinks
         :desc "work today" "t" (cmd! (funcall-interactively #'org-roam-dailies-goto-today '("w")))
         :desc "journal today" "T" (cmd! (funcall-interactively #'org-roam-dailies-goto-today '("j")))
         :desc "work note" "n" (cmd! (funcall-interactively #'org-roam-dailies-goto-date nil '("w")))
