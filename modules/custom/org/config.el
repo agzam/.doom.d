@@ -84,7 +84,8 @@
               :desc "org-roam-ui in browser" "W" #'org-roam-ui-browser+
               "f" #'vulpea-find
               "F" #'vulpea-forward-links
-              "d" #'vulpea-journal-date
+              :desc "work note" "n" (cmd! (vulpea-journal+ 'work (org-read-date nil t)))
+              :desc "personal note" "N" (cmd! (vulpea-journal+ 'personal (org-read-date nil t)))
               (:prefix ("r" . "refile")
                        "n" #'org-roam-refile-to-node))
              (:prefix ("s" . "tree/subtree")
@@ -566,6 +567,33 @@
             (seq-intersection (vulpea-note-tags note)
                               '("work-notes" "personal-notes")))
         (vulpea-journal-ui--get-active-date)))
+
+  ;; Insert journal entries in chronological order, not at the end.
+  ;; The upstream always uses :after 'last; we find the right sibling
+  ;; by comparing CREATED dates so entries stay sorted.
+  (defadvice! vulpea-journal-create-sorted-a (_date tpl)
+    :override #'vulpea-journal--create-heading-note
+    (let* ((file (vulpea-journal--file-for-date _date))
+           (entry-title (vulpea-journal--entry-title-for-date _date))
+           (date-str (format-time-string "[%Y-%m-%d]" _date))
+           (entry-level (plist-get tpl :entry-level))
+           (container (vulpea-journal--ensure-container file _date tpl))
+           ;; find existing siblings at the entry level
+           (siblings (vulpea-journal--query-file-notes file entry-level))
+           ;; last sibling whose CREATED is before our date
+           (predecessor
+            (--last
+             (let ((created (cdr (assoc "CREATED" (vulpea-note-properties it)))))
+               (and created (string< created date-str)))
+             siblings)))
+      (vulpea-create
+       entry-title
+       nil
+       :parent container
+       :properties `(("CREATED" . ,date-str))
+       :after (if predecessor
+                  (vulpea-note-id predecessor)
+                nil))))
 
   (vulpea-journal-setup))
 

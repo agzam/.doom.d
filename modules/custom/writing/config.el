@@ -10,10 +10,9 @@
 
   (add-to-list
    'display-buffer-alist
-   '("\\* spacehammer-edit.*"
+   `("\\* spacehammer-edit.*"
      (display-buffer-reuse-window
-      display-buffer-in-quadrant)
-     (direction . right)
+      spacehammer-display-edit-buffer)
      (window . root))))
 
 (use-package! mw-thesaurus
