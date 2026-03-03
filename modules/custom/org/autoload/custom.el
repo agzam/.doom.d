@@ -22,60 +22,6 @@ Org-link text to the node."
     (format "#+begin_quote\n%s\n#+end_quote" selection)))
 
 ;;;###autoload
-(defun org-roam-get-current-capture-buffer ()
-  "Finds current capture buffer based on `org-capture-plist'"
-  (let* ((fname (lambda (ptrn-str)
-                  (replace-regexp-in-string
-                   "%<.*>" (lambda (s)
-                             (format-time-string
-                              (replace-regexp-in-string "%<\\|>" "" s)))
-                   ptrn-str)))
-         (buf (or (org-capture-get :buffer)
-                  (find-file-noselect
-                   (funcall fname (cadr (plist-get (org-capture-get :org-roam) :if-new)))
-                   :no-warn))))
-    buf))
-
-;;;###autoload
-(defun org-roam-capture-dailies--set-node-props (node-link)
-  "It's to be used with org-roam-capture and specifically for
-dailies. When called from a capture template it inserts title and
-id, then finds the datetree entry and inserts link to a
-NODE-LINK  - which is title or id or a node."
-  (when-let* ((buf (org-roam-get-current-capture-buffer)))
-    (with-current-buffer buf
-      ;; insert ID (for new filenodes)
-      (save-excursion
-        (goto-char (point-min))
-        (unless (org-entry-get (point) "ID")
-          (insert (format ":PROPERTIES:\n:ID:  %s\n:END:\n" (org-id-new)))))
-
-      ;; insert the title and link to the `NODE-LINK'
-      (save-excursion
-        (goto-char (point-min))
-        (unless (search-forward "#+title:" nil :no-error)
-          (goto-char (point-min))
-          (search-forward ":END:" nil :no-error)
-          (forward-line)
-          (insert (format "#+title: %s %s notes\n"
-                          (format-time-string
-                           "%B %Y"
-                           (org-capture-get :default-time))
-                          (org-capture-get :description)))
-          (insert (org-roam--link-to node-link))))
-
-      ;; always append stuff to the day in the daytree
-      ;; without this, it would create new heading at the top
-      ;; (goto-char (org-element-property :begin (org-element-property :parent (org-element-at-point))))
-      ;; (org-end-of-subtree)
-
-      ;; append properties drawer to the heading, not the other way around
-      (search-backward ":PROPERTIES:")
-
-      ;; it needs to return a string
-      "")))
-
-;;;###autoload
 (defun vulpea-insert+ (&optional lines-before lines-after)
   "Insert a link to a vulpea note, removing conflicting links.
 If the selected note has a `collides_with' property, any existing links
@@ -302,43 +248,6 @@ and if it is set to nil, then it would forcefully create the ID."
                        (substring (cadr name-parts) 0 1)))
          (full-name (mapconcat 'identity name-parts " ")))
     (format "%s\n:PROPERTIES:\n:ID: %s\n:roam_aliases: \"%s\"\n:END:" name id full-name)))
-
-;;;###autoload
-(defun org-roam-capture-dont-create-id-a (org-roam-capture-fn time &optional goto keys)
-  "Skip the automatic ID creation by hijacking org-roam-dailies--capture.
-
-I like to keep dailies a file/per month with a datetree. Org-roam automatically
-generates IDs per each day, and I don't need that. A day heading by itself doesn't
-carry a meaningful context (to which I have to extend a relation) for me."
-  (let ((lexical-binding t))
-    (cl-letf* ((org-entry-put-orig (symbol-function 'org-entry-put))
-               ((symbol-function 'org-entry-put)
-                (if goto
-                    (lambda (pom property value)
-                      (run-with-timer
-                       0.01 nil
-                       (lambda (pom property value org-entry-put-orig)
-                         (if (buffer-modified-p)
-                             (progn
-                               (funcall org-entry-put-orig pom property value)
-                               (goto-char pom)
-                               (re-search-forward org-property-drawer-re)
-                               (org-fold-reveal :siblings)
-                               (org-fold-show-subtree)
-                               (org-fold-show-context)
-                               (insert "\n")
-                               (evil-insert 1))
-                           (progn
-                             (goto-char pom)
-                             (forward-line)
-                             (org-fold-reveal :siblings)
-                             (org-fold-show-subtree)
-                             (org-fold-show-context)
-                             (recenter))))
-                       pom property value org-entry-put-orig))
-                  org-entry-put-orig)))
-      (apply org-roam-capture-fn time goto keys))))
-
 
 ;;;###autoload
 (defun org-wrap-in-block (block-type)

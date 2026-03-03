@@ -477,9 +477,10 @@
        (:prefix ("r" . "roam")
         "r" #'vulpea-find
         "b" #'vulpea-backlinks
-        :desc "work today" "t" (cmd! (funcall-interactively #'org-roam-dailies-goto-today '("w")))
-        :desc "journal today" "T" (cmd! (funcall-interactively #'org-roam-dailies-goto-today '("j")))
-        :desc "work note" "n" (cmd! (funcall-interactively #'org-roam-dailies-goto-date nil '("w")))
+        :desc "work today" "t" (cmd! (vulpea-journal+ 'work))
+        :desc "personal today" "T" (cmd! (vulpea-journal+ 'personal))
+        :desc "work note" "n" (cmd! (vulpea-journal+ 'work (org-read-date nil t)))
+        :desc "personal note" "N" (cmd! (vulpea-journal+ 'personal (org-read-date nil t)))
         :desc "org-roam-ui in xwidget" "w" #'org-roam-toggle-ui-xwidget
         :desc "org-roam-ui in browser" "W" #'org-roam-ui-browser+
         "C-b" #'browser-create-roam-node-for-active-tab))

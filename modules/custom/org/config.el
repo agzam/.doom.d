@@ -84,7 +84,7 @@
               :desc "org-roam-ui in browser" "W" #'org-roam-ui-browser+
               "f" #'vulpea-find
               "F" #'vulpea-forward-links
-              "d" #'org-roam-dailies-find-date
+              "d" #'vulpea-journal-date
               (:prefix ("r" . "refile")
                        "n" #'org-roam-refile-to-node))
              (:prefix ("s" . "tree/subtree")
@@ -166,17 +166,13 @@
 
 (use-package! org-roam
   :after (org org-capture)
-  :commands (org-roam-buffer-toggle-display
-             org-roam-dailies-goto-date
-             org-roam-dailies-goto-today
-             org-roam-dailies-goto-tomorrow
-             org-roam-dailies-goto-yesterday)
+  :commands (org-roam-buffer-toggle-display)
   :init
   (setopt
    org-roam-v2-ack t
    org-roam-directory org-default-folder
    org-roam-db-location (concat doom-local-dir "org-roam.db")
-   org-roam-dailies-directory "daily/"
+   org-roam-dailies-directory "daily/" ; kept for org-roam-ui graph rendering
 
    ;; org-mode doesn't know how to properly export with roam links
    org-export-with-broken-links t
@@ -236,28 +232,6 @@
              :unnarrowed t
              :jump-to-captured t)))
 
-  (setopt org-roam-dailies-capture-templates
-          '(("w" "work" plain
-             "**** %?%(org-roam-capture-dailies--set-node-props \"work\")"
-             :if-new
-             (file+datetree
-              "%<%Y-%m>-work-notes.org"
-              'day)
-             :jump-to-captured t
-             :immediate-finish t
-             :unnarrowed t)
-            ("j" "journal" plain
-             "%(org-roam-capture-dailies--set-node-props \"journal\")**** %?"
-             :if-new
-             (file+datetree
-              "%<%Y-%m>-journal.org"
-              'day)
-             :jump-to-captured t
-             :unnarrowed t)))
-
-  (advice-add #'org-roam-dailies--capture :around #'org-roam-capture-dont-create-id-a)
-
-
   (defadvice! org-property-lowecase-a (orig-fn pom prop value)
     :around #'org-entry-put
     (funcall orig-fn pom (downcase prop) value))
@@ -274,13 +248,6 @@
 
   (add-to-list 'org-default-properties "roam_aliases")
   (add-to-list 'org-default-properties "roam_refs"))
-
-(use-package! org-roam-protocol
-  :after org-roam)
-
-(use-package! org-roam-dailies
-  :commands (org-roam-dailies-capture-date
-             org-roam-dailies-goto-today))
 
 (use-package! org-roam-ui
   :after org-roam
@@ -538,6 +505,18 @@
           vulpea-db-parse-method 'single-temp-buffer
           vulpea-db-sync-scan-on-enable 'async
           vulpea-db-location (concat doom-local-dir "vulpea.db"))
+
+  ;; Hide journal day entries from vulpea-find/vulpea-insert.
+  ;; They stay in the DB for vulpea-journal navigation.
+  (setopt vulpea-find-default-filter
+          (lambda (note)
+            (not (seq-intersection (vulpea-note-tags note)
+                                   '("work-notes" "personal-notes")))))
+  (setopt vulpea-insert-default-filter
+          (lambda (note)
+            (not (seq-intersection (vulpea-note-tags note)
+                                   '("work-notes" "personal-notes")))))
+
   (vulpea-db-autosync-mode +1))
 
 (use-package! vulpea-ui
@@ -560,7 +539,35 @@
 (use-package! vulpea-journal
   :after (vulpea vulpea-ui)
   :config
-  (setopt vulpea-directory org-default-folder)
+  (setopt vulpea-directory org-default-folder
+          vulpea-journal-default-template #'vulpea-journal-template+)
+
+  ;; Before vulpea-journal runs: sync buffer type → global,
+  ;; so navigation stays within the same journal type.
+  ;; Detects type from filetags if the buffer-local var isn't set.
+  (defadvice! vulpea-journal-sync-type-a (&optional _date)
+    :before #'vulpea-journal
+    (when-let ((type (or vulpea-journal--buffer-type
+                        (vulpea-journal--detect-buffer-type))))
+      (setq vulpea-journal--type type)))
+
+  ;; After vulpea-journal visits: propagate global type → buffer-local
+  ;; in the destination buffer.
+  (defadvice! vulpea-journal-propagate-type-a (&optional _date)
+    :after #'vulpea-journal
+    (setq-local vulpea-journal--buffer-type vulpea-journal--type))
+
+  ;; Sidebar calendar clicks go through vulpea-journal-ui--visit-date,
+  ;; NOT vulpea-journal — detect type from the main window's buffer.
+  (defadvice! vulpea-journal-ui-visit-detect-type-a (_date)
+    :before #'vulpea-journal-ui--visit-date
+    (when-let* ((main-win (vulpea-ui--get-main-window))
+                (buf (window-buffer main-win))
+                (type (with-current-buffer buf
+                        (or vulpea-journal--buffer-type
+                            (vulpea-journal--detect-buffer-type)))))
+      (setq vulpea-journal--type type)))
+
   (vulpea-journal-setup))
 
 (use-package! consult-vulpea
