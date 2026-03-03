@@ -558,15 +558,35 @@
     (setq-local vulpea-journal--buffer-type vulpea-journal--type))
 
   ;; Sidebar calendar clicks go through vulpea-journal-ui--visit-date,
-  ;; NOT vulpea-journal — detect type from the main window's buffer.
+  ;; NOT vulpea-journal.  Derive type from the sidebar's own note.
   (defadvice! vulpea-journal-ui-visit-detect-type-a (_date)
     :before #'vulpea-journal-ui--visit-date
-    (when-let* ((main-win (vulpea-ui--get-main-window))
-                (buf (window-buffer main-win))
-                (type (with-current-buffer buf
-                        (or vulpea-journal--buffer-type
-                            (vulpea-journal--detect-buffer-type)))))
+    (when-let* ((note (and (boundp 'vulpea-ui--current-note)
+                           vulpea-ui--current-note))
+                (type (vulpea-journal--type-from-note note)))
       (setq vulpea-journal--type type)))
+
+  ;; vulpea-journal--get-tag resolves the template to find the journal
+  ;; tag, but it runs in sidebar context where the type is unknown.
+  ;; Derive from the sidebar's current note instead.
+  (defadvice! vulpea-journal-get-tag-context-a (orig-fn)
+    :around #'vulpea-journal--get-tag
+    (let ((vulpea-journal--type
+           (or vulpea-journal--buffer-type
+               (vulpea-journal--detect-buffer-type)
+               (when (boundp 'vulpea-ui--current-note)
+                 (vulpea-journal--type-from-note vulpea-ui--current-note))
+               vulpea-journal--type)))
+      (funcall orig-fn)))
+
+  ;; Show journal widgets for both work and personal notes.
+  ;; The default predicate only matches one tag at a time.
+  (defadvice! vulpea-journal-ui-view-p-a (note)
+    :override #'vulpea-journal-ui--journal-view-p
+    (or (and note
+            (seq-intersection (vulpea-note-tags note)
+                              '("work-notes" "personal-notes")))
+        (vulpea-journal-ui--get-active-date)))
 
   (vulpea-journal-setup))
 

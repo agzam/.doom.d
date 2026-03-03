@@ -21,6 +21,15 @@ Returns `work', `personal', or nil if not a journal buffer."
        ((and tags (string-match-p "work-notes" tags)) 'work)
        ((and tags (string-match-p "personal-notes" tags)) 'personal)))))
 
+(defun vulpea-journal--type-from-note (note)
+  "Derive journal type from NOTE's tags.
+Returns `work', `personal', or nil."
+  (when (vulpea-note-p note)
+    (let ((tags (vulpea-note-tags note)))
+      (cond
+       ((member "work-notes" tags) 'work)
+       ((member "personal-notes" tags) 'personal)))))
+
 (defun vulpea-journal-template+ (_date)
   "Dynamic template function for `vulpea-journal-default-template'.
 Dispatches to work or personal config based on the active journal type."
@@ -31,14 +40,14 @@ Dispatches to work or personal config based on the active journal type."
            :tags '("work-notes")
            :entry-level 1
            :entry-title "%Y-%m-%d %A"
-           :head "#+startup: overview"))
+           :head "#+startup: show2levels"))
     ('personal
      (list :file-name "daily/%Y-%m-journal.org"
            :title "%B %Y personal notes"
            :tags '("personal-notes")
            :entry-level 1
            :entry-title "%Y-%m-%d %A"
-           :head "#+startup: overview"))))
+           :head "#+startup: show2levels"))))
 
 ;;;###autoload
 (defun vulpea-journal+ (type &optional date)
