@@ -157,7 +157,21 @@
                "referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>")
               link)))
 
-  (setf (alist-get "c" org-structure-template-alist nil nil #'string=) "src"))
+  (setf (alist-get "c" org-structure-template-alist nil nil #'string=) "src")
+
+  (setopt org-capture-templates
+          `(("Q" "quote" entry
+             (file ,(concat org-directory "quotes.org"))
+             "* %c %?\n:PROPERTIES:\n:ID: %(org-id-new) \n:END:"
+             :jump-to-captured t)
+            ("p" "person" entry
+             (file ,(concat org-directory "people.org"))
+             "* %(+person-w-name-based-id)\n%?"
+             :jump-to-captured t)
+            ("c" "colleague" entry
+             (file ,(concat org-directory "coworkers.org"))
+             "* %(+person-w-name-based-id)\n%?"
+             :jump-to-captured t))))
 
 (use-package! org-tempo
   :after org
@@ -165,7 +179,7 @@
   (add-to-list 'org-modules 'org-tempo t))
 
 (use-package! org-roam
-  :after (org org-capture)
+  :after (org)
   :commands (org-roam-buffer-toggle-display)
   :init
   (setopt
@@ -178,13 +192,6 @@
    org-export-with-broken-links t
    org-roam-file-exclude-regexp '("data/" ".sync/"))
   :config
-  (map! :map org-mode-map
-        :i "[[" #'vulpea-insert
-        :i "[ SPC" (cmd! (insert "[]")
-                         (backward-char)))
-
-  ;; always open Backlinks in other-window; or in the same window with universal arg
-  
   (after! xwidget
     (map! :localleader :map xwidget-webkit-mode-map
           (:prefix ("r" . "roam")
@@ -203,48 +210,6 @@
               "\n#+title: ${title}\n#+startup: overview\n\n")
              :unnarrowed t
              :jump-to-captured t)))
-
-  (setopt org-capture-templates
-          `(("Q" "quote" entry
-             (file ,(concat org-directory "quotes.org"))
-             "* %c %?\n:PROPERTIES:\n:ID: %(org-id-new) \n:END:"
-             :jump-to-captured t)
-            ("p" "person" entry
-             (file ,(concat org-directory "people.org"))
-             "* %(+person-w-name-based-id)\n%?"
-             :jump-to-captured t)
-            ("c" "colleague" entry
-             (file ,(concat org-directory "coworkers.org"))
-             "* %(+person-w-name-based-id)\n%?"
-             :jump-to-captured t)))
-
-  (setopt org-roam-capture-ref-templates
-          '(("r" "ref" plain "%?" :if-new
-             (file+head
-              (concat "${slug}.org" "#+title: ${title}\n"
-                      "#+title: ${title}\n#+startup: overview\n\n"
-                      "%(org-roam--link-to \"unread\")\n"
-                      "%(org--insert-selection-dwim \"${body}\")"))
-             :unnarrowed t
-             :jump-to-captured t)
-            ("c" "chat-gpt" plain "%?" :if-new
-             (file+head "${slug}.org" "%(+chat-gpt-page-summary \"${ref}\" \"${title}\")")
-             :unnarrowed t
-             :jump-to-captured t)))
-
-  (defadvice! org-property-lowecase-a (orig-fn pom prop value)
-    :around #'org-entry-put
-    (funcall orig-fn pom (downcase prop) value))
-
-
-  (add-to-list
-   'display-buffer-alist
-   '("\\*org-roam\\*"
-     (display-buffer-reuse-window
-      display-buffer-reuse-mode-window
-      display-buffer-in-quadrant)
-     (direction . right)
-     (window . root)))
 
   (add-to-list 'org-default-properties "roam_aliases")
   (add-to-list 'org-default-properties "roam_refs"))
@@ -516,8 +481,22 @@
           (lambda (note)
             (not (seq-intersection (vulpea-note-tags note)
                                    '("work-notes" "personal-notes")))))
+  (map! :map org-mode-map
+        :i "[[" #'vulpea-insert
+        :i "[ SPC" (cmd! (insert "[]")
+                         (backward-char)))
 
-  (vulpea-db-autosync-mode +1))
+  (vulpea-db-autosync-mode +1)
+
+  (add-to-list
+   'display-buffer-alist
+   `(,(rx bos (or "\\*org-roam\\*"
+                  "\\*vulpea-ui-sidebar.*"))
+     (display-buffer-reuse-window
+      display-buffer-reuse-mode-window
+      display-buffer-in-quadrant)
+     (direction . right)
+     (window . root))))
 
 (use-package! vulpea-ui
   :after vulpea

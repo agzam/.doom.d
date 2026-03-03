@@ -515,7 +515,8 @@
        :desc "eww search" "e" #'eww-search-words
        :desc "find-name-dired" "f" #'find-name-dired
        :desc "GitHub" "g" #'+search-github-with-lang
-       :desc "imenu" "j" #'imenu)
+       :desc "imenu" "j" #'imenu
+       :desc "dir" "d" (cmd! (consult-ripgrep default-directory)))
 
       (:prefix ("t" . "toggle yo")
        :desc "v-line nav" "w" #'+toggle-visual-line-navigation
