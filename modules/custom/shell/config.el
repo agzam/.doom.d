@@ -181,6 +181,10 @@
   ;; :hook (doom-init-ui . global-mise-mode)
   :when (executable-find "mise"))
 
+(use-package! kkp
+  :defer t
+  :hook (tty-setup . global-kkp-mode))
+
 (defun on-mxp-buffer-update-h (buffer-name beg end)
   (with-current-buffer buffer-name
     (ansi-color-apply-on-region beg end)))

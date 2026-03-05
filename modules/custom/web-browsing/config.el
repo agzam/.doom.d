@@ -19,6 +19,7 @@
   (add-hook! 'eww-mode-hook
     (defun eww-set-local-keys-h ()
       (map! :map shr-map
+            "z" nil
             "v" nil)
       (map! :map eww-mode-map
             "C-c C-o" #'eww-browse-with-external-browser

@@ -18,3 +18,5 @@
 
 (package! mise :recipe (:host github
                         :repo "eki3z/mise.el"))
+
+(package! kkp)
