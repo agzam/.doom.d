@@ -292,7 +292,8 @@
          "t" #'vertico-posframe-briefly-tall
          ";" #'vertico-posframe-briefly-tall
          "p" #'vertico-multiform-posframe
-         "s" #'embark-collect
+         "s" #'vertico-suspend
+         "c" #'embark-collect
          "e" #'embark-export
          "C-;" #'embark-act
          :desc "insert ;" "SPC" (cmd! (insert ";")))

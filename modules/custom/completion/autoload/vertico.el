@@ -98,3 +98,13 @@ Supports exporting consult-grep to wgrep, file to wdeired, and consult-location 
               (x (user-error "embark category %S doesn't support writable export" x)))))
          (embark-after-export-hook `(,@embark-after-export-hook ,edit-command)))
     (embark-export)))
+
+;;;###autoload
+(defun vertico-repeat-or-unsuspend ()
+  "Resume a suspended Vertico session if one exists, otherwise repeat the last one."
+  (interactive)
+  (if-let* ((win (active-minibuffer-window))
+            (buf (window-buffer win))
+            ((buffer-local-value 'vertico-suspend--ov buf)))
+      (vertico-suspend)
+    (vertico-repeat)))

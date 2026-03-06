@@ -504,7 +504,7 @@
        "r" #'vulpea-find
        :desc "yank from kill-ring" "y" #'consult-yank-from-kill-ring
        (:after vertico
-        :desc "vertico repeat" "l" #'vertico-repeat
+        :desc "vertico repeat" "l" #'vertico-repeat-or-unsuspend
         :desc "vertico history" "L" #'vertico-repeat-select)
        (:after corfu
         :desc "corfu reset" "c" #'+corfu-kill-frames))
