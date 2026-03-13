@@ -170,8 +170,10 @@ enclose them in markdown quotes.
   :defer t
   :config
   (setq agent-shell-anthropic-authentication
-        (agent-shell-anthropic-make-authentication
-         :api-key (lambda () (auth-host->pass "antropic.com"))))
+        (agent-shell-anthropic-make-authentication :login t)
+        ;; (agent-shell-anthropic-make-authentication
+         ;; :api-key (lambda () (auth-host->pass "antropic.com")))
+        )
 
   ;; (map! :map shell-maker-mode-map
   ;;       "s-<return>" #'shell-maker-submit
