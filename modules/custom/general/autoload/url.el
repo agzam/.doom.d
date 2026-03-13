@@ -256,8 +256,8 @@ anything like: RFC 123, rfc-123, RFC123 or rfc123."
               (link (cond
                      ((string-match-p ".*https://github.com.*" url)
                       (let-plist (bisect-github-url url)
-                        (format "%s %s/%s#%s" (if .pull "PR" "Bug")
-                                .org .repo (if .pull .pull .issue)))))))
+                        (format "%s/%s#%s" .org .repo
+                                (if .pull .pull .issue)))))))
     (delete-region (car bounds) (cdr bounds))
     (insert link)))
 
@@ -265,9 +265,9 @@ anything like: RFC 123, rfc-123, RFC123 or rfc123."
 (defun +link->link-bug-reference ()
   "Mode-aware version."
   (interactive)
-  (cond ((eq major-mode 'org-mode)
+  (cond ((derived-mode-p 'org-mode)
          (+link-org->link-bug-reference))
-        ((eq major-mode 'markdown-mode)
+        ((derived-mode-p 'markdown-mode)
          (+link-markdown->link-bug-reference))
         (t (+link-plain->link-bug-reference))))
 

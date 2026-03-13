@@ -20,7 +20,7 @@
                             (string-match url-regex (car kill-ring)))
                        (car kill-ring))
 
-                      ((eq major-mode 'org-mode)
+                      ((derived-mode-p 'org-mode)
                        (replace-regexp-in-string
                         "^yt:" "https:"
                         (or
