@@ -290,3 +290,39 @@
     (let ((face (make-face (gensym "pulse-"))))
       (set-face-background face "LightGreen")
       (pulse-momentary-highlight-one-line (point) face))))
+
+(after! lsp-mode
+  ;; Harper doesn't really work in lsp-mode just yet
+  ;; see: https://github.com/emacs-lsp/lsp-mode/issues/4747 
+  
+  ;; ;; Register language IDs for harper-ls
+  (dolist (mode '((markdown-mode . "markdown")
+                  (org-mode . "org")))
+    (add-to-list 'lsp-language-id-configuration mode))
+
+  ;; ;; Register harper-ls client
+  (lsp-register-client
+   (make-lsp-client
+    :new-connection (lsp-stdio-connection '("harper-ls" "-s"))
+    :major-modes '(markdown-mode org-mode)
+    :initialization-options '(:userDictPath ""
+                              :fileDictPath ""
+                              :linters (:SpellCheck t
+                                        :SpelledNumbers :json-false
+                                        :AnA t
+                                        :SentenceCapitalization t
+                                        :UnclosedQuotes t
+                                        :WrongQuotes :json-false
+                                        :LongSentences t
+                                        :RepeatedWords t
+                                        :Spaces t
+                                        :Matcher t
+                                        :CorrectNumberSuffix t)
+                              :codeActions (:ForceStable :json-false)
+                              :markdown (:IgnoreLinkTitle :json-false)
+                              :diagnosticSeverity "hint"
+                              :isolateEnglish :json-false)
+    :activation-fn (lsp-activate-on "markdown" "org")
+    :add-on? 't
+    :server-id 'harper-ls))
+  (setq c-basic-offset 4))
