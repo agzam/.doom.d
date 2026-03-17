@@ -267,6 +267,8 @@ anything like: RFC 123, rfc-123, RFC123 or rfc123."
   (interactive)
   (cond ((derived-mode-p 'org-mode)
          (+link-org->link-bug-reference))
+        ((derived-mode-p 'eca-chat-mode)
+         (+link-plain->link-bug-reference))
         ((derived-mode-p 'markdown-mode)
          (+link-markdown->link-bug-reference))
         (t (+link-plain->link-bug-reference))))

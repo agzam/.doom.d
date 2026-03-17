@@ -25,6 +25,19 @@
 (require 'avy)
 (require 'edit-indirect)
 
+(defun transient--all-layout-keys (prefix)
+  "Return all keys explicitly defined in PREFIX's static layout."
+  (let (keys)
+    (cl-labels
+        ((collect (obj)
+           (cond
+            ((cl-typep obj 'transient-group)
+             (mapc #'collect (oref obj children)))
+            ((cl-typep obj 'transient-suffix)
+             (push (oref obj key) keys)))))
+      (mapc #'collect (get prefix 'transient--layout)))
+    (delq nil keys)))
+
 (defun transient-bypass-keys (prefix key-specs)
   "Create a bunch of keys (transient suffixes) as bypas keys.
 For special handling in a transient PREFIX.
@@ -40,6 +53,12 @@ Every key spec in KEY-SPECS list can be, either:
 
 - or, a list with the key string nominal and the transient flag.
   Optionally, the explicit command to call."
+  (let ((existing-keys (transient--all-layout-keys prefix)))
+    (dolist (spec key-specs)
+      (let ((key (if (stringp spec) spec (car spec))))
+        (when (member key existing-keys)
+          (error "transient-bypass-keys: key %S conflicts with an explicit binding in `%S'"
+                 key prefix)))))
   (transient-parse-suffixes
    prefix
    (mapcar
@@ -177,7 +196,7 @@ Every key spec in KEY-SPECS list can be, either:
         ("%" t)
         ("o" t evilmi-jump-items)
         ("0" t) ("$" t)
-        ("f" t) ("F" t) ("t" t) ("T" t)
+        ("f" t) ("F" t) ("T" t)
         ("/" t))))]
   ["sexp"
    [("a" "avy" avy-goto-beg-sexp :transient t)

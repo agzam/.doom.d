@@ -1,6 +1,18 @@
 ;;; custom/shell/autoload/shell.el -*- lexical-binding: t; -*-
 
 ;;;###autoload
+(defun +insert-current-filename ()
+  (interactive)
+  (when (eq major-mode 'minibuffer-mode)
+    (let ((fname (with-current-buffer
+                     (window-buffer (minibuffer-selected-window))
+                   (pcase major-mode
+                     ('dired-mode
+                      (dired-get-filename))
+                     (_ buffer-file-name)))))
+      (insert fname))))
+
+;;;###autoload
 (defun shell-pop-choose (&optional arg)
   (interactive "P")
   (let* ((shell-type (completing-read "Shell: " '(eshell vterm shell)))

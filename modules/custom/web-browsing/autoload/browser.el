@@ -170,6 +170,8 @@ jump to selected tab, activating it in the browser."
       (when (use-region-p)
         (delete-region (region-beginning) (region-end)))
       (cond
+       ((derived-mode-p 'eca-chat-mode)
+        (insert url))
        ((derived-mode-p 'markdown-mode)
         (insert (format "[%s](%s)" title url)))
        ((derived-mode-p 'org-mode)

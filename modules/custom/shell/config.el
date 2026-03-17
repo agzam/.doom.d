@@ -1,15 +1,4 @@
 ;;; custom/shell/config.el -*- lexical-binding: t; -*-
-(defun +insert-current-filename ()
-  (interactive)
-  (when (eq major-mode 'minibuffer-mode)
-    (let ((fname (with-current-buffer
-                     (window-buffer (minibuffer-selected-window))
-                   (pcase major-mode
-                     ('dired-mode
-                      (dired-get-filename))
-                     (_ buffer-file-name)))))
-      (insert fname))))
-
 (map! :map minibuffer-local-map "C-c C-i" #'+insert-current-filename)
 
 (after! shell
