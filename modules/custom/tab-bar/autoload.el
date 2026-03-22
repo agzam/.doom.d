@@ -38,7 +38,8 @@
    [("hn" "NH" (lambda () (interactive) (hnreader-news)))
     ("rd" "Reddit" (lambda () (interactive) (reddigg-view-frontpage)))]
 
-   [("jb" "def. jira board" go-jira-browse-default-board)]
+   [:if (lambda () (eq system-type 'darwin))
+    ("jb" "def. jira board" go-jira-browse-default-board)]
 
    [("p" "projects" (lambda ()
                       (interactive)
