@@ -63,3 +63,7 @@
   :defer t
   :config
   (setopt slacko-default-host "qlikdev.slack.com"))
+
+(use-package! consult-symbol
+  :defer t
+  :config)

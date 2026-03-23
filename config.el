@@ -429,7 +429,7 @@
       (:prefix ("h" . "help")
                "a" #'helpful-at-point
                "f" #'helpful-function
-               "h" #'helpful-symbol
+               "h" #'consult-symbol
                "c" #'consult-info
                "C" #'describe-key-briefly
                "p" nil

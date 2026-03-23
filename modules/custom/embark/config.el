@@ -104,6 +104,21 @@
 
   (+embark-setup-url-types)
 
+  ;; vulpea-note: consult-vulpea sets :category 'vulpea-note on candidates,
+  ;; but neither it nor vulpea register an embark action for it.
+  ;; Without this, embark-collect buffers inherit `vertico-exit' as the
+  ;; default action (via embark--command) which crashes outside a minibuffer.
+  (setf (alist-get 'vulpea-note embark-default-action-overrides)
+        (lambda (candidate)
+          (when-let* ((id (get-text-property 0 'vulpea-note-id candidate))
+                      (note (vulpea-db-get-by-id id)))
+            (vulpea-visit note)
+            ;; When coming from vulpea-backlinks, reveal all headings
+            ;; containing links to the target note via sparse tree.
+            (when (bound-and-true-p vulpea-backlinks--target-id)
+              (vulpea-backlinks-sparse-tree
+               vulpea-backlinks--target-id)))))
+
   (add-to-list 'embark-target-finders '+embark-target-org-block)
 
   (defvar-keymap embark-org-block-map

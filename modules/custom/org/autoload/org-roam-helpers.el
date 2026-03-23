@@ -1,5 +1,26 @@
 ;;; custom/org/autoload/org-roam-helpers.el -*- lexical-binding: t; -*-
 
+(defvar vulpea-backlinks--target-id nil
+  "Target note ID from the most recent `vulpea-backlinks' session.
+Used by embark actions to show sparse trees in collect buffers.")
+
+;;;###autoload
+(defun vulpea-backlinks-sparse-tree (target-id)
+  "Show sparse tree revealing all links to TARGET-ID in current buffer.
+Folds the buffer, highlights matches, and sets up `next-error'
+navigation via M-g M-n / M-g M-p."
+  (let ((regexp (format "\\[\\[id:%s\\]\\[[^]]*\\]\\]" (regexp-quote target-id))))
+    (org-cycle-overview)
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward regexp nil t)
+        (org-highlight-new-match (match-beginning 0) (match-end 0))
+        (org-fold-show-context 'occur-tree)))
+    (setq-local next-error-function #'org-occur-next-match)
+    (setq next-error-last-buffer (current-buffer))
+    (org-fold-show-context 'occur-tree)
+    (recenter)))
+
 ;;;###autoload
 (defun outline-collapsed? ()
   "Returns nil if the top outline heading is collapsed (hidden)"
@@ -205,6 +226,10 @@ target — showing every backlink location, not just the first."
          (target-id (vulpea-note-id target-note)))
     (unless target-id
       (user-error "No valid note selected"))
+    ;; Stash target-id for embark-collect actions (the second prompt's
+    ;; candidates end up in the collect buffer, but the sparse tree
+    ;; logic needs the target to build the [[id:...]] regexp).
+    (setq vulpea-backlinks--target-id target-id)
     ;; Get backlinks and resolve source notes
     (let* ((backlinks (seq-filter
                        (lambda (l) (string= (plist-get l :type) "id"))
@@ -223,23 +248,4 @@ target — showing every backlink location, not just the first."
               (user-error "No backlinks found"))))
       (when (and chosen-note (vulpea-note-id chosen-note))
         (vulpea-visit chosen-note other-window)
-        (let ((pos (point))
-              (regexp (format "\\[\\[id:%s\\]" (regexp-quote target-id))))
-          ;; Build a sparse tree showing all backlink locations.
-          ;; We use org-overview + manual search + org-fold-show-context
-          ;; with 'lineage detail so that each match reveals the full
-          ;; heading ancestry *and* sibling headings — giving much
-          ;; better orientation than org-occur's default 'ancestors.
-          (org-cycle-overview)
-          (save-excursion
-            (goto-char (point-min))
-            (while (re-search-forward regexp nil t)
-              (org-highlight-new-match (match-beginning 0) (match-end 0))
-              (org-fold-show-context 'occur-tree)))
-          ;; Enable next/prev match navigation via M-g M-n / M-g M-p
-          (setq-local next-error-function #'org-occur-next-match)
-          (setq next-error-last-buffer (current-buffer))
-          ;; Restore position and show it
-          (goto-char pos)
-          (org-fold-show-context 'occur-tree)
-          (recenter))))))
+        (vulpea-backlinks-sparse-tree target-id)))))

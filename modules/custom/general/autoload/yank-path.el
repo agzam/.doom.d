@@ -22,6 +22,7 @@ Tries tree-sitter first (Emacs 29+), then falls back to `beginning-of-defun'."
            (when (= (line-number-at-pos) line)
              (add-log-current-defun))))))))
 
+;;;###autoload
 (defun +yank-path--position-suffix ()
   "Return position suffix for current point/region state.
 Region -> :start-end, defun header -> :name, otherwise -> :line."

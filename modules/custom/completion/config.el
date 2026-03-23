@@ -408,7 +408,8 @@
    +default/search-emacsd
    :preview-key 'any)
 
-  (setq consult-preview-key "C-SPC")
+  (setopt consult-preview-key "C-SPC"
+          consult-narrow-key "<")
   (consult-customize
    +default/search-buffer
    :preview-key (list "C-SPC" :debounce 0.5 'any))

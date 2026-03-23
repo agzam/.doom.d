@@ -1,6 +1,8 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; custom/search/packages.el
 
+(package! consult-symbol :recipe (:host github :repo "danielfleischer/consult-symbol"))
+
 (package! consult-omni :recipe
   (:host github :repo "armindarvish/consult-omni"
    :branch "develop"
