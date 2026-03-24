@@ -122,7 +122,7 @@
 
 (after! which-key
   (setopt
-   which-key-use-C-h-commands t
+   which-key-use-C-h-commands nil
    which-key-show-early-on-C-h t
    which-key-idle-delay 0.5
    which-key-idle-secondary-delay 0.2

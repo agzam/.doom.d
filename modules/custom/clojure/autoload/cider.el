@@ -85,6 +85,53 @@ set so that it clears the whole REPL buffer, not just the output."
         (error "can't resolve ns")))))
 
 ;;;###autoload
+(defun lsp-clojure--fqn-at-point ()
+  "Return fully qualified Clojure symbol at point via clojure-lsp.
+Tries cursorInfo/raw first (structured data), falls back to hover parsing."
+  (or
+   ;; Primary: structured clj-kondo analysis from cursorInfo/raw
+   (condition-case nil
+       (when-let* ((info (lsp-request
+                          "clojure/cursorInfo/raw"
+                          (lsp-make-clojure-cursor-info-params
+                           :textDocument (lsp-make-text-document-identifier
+                                         :uri (lsp--buffer-uri))
+                           :position (lsp-make-position
+                                     :line (1- (line-number-at-pos))
+                                     :character (current-column)))))
+                   (elements (lsp-get info :elements))
+                   (first-entry (aref elements 0))
+                   (element (lsp-get first-entry :element)))
+         (or
+          ;; Clojure vars: :name + (:to or :ns)
+          (when-let* ((name (lsp-get element :name)))
+            (let ((ns (or (lsp-get element :to)
+                          (lsp-get element :ns))))
+              (if (and ns (not (string-empty-p ns)))
+                  (format "%s/%s" ns name)
+                name)))
+          ;; Java interop: :class + :method-name
+          (when-let* ((class (lsp-get element :class)))
+            (if-let* ((method (lsp-get element :method-name)))
+                (format "%s/%s" class method)
+              class))))
+     (error nil))
+   ;; Fallback: parse hover markdown
+   (when-let* ((cnt (-some-> "textDocument/hover"
+                      (lsp--make-request (lsp--text-document-position-params))
+                      (lsp--send-request)
+                      (lsp:hover-contents)))
+               (s (or (plist-get cnt :value)
+                      (gethash "value" cnt)))
+               (code-line (when (string-match "```clojure\n\\(.*\\)" s)
+                            (match-string 1 s))))
+     (or
+      (when (string-match "\\([a-zA-Z][a-zA-Z0-9._$-]*/[a-zA-Z0-9._*+!?<>=&#'-]+\\)" code-line)
+        (match-string 1 code-line))
+      (when (string-match "\\([a-zA-Z*+!_?-][a-zA-Z0-9._*+!?<>=&#'-]*\\)" code-line)
+        (match-string 1 code-line))))))
+
+;;;###autoload
 (defun clj-fully-qualified-symbol-at-point (&optional for-req callback)
   "Gets fully qualified Clojure symbol at point. If FOR-REQ argument passed
 gets the name suitable for :require of ns declaration."
@@ -99,19 +146,8 @@ gets the name suitable for :require of ns declaration."
          (sym (cond ((cider-connected-p)
                      (cider-fqn-symbol-at-point))
 
-                    ((lsp--capability :hoverProvider)
-                     (when-let* ((cnt (-some->
-                                          "textDocument/hover"
-                                        (lsp--make-request
-                                         (lsp--text-document-position-params))
-                                        (lsp--send-request)
-                                        (lsp:hover-contents)))
-                                 ;; I think with native-comp it comes as a hash,
-                                 ;; otherwise as cons
-                                 (s (or (plist-get cnt :value)
-                                        (gethash "value" cnt))))
-                       (string-match "```clojure\n\\([[:graph:]]+/[[:graph:]]+\\)" s)
-                       (string-trim (match-string 1 s))))
+                    ((and (bound-and-true-p lsp-mode) (lsp-workspaces))
+                     (lsp-clojure--fqn-at-point))
 
                     (t (message "Neither lsp nor cider are connected")))))
     (if for-req  ; want ns header name, e.g.: "[foo.core :as foo]"
