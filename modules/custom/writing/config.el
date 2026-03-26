@@ -326,3 +326,7 @@
     :add-on? 't
     :server-id 'harper-ls))
   (setq c-basic-offset 4))
+
+(use-package! occult
+  :defer t
+  :config)

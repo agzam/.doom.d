@@ -23,3 +23,5 @@
 
 ;; translate-popup retired - functionality now in google-translate-posframe-ui
 ;; (package! translate-popup :recipe (:local-repo "translate-popup"))
+
+(package! occult :recipe (:host github :repo "agzam/occult.el"))

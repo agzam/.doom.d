@@ -43,6 +43,7 @@
    :map (python-mode-map python-ts-mode-map)
    "C-c C-n" #'python-edit-imports
    (:localleader
+    "," #'py-fully-qualified-symbol-at-point
     (:prefix ("i" . "insert")
              "p" #'python-insert-ipdb)
     (:prefix ("f" . "format")
