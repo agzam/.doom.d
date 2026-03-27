@@ -218,3 +218,8 @@ enclose them in markdown quotes.
 (use-package! gptel-agent
   :defer t
   :config)
+
+(use-package! gptel-anthropic-oauth
+  :after (gptel)
+  :config
+  (setopt gptel-backend (gptel-make-anthropic-oauth "Claude-OAuth" :stream t)))
