@@ -70,7 +70,7 @@ variable accordingly.")
 
   (setq-default notmuch-search-oldest-first nil)
   (setq message-confirm-send t
-        ;; needed so lsp-grammarly works
+        ;; lsp requires a buffer to have a file
         message-auto-save-directory "/tmp"
         mm-text-html-renderer 'shr)
 

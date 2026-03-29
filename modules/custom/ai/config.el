@@ -67,7 +67,6 @@
 
   (add-hook! 'kill-emacs-hook
     (defun persist-gptel-model ()
-      (customize-save-variable 'gptel-backend gptel-backend)
       (customize-save-variable 'gptel-model gptel-model)))
 
   (add-hook! 'gptel-post-stream-hook #'gptel-persist-history)
@@ -215,9 +214,35 @@ enclose them in markdown quotes.
     (defun eca-chat-mode-markup-no-hiding-h ()
       (markdown-toggle-markup-hiding -1))))
 
+(use-package! mcp
+  :after gptel
+  :config
+  (setopt mcp-hub-servers (+llm-mcp-servers-from-eca-config))
+  (+llm-register-mcp-tools-lazy))
+
 (use-package! gptel-agent
   :defer t
-  :config)
+  :config
+  (map! :map gptel-tool-call-actions-map
+        "C-c C-y" #'gptel--accept-tool-calls
+        "C-c C-r" #'gptel--reject-tool-calls)
+
+  (defadvice! +gptel-agent-inject-mcp-tools-a (&rest _)
+    :after #'gptel-agent-update
+    "Inject MCP server tool categories into gptel-agent definitions."
+    (when (bound-and-true-p mcp-hub-servers)
+      (let ((mcp-cats (mapcar (lambda (s) (concat "mcp-" (car s)))
+                              mcp-hub-servers)))
+        (dolist (entry gptel-agent--agents)
+          (when-let* ((tools (plist-get (cdr entry) :tools)))
+            (dolist (cat mcp-cats)
+              (unless (member cat tools)
+                (nconc tools (list cat))))))
+        ;; re-create presets with updated tool lists
+        (when-let* ((p (assoc-default "gptel-agent" gptel-agent--agents nil nil)))
+          (apply #'gptel-make-preset 'gptel-agent p))
+        (when-let* ((p (assoc-default "gptel-plan" gptel-agent--agents nil nil)))
+          (apply #'gptel-make-preset 'gptel-plan p))))))
 
 (use-package! gptel-anthropic-oauth
   :after (gptel)

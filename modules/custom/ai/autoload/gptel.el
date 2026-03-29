@@ -1,4 +1,143 @@
 ;;; custom/ai/gptel.el -*- lexical-binding: t; -*-
+
+(defvar +llm-mcp--pending-callbacks (make-hash-table :test 'equal)
+  "Callbacks waiting for lazy MCP servers to start.")
+
+(defun +llm-mcp-ensure-server (server-name callback)
+  "Ensure MCP server SERVER-NAME is connected, then call CALLBACK.
+If already connected, CALLBACK fires immediately.  Queues concurrent requests."
+  (require 'mcp-hub)
+  (cond
+   ((gethash server-name mcp-server-connections)
+    (funcall callback))
+   ;; currently starting - queue
+   ((gethash server-name +llm-mcp--pending-callbacks)
+    (push callback (gethash server-name +llm-mcp--pending-callbacks)))
+   ;; start it
+   (t
+    (puthash server-name (list callback) +llm-mcp--pending-callbacks)
+    (message "Starting MCP server %s..." server-name)
+    (mcp-hub-start-all-server
+     (lambda ()
+       (let ((cbs (gethash server-name +llm-mcp--pending-callbacks)))
+         (remhash server-name +llm-mcp--pending-callbacks)
+         (if (gethash server-name mcp-server-connections)
+             (progn
+               (message "MCP server %s ready" server-name)
+               (dolist (cb cbs) (funcall cb)))
+           (message "MCP server %s failed to start" server-name))))
+     (list server-name)))))
+
+(defun +llm-mcp-make-lazy-fn (server-name tool-name arg-names)
+  "Create an async tool function that lazily starts SERVER-NAME for TOOL-NAME.
+ARG-NAMES is a list of argument name strings for reconstructing the MCP plist."
+  (lambda (callback &rest args)
+    (+llm-mcp-ensure-server
+     server-name
+     (lambda ()
+       (let ((mcp-args (cl-mapcan
+                        (lambda (name val)
+                          (list (intern (concat ":" name)) val))
+                        arg-names args)))
+         (mcp-async-call-tool
+          (gethash server-name mcp-server-connections)
+          tool-name
+          mcp-args
+          (lambda (res)
+            (funcall callback (mcp--parse-tool-call-result res)))
+          (lambda (code message)
+            (funcall callback
+                     (format "MCP tool %s error: [%s] %s"
+                             tool-name code message)))))))))
+
+(defun +llm-extract-tool-defs-from-bb (file)
+  "Extract tool definitions from a Babashka MCP server script FILE.
+Returns a list of parsed tool definition hash-tables."
+  (require 'parseedn)
+  (with-temp-buffer
+    (insert-file-contents file)
+    (goto-char (point-min))
+    (when (re-search-forward "(def \\(?:tool-defs?\\|tools\\)\\b" nil t)
+      (re-search-forward "[{[]" nil t)
+      (backward-char 1)
+      (let* ((start (point))
+             (_ (forward-sexp 1))
+             (edn-str (buffer-substring-no-properties start (point)))
+             (result (parseedn-read-str edn-str)))
+        (cond
+         ((hash-table-p result) (list result))
+         ((vectorp result) (append result nil))
+         (t nil))))))
+
+(defun +llm-mcp-schema-to-gptel-args (schema)
+  "Convert MCP inputSchema hash-table to gptel args format."
+  (let* ((properties (gethash :properties schema))
+         (required (when-let* ((r (gethash :required schema)))
+                     (append r nil)))
+         (args '()))
+    (when properties
+      (maphash
+       (lambda (key val)
+         (let* ((name (substring (symbol-name key) 1))
+                (arg (list :name name
+                           :type (gethash :type val "string")
+                           :description (or (gethash :description val) ""))))
+           (unless (member name required)
+             (setq arg (append arg '(:optional t))))
+           (push arg args)))
+       properties))
+    (nreverse args)))
+
+;;;###autoload
+(defun +llm-register-mcp-tools-lazy ()
+  "Register MCP tools with gptel from server script schemas.
+Reads tool definitions directly from .bb files using parseedn.
+Tools appear in gptel immediately; servers start lazily on first use."
+  (dolist (server mcp-hub-servers)
+    (let* ((server-name (car server))
+           (command (plist-get (cdr server) :command))
+           (category (concat "mcp-" server-name))
+           (tool-defs (+llm-extract-tool-defs-from-bb command)))
+      (dolist (td tool-defs)
+        (let* ((tool-name (gethash :name td))
+               (description (or (gethash :description td) ""))
+               (schema (gethash :inputSchema td))
+               (args (when schema (+llm-mcp-schema-to-gptel-args schema))))
+          (gptel-make-tool
+           :function (+llm-mcp-make-lazy-fn
+                      server-name tool-name
+                      (mapcar (lambda (a) (plist-get a :name)) args))
+           :name tool-name
+           :async t
+           :description description
+           :args args
+           :category category))))))
+
+;;;###autoload
+(defun +llm-mcp-servers-from-eca-config ()
+  "Read MCP servers from ECA config.json, return `mcp-hub-servers' alist.
+Parses ~/.config/eca/config.json (shared with ECA and Claude Code CLI)
+and converts mcpServers entries to the format expected by `mcp-hub-servers'."
+  (require 'json)
+  (when-let* ((config-file (expand-file-name "~/.config/eca/config.json"))
+              (_ (file-exists-p config-file))
+              (json (json-read-file config-file))
+              (servers (alist-get 'mcpServers json)))
+    (mapcar
+     (lambda (entry)
+       (let* ((name (symbol-name (car entry)))
+              (props (cdr entry))
+              (command (alist-get 'command props))
+              (env-alist (alist-get 'env props))
+              (result (list name :command command)))
+         (when env-alist
+           (nconc result
+                  (list :env
+                        (cl-loop for (k . v) in env-alist
+                                 nconc (list (intern (concat ":" (symbol-name k))) v)))))
+         result))
+     servers)))
+
 (defvar +gptel-improve-text-prompt nil)
 
 (defvar +gptel-improve-text-prompts-history
@@ -186,27 +325,26 @@
 ;;;###autoload
 (defun gptel+ (&optional arg)
   (interactive "P")
-  (let* ((last-b (unless arg
-                   (thread-last
-                     (buffer-list)
-                     (seq-filter
-                      (lambda (buf)
-                        (and
-                         (buffer-local-value 'gptel-mode buf)
-                         (buffer-file-name buf)
-                         (not (string-match-p
-                               ".*quick.org$"
-                               (buffer-file-name buf))))))
-                     (seq-sort
-                      (lambda (a b)
-                        (string> (buffer-name a) (buffer-name b))))
-                     (seq-first))))
-         (last-b (or last-b
-                     (funcall-interactively
-                      #'gptel
-                      (format "*%s*" (gptel-backend-name (default-value 'gptel-backend)))))))
-    (display-buffer last-b)
-    (switch-to-buffer last-b)))
+  (let ((last-b (unless arg
+                  (thread-last
+                    (buffer-list)
+                    (seq-filter
+                     (lambda (buf)
+                       (and
+                        (buffer-local-value 'gptel-mode buf)
+                        (buffer-file-name buf)
+                        (not (string-match-p
+                              ".*quick.org$"
+                              (buffer-file-name buf))))))
+                    (seq-sort
+                     (lambda (a b)
+                       (string> (buffer-name a) (buffer-name b))))
+                    (seq-first)))))
+    (if last-b
+        (progn
+          (display-buffer last-b)
+          (switch-to-buffer last-b))
+      (call-interactively #'gptel-agent))))
 
 ;;;###autoload
 (defun gptel-persist-history ()

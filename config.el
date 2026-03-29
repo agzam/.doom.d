@@ -554,7 +554,6 @@
                (:when (modulep! :custom writing)
                  (:prefix ("l" . "language")
                   :desc "define" "d" #'define-it-at-point
-                  :desc "grammarly check" "g" #'lsp-grammarly-check-grammar
                   :desc "sdcv" "l" #'sdcv-search-pointer
                   :desc "Merriam Webster" "m" #'mw-thesaurus-lookup-dwim
                   :desc "wiktionary" "w" #'wiktionary-bro-dwim)

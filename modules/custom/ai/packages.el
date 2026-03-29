@@ -18,6 +18,7 @@
 (package! gptel-agent
   :recipe (:host github :repo "karthink/gptel-agent"
                  :files ("*.el" "agents")))
+(package! mcp :recipe (:host github :repo "lizqwerscott/mcp.el"))
 (package! gptel-anthropic-oauth :recipe (:local-repo "gptel-anthropic-oauth"))
 
 
