@@ -347,9 +347,12 @@ and converts mcpServers entries to the format expected by `mcp-hub-servers'."
       (call-interactively #'gptel-agent))))
 
 ;;;###autoload
-(defun gptel-persist-history ()
-  "Save buffer to disk when starting gptel"
-  (unless (buffer-file-name (current-buffer))
+(defun gptel-persist-history (_beg _end)
+  "Save gptel dedicated buffer to disk.
+Only acts on buffers with `gptel-mode' active, skipping transient
+uses like `gptel-send' from scratch."
+  (when (and (bound-and-true-p gptel-mode)
+             (not (buffer-file-name (current-buffer))))
     (let ((suffix (format-time-string "%Y-%m-%d-%T" (current-time)))
           (chat-dir (concat org-default-folder "/gptel"))
           (ext (replace-regexp-in-string "-mode$" "" (symbol-name gptel-default-mode))))

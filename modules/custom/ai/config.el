@@ -69,7 +69,7 @@
     (defun persist-gptel-model ()
       (customize-save-variable 'gptel-model gptel-model)))
 
-  (add-hook! 'gptel-post-stream-hook #'gptel-persist-history)
+  (add-hook! 'gptel-post-response-functions #'gptel-persist-history)
 
   (add-to-list
    'display-buffer-alist
