@@ -8,7 +8,8 @@
                                (lambda (monitor)
                                  (let ((geometry (cdr (assoc 'geometry monitor))))
                                    (and (<= (car geometry) (frame-parameter current-frame 'left))
-                                        (<= (+ (car geometry) (cadr geometry)) (frame-parameter current-frame 'left)))))
+                                        (< (frame-parameter current-frame 'left)
+                                           (+ (car geometry) (nth 2 geometry))))))
                                (display-monitor-attributes-list)))))
     (alist-get 'workarea monitor-at-pos)))
 
@@ -80,18 +81,18 @@ it remains shown or hidden - whatever the previous value was."
   (interactive)
   (posframe-delete-all)
   (+corfu-kill-frames)
-  (let* ((fr (selected-frame)))
+  (let* ((fr (selected-frame))
+         (x (car (frame-position fr))))
     (if (frame-parameter fr 'undecorated-fullheight)
         (progn
           (set-frame-parameter fr 'undecorated-fullheight nil)
           (set-frame-parameter fr 'undecorated nil)
           (set-frame-parameter fr 'fullscreen nil))
       (reset-ns-autohide-menu-bar)
-      (progn
-        (set-frame-parameter fr 'undecorated t)
-        (set-frame-parameter fr 'undecorated-fullheight t)
-        (set-frame-position fr (car (frame-position)) 26)
-        (set-frame-height fr (- (display-workarea-height) (tab-bar-height nil t)) nil :pixelwise)))
+      (set-frame-parameter fr 'undecorated t)
+      (set-frame-parameter fr 'undecorated-fullheight t)
+      (set-frame-position fr x 26)
+      (set-frame-height fr (- (display-workarea-height) (tab-bar-height nil t)) nil :pixelwise))
     (redraw-display)))
 
 ;;;###autoload
