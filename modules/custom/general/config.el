@@ -225,19 +225,24 @@
   :after (which-key)
   :config
   (defun posframe-poshandler-frame-right-vertical (info)
-    ;; (pp info)
     (cons (- (plist-get info :parent-frame-width)
              (plist-get info :posframe-width) 10)
-          (/ (- (plist-get info :parent-frame-height)
-                (plist-get info :posframe-height))
-             2)))
+          (max 0 (/ (- (plist-get info :parent-frame-height)
+                       (plist-get info :posframe-height))
+                    2))))
   (setq which-key-posframe-poshandler 'posframe-poshandler-frame-right-vertical)
+
+  (defadvice! +which-key-posframe-dynamic-height-a (fn act-popup-dim)
+    :around #'which-key-posframe--show-buffer
+    (let ((max-h (- (frame-height) 2)))
+      (setq which-key-min-display-lines max-h)
+      (funcall fn (cons (min (car act-popup-dim) max-h)
+                        (cdr act-popup-dim)))))
 
   (add-hook! 'which-key-posframe-mode-hook
     (defun which-key-posframe-mode-h ()
       (if which-key-posframe-mode
           (setq which-key-max-display-columns 2
-                which-key-min-display-lines 60
                 which-key-max-description-length 100)
         (setq which-key-popup-type 'side-window
               which-key-max-display-columns nil
