@@ -47,20 +47,6 @@
  )
 
 
-;; HACK: see: doomemacs/doomemacs#8733
-(defadvice! keep-fixed-pitch-height-relative-a (&optional _reload)
-  "Reset fixed-pitch faces to relative :height after Doom sets fonts."
-  :after #'doom-init-fonts-h
-  (dolist (face '(fixed-pitch fixed-pitch-serif))
-    (set-face-attribute face nil :height 1.0)
-    (when-let* ((theme-specs (get face 'theme-face))
-                (user-entry (assq 'user theme-specs))
-                (face-specs (cadr user-entry)))
-      (dolist (spec face-specs)
-        (when-let* ((plist (cadr spec)))
-          (when (plist-member plist :height)
-            (plist-put plist :height 1.0)))))))
-
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setopt display-line-numbers-type t)
@@ -140,10 +126,10 @@
   ;; borrowed from https://tecosaur.github.io/emacs-config/config.html
   (setopt which-key-allow-multiple-replacements t)
   (after! which-key
-    (pushnew!
-     which-key-replacement-alist
-     '(("" . "\\`+?evil[-:]?\\(?:a-\\)?\\(.*\\)") . (nil . "◂\\1"))
-     '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))))
+    (dolist (r '((("" . "\\`+?evil[-:]?\\(?:a-\\)?\\(.*\\)") . (nil . "◂\\1"))
+                  (("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))))
+      (add-to-list 'which-key-replacement-alist r)))
+
 
   (which-key-mode))
 

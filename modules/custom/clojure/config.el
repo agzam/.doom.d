@@ -9,7 +9,8 @@
                     cider-clojure-interaction-mode))
 
 (after! projectile
-  (pushnew! projectile-project-root-files "project.clj" "build.boot" "deps.edn"))
+  (dolist (f '("project.clj" "build.boot" "deps.edn"))
+    (add-to-list 'projectile-project-root-files f)))
 
 (use-package! clojure-mode
   :defer t
@@ -212,7 +213,7 @@
     (advice-add 'org-edit-special :around #'org-edit-special-for-clojure-a))
 
   (after! ob-clojure
-    (setq! org-babel-clojure-backend 'cider))
+    (setopt org-babel-clojure-backend 'cider))
 
   (map! (:localleader
          (:map (clojure-mode-map

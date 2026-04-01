@@ -79,6 +79,7 @@
 (transient-define-prefix mpv-transient ()
   "mpv"
   ["bypass keys"
+   :class transient-column
    :hide always
    :setup-children
    (lambda (_)

@@ -135,10 +135,10 @@
 
 (after! ispell
   ;; Don't spellcheck org blocks
-  (pushnew! ispell-skip-region-alist
-            '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:")
-            '("#\\+BEGIN_SRC" . "#\\+END_SRC")
-            '("#\\+BEGIN_EXAMPLE" . "#\\+END_EXAMPLE"))
+  (dolist (r '((":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:")
+               ("#\\+BEGIN_SRC" . "#\\+END_SRC")
+               ("#\\+BEGIN_EXAMPLE" . "#\\+END_EXAMPLE")))
+    (cl-pushnew r ispell-skip-region-alist :test #'equal))
   (setq ispell-program-name "enchant-2")
   (add-to-list 'ispell-dictionary-alist
                '(nil "[[:alpha:]]"

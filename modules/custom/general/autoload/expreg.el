@@ -31,6 +31,7 @@
   [[("v" "expand" expreg-expand :transient t)]
    [("V" "contract" expreg-contract :transient t)]]
   ["bypass keys"
+   :class transient-column
    :hide always
    :setup-children
    (lambda (_)

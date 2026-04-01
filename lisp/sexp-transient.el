@@ -182,6 +182,7 @@ Every key spec in KEY-SPECS list can be, either:
     ("<left>" "h" evil-backward-char :transient t)
     ("<right>" "l" evil-forward-char :transient t)]]
   ["bypass keys"
+   :class transient-column
    :hide always
    :setup-children
    (lambda (_)

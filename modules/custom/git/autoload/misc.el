@@ -273,7 +273,8 @@ For a github url ending with /pulls or /issues"
     (when-let ((cmd (transient--suffix-command sfx)))
       (ignore-errors
         (transient-append-suffix cmd '(0)
-          [:hide always
+          [:class transient-column
+           :hide always
            :setup-children
            (lambda (_)
              (list
