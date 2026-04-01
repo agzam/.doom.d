@@ -329,4 +329,37 @@
 
 (use-package! occult
   :defer t
-  :config)
+  :commands (occult-toggle occult-hide-region occult-reveal-all)
+  :init
+  (after! evil
+    (defadvice! occult-evil-close-fold-a (fn &rest args)
+      "In visual state, hide selected region with occult."
+      :around #'(evil-close-fold evil-close-fold-rec
+                 +org/close-fold)
+      (if (evil-visual-state-p)
+          (occult-hide-region (region-beginning) (region-end))
+        (apply fn args)))
+
+    (defadvice! occult-evil-open-fold-a (fn &rest args)
+      "Reveal occult fold at point, or fall through to native."
+      :around #'(evil-open-fold evil-open-fold-rec
+                 +org/open-fold)
+      (if (cl-find-if (lambda (o) (overlay-get o 'occult))
+                      (overlays-at (point)))
+          (occult-toggle)
+        (apply fn args)))
+
+    (defadvice! occult-evil-open-folds-a (fn &rest args)
+      "Also reveal all occult folds."
+      :around #'(evil-open-folds +org/open-all-folds)
+      (apply fn args)
+      (occult-reveal-all))
+
+    (defadvice! occult-evil-toggle-fold-a (fn &rest args)
+      "Delegate to occult-toggle when applicable."
+      :around #'(evil-toggle-fold +org/toggle-fold)
+      (if (or (evil-visual-state-p)
+              (cl-find-if (lambda (o) (overlay-get o 'occult))
+                          (overlays-at (point))))
+          (occult-toggle)
+        (apply fn args)))))

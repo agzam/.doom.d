@@ -39,7 +39,7 @@
       '("d" "p" "P" "r" "c" "R" "t" "T" "f" "F" "n" "C-;"
         "SPC" "," ":" "M-x" "M-:" "`" "C-h" "C-x TAB"
         "s-k" "s-]" "s-j" "s-]"
-        ">" "<" "=" "~"  "[" "]" "J" "s"
+        ">" "<" "=" "~"  "[" "]" "J" "s" "z"
         ("*" nil evil-ex-search-word-forward)
         ("#" nil evil-ex-search-word-backward)
         ("j" t evil-next-visual-line)
