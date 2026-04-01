@@ -47,11 +47,19 @@
  )
 
 
-(add-hook! 'doom-load-theme-hook
-  (defun reset-fixed-pitch-height-h ()
-    "I don't know what exactly Doom is doing, but it's setting
-     fixed-pitch number to absolute unit, should be relative"
-    (set-face-attribute 'fixed-pitch nil :height 1.0)))
+;; HACK: see: doomemacs/doomemacs#8733
+(defadvice! keep-fixed-pitch-height-relative-a (&optional _reload)
+  "Reset fixed-pitch faces to relative :height after Doom sets fonts."
+  :after #'doom-init-fonts-h
+  (dolist (face '(fixed-pitch fixed-pitch-serif))
+    (set-face-attribute face nil :height 1.0)
+    (when-let* ((theme-specs (get face 'theme-face))
+                (user-entry (assq 'user theme-specs))
+                (face-specs (cadr user-entry)))
+      (dolist (spec face-specs)
+        (when-let* ((plist (cadr spec)))
+          (when (plist-member plist :height)
+            (plist-put plist :height 1.0)))))))
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
