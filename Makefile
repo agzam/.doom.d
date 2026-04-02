@@ -82,8 +82,7 @@ dash-docsets:
 	)" 2>&1 | tee -a $(LOGFILE)
 	@echo "[$(shell date -Iseconds)] Finished installing docsets (exit: $$?)\n" | tee -a $(LOGFILE)
 
-update:
+up:
 	doom up --force --verbose \
 	&& doom sync -u --force --verbose \
-    && emacsclient -e "(progn (doom/reload-packages) (org-roam-db-sync))" \
-    && make org-roam-db-sync pdf-tools vterm dash-docsets 
+    && make pdf-tools vterm dash-docsets 

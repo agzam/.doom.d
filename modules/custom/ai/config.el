@@ -205,7 +205,10 @@ enclose them in markdown quotes.
         :n "M-n" #'eca-chat-go-to-next-expandable-block
         :n "<tab>"  #'eca-chat-toggle-expandable-block
         :n "TAB" #'eca-chat-toggle-expandable-block
-        :n ",," #'eca-transient-menu)
+        :n ",," #'eca-transient-menu
+        (:localleader
+         "n" #'tab-line-switch-to-next-tab
+         "p" #'tab-line-switch-to-prev-tab))
   (map! :map (markdown-mode-map
               evil-markdown-mode-map)
         "TAB" nil

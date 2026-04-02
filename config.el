@@ -322,11 +322,11 @@
         (:prefix ("C-x g" . "gptel")
          :desc "gptel-menu" "g" #'gptel-menu
          :desc "new gptel" "n" #'gptel+
-         :desc "check text" "c" #'+gptel-improve-text-transient
+         :desc "check text" "e" #'+gptel-improve-text-transient
          :desc "quick" "q" #'gptel-quick-question-buffer
          "m" #'gptel-mode
          "s" #'gptel-send
-         "e" #'eca)))
+         "c" #'eca)))
 
 (map! (:map (prog-mode-map text-mode-map markdown-mode-map)
        :desc "external browser" "C-c C-o"
@@ -563,12 +563,12 @@
                  (:prefix ("g" . "gptel")
                   :desc "gptel-menu" "g" #'gptel-menu
                   :desc "new gptel" "n" #'gptel+
-                  :desc "check text" "c" #'+gptel-improve-text-transient
+                  :desc "check text" "e" #'+gptel-improve-text-transient
                   :desc "quick" "q" #'gptel-quick-question-buffer
                   :desc "search" "/" #'gptel-log-find
                   "m" #'gptel-mode
                   "s" #'gptel-send
-                  "e" #'eca)))
+                  "c" #'eca)))
 
       (:prefix ("z" . "zoom")
        :desc "frame" "f" #'frame-zoom-transient))
