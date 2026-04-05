@@ -13,7 +13,10 @@
   :config
   (setf
    (cdr (assoc 'default gptel-directives))
-   "You are an experienced software engineer assistant. Respond concisely. Prioritize theory. Do not provide code snippets until instructed. Do not repeat entire snippets of code - show only relevant changes, unless instructed otherwise. Do not explain code. Do not replace backticks and other symbols in the code to accommodate for Org-mode - keep the code in source blocks as independent pieces that have nothing to do with Org-mode markup.")
+   (concat
+    (or (+llm-eca-agents-md-content) "")
+    "\n\n"
+    "You are an experienced software engineer assistant. Respond concisely. Prioritize theory. Do not provide code snippets until instructed. Do not repeat entire snippets of code - show only relevant changes, unless instructed otherwise. Do not explain code. Do not replace backticks and other symbols in the code to accommodate for Org-mode - keep the code in source blocks as independent pieces that have nothing to do with Org-mode markup."))
 
   (setf
    (cdr (assoc 'chat gptel-directives))
@@ -226,13 +229,22 @@ enclose them in markdown quotes.
 (use-package! gptel-agent
   :defer t
   :config
+  (add-to-list 'gptel-agent-skill-dirs "~/.config/eca/skills/")
+
   (map! :map gptel-tool-call-actions-map
         "C-c C-y" #'gptel--accept-tool-calls
         "C-c C-r" #'gptel--reject-tool-calls)
 
   (defadvice! +gptel-agent-inject-mcp-tools-a (&rest _)
     :after #'gptel-agent-update
-    "Inject MCP server tool categories into gptel-agent definitions."
+    "Inject MCP tools and ECA directives into gptel-agent definitions."
+    ;; Prepend AGENTS.md directives to every agent's :system prompt
+    (when-let* ((directives (+llm-eca-agents-md-content)))
+      (dolist (entry gptel-agent--agents)
+        (when-let* ((system (plist-get (cdr entry) :system)))
+          (plist-put (cdr entry) :system
+                     (concat directives "\n\n" system)))))
+    ;; Inject MCP server tool categories
     (when (bound-and-true-p mcp-hub-servers)
       (let ((mcp-cats (mapcar (lambda (s) (concat "mcp-" (car s)))
                               mcp-hub-servers)))
@@ -240,12 +252,12 @@ enclose them in markdown quotes.
           (when-let* ((tools (plist-get (cdr entry) :tools)))
             (dolist (cat mcp-cats)
               (unless (member cat tools)
-                (nconc tools (list cat))))))
-        ;; re-create presets with updated tool lists
-        (when-let* ((p (assoc-default "gptel-agent" gptel-agent--agents nil nil)))
-          (apply #'gptel-make-preset 'gptel-agent p))
-        (when-let* ((p (assoc-default "gptel-plan" gptel-agent--agents nil nil)))
-          (apply #'gptel-make-preset 'gptel-plan p))))))
+                (nconc tools (list cat))))))))
+    ;; Re-create presets with updated system prompts and tool lists
+    (when-let* ((p (assoc-default "gptel-agent" gptel-agent--agents nil nil)))
+      (apply #'gptel-make-preset 'gptel-agent p))
+    (when-let* ((p (assoc-default "gptel-plan" gptel-agent--agents nil nil)))
+      (apply #'gptel-make-preset 'gptel-plan p))))
 
 (use-package! gptel-anthropic-oauth
   :after (gptel)

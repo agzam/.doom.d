@@ -138,6 +138,16 @@ and converts mcpServers entries to the format expected by `mcp-hub-servers'."
          result))
      servers)))
 
+;;;###autoload
+(defun +llm-eca-agents-md-content ()
+  "Read ~/.config/eca/AGENTS.md and return its content as a string.
+Returns nil if the file does not exist."
+  (let ((file (expand-file-name "~/.config/eca/AGENTS.md")))
+    (when (file-exists-p file)
+      (with-temp-buffer
+        (insert-file-contents file)
+        (buffer-string)))))
+
 (defvar +gptel-improve-text-prompt nil)
 
 (defvar +gptel-improve-text-prompts-history
