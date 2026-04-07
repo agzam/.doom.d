@@ -195,28 +195,29 @@ enclose them in markdown quotes.
           eca-chat-parent-mode 'markdown-mode
           eca-api-response-timeout 15
           eca-extra-args '("--log-level" "debug"))
-  (map! :map eca-chat-mode-map
-        "RET" nil
-        "<return>" nil
-        :in "s-<return>"  #'eca-chat--key-pressed-return
-        "C-c C-y" #'eca-chat-tool-call-accept-all
-        "C-c !" #'eca-chat-tool-call-accept-all-and-remember
-        :i "M-RET" #'eca-chat--key-pressed-return
-        :i "M-p" #'eca-chat--key-pressed-previous-prompt-history
-        :i "M-n" #'eca-chat--key-pressed-next-prompt-history
-        :n "M-p" #'eca-chat-go-to-prev-expandable-block
-        :n "M-n" #'eca-chat-go-to-next-expandable-block
-        :n "<tab>"  #'eca-chat-toggle-expandable-block
-        :n "TAB" #'eca-chat-toggle-expandable-block
-        :n ",," #'eca-transient-menu
-        (:localleader
-         "n" #'tab-line-switch-to-next-tab
-         "p" #'tab-line-switch-to-prev-tab))
   (map! :map (markdown-mode-map
               evil-markdown-mode-map)
         "TAB" nil
         :n "<tab>" nil)
   (add-hook! 'eca-chat-mode-hook
+    (defun eca-set-keybindings-h ()
+      (map! :map eca-chat-mode-map
+            "RET" nil
+            "<return>" nil
+            :in "s-<return>"  #'eca-chat--key-pressed-return
+            "C-c C-y" #'eca-chat-tool-call-accept-all
+            "C-c !" #'eca-chat-tool-call-accept-all-and-remember
+            :i "M-RET" #'eca-chat--key-pressed-return
+            :i "M-p" #'eca-chat--key-pressed-previous-prompt-history
+            :i "M-n" #'eca-chat--key-pressed-next-prompt-history
+            :n "M-p" #'eca-chat-go-to-prev-expandable-block
+            :n "M-n" #'eca-chat-go-to-next-expandable-block
+            :n "<tab>"  #'eca-chat-toggle-expandable-block
+            :n "TAB" #'eca-chat-toggle-expandable-block
+            :n ",," #'eca-transient-menu
+            (:localleader
+             "n" #'tab-line-switch-to-next-tab
+             "p" #'tab-line-switch-to-prev-tab)))
     (defun eca-chat-mode-markup-no-hiding-h ()
       (markdown-toggle-markup-hiding -1))))
 

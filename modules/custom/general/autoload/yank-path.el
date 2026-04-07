@@ -2,6 +2,7 @@
 
 (require 'ffap)
 
+;;;###autoload
 (defconst +yank-path--line-suffix-regex
   "\\([^[:space:]\"'<>|*?\n]+?\\):\\([0-9]+\\)\\(?:-\\([0-9]+\\)\\)?"
   "Regex matching PATH:LINE or PATH:LINE-LINE on a single line.")
@@ -21,6 +22,7 @@ Region -> :start-end, otherwise -> :line."
   (let ((expanded (expand-file-name (substitute-in-file-name path))))
     (and (file-exists-p expanded) expanded)))
 
+;;;###autoload
 (defun +yank-path--path-at-point ()
   "Return (list PATH START-LINE END-LINE) for a file path at point, or nil.
 Scans the current line for a `PATH:LINE[-LINE]' pattern whose span

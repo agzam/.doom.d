@@ -70,7 +70,7 @@
 ;; they are implemented.
 
 (setq-default
- ;; line-spacing 0.3
+ line-spacing 0.35
  garbage-collection-messages nil
  left-fringe-width 6
  right-fringe-width 0
@@ -78,7 +78,7 @@
  fill-column 70)
 
 (setopt
- default-text-properties '(line-height 1.4)
+ ;; default-text-properties '(line-height 1.0)
  doom-localleader-key ","
  doom-localleader-alt-key "C-,"
  chemacs-current-emacs-profile "doom"
