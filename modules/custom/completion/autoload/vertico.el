@@ -15,10 +15,15 @@
   (interactive)
   (if vertico-posframe-tall-mode
       (vertico-posframe-height-restore-h)
-    (let* ((frame-height (frame-height))
-           (max-height (- frame-height 2))
-           (vertico-height (min 75 max-height))
-           (count (- vertico-height 18)))
+    (let* ((parent (or (frame-parent) (selected-frame)))
+           (char-h (frame-char-height parent))
+           (ls (default-value 'line-spacing))
+           (effective-lh (+ char-h (cond ((floatp ls) (ceiling (* char-h ls)))
+                                         ((integerp ls) ls)
+                                         (t 0))))
+           (max-height (/ (frame-text-height parent) effective-lh))
+           (vertico-height (min 75 (- max-height 2)))
+           (count (max 0 (- vertico-height 18))))
       (setq vertico-posframe-height vertico-height
             vertico-count count
             vertico-posframe-tall-mode t)
