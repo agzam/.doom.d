@@ -10,6 +10,7 @@
     ;; major-mode change wipes buffer-locals; permanent-local property
     ;; should preserve ours, but re-set pid just in case
     (setq-local spacehammer--caller-pid pid)
+    (goto-char (point-max))
     (evil-insert-state)))
 
 ;;;###autoload

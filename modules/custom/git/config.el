@@ -311,6 +311,12 @@
               forge-topic-mode-map)
         :n "s-r" #'code-review-forge-pr-at-point)
   :config
+  ;; ghub v5.1.0 renamed `ghub-graphql' -> `ghub-query' but code-review
+  ;; (ag91 fork) still calls the old name. Load the upstream compat shim.
+  ;; See: https://github.com/wandersoncferreira/code-review/issues/245
+  (unless (fboundp 'ghub-graphql)
+    (require 'ghub-legacy))
+
   (after! 'evil-escape
     (add-to-list 'evil-escape-excluded-major-modes 'code-review-mode))
 
