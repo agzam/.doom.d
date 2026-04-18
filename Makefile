@@ -9,7 +9,7 @@ else ifeq ($(shell test -f /etc/arch-release && echo yes),yes)
 	INSTALL_CMD = sudo pacman -S --noconfirm
 endif
 
-.PHONY: help pdf-tools-build vterm org-roam-db-sync dash-docsets
+.PHONY: help pdf-tools-build vterm org-roam-db-sync dash-docsets roam-drawer-lint roam-db-verify
 help:
 	@grep -E '^[a-zA-Z_-]+:' Makefile | grep -v '.PHONY' | sed 's/:.*//g' | sort
 
@@ -81,6 +81,51 @@ dash-docsets:
 			(dash-docs-install-docset (symbol-name d)))											\
 	)" 2>&1 | tee -a $(LOGFILE)
 	@echo "[$(shell date -Iseconds)] Finished installing docsets (exit: $$?)\n" | tee -a $(LOGFILE)
+
+DOOMDIR = $(HOME)/.doom.d
+ORG_CONFIG = $(DOOMDIR)/modules/custom/org
+
+roam-drawer-lint:
+	@echo "[$(shell date -Iseconds)] Starting drawer lint" | tee -a $(LOGFILE)
+	DISPLAY="" $(EMACS_BATCH) --eval													\
+	"(progn																				\
+		(let ((default-directory \"$(DOOM_DIR)/.local/straight/repos\"))				\
+			(normal-top-level-add-subdirs-to-load-path))								\
+		(require 'org)																	\
+		(with-temp-buffer																\
+			(insert-file-contents \"$(ORG_CONFIG)/config.el\")							\
+			(search-forward \"defvar org-default-folder\")								\
+			(beginning-of-line)															\
+			(eval (read (current-buffer))))												\
+		(load \"$(ORG_CONFIG)/autoload/org-roam-helpers.el\")							\
+		(require 'org-attach)															\
+		(org-drawer-lint-scan org-default-folder)										\
+		(org-attach-lint-check org-default-folder)										\
+	)" 2>&1 | tee -a $(LOGFILE)
+	@echo "[$(shell date -Iseconds)] Finished drawer lint (exit: $$?)\n" | tee -a $(LOGFILE)
+
+roam-db-verify: roam-drawer-lint
+	@echo "[$(shell date -Iseconds)] Starting db-verify" | tee -a $(LOGFILE)
+	DISPLAY="" $(EMACS_BATCH) --eval													\
+	"(progn																				\
+		(let ((default-directory \"$(DOOM_DIR)/.local/straight/repos\"))				\
+			(normal-top-level-add-subdirs-to-load-path))								\
+		(require 'org)																	\
+		(require 'vulpea)																\
+		(defvar doom-local-dir (file-name-as-directory								\
+			(concat user-emacs-directory \".local\")))									\
+		(with-temp-buffer																\
+			(insert-file-contents \"$(ORG_CONFIG)/config.el\")							\
+			(search-forward \"defvar org-default-folder\")								\
+			(beginning-of-line)															\
+			(eval (read (current-buffer))))												\
+		(setq vulpea-db-location (concat doom-local-dir \"vulpea.db\")					\
+			  vulpea-db-sync-directories (list org-default-folder))						\
+		(load \"$(ORG_CONFIG)/autoload/org-roam-helpers.el\")							\
+		(vulpea-db-sync-full-scan)														\
+		(vulpea-db-verify org-default-folder)											\
+	)" 2>&1 | tee -a $(LOGFILE)
+	@echo "[$(shell date -Iseconds)] Finished db-verify (exit: $$?)\n" | tee -a $(LOGFILE)
 
 up:
 	doom up --force --verbose \
