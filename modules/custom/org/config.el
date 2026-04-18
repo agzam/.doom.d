@@ -472,22 +472,27 @@
           vulpea-db-sync-scan-on-enable 'async
           vulpea-db-location (concat doom-local-dir "vulpea.db"))
 
-  ;; Hide journal day entries from vulpea-find/vulpea-insert.
-  ;; They stay in the DB for vulpea-journal navigation.
+  ;; Hide journal file-level nodes ("April 2026 personal notes") from
+  ;; vulpea-find/vulpea-insert. All headings inside journal files
+  ;; (day entries, content nodes) remain findable.
   (setopt vulpea-find-default-filter
           (lambda (note)
-            (not (seq-intersection (vulpea-note-tags note)
-                                   '("work-notes" "personal-notes")))))
+            (not (and (seq-intersection (vulpea-note-tags note)
+                                        '("work-notes" "personal-notes"))
+                      (= (vulpea-note-level note) 0)))))
   (setopt vulpea-insert-default-filter
           (lambda (note)
-            (not (seq-intersection (vulpea-note-tags note)
-                                   '("work-notes" "personal-notes")))))
+            (not (and (seq-intersection (vulpea-note-tags note)
+                                        '("work-notes" "personal-notes"))
+                      (= (vulpea-note-level note) 0)))))
   (map! :map org-mode-map
         :i "[[" #'vulpea-insert
         :i "[ SPC" (cmd! (insert "[]")
                          (backward-char)))
 
   (vulpea-db-autosync-mode +1)
+
+  (add-hook 'before-save-hook #'org-drawer-lint-before-save-h)
 
   (add-to-list
    'display-buffer-alist

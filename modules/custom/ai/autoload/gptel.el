@@ -96,7 +96,7 @@ Tools appear in gptel immediately; servers start lazily on first use."
   (dolist (server mcp-hub-servers)
     (let* ((server-name (car server))
            (command (plist-get (cdr server) :command))
-           (category (concat "mcp-" server-name))
+           (category server-name)
            (tool-defs (+llm-extract-tool-defs-from-bb command)))
       (dolist (td tool-defs)
         (let* ((tool-name (gethash :name td))

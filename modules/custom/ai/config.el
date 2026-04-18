@@ -18,6 +18,11 @@
     "\n\n"
     "You are an experienced software engineer assistant. Respond concisely. Prioritize theory. Do not provide code snippets until instructed. Do not repeat entire snippets of code - show only relevant changes, unless instructed otherwise. Do not explain code. Do not replace backticks and other symbols in the code to accommodate for Org-mode - keep the code in source blocks as independent pieces that have nothing to do with Org-mode markup."))
 
+  ;; Sync gptel--system-message with the 'default directive so every new
+  ;; chat buffer, gptel-send/gptel-request call, and ob-gptel block uses
+  ;; AGENTS.md rules without the user having to pick a directive manually.
+  (setq gptel--system-message (alist-get 'default gptel-directives))
+
   (setf
    (cdr (assoc 'chat gptel-directives))
    "You are conversation partner helping me learn and improve Spanish. Respond concisely. Point to the mistakes I make. Suggest improvements. Help me to acquire the language. Share interesting etymological facts, e.g., explaining why certain words are feminine due to their Greek origin.")
@@ -35,9 +40,9 @@
 
   (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "* ")
 
-  (gptel-make-anthropic "Claude"
-    :stream t
-    :key (lambda () (auth-host->pass "antropic.com")))
+  ;; (gptel-make-anthropic "Claude"
+  ;;   :stream t
+  ;;   :key (lambda () (auth-host->pass "antropic.com")))
 
   (gptel-make-ollama "Ollama"
     :host "localhost:11434"
@@ -245,10 +250,9 @@ enclose them in markdown quotes.
         (when-let* ((system (plist-get (cdr entry) :system)))
           (plist-put (cdr entry) :system
                      (concat directives "\n\n" system)))))
-    ;; Inject MCP server tool categories
+    ;; Inject MCP server tool categories (using server name as category)
     (when (bound-and-true-p mcp-hub-servers)
-      (let ((mcp-cats (mapcar (lambda (s) (concat "mcp-" (car s)))
-                              mcp-hub-servers)))
+      (let ((mcp-cats (mapcar #'car mcp-hub-servers)))
         (dolist (entry gptel-agent--agents)
           (when-let* ((tools (plist-get (cdr entry) :tools)))
             (dolist (cat mcp-cats)

@@ -22,14 +22,24 @@
 
 ;;;###autoload
 (defun spacehammer-monroe--try-reconnect ()
-  "Attempt to reconnect to Spacehammer nREPL."
+  "Reconnect to Spacehammer nREPL silently, without popping the REPL buffer."
   (when spacehammer-monroe--reconnect-timer
     (cancel-timer spacehammer-monroe--reconnect-timer)
     (setq spacehammer-monroe--reconnect-timer nil))
   (condition-case nil
-      (progn
+      (let* ((host (format "localhost:%d" monroe-default-port))
+             (win (cl-some (lambda (b)
+                             (and (string-match-p "\\*monroe" (buffer-name b))
+                                  (get-buffer-window b)))
+                           (buffer-list))))
         (spacehammer-monroe--cleanup)
-        (monroe (format "localhost:%d" monroe-default-port))
+        (with-current-buffer
+            (get-buffer-create (concat "*monroe: " host "*"))
+          (monroe-connect host)
+          (goto-char (point-max))
+          (monroe-mode)
+          (when (and win (window-live-p win))
+            (set-window-buffer win (current-buffer))))
         (message "Spacehammer nREPL: reconnected"))
     (error
      (setq spacehammer-monroe--reconnect-timer
