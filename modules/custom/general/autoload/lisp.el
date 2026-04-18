@@ -8,7 +8,7 @@
       (up-list -1))
     (sp-mark-sexp)
     (if (bound-and-true-p lsp-mode)
-        (lsp--indent-lines
+        (lsp-format-region
          (region-beginning)
          (region-end))
       (evil-indent

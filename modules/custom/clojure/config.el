@@ -216,24 +216,14 @@
     (setopt org-babel-clojure-backend 'cider))
 
   (map! (:localleader
+         ;; shared between clojure modes and edn
          (:map (clojure-mode-map
                 clojure-ts-mode-map
                 clojurescript-mode-map
                 clojure-ts-clojurescript-mode-map
-                cider-repl-mode-map)
-               ","  #'clj-fully-qualified-symbol-at-point
+                cider-repl-mode-map
+                edn-mode-map)
                "#" #'clojure-toggle-ignore
-               "m"  #'cider-macroexpand-1
-               "M"  #'cider-macroexpand-all
-               (:prefix ("c" . "cider")
-                        "s" #'cider-scratch
-                        "b" #'cider-pop-back
-                        "g" #'cider-find-var
-                        "n" #'cider-find-ns)
-               (:prefix ("d" . "debug")
-                        "d" #'cider-storm-switch-to-gui+
-                        "D" #'cider-storm-storm-start-gui
-                        "f" #'cider-debug-defun-at-point)
                (:prefix ("f" . "format")
                         "l" #'clojure-align
                         "L" #'clojure-unalign)
@@ -247,7 +237,50 @@
                         "e" #'cider-eval-last-sexp
                         "E" #'cider-insert-last-sexp-in-repl
                         "r" #'cider-eval-region
-                        "R" #'cider-insert-region-in-repl
+                        "R" #'cider-insert-region-in-repl)
+               (:prefix ("i" . "inspect")
+                        "I" #'cider-inspect
+                        "r" #'cider-inspect-last-result)
+               (:prefix ("j" . "jack-in")
+                        "j" #'cider-jack-in
+                        "s" #'cider-jack-in-cljs
+                        "a" #'cider-jack-in-clj&cljs
+                        "c" #'cider-connect-clj
+                        "C" #'cider-connect-cljs)
+               (:prefix ("p" . "print")
+                        "p" #'cider-pprint-eval-sexp-at-point
+                        "P" #'cider-pprint-eval-last-sexp-to-comment
+                        "d" #'cider-pprint-eval-defun-at-point
+                        "D" #'cider-pprint-eval-defun-to-comment
+                        "r" #'cider-pprint-eval-last-sexp-to-repl)
+               (:prefix ("s" . "repl")
+                        "s" #'cider-switch-to-repl-buffer
+                        "S" #'cider-switch-to-nrepl-buffer
+                        "l" #'cider-clear-repl-buffers
+                        "q" #'cider-quit
+                        "R" #'cider-restart
+                        "B" #'+clojure/cider-switch-to-repl-buffer-and-switch-ns
+                        "k" #'cider-hide-repl-buffers
+                        "K" #'kill-cider-buffers))
+         ;; clojure-only
+         (:map (clojure-mode-map
+                clojure-ts-mode-map
+                clojurescript-mode-map
+                clojure-ts-clojurescript-mode-map
+                cider-repl-mode-map)
+               ","  #'clj-fully-qualified-symbol-at-point
+               "m"  #'cider-macroexpand-1
+               "M"  #'cider-macroexpand-all
+               (:prefix ("c" . "cider")
+                        "s" #'cider-scratch
+                        "b" #'cider-pop-back
+                        "g" #'cider-find-var
+                        "n" #'cider-find-ns)
+               (:prefix ("d" . "debug")
+                        "d" #'cider-storm-switch-to-gui+
+                        "D" #'cider-storm-storm-start-gui
+                        "f" #'cider-debug-defun-at-point)
+               (:prefix ("e" . "eval")
                         "u" #'cider-undef)
                (:prefix ("g" . "goto")
                         "l" #'clj-fully-qualified-symbol-with-gh-link)
@@ -260,38 +293,17 @@
                         "w" #'cider-clojuredocs-web)
                (:prefix ("i" . "inspect")
                         "e" #'cider-enlighten-mode
-                        "i" #'clj-fully-qualified-symbol-at-point
-                        "I" #'cider-inspect
-                        "r" #'cider-inspect-last-result)
-               (:prefix ("j" . "jack-in")
-                        "j" #'cider-jack-in
-                        "s" #'cider-jack-in-cljs
-                        "a" #'cider-jack-in-clj&cljs
-                        "c"  #'cider-connect-clj
-                        "C"  #'cider-connect-cljs)
+                        "i" #'clj-fully-qualified-symbol-at-point)
                (:prefix ("n" . "namespace")
                         "e" #'clj-edit-ns-header
                         "n" #'cider-browse-ns
                         "N" #'cider-browse-ns-all
                         "r" #'cider-ns-refresh)
                (:prefix ("p" . "print")
-                        "p" #'cider-pprint-eval-sexp-at-point
-                        "P" #'cider-pprint-eval-last-sexp-to-comment
-                        "d" #'cider-pprint-eval-defun-at-point
-                        "D" #'cider-pprint-eval-defun-to-comment
-                        "r" #'cider-pprint-eval-last-sexp-to-repl
                         "t" #'lsp-clojure-show-project-tree+)
                (:prefix ("s" . "repl")
-                        "s" #'cider-switch-to-repl-buffer
-                        "S" #'cider-switch-to-nrepl-buffer
-                        "l" #'cider-clear-repl-buffers
                         "n" #'cider-repl-set-ns
-                        "q" #'cider-quit
-                        "r" #'cider-ns-refresh
-                        "R" #'cider-restart
-                        "B" #'+clojure/cider-switch-to-repl-buffer-and-switch-ns
-                        "k" #'cider-hide-repl-buffers
-                        "K" #'kill-cider-buffers)
+                        "r" #'cider-ns-refresh)
                (:prefix ("t" . "test")
                         "a" #'cider-test-rerun-test
                         "l" #'cider-test-run-loaded-tests
