@@ -46,6 +46,25 @@
  ;; doom-unicode-font (font-spec :family "Apple Color Emoji" :size 18)
  )
 
+(defun +doom-fonts-relative-height-h (&rest _)
+  "Restore reverted PR doomemacs/doomemacs#8733 locally.
+Converts baked-in absolute `:height' of `fixed-pitch' and siblings
+into ratios so `text-scale-mode' and `doom/increase-font-size'
+cascade into `:inherit fixed-pitch' faces (e.g. `org-block').
+Unsafe with global `variable-pitch-mode'; see issue #8756."
+  (dolist (frame (frame-list))
+    (when (display-multi-font-p frame)
+      (let ((dh (face-attribute 'default :height frame)))
+        (when (and (integerp dh) (< 0 dh))
+          (dolist (face '(fixed-pitch fixed-pitch-serif variable-pitch))
+            (let ((fh (face-attribute face :height frame)))
+              (when (integerp fh)
+                (set-face-attribute face frame :height
+                                    (/ (float fh) dh))))))))))
+
+(add-hook 'after-setting-font-hook #'+doom-fonts-relative-height-h)
+(add-hook 'enable-theme-functions  #'+doom-fonts-relative-height-h)
+
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.

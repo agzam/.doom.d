@@ -75,7 +75,8 @@
                   expreg--string
                   expreg--treesit
                   expreg--comment
-                  expreg--paragraph-defun)))
+                  expreg--paragraph-defun
+                  expreg--markdown-subtree)))
 
 (after! ibuf-ext
   (setq

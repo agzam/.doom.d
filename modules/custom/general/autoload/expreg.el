@@ -12,6 +12,36 @@
       `((line . ,(cons beg end))))))
 
 ;;;###autoload
+(defun expreg--markdown-subtree ()
+  "Return regions for each enclosing Markdown subtree, innermost outward.
+Producer for `expreg-functions': emits a region per ancestor heading
+so that `expreg-expand' can grow the selection up to the whole section.
+Uses a regex-based heading predicate so it works even before jit-lock
+has fontified the current window."
+  (when (derived-mode-p 'markdown-mode)
+    (save-excursion
+      (let ((at-heading-p
+             (lambda ()
+               (save-excursion
+                 (beginning-of-line)
+                 (and (looking-at-p markdown-regex-header)
+                      (not (markdown-code-block-at-point-p))))))
+            regions (continue t))
+        (unless (funcall at-heading-p)
+          (ignore-errors (markdown-previous-visible-heading 1)))
+        (while (and continue (funcall at-heading-p))
+          (beginning-of-line)
+          (let ((beg (point)))
+            (save-excursion
+              (markdown-end-of-subtree)
+              (push (cons 'markdown-subtree (cons beg (point))) regions)))
+          (let ((p (point)))
+            (setq continue
+                  (and (ignore-errors (markdown-up-heading 1) t)
+                       (/= (point) p)))))
+        regions))))
+
+;;;###autoload
 (defun expreg-transient--insert-browser-url ()
   (interactive)
   (when-let* ((url (browser-copy-tab-link))

@@ -58,7 +58,7 @@
                    #'yank-as-org)
                   ((derived-mode-p 'org-mode)
                    #'yank-as-markdown))))
-    (if (and current-prefix-arg (use-region-p)
+    (if (and current-prefix-arg (region-active-p)
              yank-fn)
         (funcall yank-fn)
       (funcall
