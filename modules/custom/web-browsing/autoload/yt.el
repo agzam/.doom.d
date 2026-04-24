@@ -12,7 +12,7 @@ Passes the filepath as the param to CALLBACK."
   (let* ((default-directory "~/Downloads/")
          (pbuf "*yt-dlp*")
          (process (async-shell-command
-                   (format "yt-dlp --verbose --restrict-filenames '%s'" url) pbuf)))
+                   (format "yt-dlp --verbose --restrict-filenames --cookies-from-browser brave '%s'" url) pbuf)))
     (set-process-sentinel
      (get-buffer-process pbuf)
      (lambda (_process event)

@@ -3,12 +3,13 @@
 (use-package! eww
   :commands (eww +eww-open-in-other-window)
   :config
-  (setq shr-use-fonts nil
-        shr-inhibit-images t
-        shr-max-image-proportion 0.5
-        eww-browse-url-new-window-is-tab nil
-        shr-max-width 80
-        shr-put-image-function #'shr-put-image*)
+  (setopt shr-use-fonts nil
+         shr-inhibit-images t
+         shr-max-image-proportion 0.5
+         shr-max-width nil
+         shr-fill-text nil
+         eww-browse-url-new-window-is-tab nil
+         shr-put-image-function #'shr-put-image*)
 
   (add-hook! 'eww-after-render-hook #'eww--rename-buffer)
   (defadvice! eww-rename-buffer-a ()
@@ -17,6 +18,7 @@
     (eww--rename-buffer))
 
   (add-hook! 'eww-mode-hook
+    #'visual-line-mode
     (defun eww-set-local-keys-h ()
       (map! :map shr-map
             "z" nil

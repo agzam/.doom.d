@@ -23,7 +23,7 @@
                                          (t 0))))
            (max-height (/ (frame-text-height parent) effective-lh))
            (vertico-height (min 75 (- max-height 2)))
-           (count (max 0 (- vertico-height 18))))
+           (count (max 0 (- vertico-height 2))))
       (setq vertico-posframe-height vertico-height
             vertico-count count
             vertico-posframe-tall-mode t)
