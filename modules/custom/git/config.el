@@ -414,3 +414,5 @@
   (add-hook! github-topics-prs-buffer-hook
     (defun on-github-topics-prs-buffer-h (buf)
       (jinx-mode -1))))
+
+(use-package! remoto)

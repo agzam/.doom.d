@@ -37,3 +37,8 @@
 (package! git-auto-commit-mode)
 
 (package! github-topics :recipe (:local-repo "github-topics"))
+
+(package! remoto :recipe
+  (:host github :repo "agzam/remoto.el")
+  ;; (:local-repo "remoto" :files ("*.el"))
+  )

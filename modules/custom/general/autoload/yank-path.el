@@ -103,6 +103,10 @@ Otherwise: yank current buffer path with a position suffix
   :line       - otherwise"
   :override #'+default/yank-buffer-path
   (cond
+   ((and (featurep 'remoto)
+         (string-prefix-p "/github:"
+                          (or buffer-file-name dired-directory default-directory "")))
+    (remoto-copy-github-url))
    ((equal current-prefix-arg '(4))
     (+yank-path--do-yank root))
    ((derived-mode-p 'dired-mode)

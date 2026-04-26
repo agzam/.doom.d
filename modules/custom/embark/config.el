@@ -51,8 +51,9 @@
                  ("b t" . youtube-sub-extractor-extract-subs)))
       (github-repo
        :pattern "github\\.com/[^/]+/[^/]+/?$"
-       :actions (("b b" . forge-visit-topic-via-url)
-                 ("RET" . forge-visit-topic-via-url)
+       :actions (("b b" . remoto-browse)
+                 ("RET" . remoto-browse)
+                 ("b f" . forge-visit-topic-via-url)
                  ("c s" . git-https-url->ssh)
                  ("g c" . magit-clone-regular+)))
       (github-pulls
