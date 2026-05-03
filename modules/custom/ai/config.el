@@ -199,7 +199,8 @@ enclose them in markdown quotes.
           eca-chat-custom-behavior nil
           eca-chat-parent-mode 'markdown-mode
           eca-api-response-timeout 15
-          eca-extra-args '("--log-level" "debug"))
+          ;; eca-extra-args '("--log-level" "debug")
+          )
   (map! :map (markdown-mode-map
               evil-markdown-mode-map)
         "TAB" nil
@@ -222,7 +223,8 @@ enclose them in markdown quotes.
             :n ",," #'eca-transient-menu
             (:localleader
              "n" #'tab-line-switch-to-next-tab
-             "p" #'tab-line-switch-to-prev-tab)))
+             "p" #'tab-line-switch-to-prev-tab
+             "m" #'eca-chat-cycle-agent)))
     (defun eca-chat-mode-markup-no-hiding-h ()
       (markdown-toggle-markup-hiding -1))))
 
