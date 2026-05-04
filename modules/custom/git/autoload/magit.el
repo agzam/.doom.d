@@ -336,6 +336,60 @@ be used as a git branch name."
 
 
 ;;;###autoload
+(defun +magit-convert-to-bare ()
+  "Convert current repo into a bare repo with worktrees layout.
+Turns a normal clone into:
+  repo-dir/.git/       (bare repo)
+  repo-dir/<branch>/   (worktree for current branch)
+
+Refuses to run on dirty trees, existing bare repos, or repos
+that already have worktrees."
+  (interactive)
+  (let* ((toplevel (magit-toplevel))
+         (gitdir (and toplevel (expand-file-name ".git" toplevel)))
+         (branch (and toplevel (magit-get-current-branch))))
+    (cond
+     ((null toplevel)
+      (user-error "Not inside a Git repository"))
+     ((magit-bare-repo-p)
+      (user-error "Already a bare repository"))
+     ((magit-anything-modified-p)
+      (user-error "Working tree has uncommitted changes"))
+     ((< 1 (length (magit-list-worktrees)))
+      (user-error "Repository already has worktrees - convert manually"))
+     ((not (file-directory-p gitdir))
+      (user-error ".git is not a directory (already a worktree?)"))
+     ((null branch)
+      (user-error "HEAD is detached - check out a branch first"))
+     ((not (yes-or-no-p
+            (format "Convert %s to bare repo with worktree for '%s'? "
+                    (abbreviate-file-name toplevel) branch)))
+      (user-error "Aborted")))
+    (let ((tmpdir (make-temp-file "git-bare-" t))
+          (worktree-path (expand-file-name branch toplevel)))
+      ;; move .git to temp location
+      (rename-file gitdir (expand-file-name ".git" tmpdir) t)
+      ;; remove all working tree files
+      (dolist (f (directory-files toplevel t))
+        (let ((name (file-name-nondirectory f)))
+          (unless (member name '("." ".."))
+            (if (file-directory-p f)
+                (delete-directory f t)
+              (delete-file f)))))
+      ;; move .git back
+      (rename-file (expand-file-name ".git" tmpdir) gitdir)
+      (delete-directory tmpdir)
+      ;; configure as bare
+      (let ((default-directory toplevel))
+        (magit-git "config" "--bool" "core.bare" "true")
+        (magit-git "config" "remote.origin.fetch"
+                   "+refs/heads/*:refs/remotes/origin/*")
+        ;; create worktree for the branch we were on
+        (magit-git "worktree" "add" worktree-path branch))
+      (magit-diff-visit-directory worktree-path)
+      (message "Converted. Worktree at: %s" worktree-path))))
+
+;;;###autoload
 (defun magit-python-which-function ()
   "Like `magit-which-function' but strip class prefix from Python names.
 Git's -L flag doesn't support Class.method notation for Python."
