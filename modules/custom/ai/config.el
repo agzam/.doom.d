@@ -30,7 +30,8 @@
   (setopt
    gptel-default-mode 'org-mode
    gptel-expert-commands t
-   gptel-track-media t)
+   gptel-track-media t
+   gptel-highlight-methods '(face))
 
   (setq gptel-api-key (lambda () (auth-host->pass "api.openai.com")))
 
@@ -55,6 +56,8 @@
     :stream t
     :key (lambda () (auth-host->pass "deepseek.com"))
     :models '(deepseek-chat deepseek-reasoner deepseek-coder))
+
+  (gptel-make-gh-copilot "Copilot")
 
   (map! "C-c C-g" #'gptel-abort)
 
@@ -208,11 +211,16 @@ enclose them in markdown quotes.
   (add-hook! 'eca-chat-mode-hook
     (defun eca-set-keybindings-h ()
       (map! :map eca-chat-mode-map
-            "RET" nil
             "<return>" nil
-            :in "s-<return>"  #'eca-chat--key-pressed-return
+            "RET" nil
+            :i "<return>" nil
+            :i "RET" nil
+            :n "<return>" #'eca-chat--key-pressed-return
+            :n "RET" #'eca-chat--key-pressed-return
+            :i "s-<return>"  #'eca-chat--key-pressed-return
             "C-c C-y" #'eca-chat-tool-call-accept-all
             "C-c !" #'eca-chat-tool-call-accept-all-and-remember
+            "C-c C-g" #'eca-chat-stop-prompt
             :i "M-RET" #'eca-chat--key-pressed-return
             :i "M-p" #'eca-chat--key-pressed-previous-prompt-history
             :i "M-n" #'eca-chat--key-pressed-next-prompt-history
@@ -224,7 +232,8 @@ enclose them in markdown quotes.
             (:localleader
              "n" #'tab-line-switch-to-next-tab
              "p" #'tab-line-switch-to-prev-tab
-             "m" #'eca-chat-cycle-agent)))
+             "m" #'eca-chat-cycle-agent
+             "t" #'eca-chat-toggle-trust)))
     (defun eca-chat-mode-markup-no-hiding-h ()
       (markdown-toggle-markup-hiding -1))))
 

@@ -41,7 +41,7 @@
   (defcustom +embark-url-config
     '((nil :actions (("b e" . +eww-open-in-other-window)
                      ("b o" . +browse-url)
-                     ("c m" .  +link-plain->link-markdown)
+                     ("c m" . +link-plain->link-markdown)
                      ("c o" . +link-plain->link-org-mode)
                      ("RET" . +eww-open-in-other-window)))
       (yt-video
