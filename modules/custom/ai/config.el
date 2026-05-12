@@ -204,6 +204,18 @@ enclose them in markdown quotes.
           eca-api-response-timeout 15
           ;; eca-extra-args '("--log-level" "debug")
           )
+
+  ;; Hide non-chat utility buffers (space-prefix = hidden in Emacs).
+  (advice-add 'eca-process--buffer-name :around #'eca-hide-buffer-name-a)
+  (advice-add 'eca-process--stderr-buffer-name :around #'eca-hide-buffer-name-a)
+  (advice-add 'eca--emacs-errors-buffer-name :around #'eca-hide-buffer-name-a)
+
+  ;; Readable chat buffer names: "eca-chat - <title>".
+  (advice-add 'eca-chat-new-buffer-name :override #'eca-chat-new-buffer-name-a)
+  (advice-add 'eca-chat-content-received :after #'eca-chat-rename-after-content-a)
+  (advice-add 'eca-chat-opened :after #'eca-chat-rename-after-content-a)
+  (advice-add 'eca-chat-exit :around #'eca-chat-exit-cleanup-a)
+
   (map! :map (markdown-mode-map
               evil-markdown-mode-map)
         "TAB" nil
@@ -211,8 +223,6 @@ enclose them in markdown quotes.
   (add-hook! 'eca-chat-mode-hook
     (defun eca-set-keybindings-h ()
       (map! :map eca-chat-mode-map
-            "<return>" nil
-            "RET" nil
             :i "<return>" nil
             :i "RET" nil
             :n "<return>" #'eca-chat--key-pressed-return
@@ -233,7 +243,15 @@ enclose them in markdown quotes.
              "n" #'tab-line-switch-to-next-tab
              "p" #'tab-line-switch-to-prev-tab
              "m" #'eca-chat-cycle-agent
-             "t" #'eca-chat-toggle-trust)))
+             "t" #'eca-chat-toggle-trust
+             "f" #'eca-chat-flag-and-fork
+             (:prefix ("w" . "workspace")
+              "a" #'eca-chat-add-workspace-root
+              "r" #'eca-chat-remove-workspace-root
+              "w" #'eca-toggle-workspaces)))
+      (map! :map eca-workspaces-mode-map
+            (:localleader
+             "w w" #'eca-toggle-workspaces)))
     (defun eca-chat-mode-markup-no-hiding-h ()
       (markdown-toggle-markup-hiding -1))))
 
