@@ -65,6 +65,7 @@
     #'gptel-highlight-mode
     (defun gptel-mode-set-local-keys ()
       (map! :map gptel-mode-map
+            :i "RET" nil
             :i "s-<return>" #'gptel-send
             :i "s-RET" #'gptel-send
             :i ", m" #'gptel-menu

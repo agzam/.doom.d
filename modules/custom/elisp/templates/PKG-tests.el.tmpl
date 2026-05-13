@@ -1,0 +1,17 @@
+;;; {{PKG}}-tests.el --- Tests for {{PKG}}.el -*- lexical-binding: t; no-byte-compile: t; -*-
+;;
+;; SPDX-License-Identifier: GPL-3.0-or-later
+;;
+;;; Commentary:
+;;  Tests for {{PKG}}.
+;;
+;;; Code:
+
+(require 'buttercup)
+(require '{{PKG}})
+
+(describe "{{PKG}}"
+  (it "loads successfully"
+    (expect (featurep '{{PKG}}) :to-be-truthy)))
+
+;;; {{PKG}}-tests.el ends here
