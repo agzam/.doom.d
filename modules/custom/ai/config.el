@@ -224,6 +224,8 @@ enclose them in markdown quotes.
   (add-hook! 'eca-chat-mode-hook
     (defun eca-set-keybindings-h ()
       (map! :map eca-chat-mode-map
+            "<return>" nil
+            "RET" nil
             :i "<return>" nil
             :i "RET" nil
             :n "<return>" #'eca-chat--key-pressed-return

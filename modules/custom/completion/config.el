@@ -282,19 +282,20 @@
   (map! :map vertico-map
         (:prefix ";"
          "." #'evil-insert-state
+         ";" #'vertico-posframe-briefly-tall
+         "b" #'vertico-multiform-buffer
+         "c" #'embark-collect
+         "d" #'consult-dir
+         "e" #'embark-export
+         "f" #'vertico-multiform-flat
+         "g" #'vertico-multiform-grid
          "i" #'vertico-quick-insert
          "j" #'vertico-quick-jump
-         "g" #'vertico-multiform-grid
-         "b" #'vertico-multiform-buffer
-         "f" #'vertico-multiform-flat
-         "u" #'vertico-multiform-unobtrusive
-         "r" #'vertico-multiform-reverse
-         "t" #'vertico-posframe-briefly-tall
-         ";" #'vertico-posframe-briefly-tall
          "p" #'vertico-multiform-posframe
+         "r" #'vertico-multiform-reverse
          "s" #'vertico-suspend
-         "c" #'embark-collect
-         "e" #'embark-export
+         "t" #'vertico-posframe-briefly-tall
+         "u" #'vertico-multiform-unobtrusive
          "C-;" #'embark-act
          :desc "insert ;" "SPC" (cmd! (insert ";")))
         "DEL" #'delete-backward-char
@@ -434,7 +435,22 @@
          "C-x C-d" #'consult-dir
          "C-x C-j" #'consult-dir-jump-file))
   :config
-  (setq consult-dir-project-list-function #'consult-dir-projectile-dirs)
+  (setq consult-dir-project-list-function #'consult-dir-projectile-dirs
+        consult-dir-shadow-filenames nil)
+
+  (defvar consult-dir--source-zoxide
+    `(:name "Zoxide"
+      :narrow ?z
+      :category file
+      :face consult-file
+      :enabled ,(lambda () (executable-find "zoxide"))
+      :items ,(lambda ()
+                (split-string
+                 (string-trim (shell-command-to-string "zoxide query --list"))
+                 "\n" t)))
+    "Zoxide directory source for `consult-dir'.")
+
+  (add-to-list 'consult-dir-sources 'consult-dir--source-zoxide t)
 
   ;; (add-to-list 'consult-dir-sources 'consult-dir--source-tramp-ssh t)
   ;; (add-to-list 'consult-dir-sources 'consult-dir--source-tramp-local t)

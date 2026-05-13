@@ -412,7 +412,7 @@ Unsafe with global `variable-pitch-mode'; see issue #8756."
 
       (:prefix ("f" . "files")
                (:when (modulep! :custom search)
-                 :desc "zoxide dir" "d" (cmd! (+zoxide-find)))
+                 :desc "zoxide dir" "d" #'+zoxide-find)
                :desc "dired" "j" #'dired-jump
                (:when (featurep :system 'macos)
                  :desc "open in app" "O" #'+macos/open-in-default-program)
@@ -456,7 +456,8 @@ Unsafe with global `variable-pitch-mode'; see issue #8756."
                "j" #'info-display-manual)
 
       (:prefix ("i" . "insert")
-       :desc "snippet" "s" #'consult-yasnippet)
+       :desc "snippet" "s" #'consult-yasnippet
+       :desc "file path" "f" #'insert-file-path)
 
       (:prefix ("j" . "jump")
        "j" #'avy-goto-char-timer
