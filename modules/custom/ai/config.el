@@ -245,7 +245,7 @@ enclose them in markdown quotes.
             (:localleader
              "n" #'tab-line-switch-to-next-tab
              "p" #'tab-line-switch-to-prev-tab
-             "m" #'eca-chat-cycle-agent
+             "b" #'eca-chat-cycle-agent
              "t" #'eca-chat-toggle-trust
              "f" #'eca-chat-flag-and-fork
              (:prefix ("w" . "workspace")

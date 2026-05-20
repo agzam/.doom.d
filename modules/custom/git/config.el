@@ -399,7 +399,7 @@
   :defer t 
   :commands (github-topics-find-prs)
   :config
-  (setopt github-topics-default-orgs '(qlik-trial stitchdata))
+  (setopt github-topics-default-orgs '(qlik-trial stitchdata singer-io))
 
   (add-to-list
    'display-buffer-alist

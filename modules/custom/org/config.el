@@ -428,7 +428,7 @@
         (org-fold-show-entry)))))
 
 (use-package! anki-editor
-  :commands (anki-editor-mode anki-editor-push-notes anki-editor-push-tree)
+  :commands (anki-editor-mode anki-editor-push-notes)
   :config
   (setopt anki-editor-create-decks t      ; Allow anki-editor to create a new deck if it doesn't exist
           anki-editor-org-tags-as-anki-tags t)
@@ -438,7 +438,7 @@
   (map! :map anki-editor-mode-map
         :localleader
         (:prefix ("a" . "anki")
-                 "p" #'anki-editor-push-tree))
+                 "p" (cmd! (anki-editor-push-notes 'tree))))
 
   (add-to-list 'minor-mode-map-alist '(anki-editor-mode anki-editor-mode-map)))
 
@@ -556,12 +556,12 @@
   ;; Derive from the sidebar's current note instead.
   (defadvice! vulpea-journal-get-tag-context-a (orig-fn)
     :around #'vulpea-journal--get-tag
-    (let ((vulpea-journal--type
-           (or vulpea-journal--buffer-type
-               (vulpea-journal--detect-buffer-type)
-               (when (boundp 'vulpea-ui--current-note)
-                 (vulpea-journal--type-from-note vulpea-ui--current-note))
-               vulpea-journal--type)))
+    (let* ((vulpea-journal--type
+            (or vulpea-journal--buffer-type
+                (vulpea-journal--detect-buffer-type)
+                (when (boundp 'vulpea-ui--current-note)
+                  (vulpea-journal--type-from-note vulpea-ui--current-note))
+                vulpea-journal--type)))
       (funcall orig-fn)))
 
   ;; Show journal widgets for both work and personal notes.
@@ -576,13 +576,13 @@
   ;; Insert journal entries in chronological order, not at the end.
   ;; The upstream always uses :after 'last; we find the right sibling
   ;; by comparing CREATED dates so entries stay sorted.
-  (defadvice! vulpea-journal-create-sorted-a (_date tpl)
+  (defadvice! vulpea-journal-create-sorted-a (date tpl)
     :override #'vulpea-journal--create-heading-note
-    (let* ((file (vulpea-journal--file-for-date _date))
-           (entry-title (vulpea-journal--entry-title-for-date _date))
-           (date-str (format-time-string "[%Y-%m-%d]" _date))
+    (let* ((file (vulpea-journal--file-for-date date))
+           (entry-title (vulpea-journal--entry-title-for-date date))
+           (date-str (format-time-string "[%Y-%m-%d]" date))
            (entry-level (plist-get tpl :entry-level))
-           (container (vulpea-journal--ensure-container file _date tpl))
+           (container (vulpea-journal--ensure-container file date tpl))
            ;; find existing siblings at the entry level
            (siblings (vulpea-journal--query-file-notes file entry-level))
            ;; last sibling whose CREATED is before our date

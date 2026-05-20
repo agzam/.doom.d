@@ -157,3 +157,18 @@ sibling notifications from the same process-filter batch."
     (when-let* ((buf (get-buffer eca-workspaces-buffer-name)))
       (with-current-buffer buf
         (eca-workspaces-mode 1)))))
+
+;;;###autoload
+(defun eca-reauth ()
+  "Re-trigger Anthropic Max OAuth login on the current session.
+Workaround for the OAuth refresh race condition (eca#462).
+After token rotation invalidates this session's refresh-token,
+the CLI process stays alive, so re-running the max flow gets
+a fresh token pair without losing the active chat."
+  (interactive)
+  (let ((session (eca-session)))
+    (unless session
+      (user-error "No active ECA session for current buffer"))
+    (unless (eca-process-running-p session)
+      (user-error "ECA session is not running"))
+    (eca-providers--do-login session "anthropic" "max")))
