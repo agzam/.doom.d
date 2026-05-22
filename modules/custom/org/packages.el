@@ -75,3 +75,7 @@
 (package! vulpea-ui)
 (package! vulpea-journal)
 (package! consult-vulpea)
+
+(package! anki-gen :recipe
+  ;; (:host github :repo "agzam/anki-gen.el")
+  (:local-repo "anki-gen.el"))

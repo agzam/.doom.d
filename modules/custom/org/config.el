@@ -606,3 +606,8 @@
   :after (consult vulpea)
   :config
   (consult-vulpea-mode 1))
+
+(use-package! anki-gen
+  :after (org)
+  :config
+  )

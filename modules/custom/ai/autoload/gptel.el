@@ -52,22 +52,38 @@ ARG-NAMES is a list of argument name strings for reconstructing the MCP plist."
 
 (defun +llm-extract-tool-defs-from-bb (file)
   "Extract tool definitions from a Babashka MCP server script FILE.
-Returns a list of parsed tool definition hash-tables."
+Returns a list of parsed tool definition hash-tables.
+Handles both collected defs like (def tools [...]) and individual
+defs like (def my-tool {...})."
   (require 'parseedn)
   (with-temp-buffer
     (insert-file-contents file)
     (goto-char (point-min))
-    (when (re-search-forward "(def \\(?:tool-defs?\\|tools\\)\\b" nil t)
-      (re-search-forward "[{[]" nil t)
-      (backward-char 1)
-      (let* ((start (point))
-             (_ (forward-sexp 1))
-             (edn-str (buffer-substring-no-properties start (point)))
-             (result (parseedn-read-str edn-str)))
-        (cond
-         ((hash-table-p result) (list result))
-         ((vectorp result) (append result nil))
-         (t nil))))))
+    (if (re-search-forward "(def \\(?:tool-defs?\\|tools\\)\\b" nil t)
+        ;; Collected: (def tools [...]) or (def tool-def {...})
+        (when (re-search-forward "[{[]" nil t)
+          (backward-char 1)
+          (let* ((start (point))
+                 (_ (forward-sexp 1))
+                 (edn-str (buffer-substring-no-properties start (point)))
+                 (result (parseedn-read-str edn-str)))
+            (cond
+             ((hash-table-p result) (list result))
+             ((vectorp result) (append result nil))
+             (t nil))))
+      ;; Fallback: collect individual (def ...-tool {...}) forms
+      (goto-char (point-min))
+      (let (tools)
+        (while (re-search-forward "(def [a-zA-Z0-9_-]+-tools?\\b" nil t)
+          (when (re-search-forward "{" nil t)
+            (backward-char 1)
+            (let* ((start (point))
+                   (_ (forward-sexp 1))
+                   (edn-str (buffer-substring-no-properties start (point)))
+                   (result (parseedn-read-str edn-str)))
+              (when (hash-table-p result)
+                (push result tools)))))
+        (nreverse tools)))))
 
 (defun +llm-mcp-schema-to-gptel-args (schema)
   "Convert MCP inputSchema hash-table to gptel args format."
@@ -123,20 +139,21 @@ and converts mcpServers entries to the format expected by `mcp-hub-servers'."
               (_ (file-exists-p config-file))
               (json (json-read-file config-file))
               (servers (alist-get 'mcpServers json)))
-    (mapcar
-     (lambda (entry)
-       (let* ((name (symbol-name (car entry)))
-              (props (cdr entry))
-              (command (alist-get 'command props))
-              (env-alist (alist-get 'env props))
-              (result (list name :command command)))
-         (when env-alist
-           (nconc result
-                  (list :env
-                        (cl-loop for (k . v) in env-alist
-                                 nconc (list (intern (concat ":" (symbol-name k))) v)))))
-         result))
-     servers)))
+    (cl-loop
+     for entry in servers
+     for props = (cdr entry)
+     unless (alist-get 'disabled props)
+     collect
+     (let* ((name (symbol-name (car entry)))
+            (command (alist-get 'command props))
+            (env-alist (alist-get 'env props))
+            (result (list name :command command)))
+       (when env-alist
+         (nconc result
+                (list :env
+                      (cl-loop for (k . v) in env-alist
+                               nconc (list (intern (concat ":" (symbol-name k))) v)))))
+       result))))
 
 ;;;###autoload
 (defun +llm-eca-agents-md-content ()
