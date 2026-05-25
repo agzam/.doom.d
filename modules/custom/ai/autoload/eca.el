@@ -97,8 +97,11 @@ sibling notifications from the same process-filter batch."
               (user-error "Timed out waiting for forked chat"))))))))
 
 ;;;###autoload
-(defun eca-hide-buffer-name-a (orig-fn &rest args)
+(defadvice! eca-hide-buffer-name-a (orig-fn &rest args)
   "Prepend a space to make the buffer name hidden."
+  :around 'eca-process--buffer-name
+  :around 'eca-process--stderr-buffer-name
+  :around 'eca--emacs-errors-buffer-name
   (concat " " (apply orig-fn args)))
 
 ;;;###autoload
@@ -107,8 +110,9 @@ sibling notifications from the same process-filter batch."
   (format "eca-chat - %s" (or title "Empty chat")))
 
 ;;;###autoload
-(defun eca-chat-new-buffer-name-a (_session)
+(defadvice! eca-chat-new-buffer-name-a (_session)
   "Override chat buffer naming to use a readable title."
+  :override 'eca-chat-new-buffer-name
   (eca-chat-buffer-name))
 
 ;;;###autoload
@@ -121,8 +125,10 @@ sibling notifications from the same process-filter batch."
         (rename-buffer new-name t)))))
 
 ;;;###autoload
-(defun eca-chat-rename-after-content-a (session _params)
+(defadvice! eca-chat-rename-after-content-a (session _params)
   "Rename chat buffer after content-received sets the title."
+  :after 'eca-chat-content-received
+  :after 'eca-chat-opened
   (when-let* ((chats (eca--session-chats session)))
     (dolist (pair chats)
       (when (buffer-live-p (cdr pair))
@@ -130,8 +136,9 @@ sibling notifications from the same process-filter batch."
           (eca-chat-rename-buffer-on-title-change))))))
 
 ;;;###autoload
-(defun eca-chat-exit-cleanup-a (orig-fn session)
+(defadvice! eca-chat-exit-cleanup-a (orig-fn session)
   "Around advice to fix closed-buffer cleanup for renamed chat buffers."
+  :around 'eca-chat-exit
   (funcall orig-fn session)
   ;; Clean up stale closed chat buffers with new naming scheme.
   (let ((latest nil))

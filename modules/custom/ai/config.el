@@ -207,22 +207,18 @@
           ;; eca-extra-args '("--log-level" "debug")
           )
 
-  ;; Hide non-chat utility buffers (space-prefix = hidden in Emacs).
-  (advice-add 'eca-process--buffer-name :around #'eca-hide-buffer-name-a)
-  (advice-add 'eca-process--stderr-buffer-name :around #'eca-hide-buffer-name-a)
-  (advice-add 'eca--emacs-errors-buffer-name :around #'eca-hide-buffer-name-a)
-
-  ;; Readable chat buffer names: "eca-chat - <title>".
-  (advice-add 'eca-chat-new-buffer-name :override #'eca-chat-new-buffer-name-a)
-  (advice-add 'eca-chat-content-received :after #'eca-chat-rename-after-content-a)
-  (advice-add 'eca-chat-opened :after #'eca-chat-rename-after-content-a)
-  (advice-add 'eca-chat-exit :around #'eca-chat-exit-cleanup-a)
+  ;; Let later capfs (cape-file, etc.) run when eca has no candidates.
+  (defadvice! +eca-chat-capf-non-exclusive-a (result)
+    :filter-return #'eca-chat-completion-at-point
+    (when result (append result '(:exclusive no))))
 
   (map! :map (markdown-mode-map
               evil-markdown-mode-map)
         "TAB" nil
         :n "<tab>" nil)
   (add-hook! 'eca-chat-mode-hook
+    (defun eca-set-completions-at-point-h ()
+      (cl-delete 'yasnippet-capf completion-at-point-functions))
     (defun eca-set-keybindings-h ()
       (map! :map eca-chat-mode-map
             "<return>" nil
