@@ -164,13 +164,7 @@ Unsafe with global `variable-pitch-mode'; see issue #8756."
       (fringe-mode '(6 . 0))
 
       (when (fboundp 'pixel-scroll-precision-mode)
-        (pixel-scroll-precision-mode +1))
-      ;; (run-with-timer
-      ;;  1.5 nil
-      ;;  (lambda ()
-      ;;    (toggle-frame-full-height)
-      ;;    (place-frame-at-display-spot '(0 0 0.664 1.0))))
-      )))
+        (pixel-scroll-precision-mode +1)))))
 
 (after! custom
   ;; in customize dialogs keep the elisp names
@@ -238,10 +232,15 @@ Unsafe with global `variable-pitch-mode'; see issue #8756."
           '(("America/Los_Angeles" "Pacific")
             ("America/Chicago" "Central")
             ("America/New_York" "Eastern")
+            ("America/Sao_Paulo" "São Paulo")
             ("Europe/Paris" "Paris")
+            ("Europe/Copenhagen" "Copenhagen")
+            ("Europe/Istanbul" "Istanbul")
             ("Europe/Kiev" "Kiev")
             ("Europe/Moscow" "Moscow")
-            ("Asia/Tashkent" "Tashkent"))))
+            ("Asia/Tashkent" "Tashkent")
+            ("Asia/Shanghai" "Shanghai")
+            ("Asia/Seoul" "Seoul"))))
 
 (after! flycheck
   (ignore-errors
@@ -258,28 +257,13 @@ Unsafe with global `variable-pitch-mode'; see issue #8756."
   (setopt flycheck-temp-prefix "/tmp/.flycheck"))
 
 (after! grep
-  (setopt grep-program "rg")
-  ;; for whatever strange reason, embark-export started automatically enabling wgrep in
-  ;; grep buffers. A workaround until I figure out what the heck.
-  ;; (add-hook! 'embark-after-export-hook
-  ;;   (defun embark-after-export-h ()
-  ;;     (run-with-timer 0.1 nil (lambda () (quiet! (wgrep-abort-changes))))))
-  )
+  (setopt grep-program "rg"))
 
 ;; (global-visual-wrap-prefix-mode)
 
 (add-hook! 'prog-mode-hook
            #'hs-minor-mode
            #'visual-line-mode)
-
-;; disable visual-line-navigation in certain modes
-;; (add-hook! (elfeed-search-mode
-;;             gh-notify-mode grep-mode magit-log-mode magit-refs-mode
-;;             notmuch-hello-mode notmuch-search-mode notmuch-tree-mode
-;;             paradox-menu-mode yaml-mode
-;;             vc-annotate-mode)
-;;   (defun no-wrap-h ()
-;;     (+toggle-visual-line-navigation -1)))
 
 (after! writeroom-mode
   (setq writeroom-maximize-window t))

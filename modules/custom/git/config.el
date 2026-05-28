@@ -353,6 +353,7 @@
   (setq diff-add-log-use-relative-names t))
 
 (use-package! consult-gh
+  :disabled t
   :defer t
   :commands (consult-gh-orgs consult-gh-find-file consult-gh-search-repos
                              consult-gh-issue-list consult-gh-pr-list)

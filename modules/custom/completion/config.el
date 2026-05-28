@@ -80,12 +80,6 @@
         "M-9" (cmd! () (+corfu-insert-indexed 8)))
 
   (after! evil
-    ;; (defadvice! evil-normalize-keymaps-corfu-setup-a (_beg _end _table _pred)
-    ;;   :after 'corfu--setup
-    ;;   (evil-normalize-keymaps))
-    ;; (defadvice! evil-normalize-keymaps-corfu-teardown-a (&rest _)
-    ;;   :after 'corfu--teardown
-    ;;   (evil-normalize-keymaps))
     (evil-make-overriding-map corfu-map)
     (advice-add 'evil-escape-func :after 'corfu-quit))
 
@@ -94,14 +88,6 @@
 (use-package! orderless
   :after-call doom-first-input-hook
   :config
-;;   (defadvice! +vertico--company-capf--candidates-a (fn &rest args)
-;;     "Highlight company matches correctly, and try default completion styles before
-;; orderless."
-;;     :around #'company-capf--candidates
-;;     (let ((orderless-match-faces [completions-common-part])
-;;           (completion-styles +vertico-company-completion-styles))
-;;       (apply fn args)))
-
   (setopt orderless-affix-dispatch-alist
           '((?! . orderless-without-literal)
             (?& . orderless-annotation)
@@ -450,11 +436,7 @@
                  "\n" t)))
     "Zoxide directory source for `consult-dir'.")
 
-  (add-to-list 'consult-dir-sources 'consult-dir--source-zoxide t)
-
-  ;; (add-to-list 'consult-dir-sources 'consult-dir--source-tramp-ssh t)
-  ;; (add-to-list 'consult-dir-sources 'consult-dir--source-tramp-local t)
-  )
+  (add-to-list 'consult-dir-sources 'consult-dir--source-zoxide t))
 
 (use-package! consult-flycheck
   :after (consult flycheck))
@@ -548,20 +530,4 @@
     :references #'+lsp-lookup-references-handler
     :documentation #'+consult-dash-doc
     :implementations '(lsp-find-implementation :async t)
-    :type-definition #'lsp-find-type-definition)
-
-  ;; (add-hook! 'lsp-mode-hook :append
-  ;;   (defun override-js-lookup-handlers-h ()
-  ;;     (set-lookup-handlers! '(js-mode rjsx-mode)
-  ;;       :documentation #'+consult-dash-doc)))
-
-  ;; (add-hook! '(js-mode-hook rjsx-mode-hook)
-  ;;   (defun js-mode-h ()
-  ;;     ;; lsp-describe is broken for javascript, use dash instead
-  ;;     (setq '+lookup-documentation-functions
-  ;;           (delete
-  ;;            'lsp-describe-thing-at-point
-  ;;            +lookup-documentation-functions))
-  ;;     (set-lookup-handlers! '(js-mode rjsx-mode)
-  ;;       :documentation #'+consult-dash-doc)))
-  )
+    :type-definition #'lsp-find-type-definition))

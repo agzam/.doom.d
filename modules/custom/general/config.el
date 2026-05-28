@@ -1,7 +1,5 @@
 ;;; common/general/config.el -*- lexical-binding: t; -*-
 
-(put 'narrow-to-region 'disabled nil)
-
 ;; Change the cursor color in emacs state. We do it this roundabout way
 ;; to ensure changes in theme doesn't break these colors.
 (add-hook! '(doom-load-theme-hook doom-init-modules-hook)
@@ -16,7 +14,7 @@
 (use-package winum
   :after-call doom-switch-window-hook
   :config
-  (setq winum-scope 'frame-local)
+  (setopt winum-scope 'frame-local)
   (winum-mode +1)
   (dolist (wn (seq-map 'number-to-string (number-sequence 0 9)))
     (let ((f (intern (concat "winum-select-window-" wn)))
@@ -30,9 +28,8 @@
   :defer t
   :commands (info info-display-manual)
   :config
-  (setq Info-fontify-angle-bracketed-flag nil)
+  (setopt Info-fontify-angle-bracketed-flag nil)
   (add-hook 'Info-mode-hook (lambda () (require 'info+))))
-
 
 (after! smartparens
   (eval `(add-hook! , sp-lisp-modes
@@ -65,7 +62,6 @@
   (map! :map evil-visual-state-map
         "v" #'expreg-transient)
 
-
   (setq-default expreg-functions
                 '(expreg--subword
                   expreg--word
@@ -79,7 +75,7 @@
                   expreg--markdown-subtree)))
 
 (after! ibuf-ext
-  (setq
+  (setopt
    ibuffer-old-time 8 ; buffer considered old after that many hours
    ibuffer-group-buffers-by 'projects
    ibuffer-expert t
@@ -106,7 +102,7 @@
     (string-match "^[^*].*" (buffer-name buf))))
 
 (after! avy
-  (setq avy-all-windows t)
+  (setopt avy-all-windows t)
   (setf (alist-get ?. avy-dispatch-alist) #'avy-action-embark))
 
 ;; ensure that browsing in Helpful and Info modes doesn't create
@@ -120,9 +116,9 @@
    (direction . right)
    (window . root)))
 
-(setq +doom-indent-sensitive-modes '())
-(setq +doom-yank-indent-modes '())
-(setq +doom-yank-indent-threshold 1000)
+(setopt +doom-indent-sensitive-modes '()
+        +doom-yank-indent-modes '()
+        +doom-yank-indent-threshold 1000)
 
 (undefadvice! +yank-indent-region-a (yank-fn &rest args)
   :around #'yank
@@ -175,13 +171,6 @@
   ;; otherwise, evil prioritizes buffer's major mode keymap
   ;; for some reason tapping into transient-setup|buffer-hook
   ;; didn't work for me
-  ;; (defadvice! transient-show-no-evil-a (ofn &rest args)
-  ;;   :around #'gptel-menu
-  ;;   ;; :around 'transient--init-keymaps
-  ;;   (save-mark-and-excursion
-  ;;    (evil-emacs-state))
-  ;;   (apply ofn args))
-  ;; Go back to evil after transient
   (add-hook! 'transient-exit-hook
     (defun transient-exit-evil-normal-h ()
       (save-mark-and-excursion
@@ -252,7 +241,6 @@
 
   (when (display-graphic-p)
     (which-key-posframe-mode +1)))
-
 
 (use-package! ultra-scroll
   :after-call (doom-first-file-hook)
