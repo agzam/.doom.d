@@ -517,6 +517,7 @@
   ;;; overriding internal implementation fns for the time being
   ;;; https://github.com/dash-docs-el/dash-docs/issues/23
   (advice-add 'dash-docs-install-user-docset :override #'dash-docs-install-user-docset+)
+  (advice-add 'dash-docs-install-docset :override #'dash-docs-install-docset+)
   (advice-add 'dash-docs-unofficial-docsets :override #'dash-docs-unofficial-docsets+))
 
 (use-package! consult-dash

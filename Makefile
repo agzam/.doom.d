@@ -78,7 +78,7 @@ dash-docsets:
 		(dolist (d '(ClojureDocs ClojureScript Hammerspoon))									\
 			(dash-docs-install-user-docset+ (symbol-name d)))									\
 		(dolist (d '(TypeScript CSS Python))													\
-			(dash-docs-install-docset (symbol-name d)))											\
+			(dash-docs-install-docset+ (symbol-name d)))										\
 	)" 2>&1 | tee -a $(LOGFILE)
 	@echo "[$(shell date -Iseconds)] Finished installing docsets (exit: $$?)\n" | tee -a $(LOGFILE)
 
