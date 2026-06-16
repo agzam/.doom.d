@@ -105,12 +105,12 @@ ago. With a prefix argument opens `jinx-correct-word' dialog."
 
 ;;;###autoload
 (defun insert-dash ()
-  "Cleverly insert a dash, triple dash turns it into an em-dash."
+  "Cleverly insert a dash, quad dash turns it into an em-dash."
   (interactive)
-  (if (and (not (< (point) 3))
-           (string= (buffer-substring (- (point) 2) (point)) "--"))
+  (if (and (not (< (point) 4))
+           (string= (buffer-substring (- (point) 3) (point)) "---"))
       (progn
-        (delete-char -2)
+        (delete-char -3)
         (insert "— "))
     (insert "-")))
 

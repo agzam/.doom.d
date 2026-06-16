@@ -214,8 +214,7 @@ be used as a git branch name."
          (issues-list (mapcar #'forge--format-topic-choice
                               (forge-ls-issues repo)))
          (get-issue-num (lambda (s)
-                          (cadr (s-match "#\\([0-9]+\\)" s))))
-         (sel (completing-read "Choose an issue: " issues-list)))
+                          (cadr (s-match "#\\([0-9]+\\)" s)))) (sel (completing-read "Choose an issue: " issues-list)))
     (list sel (funcall get-issue-num sel))))
 
 ;;;###autoload
