@@ -207,6 +207,14 @@
           ;; eca-extra-args '("--log-level" "debug")
           )
 
+  (defcustom eca-archive-dir "~/Sync/org/eca/"
+    "Directory where ECA chats are archived as Markdown."
+    :type 'directory
+    :group 'eca)
+
+  ;; Save a readable copy of each chat after every finished turn.
+  (add-hook 'eca-chat-finished-hook #'eca-archive-chat)
+
   ;; Let later capfs (cape-file, etc.) run when eca has no candidates.
   (defadvice! +eca-chat-capf-non-exclusive-a (result)
     :filter-return #'eca-chat-completion-at-point

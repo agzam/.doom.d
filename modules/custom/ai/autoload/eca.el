@@ -179,3 +179,131 @@ a fresh token pair without losing the active chat."
     (unless (eca-process-running-p session)
       (user-error "ECA session is not running"))
     (eca-providers--do-login session "anthropic" "max")))
+
+
+;;;; Session archiving + resume-from-archive
+
+(defvar eca-archive-dir)                ; real defcustom lives in config.el
+
+;;;###autoload
+(defun eca-archive-chat (&optional buffer)
+  "Write BUFFER's chat transcript to `eca-archive-dir' as Markdown.
+One stable file per chat, overwritten each finished turn.  Return the
+file path, or nil if BUFFER is not an archivable chat."
+  (interactive)
+  (with-demoted-errors "eca-archive: %S"
+    (with-current-buffer (or buffer (current-buffer))
+      (when (and (derived-mode-p 'eca-chat-mode)
+                 (stringp eca-chat--id)
+                 (not (string-prefix-p "subagent-" eca-chat--id)))
+        (let* ((session   (thread-last
+                            eca--sessions
+                            eca-vals
+                            (seq-find (lambda (s)
+                                        (memq (current-buffer)
+                                              (eca-vals (eca--session-chats s)))))))
+               (project   (replace-regexp-in-string
+                           "\\`[.]+" ""
+                           (if session (eca--session-project-name session) "unknown")))
+               (workspace (when session (car (eca--session-workspace-folders session))))
+               (model     (or eca-chat--selected-model "unknown"))
+               (id        eca-chat--id)
+               (id-short  (substring id 0 (min 8 (length id))))
+               (dir       (expand-file-name eca-archive-dir))
+               (file      (expand-file-name (format "%s_%s.md" project id-short) dir))
+               (content   (buffer-substring-no-properties (point-min) (point-max))))
+          (make-directory dir t)
+          (with-temp-file file
+            (insert (format "<!-- eca: %S -->\n\n"
+                            (list :id id :workspace workspace :model model)))
+            (insert content))
+          (when (called-interactively-p 'interactive)
+            (eca-info "Archived chat to %s" file))
+          file)))))
+
+(defun eca-archive--read-meta (file)
+  "Return the metadata plist on FILE's first line, or nil."
+  (with-temp-buffer
+    (insert-file-contents file nil 0 4096)
+    (goto-char (point-min))
+    (let ((line (buffer-substring-no-properties (point) (line-end-position))))
+      (when (and (string-prefix-p "<!-- eca: " line)
+                 (string-suffix-p " -->" line))
+        (read (string-remove-suffix
+               " -->" (string-remove-prefix "<!-- eca: " line)))))))
+
+(defun eca-archive--session-for-root (root)
+  "Return a running session whose workspace folders include ROOT."
+  (when (and (stringp root) (not (string-empty-p root)))
+    (let ((root (file-name-as-directory (expand-file-name root))))
+      (thread-last
+       eca--sessions
+       eca-vals
+       (seq-find
+        (lambda (s)
+          (thread-last
+           (eca--session-workspace-folders s)
+           (seq-some (lambda (f)
+                       (string= (file-name-as-directory (expand-file-name f))
+                                root))))))))))
+
+(defun eca-archive--open-chat (session chat-id)
+  "Open CHAT-ID in SESSION via chat/open and surface its buffer.
+Mirrors the open path of `eca-chat-resume'."
+  (eca-assert-session-running session)
+  (let ((from-buf (current-buffer)))
+    (eca-api-request-async
+     session
+     :method "chat/open"
+     :params (append (list :chatId chat-id)
+                     (when eca-chat-history-page-size
+                       (list :limit eca-chat-history-page-size)))
+     :success-callback
+     (lambda (open-res)
+       (cond
+        ((not (plist-get open-res :found?))
+         (user-error "Server could not open chat %s" chat-id))
+        ((not (buffer-live-p (eca-get (eca--session-chats session) chat-id)))
+         (user-error "No buffer registered for chat %s" chat-id))
+        (t
+         (let ((chat-buf (eca-get (eca--session-chats session) chat-id)))
+           (setf (eca--session-last-chat-buffer session) chat-buf)
+           (eca-chat--with-current-buffer chat-buf
+             (eca-chat--apply-history-meta (plist-get open-res :meta))
+             (eca-chat--refresh-load-older-control)
+             (eca-chat--protect-non-prompt))
+           (eca-chat-open session)
+           (eca-chat--kill-empty-welcome-buffer session from-buf chat-buf)))))
+     :error-callback
+     (lambda (err) (user-error "Failed to continue chat: %s" err)))))
+
+;;;###autoload
+(defun eca-continue-from-file (&optional file)
+  "Open and continue the ECA chat recorded in archive FILE.
+Without FILE, use the current archive buffer or prompt in
+`eca-archive-dir'.  Like `eca-chat-resume', the chat's workspace
+session must already be running and still hold the chat."
+  (interactive)
+  (let* ((file (or file
+                   (and buffer-file-name
+                        (file-in-directory-p buffer-file-name
+                                             (expand-file-name eca-archive-dir))
+                        buffer-file-name)
+                   (read-file-name "Continue ECA chat from: "
+                                   (file-name-as-directory
+                                    (expand-file-name eca-archive-dir))
+                                   nil t)))
+         (meta      (eca-archive--read-meta file))
+         (chat-id   (plist-get meta :id))
+         (workspace (plist-get meta :workspace))
+         (session   (eca-archive--session-for-root workspace)))
+    (cond
+     ((null chat-id)
+      (user-error "No chat metadata found in %s" file))
+     ((null session)
+      (user-error "No running ECA session for %s; start it with `eca' first"
+                  (or workspace "that workspace")))
+     ((not (eq (eca--session-status session) 'started))
+      (user-error "ECA session for %s is not ready yet" workspace))
+     (t
+      (eca-archive--open-chat session chat-id)))))
