@@ -422,7 +422,9 @@
          "C-x C-j" #'consult-dir-jump-file))
   :config
   (setq consult-dir-project-list-function #'consult-dir-projectile-dirs
-        consult-dir-shadow-filenames nil)
+        consult-dir-shadow-filenames nil
+        ;; Jump straight into the picked dir instead of re-prompting via find-file.
+        consult-dir-default-command #'consult-dir-dired)
 
   (defvar consult-dir--source-zoxide
     `(:name "Zoxide"
