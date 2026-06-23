@@ -185,11 +185,36 @@ a fresh token pair without losing the active chat."
 
 (defvar eca-archive-dir)                ; real defcustom lives in config.el
 
+(defun eca-archive--slugify (string)
+  "Return STRING as a filename-safe slug, or \"\" when blank.
+Drops text properties, turns whitespace and characters illegal in
+filenames into single hyphens, trims stray hyphens/dots, and caps the
+length so titles stay readable but bounded."
+  (let* ((s (replace-regexp-in-string
+             "[[:cntrl:][:space:]/\\:*?\"<>|]+" "-"
+             (substring-no-properties (or string ""))))
+         (s (replace-regexp-in-string "-+" "-" s))
+         (s (string-trim s "[-.]+" "[-.]+")))
+    (if (< 72 (length s))
+        (string-trim-right (substring s 0 72) "[-.]+")
+      s)))
+
+(defun eca-archive--chat-file-name (project title id-short)
+  "Return the archive basename for a chat.
+PROJECT and ID-SHORT identify the chat and keep the name unique; TITLE,
+when it slugifies to something non-empty, is inserted for readability."
+  (let ((slug (eca-archive--slugify title)))
+    (if (string-empty-p slug)
+        (format "%s_%s.md" project id-short)
+      (format "%s__%s_%s.md" project slug id-short))))
+
 ;;;###autoload
 (defun eca-archive-chat (&optional buffer)
   "Write BUFFER's chat transcript to `eca-archive-dir' as Markdown.
-One stable file per chat, overwritten each finished turn.  Return the
-file path, or nil if BUFFER is not an archivable chat."
+Keeps one file per chat - named after the project, chat title, and
+short chat id - re-saved each finished turn.  When the title changes,
+the previous file for this chat is removed.  Return the file path, or
+nil if BUFFER is not an archivable chat."
   (interactive)
   (with-demoted-errors "eca-archive: %S"
     (with-current-buffer (or buffer (current-buffer))
@@ -209,14 +234,23 @@ file path, or nil if BUFFER is not an archivable chat."
                (model     (or eca-chat--selected-model "unknown"))
                (id        eca-chat--id)
                (id-short  (substring id 0 (min 8 (length id))))
+               (title     (when (or eca-chat--custom-title eca-chat--title)
+                            (substring-no-properties (eca-chat-title))))
                (dir       (expand-file-name eca-archive-dir))
-               (file      (expand-file-name (format "%s_%s.md" project id-short) dir))
+               (file      (expand-file-name
+                           (eca-archive--chat-file-name project title id-short) dir))
                (content   (buffer-substring-no-properties (point-min) (point-max))))
           (make-directory dir t)
           (with-temp-file file
             (insert (format "<!-- eca: %S -->\n\n"
                             (list :id id :workspace workspace :model model)))
             (insert content))
+          ;; Keep one file per chat: now that FILE exists, drop any stale
+          ;; name for this id (e.g. an earlier untitled save).
+          (dolist (old (file-expand-wildcards
+                        (expand-file-name (format "*_%s.md" id-short) dir)))
+            (unless (file-equal-p old file)
+              (ignore-errors (delete-file old))))
           (when (called-interactively-p 'interactive)
             (eca-info "Archived chat to %s" file))
           file)))))
