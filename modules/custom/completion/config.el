@@ -594,3 +594,5 @@ Lets M-l double as an accept key without losing its slurp binding."
     :documentation #'+consult-dash-doc
     :implementations '(lsp-find-implementation :async t)
     :type-definition #'lsp-find-type-definition))
+
+(add-hook! 'doom-first-buffer-hook #'global-completion-preview-mode)
