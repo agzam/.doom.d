@@ -314,7 +314,10 @@ Unsafe with global `variable-pitch-mode'; see issue #8756."
       :n "s-u" #'+scroll-line-down-other-window
       :nv "C-e" (cmd! () (ultra-scroll-down 45))
       :nv "C-y" (cmd! () (ultra-scroll-up 45))
-      :i "M-/" #'hippie-expand
+      :i "M-/" #'completion-preview-next-candidate
+      :i "M-?" #'completion-preview-prev-candidate
+      :i "S-SPC" #'completion-preview-accept
+      :i "M-l" #'completion-preview-accept-or-slurp
       :n "gi" #'ibuffer-sidebar-jump
       :i "C-v" #'evil-paste-after
       :i "TAB" #'completion-at-point
