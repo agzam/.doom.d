@@ -173,6 +173,15 @@
             (format "/usr/share/dict/%s" (cadr dic+lan)))
       (ispell-change-dictionary (car dic+lan)))))
 
+(after! abbrev
+  ;; Auto-correct typos/contractions ("dont" -> "don't") from this module's
+  ;; abbrev_defs; add more with `C-x a i g'. cape-abbrev reads it too.
+  (setopt abbrev-file-name (expand-file-name "abbrev_defs" (dir!))
+          save-abbrevs 'silently)
+  (when (file-exists-p abbrev-file-name)
+    (quietly-read-abbrev-file abbrev-file-name))
+  (add-hook! '(text-mode-hook git-commit-setup-hook) #'abbrev-mode))
+
 (after! quail
   (quail-define-package
    "Emoji" "UTF-8" "😎" t
