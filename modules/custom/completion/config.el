@@ -11,7 +11,7 @@
   (setq
    corfu-separator ?\s
    corfu-auto t
-   corfu-auto-delay 0.5
+   corfu-auto-delay 2.0
    corfu-preview-current nil ; Disable current candidate preview
    corfu-on-exact-match 'insert
    corfu-preview-current 'insert
@@ -84,6 +84,66 @@
     (advice-add 'evil-escape-func :after 'corfu-quit))
 
   (setq dabbrev-ignored-buffer-modes '(pdf-view-mode dired-mode vterm-mode)))
+
+(use-package! completion-preview
+  :after corfu
+  :hook (doom-first-buffer . global-completion-preview-mode)
+  :config
+  (setopt completion-preview-minimum-symbol-length 2)
+  ;; No "Completion suggestion i out of n" echo when cycling with M-/.
+  (setopt completion-preview-message-format nil)
+  ;; `completion-preview-sort-function' is a defvar, not a user option, so setq.
+  ;; Defer to Corfu's sorter so the inline preview ranks like Corfu does
+  ;; (history + length-alpha) instead of the built-in length-alpha default.
+  (setq completion-preview-sort-function
+        (lambda (cands)
+          (if corfu-sort-function (funcall corfu-sort-function cands) cands)))
+  ;; Org rebinds letters to `org-self-insert-command' (and DEL to
+  ;; `org-delete-backward-char'); neither is in the default
+  ;; `completion-preview-commands', so the preview never updates while typing
+  ;; in Org. Teach completion-preview to refresh after them.
+  (dolist (cmd '(org-self-insert-command org-delete-backward-char))
+    (add-to-list 'completion-preview-commands cmd))
+  (map! :map completion-preview-active-mode-map
+        ;; Accept the preview even where a major mode grabs <tab> (ECA, Org).
+        ;; S-SPC is a deliberate accept key too (also bound in Evil insert state).
+        "<tab>" #'completion-preview-insert
+        "TAB"   #'completion-preview-insert
+        "S-SPC" #'completion-preview-insert
+        ;; Cycle candidates while a preview shows.  Bind the built-ins directly:
+        ;; they are in `completion-preview--internal-commands', so `post-command'
+        ;; keeps the preview alive across presses (a custom wrapper is not, so
+        ;; the preview would be torn down after one press and the next press
+        ;; would hit a fallback and pop Corfu).  They no-op with no preview.
+        ;; Also bound in Evil insert state (config.el), which outranks this map.
+        "M-/"   #'completion-preview-next-candidate
+        "M-?"   #'completion-preview-prev-candidate))
+
+(defun completion-preview-accept ()
+  "Accept the inline completion preview when one is shown, else do nothing."
+  (interactive)
+  (when (bound-and-true-p completion-preview-active-mode)
+    (completion-preview-insert)))
+
+(defun completion-preview-accept-or-slurp ()
+  "Accept the completion preview if one is shown, else `sp-forward-slurp-sexp'.
+Lets M-l double as an accept key without losing its slurp binding."
+  (interactive)
+  (if (bound-and-true-p completion-preview-active-mode)
+      (completion-preview-insert)
+    (call-interactively #'sp-forward-slurp-sexp)))
+
+(after! org
+  (defadvice! completion-preview-accept-or-metaright-a (orig-fn &rest args)
+    "Accept the completion preview if shown, else run ORIG-FN (`org-metaright')."
+    ;; In Org, M-l is `org-metaright', bound by evil-org in a high-precedence insert
+    ;; map that shadows our global M-l (an Evil overriding map doesn't beat it).
+    ;; Rather than fight keymap precedence, advise the command itself: accept the
+    ;; preview when one is showing, otherwise do the normal org-metaright.
+    :around #'org-metaright
+    (if (bound-and-true-p completion-preview-active-mode)
+        (completion-preview-insert)
+      (apply orig-fn args))))
 
 (use-package! orderless
   :after-call doom-first-input-hook
@@ -534,3 +594,5 @@
     :documentation #'+consult-dash-doc
     :implementations '(lsp-find-implementation :async t)
     :type-definition #'lsp-find-type-definition))
+
+(add-hook! 'doom-first-buffer-hook #'global-completion-preview-mode)
