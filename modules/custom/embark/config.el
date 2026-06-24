@@ -8,7 +8,6 @@
 
   :config
   (require 'consult)
-  (require 'org)
   (map! [remap describe-bindings] #'embark-bindings
         "C-;" #'embark-act  
         (:map minibuffer-local-map

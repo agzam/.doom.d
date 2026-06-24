@@ -198,7 +198,8 @@
 ;;   (setopt claude-code-terminal-backend 'eat))
 
 (use-package! eca
-  :after markdown-mode
+  :defer t
+  :commands (eca)
   :config
   (setopt eca-chat-use-side-window nil
           eca-chat-custom-behavior nil

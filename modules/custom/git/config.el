@@ -416,4 +416,19 @@
     (defun on-github-topics-prs-buffer-h (buf)
       (jinx-mode -1))))
 
-(use-package! remoto)
+(use-package! remoto
+  :defer t
+  :init
+  ;; remoto installs a /github: virtual-filesystem handler at load time, which
+  ;; is the only reason it needs to load eagerly. Bootstrap a tiny handler that
+  ;; pulls remoto in on first /github: (or /gh:) access, then steps aside for
+  ;; remoto's own handler - keeping path-opening while deferring the load cost.
+  (defun +remoto-autoload-file-handler (operation &rest args)
+    (setq file-name-handler-alist
+          (rassq-delete-all #'+remoto-autoload-file-handler file-name-handler-alist))
+    (require 'remoto)
+    (apply operation args))
+  (unless (rassq #'+remoto-autoload-file-handler file-name-handler-alist)
+    (push (cons (rx bos "/" (or "github" "gh") ":")
+                #'+remoto-autoload-file-handler)
+          file-name-handler-alist)))

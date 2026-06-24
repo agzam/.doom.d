@@ -7,6 +7,11 @@
 
 (use-package! org
   :defer t
+  :init
+  ;; Trim org-modules to the link backends actually used. The default list
+  ;; pulls ol-gnus/ol-rmail/ol-mhe/ol-bbdb/ol-w3m/ol-irc; ol-gnus alone drags
+  ;; the entire gnus stack in whenever org loads.
+  (setq org-modules '(ol-eww ol-info ol-docview))
   :config
   (setopt org-directory org-default-folder)
   (setopt
