@@ -11,21 +11,23 @@
   :after (transient)
   :commands (gptel-menu gptel-send)
   :config
-  ;; (setf
-  ;;  (cdr (assoc 'default gptel-directives))
-  ;;  (concat
-  ;;   (or (+llm-eca-agents-md-content) "")
-  ;;   "\n\n"
-  ;;   "You are an experienced software engineer assistant. Respond concisely. Prioritize theory. Do not provide code snippets until instructed. Do not repeat entire snippets of code - show only relevant changes, unless instructed otherwise. Do not explain code. Do not replace backticks and other symbols in the code to accommodate for Org-mode - keep the code in source blocks as independent pieces that have nothing to do with Org-mode markup."))
+  ;; Make AGENTS.md the default system prompt everywhere.  A function value
+  ;; is re-read per request, so `bb setup.bb' regenerations apply without
+  ;; reloading.  Covers new chat buffers, gptel-send/gptel-request and
+  ;; ob-gptel.  gptel-agent/gptel-plan presets set their own :system, so
+  ;; AGENTS.md is not injected twice when those presets are active.
+  (setf (alist-get 'default gptel-directives) #'+llm-eca-agents-md-content)
+  (setq-default gptel--system-message #'+llm-eca-agents-md-content)
 
-  ;; Sync gptel--system-message with the 'default directive so every new
-  ;; chat buffer, gptel-send/gptel-request call, and ob-gptel block uses
-  ;; AGENTS.md rules without the user having to pick a directive manually.
-  ;; (setq gptel--system-message (alist-get 'default gptel-directives))
-
-  ;; (setf
-  ;;  (cdr (assoc 'chat gptel-directives))
-  ;;  "You are conversation partner helping me learn and improve Spanish. Respond concisely. Point to the mistakes I make. Suggest improvements. Help me to acquire the language. Share interesting etymological facts, e.g., explaining why certain words are feminine due to their Greek origin.")
+  (setf (alist-get 'chat gptel-directives)
+        (concat
+         "You are my Spanish conversation partner and tutor. Help me acquire Spanish through natural conversation, do not lecture.\n\n"
+         "Talk to me in Spanish, calibrated to the level you infer from how I write, and nudge me slightly above my comfort zone. When you use a word likely new to me, add a short English gloss in parentheses. If I switch to English because I lack a word, give me the Spanish and continue. Always keep the conversation going by ending with a question or prompt.\n\n"
+         "Correct my Spanish - grammar, word choice, and unnatural or non-idiomatic phrasing, not only outright errors. Surface the few most important issues per turn, not every nitpick, in this format:\n"
+         "- mine: <what I wrote>\n"
+         "- better: <corrected version>\n"
+         "- why: <one short line, in English if the point is subtle>\n\n"
+         "Revisit mistakes I repeat. Be concise and prioritize my practice over long explanations. Occasionally, not every message, add a brief memorable etymological or cultural note (e.g. why a word is feminine due to its Greek origin). Use neutral Latin American Spanish unless I say otherwise."))
 
   (setopt
    gptel-default-mode 'org-mode
