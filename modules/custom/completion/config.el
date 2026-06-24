@@ -10,7 +10,8 @@
   :config
   (setq
    corfu-separator ?\s
-   corfu-auto t
+   ;; On-demand only: never auto-pop the popup; summon with TAB or C-c p.
+   corfu-auto nil
    corfu-auto-delay 3.0
    corfu-preview-current nil ; Disable current candidate preview
    corfu-on-exact-match 'insert
@@ -50,22 +51,24 @@
         "C-n"      #'corfu-next
         "C-p"      #'corfu-previous
         "C-/" #'+corfu-move-to-minibuffer
-        :i "C-u" nil ; evil-collection bs
+        :i "C-u" nil) ; evil-collection bs
+
+  (map! :map (global-map corfu-map)
         (:prefix ("C-c p" . "cape")
-                 "p"  #'complete-tag
-                 "t"  #'cape-dabbrev
-                 "d"  #'cape-history
-                 "h"  #'cape-file
-                 "f"  #'cape-keyword
-                 "k"  #'cape-symbol
-                 "s"  #'cape-abbrev
-                 "a"  #'cape-line
-                 "l"  #'cape-dict
-                 "w"  #'cape-tex
+                 "p"  #'completion-at-point
+                 "t"  #'complete-tag
+                 "d"  #'cape-dabbrev
+                 "h"  #'cape-history
+                 "f"  #'cape-file
+                 "k"  #'cape-keyword
+                 "s"  #'cape-symbol
+                 "a"  #'cape-abbrev
+                 "l"  #'cape-line
+                 "w"  #'cape-dict
                  "_"  #'cape-tex
                  "&"  #'cape-sgml
-                 "r"  #'cape-rfc1345
-                 "y"  #'yasnippet-capf))
+                 "r"  #'cape-rfc1345))
+
   ;; corfu-indexed like in Company, M+number - inserts the thing
   (map! :map corfu-map
         "M-0" (cmd! () (+corfu-insert-indexed 9))
@@ -182,7 +185,6 @@ Lets M-l double as an accept key without losing its slurp binding."
     (defun cape-completion-at-point-functions-h ()
       (dolist (cfn '(yasnippet-capf
                      cape-dabbrev
-                     cape-abbrev
                      cape-dict
                      cape-file
                      cape-keyword))
