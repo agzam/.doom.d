@@ -1,29 +1,28 @@
 ;;; custom/tree-sitter/config.el -*- lexical-binding: t; -*-
 
 (use-package! treesit
-  :defer t
-  :mode (("\\.tsx\\'" . tsx-ts-mode)
-         ("\\.bash\\'" . bash-ts-mode)
-         ("\\Dockerfile\\'" . dockerfile-ts-mode))
-  :preface
-  (dolist (mapping
-           '((python-mode . python-ts-mode)
-             (css-mode . css-ts-mode)
-             (typescript-mode . typescript-ts-mode)
-             (js2-mode . js-ts-mode)
-             (bash-mode . bash-ts-mode)
-             (css-mode . css-ts-mode)
-             (json-mode . json-ts-mode)
-             (js-json-mode . json-ts-mode)
-             ;; (clojure-mode . clojure-ts-mode)
-             (dockerfile-mode . dockerfile-ts-mode)
-             (bash-mode . bash-ts-mode)
-             (mermaid-mode . mermaid-ts-mode)
-             (java-mode . java-ts-mode)
-             (go-mode . go-ts-mode)))
-    (add-to-list 'major-mode-remap-alist mapping))
+  :when (treesit-available-p)
   :config
-  (tree-sitter-init+))
+  ;; Emacs 31: built-in *-ts-modes register their own grammar source and
+  ;; install it on first visit, so the manual source-alist + install loop is
+  ;; gone. Explicit list (not `t') so we don't clobber yaml-mode (yaml-pro,
+  ;; highlight-indent-guides) or lua-mode, which hook the non-ts major modes.
+  (setopt treesit-auto-install-grammar 'ask
+          treesit-enabled-modes '(python-ts-mode css-ts-mode
+                                  typescript-ts-mode js-ts-mode json-ts-mode
+                                  bash-ts-mode dockerfile-ts-mode
+                                  java-ts-mode go-ts-mode))
+  ;; .json opens in third-party json-mode, not in the core registry.
+  (add-to-list 'major-mode-remap-alist '(json-mode . json-ts-mode))
+  (add-to-list 'major-mode-remap-alist '(mermaid-mode . mermaid-ts-mode))
+  ;; yaml-pro-ts-mode (a minor mode on yaml-mode) and the third-party
+  ;; mermaid-ts-mode consume a grammar but, unlike built-in *-ts-modes, don't
+  ;; register a source or self-install. Ensure those two; a no-op once present.
+  (dolist (src '((yaml    "https://github.com/ikatyang/tree-sitter-yaml" "master")
+                 (mermaid "https://github.com/monaqa/tree-sitter-mermaid")))
+    (add-to-list 'treesit-language-source-alist src))
+  (dolist (lang '(yaml mermaid))
+    (treesit-ensure-installed lang)))
 
 ;; (use-package! clojure-ts-mode
 ;;   :after treesit)
