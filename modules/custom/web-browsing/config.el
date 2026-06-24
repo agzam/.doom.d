@@ -68,7 +68,8 @@
 
 (use-package! browser-hist
   :init
-  (require 'embark)
+  ;; embark integration registers itself inside `browser-hist-search' (guarded
+  ;; by `boundp'), so there is no need to force-load embark at startup here.
   (setq browser-hist-default-browser 'brave)
   :commands (browser-hist-search))
 

@@ -41,9 +41,10 @@
 ;;   (ts-fold-mode +1))
 
 (use-package! evil-matchit
-  :after evil
-  :config
-  (global-evil-matchit-mode 1))
+  :defer t
+  :commands (global-evil-matchit-mode)
+  :init
+  (add-hook 'doom-first-file-hook #'global-evil-matchit-mode))
 
 (use-package! mermaid-mode
   :defer t
