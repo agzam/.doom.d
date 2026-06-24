@@ -15,10 +15,10 @@
 ;;;###autoload
 (defun shell-pop-choose (&optional arg)
   (interactive "P")
-  (let* ((shell-type (completing-read "Shell: " '(eshell vterm shell)))
+  (let* ((shell-type (completing-read "Shell: " '(eshell ghostel shell)))
          (shell-fn (pcase shell-type
                      ("eshell" #'eshell)
-                     ("vterm" (lambda () (vterm)))
+                     ("ghostel" #'ghostel)
                      ("shell" #'shell))))
     (shell-pop--set-shell-type
      'shell-pop-shell-type

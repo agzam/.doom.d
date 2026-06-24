@@ -11,7 +11,7 @@
   (setq
    corfu-separator ?\s
    corfu-auto t
-   corfu-auto-delay 2.0
+   corfu-auto-delay 3.0
    corfu-preview-current nil ; Disable current candidate preview
    corfu-on-exact-match 'insert
    corfu-preview-current 'insert
@@ -83,7 +83,7 @@
     (evil-make-overriding-map corfu-map)
     (advice-add 'evil-escape-func :after 'corfu-quit))
 
-  (setq dabbrev-ignored-buffer-modes '(pdf-view-mode dired-mode vterm-mode)))
+  (setq dabbrev-ignored-buffer-modes '(pdf-view-mode dired-mode ghostel-mode)))
 
 (use-package! completion-preview
   :after corfu
