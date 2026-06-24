@@ -219,7 +219,7 @@
                   "o" #'markdown-open
                   "l" #'markdown-store-link))
         :i "[[" #'markdown-insert-link+
-        :i "[ SPC" (cmd! (insert "[]" (backward-char)))))
+        :i "[ SPC" #'insert-bracket-pair))
 
 (use-package! youtube-sub-extractor
   :commands (youtube-sub-extractor-extract-subs)
