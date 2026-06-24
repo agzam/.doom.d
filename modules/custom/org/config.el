@@ -492,8 +492,7 @@
                       (= (vulpea-note-level note) 0)))))
   (map! :map org-mode-map
         :i "[[" #'vulpea-insert
-        :i "[ SPC" (cmd! (insert "[]")
-                         (backward-char)))
+        :i "[ SPC" #'insert-bracket-pair)
 
   (vulpea-db-autosync-mode +1)
 
