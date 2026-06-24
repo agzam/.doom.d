@@ -390,7 +390,7 @@ Unsafe with global `variable-pitch-mode'; see issue #8756."
          :desc "browser history" "h" #'browser-hist-search
          :desc "browser tabs" "t" #'browser-goto-tab
          :desc "browser copy link" "l" #'browser-copy-tab-link
-         :desc "insert url" "y" #'browser-insert-link-from-active-tab
+         :desc "insert url" "y" #'navegosa-insert-link
          :desc "act on url" "a" #'browser-tab-act
          :desc "in eww" "e" #'browser-active-tab->eww))
 
