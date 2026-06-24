@@ -4,13 +4,15 @@
 (package! shell-pop)
 (package! vimrc-mode)
 
-(package! eat)
-
-(package! vterm :recipe
+(package! ghostel :recipe
   (:host github
-   :repo "akermu/emacs-libvterm"))
+   :repo "dakra/ghostel"
+   :files ("lisp/*.el")))
 
-(package! eshell-vterm)
+(package! evil-ghostel :recipe
+  (:host github
+   :repo "dakra/ghostel"
+   :files ("extensions/evil-ghostel/*.el")))
 
 (package! eshell-atuin)
 
