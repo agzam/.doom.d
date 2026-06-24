@@ -270,3 +270,14 @@
               (init-width . 0.5)
               (window . root)))))
       (apply orig-fun args))))
+
+(use-package! navegosa
+  :config
+  (defadvice! +navegosa-insert-link-skip-parked-space-a (&rest _)
+    "Step over the space Evil parks point on when leaving insert state.
+Without this the inserted link glues onto the preceding word."
+    :before #'navegosa-insert-link
+    (when (and (evil-normal-state-p)
+               (not (use-region-p))
+               (memq (char-after) '(?\s ?\t)))
+      (forward-char 1))))
