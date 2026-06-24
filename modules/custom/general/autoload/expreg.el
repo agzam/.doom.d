@@ -55,7 +55,7 @@ has fontified the current window."
       ('markdown-mode (markdown-insert-inline-link txt url))
       (_ url))))
 
-;;;###autoload
+;;;###autoload (autoload 'expreg-transient "custom/general/autoload/expreg" nil t)
 (transient-define-prefix expreg-transient ()
   "expand/contract"
   [[("v" "expand" expreg-expand :transient t)]
