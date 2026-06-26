@@ -56,6 +56,7 @@ TYPE is `work' or `personal'.  When DATE is nil, opens today.
 
 Unlike `vulpea-journal', this does not auto-open the sidebar.
 If the sidebar is already visible, it gets refreshed."
+  (interactive)
   (let* ((vulpea-journal--type type)
          (vulpea-journal--buffer-type type)
          (date (or date (current-time)))

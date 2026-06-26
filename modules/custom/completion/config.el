@@ -92,7 +92,7 @@
   :after corfu
   :hook (doom-first-buffer . global-completion-preview-mode)
   :config
-  (setopt completion-preview-minimum-symbol-length 2)
+  (setopt completion-preview-minimum-symbol-length 3)
   ;; No "Completion suggestion i out of n" echo when cycling with M-/.
   (setopt completion-preview-message-format nil)
   ;; `completion-preview-sort-function' is a defvar, not a user option, so setq.

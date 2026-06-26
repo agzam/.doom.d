@@ -469,7 +469,7 @@
     (setopt ob-mermaid-cli-path mmdc)))
 
 (use-package! vulpea
-  :after org
+  :commands (vulpea-journal+ vulpea-journal-note)
   :config
   (setopt vulpea-db-sync-directories (list org-default-folder)
           vulpea-buffer-alias-property "ROAM_ALIASES"
