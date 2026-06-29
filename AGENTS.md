@@ -21,6 +21,15 @@ Vanilla `add-hook` with a plain symbol and `advice-add` inside `after!` for pre-
 
 `defadvice!` and named `defun` inside `add-hook!` should stay short - a few lines at most. When the function body grows beyond that, move it to the module's `autoload.el` or `autoload/` directory with a `;;;###autoload` cookie (if necessary), and reference it by symbol.
 
+## Keep comments terse
+
+This is config, not prose - don't write essays in it.
+
+- Comment only the non-obvious "why" (a gotcha, race, or workaround). Never narrate what the code already says.
+- One or two lines is the norm; a multi-line comment paragraph is a smell. Drop backstory, restated mechanics, and "handy for X" asides.
+- Prefer a short docstring to a comment block, and never repeat the docstring in a comment above the `defun`.
+- If a body seems to need step-by-step explanation, that is a signal to simplify the code, not to add narration.
+
 ## Module structure
 
 Modules live under `modules/custom/NAME/`:
