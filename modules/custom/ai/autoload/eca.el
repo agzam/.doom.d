@@ -341,3 +341,39 @@ session must already be running and still hold the chat."
       (user-error "ECA session for %s is not ready yet" workspace))
      (t
       (eca-archive--open-chat session chat-id)))))
+
+;;;###autoload
+(defun eca-mcp-restart-server (name &optional session)
+  "Restart MCP server NAME: stop it, then start it once it has stopped.
+Stop and start race (each runs on its own server thread), so the start
+is deferred until the stop lands.  A one-shot timer reschedules itself
+until then, so this never blocks Emacs and self-terminates after ~10s.
+Interactively prompt for a server; SESSION defaults to the one hosting
+NAME, else the current buffer's."
+  (interactive
+   (let ((session (eca-session)))
+     (eca-assert-session-running session)
+     (list (completing-read "Restart MCP server: "
+                            (mapcar (lambda (s) (plist-get s :name))
+                                    (eca-mcp-servers session))
+                            nil t)
+           session)))
+  (let ((session (or session
+                     (seq-find (lambda (s) (eca-get (eca--session-tool-servers s) name))
+                               (eca-vals eca--sessions))
+                     (eca-session))))
+    (eca-assert-session-running session)
+    (unless (eca-get (eca--session-tool-servers session) name)
+      (user-error "No MCP server named %s" name))
+    (eca-api-notify session :method "mcp/stopServer" :params (list :name name))
+    (let ((deadline (+ (float-time) 10)))
+      (cl-labels ((resume ()
+                    (if (or (member (plist-get (eca-get (eca--session-tool-servers session) name)
+                                               :status)
+                                    '("stopped" "failed" "disabled"))
+                            (< deadline (float-time)))
+                        (progn
+                          (eca-api-notify session :method "mcp/startServer" :params (list :name name))
+                          (eca-info "Restarted MCP server %s" name))
+                      (run-with-timer 0.1 nil #'resume))))
+        (resume)))))
