@@ -109,10 +109,8 @@
     (add-to-list 'completion-preview-commands cmd))
   (map! :map completion-preview-active-mode-map
         ;; Accept the preview even where a major mode grabs <tab> (ECA, Org).
-        ;; S-SPC is a deliberate accept key too (also bound in Evil insert state).
         "<tab>" #'completion-preview-insert
         "TAB"   #'completion-preview-insert
-        "S-SPC" #'completion-preview-insert
         ;; Cycle candidates while a preview shows.  Bind the built-ins directly:
         ;; they are in `completion-preview--internal-commands', so `post-command'
         ;; keeps the preview alive across presses (a custom wrapper is not, so
@@ -121,12 +119,6 @@
         ;; Also bound in Evil insert state (config.el), which outranks this map.
         "M-/"   #'completion-preview-next-candidate
         "M-?"   #'completion-preview-prev-candidate))
-
-(defun completion-preview-accept ()
-  "Accept the inline completion preview when one is shown, else do nothing."
-  (interactive)
-  (when (bound-and-true-p completion-preview-active-mode)
-    (completion-preview-insert)))
 
 (defun completion-preview-accept-or-slurp ()
   "Accept the completion preview if one is shown, else `sp-forward-slurp-sexp'.
@@ -183,10 +175,10 @@ Lets M-l double as an accept key without losing its slurp binding."
 
   (add-hook! (text-mode prog-mode)
     (defun cape-completion-at-point-functions-h ()
-      (dolist (cfn '(yasnippet-capf
+      (dolist (cfn '(cape-file
+                     yasnippet-capf
                      cape-dabbrev
                      cape-dict
-                     cape-file
                      cape-keyword))
         (add-to-list 'completion-at-point-functions cfn :append)
         (setq-local completion-at-point-functions

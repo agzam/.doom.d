@@ -316,7 +316,6 @@ Unsafe with global `variable-pitch-mode'; see issue #8756."
       :nv "C-y" (cmd! () (ultra-scroll-up 45))
       :i "M-/" #'completion-preview-next-candidate
       :i "M-?" #'completion-preview-prev-candidate
-      :i "S-SPC" #'completion-preview-accept
       :i "M-l" #'completion-preview-accept-or-slurp
       :n "gi" #'ibuffer-sidebar-jump
       :i "C-v" #'evil-paste-after
