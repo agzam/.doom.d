@@ -93,7 +93,8 @@
   :hook (doom-first-buffer . global-completion-preview-mode)
   :config
   (setopt completion-preview-minimum-symbol-length 3)
-  ;; No "Completion suggestion i out of n" echo when cycling with M-/.
+  ;; Suppress the built-in "i out of n" cycling echo; the echo-area candidate
+  ;; list below (`completion-preview-echo-candidates') replaces it.
   (setopt completion-preview-message-format nil)
   ;; `completion-preview-sort-function' is a defvar, not a user option, so setq.
   ;; Defer to Corfu's sorter so the inline preview ranks like Corfu does
@@ -139,6 +140,128 @@ Lets M-l double as an accept key without losing its slurp binding."
     (if (bound-and-true-p completion-preview-active-mode)
         (completion-preview-insert)
       (apply orig-fn args))))
+
+(defvar completion-preview-echo-max 5
+  "Maximum number of completion-preview candidates shown per echo-area page.")
+
+(defvar completion-preview--echo-shown nil
+  "Non-nil while the echo-area candidate list is on screen.")
+
+(defface completion-preview-echo-number '((t :foreground "orange"))
+  "Face for the index number shown before each echo-list candidate."
+  :group 'completion-preview)
+
+(defvar completion-preview-echo-number-height 1.3
+  "Height multiplier applied to the superscript echo-list index numbers.")
+
+(defconst completion-preview--superscripts ["⁰" "¹" "²" "³" "⁴" "⁵" "⁶" "⁷" "⁸" "⁹"]
+  "Superscript glyphs for digits 0-9.")
+
+(defun completion-preview--superscript (n)
+  "Return the natural number N rendered with superscript digits."
+  (mapconcat (lambda (c) (aref completion-preview--superscripts (- c ?0)))
+             (number-to-string n) ""))
+
+(defun completion-preview--echo-string ()
+  "Return the echo string for the current preview page, or nil when inactive.
+Shows the page of up to `completion-preview-echo-max' candidates containing
+the current one (highlighted).  Each candidate is prefixed with its 1-based
+on-page index as an orange superscript (the key that inserts it, M-1..M-N),
+and a leading/trailing arrow marks more candidates before/after the page."
+  (when (bound-and-true-p completion-preview--overlay)
+    (let* ((ov completion-preview--overlay)
+           (common (or (overlay-get ov 'completion-preview-common) ""))
+           (sufs (overlay-get ov 'completion-preview-suffixes))
+           (idx (or (overlay-get ov 'completion-preview-index) 0))
+           (total (length sufs))
+           (size completion-preview-echo-max)
+           (start (* (/ idx size) size))
+           (end (min total (+ start size)))
+           (cands (cl-loop for i from start below end
+                           for num = (propertize
+                                      (completion-preview--superscript (1+ (- i start)))
+                                      'face `((:height ,completion-preview-echo-number-height)
+                                              completion-preview-echo-number))
+                           for cand = (substring-no-properties
+                                       (concat common (nth i sufs)))
+                           collect (concat num (if (= i idx)
+                                                   (propertize cand 'face 'highlight)
+                                                 cand)))))
+      (concat (and (< 0 start) "← ")
+              (mapconcat #'identity cands "  ")
+              (and (< end total) " →")))))
+
+(defun completion-preview-echo-candidates (&rest _)
+  "Echo the current page of completion-preview candidates."
+  (if-let* ((str (completion-preview--echo-string)))
+      (progn
+        (setq completion-preview--echo-shown t)
+        (let ((message-log-max nil)) (message "%s" str)))
+    (completion-preview-echo-clear)))
+
+(defun completion-preview-echo-clear (&rest _)
+  "Clear the echoed candidate list once the preview is gone."
+  (when (and completion-preview--echo-shown
+             (not (bound-and-true-p completion-preview--overlay)))
+    (setq completion-preview--echo-shown nil)
+    (let ((message-log-max nil)) (message nil))))
+
+(defun completion-preview-insert-indexed (n)
+  "Complete with the Nth (1-based) candidate of the visible echo page.
+The inline-preview analog of `+corfu-insert-indexed': one press inserts.
+Mirrors `completion-preview-insert' (which inserts the shown text and runs
+the capf :exit-function) but targets the chosen index directly."
+  (when (bound-and-true-p completion-preview--overlay)
+    (let* ((ov completion-preview--overlay)
+           (base (or (overlay-get ov 'completion-preview-base) ""))
+           (beg (overlay-get ov 'completion-preview-beg))
+           (end (overlay-get ov 'completion-preview-end))
+           (sufs (overlay-get ov 'completion-preview-suffixes))
+           (common (or (overlay-get ov 'completion-preview-common) ""))
+           (idx (or (overlay-get ov 'completion-preview-index) 0))
+           (efn (plist-get (overlay-get ov 'completion-preview-props) :exit-function))
+           (size completion-preview-echo-max)
+           (target (+ (* (/ idx size) size) (1- n))))
+      (when (< target (length sufs))
+        (let* ((cand (concat common (nth target sufs)))
+               (skip (- end beg))
+               (visible (if (<= 0 skip (length cand)) (substring cand skip) "")))
+          (completion-preview-active-mode -1)
+          (goto-char end)
+          (insert-and-inherit visible)
+          (when (functionp efn)
+            (funcall efn (concat base cand) 'finished)))))))
+
+(defun completion-preview-next-candidate-guard-a (orig &rest args)
+  "Hide the preview instead of throwing if cycling hits a stale overlay.
+`completion-preview-next-candidate' runs an unguarded `buffer-substring' on
+the overlay's stored integer positions; they go stale in buffers rewritten
+under it (e.g. eca-chat streaming)."
+  (condition-case nil
+      (apply orig args)
+    (args-out-of-range
+     (when (bound-and-true-p completion-preview-active-mode)
+       (completion-preview-active-mode -1)))))
+
+(after! completion-preview
+  ;; Popup-less candidate list: echo the current page of candidates.
+  ;; `completion-preview--update' is the per-keystroke convergence point;
+  ;; guard it since it is a private symbol.
+  (when (fboundp 'completion-preview--update)
+    (advice-add 'completion-preview--update :after #'completion-preview-echo-candidates))
+  (advice-add 'completion-preview-next-candidate :after #'completion-preview-echo-candidates)
+  (advice-add 'completion-preview-active-mode :after #'completion-preview-echo-clear)
+  (advice-add 'completion-preview-next-candidate :around
+              #'completion-preview-next-candidate-guard-a)
+  ;; M+number completes with the Nth candidate of the visible page, like
+  ;; `+corfu-insert-indexed'.  Bound only here, so `digit-argument' stays
+  ;; intact when no preview is shown.
+  (map! :map completion-preview-active-mode-map
+        "M-1" (cmd! () (completion-preview-insert-indexed 1))
+        "M-2" (cmd! () (completion-preview-insert-indexed 2))
+        "M-3" (cmd! () (completion-preview-insert-indexed 3))
+        "M-4" (cmd! () (completion-preview-insert-indexed 4))
+        "M-5" (cmd! () (completion-preview-insert-indexed 5))))
 
 (use-package! orderless
   :after-call doom-first-input-hook

@@ -61,6 +61,23 @@ See `+dict--words' for extra words, and `+dict-file' for a wordslist source "
        (consult-completion-in-region beg end table pred)))))
 
 ;;;###autoload
+(defun complete-in-minibuffer ()
+  "Complete the symbol at point through the minibuffer (consult), in one step.
+Routes `completion-at-point' to `consult-completion-in-region' whether or not
+Corfu or the inline preview is showing, and strips the per-candidate backend
+labels (Dabbrev/Dict/...), which are noise in a deliberate minibuffer pick."
+  (interactive)
+  (let ((completion-in-region-function
+         (lambda (&rest args)
+           (let ((completion-extra-properties
+                  (let ((p (copy-sequence completion-extra-properties)))
+                    (cl-remf p :annotation-function)
+                    (cl-remf p :affixation-function)
+                    p)))
+             (apply #'consult-completion-in-region args)))))
+    (completion-at-point)))
+
+;;;###autoload
 (defun +corfu-kill-frames ()
   (interactive)
   (ignore-errors
