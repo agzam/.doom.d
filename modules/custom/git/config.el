@@ -212,7 +212,22 @@
                   "y" #'git-link-forge-topic)))
 
   ;; forge-topic uses markdown to display images, sometimes they get too big on the screen
-  (setq markdown-max-image-size '(700 . nil)))
+  (setq markdown-max-image-size '(700 . nil))
+
+  ;; remove after https://github.com/magit/forge/discussions/861 addressed
+  (defadvice! forge-graphql-tolerate-http-errors-a (fn req errors headers status)
+    "Skip forge GraphQL batches that fail at the HTTP level instead of crashing.
+ghub passes `(error http NNN)' (e.g. 403) to an errorback that expects a
+GraphQL `errors' alist, which otherwise dies with `listp, http'."
+    :around #'ghub--graphql-handle-failure
+    (if (eq (car-safe errors) 'error)
+        (progn
+          (ghub--graphql-set-mode-line req)
+          (message "forge: skipped a GraphQL batch (HTTP %s)" (nth 2 errors))
+          (if-let* ((cb (ghub--req-callback req)))
+              (ghub--graphql-run-callback req cb nil)
+            (ghub--signal-error errors)))
+      (funcall fn req errors headers status))))
 
 (use-package! gist
   :defer t

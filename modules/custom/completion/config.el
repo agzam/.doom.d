@@ -151,7 +151,7 @@ Lets M-l double as an accept key without losing its slurp binding."
   "Face for the index number shown before each echo-list candidate."
   :group 'completion-preview)
 
-(defvar completion-preview-echo-number-height 1.3
+(defvar completion-preview-echo-number-height 1.1
   "Height multiplier applied to the superscript echo-list index numbers.")
 
 (defconst completion-preview--superscripts ["⁰" "¹" "²" "³" "⁴" "⁵" "⁶" "⁷" "⁸" "⁹"]

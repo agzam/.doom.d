@@ -1,6 +1,7 @@
 ;;; custom/embark/config.el -*- lexical-binding: t; -*-
 
 (use-package! embark
+  :commands (embark-act)
   :defer t
   :init
   (setopt which-key-use-C-h-commands nil
@@ -8,15 +9,15 @@
 
   :config
   (require 'consult)
-  (map! [remap describe-bindings] #'embark-bindings
-        "C-;" #'embark-act  
-        (:map minibuffer-local-map
-         "C-;"  #'embark-act
-         "C-c C-;" #'embark-export
-         "C-c C-l" #'embark-collect
-         :desc "Export to writable buffer" "C-c C-e" #'+vertico/embark-export-write)
-        (:leader
-         :desc "Actions" "a" #'embark-act))
+  (map!
+   [remap describe-bindings] #'embark-bindings
+   "C-;" #'embark-act  
+   (:map minibuffer-local-map
+    "C-c C-;" #'embark-export
+    "C-c C-l" #'embark-collect
+    :desc "Export to writable buffer" "C-c C-e" #'+vertico/embark-export-write)
+   (:leader
+    :desc "Actions" "a" #'embark-act))
 
   (setopt embark-cycle-key "C-;"
           embark-help-key "M-h"

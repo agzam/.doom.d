@@ -322,6 +322,7 @@ Unsafe with global `variable-pitch-mode'; see issue #8756."
       :i "C-v" #'evil-paste-after
       :i "TAB" #'completion-at-point
       "C-x m" #'mpv-transient
+      "C-;"  #'embark-act
       (:when (featurep :system 'linux)
         :i "C-M-S-s-y" #'nerd-dictation-toggle)
       (:when (modulep! :custom ai)
