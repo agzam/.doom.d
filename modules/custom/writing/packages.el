@@ -25,3 +25,8 @@
 ;; (package! translate-popup :recipe (:local-repo "translate-popup"))
 
 (package! occult :recipe (:host github :repo "agzam/occult.el"))
+
+(package! prisma :recipe
+  (:host github :repo "agzam/prisma.el")
+  ;; (:local-repo "prisma.el")
+  )

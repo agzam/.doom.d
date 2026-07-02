@@ -372,3 +372,7 @@
                           (overlays-at (point))))
           (occult-toggle)
         (apply fn args)))))
+
+(use-package! prisma
+  :after (markdown org)
+  :config)
