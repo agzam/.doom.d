@@ -376,3 +376,10 @@
 (use-package! prisma
   :after (markdown org)
   :config)
+
+(after! evil
+  ;; cross-format yank/paste: kills remember their origin format,
+  ;; md<->org conversion happens at paste time; bare C-u pastes verbatim
+  (advice-add 'evil-yank :after #'yank-remember-format-a)
+  (advice-add 'evil-paste-after :around #'paste-maybe-convert-a)
+  (advice-add 'evil-paste-before :around #'paste-maybe-convert-a))

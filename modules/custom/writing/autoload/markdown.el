@@ -1,70 +1,83 @@
 ;;; custom/writing/autoload/markdown.el -*- lexical-binding: t; -*-
 
-;;;###autoload
-(defun yank-as-org ()
-  "Convert region of markdown text to org while yanking."
-  (interactive)
-  (let* ((_ (unless (executable-find "pandoc")
-              (user-error "pandoc not found")))
-         (beg (if evil-mode
-                  (marker-position evil-visual-beginning)
-                (region-beginning)))
-         (end (if evil-mode
-                  (marker-position evil-visual-end)
-                (region-end)))
-         (region-content (buffer-substring-no-properties beg end))
-         (_ (print region-content))
-         (converted-content
-          (with-temp-buffer
-            (insert region-content)
-            (shell-command-on-region
-             (point-min)
-             (point-max)
-             "pandoc --wrap=none -f markdown-auto_identifiers -t org" nil t)
-            (buffer-string))))
-    (kill-new converted-content)
-    (message "yanked Markdown as Org")))
+(defvar yank-remember--last nil
+  "Cons of (TEXT . FORMAT) for the most recent kill from a markup buffer.
+Fallback for when the `yank-source-format' text property is lost,
+e.g. after a system clipboard round-trip.")
+
+(defvar paste-convert--in-flight nil
+  "Non-nil while `paste-maybe-convert-a' is running.
+Stops the nested `evil-visual-paste' round-trip from re-deciding.")
 
 ;;;###autoload
-(defun yank-as-markdown ()
-  "Convert region of Org-mode to markdown while yanking."
-  (interactive)
-  (let* ((_ (unless (executable-find "pandoc")
-              (user-error "pandoc not found")))
-         (beg (if evil-mode
-                  (marker-position evil-visual-beginning)
-                (region-beginning)))
-         (end (if evil-mode
-                  (marker-position evil-visual-end)
-                (region-end)))
-         (region-content (buffer-substring-no-properties beg end))
-         (_ (print region-content))
-         (converted-content
-          (with-temp-buffer
-            (insert region-content)
-            (shell-command-on-region
-             (point-min)
-             (point-max)
-             "pandoc --wrap=none -f org -t gfm | sed 's/<sub>\\([^<]*\\)<\\/sub>/_\\1/g'" nil t)
-            (buffer-string))))
-    (kill-new converted-content)
-    (message "yanked Org as Markdown")))
+(defun buffer-markup-format ()
+  "Prisma format symbol for the current buffer, nil for other modes."
+  (cond ((derived-mode-p 'gfm-mode 'markdown-mode) 'markdown)
+        ((derived-mode-p 'org-mode) 'org)))
 
 ;;;###autoload
-(defun maybe-yank-and-convert-a (orig-fun beg end &optional type register yank-handler)
-  "Advice function to convert marked region to org before yanking."
-  (let ((yank-fn (cond
-                  ((derived-mode-p 'markdown-mode)
-                   #'yank-as-org)
-                  ((derived-mode-p 'org-mode)
-                   #'yank-as-markdown))))
-    (if (and current-prefix-arg (region-active-p)
-             yank-fn)
-        (funcall yank-fn)
-      (funcall
-       orig-fun
-       beg end type register
-       yank-handler))))
+(defun paste-convert-kill (text source target)
+  "Convert kill TEXT from SOURCE to TARGET format, keeping line-wise semantics."
+  (require 'prisma)
+  (let ((handler (get-text-property 0 'yank-handler text))
+        (converted (prisma-render
+                    target
+                    (prisma-parse source (substring-no-properties text)))))
+    (when (eq (car-safe handler) 'evil-yank-line-handler)
+      (unless (string-suffix-p "\n" converted)
+        (setq converted (concat converted "\n")))
+      (put-text-property 0 (length converted) 'yank-handler handler converted))
+    converted))
+
+;;;###autoload
+(defun yank-remember-format-a (_beg _end &optional _type register _yank-handler)
+  "Tag the fresh kill with this buffer's markup format, skipping REGISTER ?_.
+`:after' advice for `evil-yank'."
+  (when-let* (((not (eq register ?_)))
+              (fmt (buffer-markup-format))
+              (text (car kill-ring)))
+    (put-text-property 0 (length text) 'yank-source-format fmt text)
+    (setq yank-remember--last (cons (substring-no-properties text) fmt))))
+
+;;;###autoload
+(defun paste-maybe-convert-a (orig-fn count &optional register yank-handler)
+  "Cross-convert markdown<->org kills at paste time.
+Bare \\[universal-argument] COUNT pastes verbatim.  REGISTER and
+YANK-HANDLER pass through to ORIG-FN untouched.
+`:around' advice for `evil-paste-after' and `evil-paste-before'."
+  (if paste-convert--in-flight
+      (funcall orig-fn count register yank-handler)
+    (let* ((verbatim (equal count '(4)))
+           (count (if verbatim nil count))
+           (paste-convert--in-flight t)
+           (text (unless register (ignore-errors (current-kill 0))))
+           (handler (and (stringp text)
+                         (car-safe (get-text-property 0 'yank-handler text))))
+           (source (and (stringp text)
+                        ;; rectangle pastes carry line data in the handler
+                        (not (eq handler 'evil-yank-block-handler))
+                        (or (get-text-property 0 'yank-source-format text)
+                            (and (equal (substring-no-properties text)
+                                        (car yank-remember--last))
+                                 (cdr yank-remember--last)))))
+           (target (buffer-markup-format))
+           (converted
+            (when (and (not verbatim) source target (not (eq source target)))
+              (condition-case err
+                  (paste-convert-kill text source target)
+                (error
+                 (message "paste conversion failed, pasting as-is (%s)"
+                          (error-message-string err))
+                 nil)))))
+      (if (not converted)
+          (funcall orig-fn count register yank-handler)
+        (let ((real-ck (symbol-function 'current-kill)))
+          (cl-letf (((symbol-function 'current-kill)
+                     (lambda (n &optional do-not-move)
+                       (if (zerop n)
+                           converted
+                         (funcall real-ck n do-not-move)))))
+            (funcall orig-fn count register yank-handler)))))))
 
 ;;;###autoload
 (defun markdown-wrap-collapsible ()
