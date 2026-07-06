@@ -15,6 +15,9 @@
     'tab-bar-tab-name-format-functions
     #'tab-bar-tab-name-format-hints)
 
+  ;; ring capacity for window-undo/window-redo; stock default of 10 is
+  ;; too shallow for a day of window juggling
+  (setq tab-bar-history-limit 100)
   (tab-bar-history-mode +1)
   (unless (featurep :system 'macos)
     (setopt tab-bar-tab-name-function #'+tab-bar-name-fn))

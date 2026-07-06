@@ -72,8 +72,11 @@
    [("b" "move buffer to tab" +tab-bar-move-buffer-to-tab)
     ("f" "find tab with current buffer" +tab-bar-find-buffer-in-tabs)
     ("K" "kill project buffers" +tab-bar-kill-project-buffers)]
-   [("[" "history back" tab-bar-history-back :transient t)
-    ("]" "history forward" tab-bar-history-forward :transient t)
+   ;; window-undo/redo instead of tab-bar-history-back/forward: the
+   ;; stock commands restore stale cursor positions and mismanage the
+   ;; forward ring
+   [("[" "layout undo" window-undo :transient t)
+    ("]" "layout redo" window-redo :transient t)
     ("dd" "kill tab" +tab-bar-kill-tab :transient t)
     ("u" "undo kill tab" tab-undo)
     ("SPC" "templates" tab-bar-new-tab-transient)]
