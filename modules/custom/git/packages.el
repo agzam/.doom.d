@@ -42,3 +42,5 @@
   (:host github :repo "agzam/remoto.el")
   ;; (:local-repo "remoto" :files ("*.el"))
   )
+
+(package! browse-at-remote)

@@ -447,3 +447,6 @@ GraphQL `errors' alist, which otherwise dies with `listp, http'."
     (push (cons (rx bos "/" (or "github" "gh") ":")
                 #'+remoto-autoload-file-handler)
           file-name-handler-alist)))
+
+(use-package! browse-at-remote
+  :defer t)
