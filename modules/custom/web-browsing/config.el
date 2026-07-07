@@ -247,7 +247,13 @@
   :defer t
   :hook (reddigg-mode . reddigg-hnreader-show-all-h)
   :config
-  (setq reddigg-subs '(emacs clojure programming))
+  ;; reddit 403-blocks Emacs's TLS fingerprint; fetch through the live
+  ;; browser on macOS, headless chromium elsewhere (needs one-time
+  ;; M-x reddigg-chromium-warmup)
+  (setq reddigg-fetch-function (if (eq system-type 'darwin)
+                                   #'reddigg--fetch-via-browser
+                                 #'reddigg--fetch-via-chromium)
+        reddigg-subs '(emacs clojure programming))
   (map! :map reddigg-mode-map
         "C-c C-o" #'reddigg-browse-current-sub-url
         :n "yy" #'reddigg-copy-current-sub-url
