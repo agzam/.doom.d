@@ -5,16 +5,23 @@
 
 (defun +llm-mcp-ensure-server (server-name callback)
   "Ensure MCP server SERVER-NAME is connected, then call CALLBACK.
-If already connected, CALLBACK fires immediately.  Queues concurrent requests."
+If already connected, CALLBACK fires immediately.  Queues concurrent requests.
+A cached connection whose process died (server crash) is purged and
+restarted instead of being treated as connected."
   (require 'mcp-hub)
   (cond
-   ((gethash server-name mcp-server-connections)
+   ;; connected and the process is actually alive
+   ((when-let* ((conn (gethash server-name mcp-server-connections)))
+      (jsonrpc-running-p conn))
     (funcall callback))
    ;; currently starting - queue
    ((gethash server-name +llm-mcp--pending-callbacks)
     (push callback (gethash server-name +llm-mcp--pending-callbacks)))
-   ;; start it
+   ;; start it, purging any dead cached connection first
    (t
+    (when (gethash server-name mcp-server-connections)
+      (ignore-errors (mcp-stop-server server-name))
+      (remhash server-name mcp-server-connections))
     (puthash server-name (list callback) +llm-mcp--pending-callbacks)
     (message "Starting MCP server %s..." server-name)
     (mcp-hub-start-all-server
@@ -35,9 +42,13 @@ ARG-NAMES is a list of argument name strings for reconstructing the MCP plist."
     (+llm-mcp-ensure-server
      server-name
      (lambda ()
+       ;; Omitted optional args arrive as nil; elisp nil serializes to {}
+       ;; in JSON-RPC, which servers reject. Drop them like other MCP
+       ;; clients do. Explicit false is :json-false, so it survives.
        (let ((mcp-args (cl-mapcan
                         (lambda (name val)
-                          (list (intern (concat ":" name)) val))
+                          (when val
+                            (list (intern (concat ":" name)) val)))
                         arg-names args)))
          (mcp-async-call-tool
           (gethash server-name mcp-server-connections)
