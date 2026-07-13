@@ -660,3 +660,10 @@ Unsafe with global `variable-pitch-mode'; see issue #8756."
      so my custom keybinds are properly restored."
     (doom-load (file-name-concat doom-user-dir "init.el"))
     (doom-load (file-name-concat doom-user-dir "config.el"))))
+
+;; Retired instance (2026-07 session switch): the new config owns the
+;; default emacsclient socket. Suppress every server-start path so an
+;; accidental Doom boot can't steal it.
+(defadvice! retired-no-server-a (&rest _)
+  :override #'server-start
+  (message "server-start suppressed: retired instance, the port owns the socket"))
