@@ -1,6 +1,6 @@
 LOGFILE = /tmp/emacs-cron.log
 EMACS = emacs
-DOOM_DIR = $(HOME)/.emacs.d
+EMACSDIR = $(EMACSDIR)
 EMACS_BATCH = $(EMACS) --batch --no-window-system
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Darwin)
@@ -9,7 +9,7 @@ else ifeq ($(shell test -f /etc/arch-release && echo yes),yes)
 	INSTALL_CMD = sudo pacman -S --noconfirm
 endif
 
-.PHONY: help pdf-tools-build org-roam-db-sync dash-docsets roam-drawer-lint roam-db-verify
+.PHONY: helppdf-tools-build org-roam-db-sync dash-docsets roam-drawer-lint roam-db-verify
 help:
 	@grep -E '^[a-zA-Z_-]+:' Makefile | grep -v '.PHONY' | sed 's/:.*//g' | sort
 
@@ -17,7 +17,7 @@ pdf-tools:
 	@echo "[$(shell date -Iseconds)] Starting pdf-tools rebuild" | tee -a $(LOGFILE)
 	@CMD=$$(DISPLAY="" $(EMACS_BATCH) --eval \
 	"(progn \
-		(let* ((default-directory \"$(DOOM_DIR)/.local/straight/repos\"))					\
+		(let* ((default-directory \"$(EMACSDIR)/.local/straight/repos\"))					\
 			(normal-top-level-add-subdirs-to-load-path)										\
 			(require 'straight)																\
 			(let* ((build-dir (expand-file-name												\
@@ -34,13 +34,13 @@ org-roam-db-sync:
 	@echo "\n[$(shell date -Iseconds)] Starting org-road-db-sync" | tee -a $(LOGFILE)
 	DISPLAY="" $(EMACS_BATCH) --eval													\
 	"(progn																				\
-		(let ((default-directory \"$(DOOM_DIR)/.local/straight/repos\"))				\
+		(let ((default-directory \"$(EMACSDIR)/.local/straight/repos\"))				\
 			(normal-top-level-add-subdirs-to-load-path))								\
 		(require 'org)																	\
 		(require 'org-roam)																\
 		(require 'git-auto-commit-mode)													\
 		(setq org-roam-directory (expand-file-name \"~/Sync/org/\"))					\
-		(setq org-roam-db-location (concat \"$(DOOM_DIR)\" \"/.local/org-roam.db\"))	\
+		(setq org-roam-db-location (concat \"$(EMACSDIR)\" \"/.local/org-roam.db\"))	\
 		(org-roam-db-sync t)															\
 	)" 2>&1 | tee -a $(LOGFILE)
 	@echo "[$(shell date -Iseconds)] Finished org-roam-db-sync (exit: $$?)\n" | tee -a $(LOGFILE)
@@ -50,7 +50,7 @@ dash-docsets:
 	mkdir -p ~/.docsets/
 	DISPLAY="" $(EMACS_BATCH) --eval															\
 	"(progn																						\
-		(let ((default-directory \"$(DOOM_DIR)/.local/straight/repos\"))						\
+		(let ((default-directory \"$(EMACSDIR)/.local/straight/repos\"))						\
 			(normal-top-level-add-subdirs-to-load-path))										\
 		(require 'dash-docs)																	\
 		(load \"~/.doom.d/modules/custom/completion/autoload/dash-docs.el\")					\
@@ -69,7 +69,7 @@ roam-drawer-lint:
 	@echo "[$(shell date -Iseconds)] Starting drawer lint" | tee -a $(LOGFILE)
 	DISPLAY="" $(EMACS_BATCH) --eval													\
 	"(progn																				\
-		(let ((default-directory \"$(DOOM_DIR)/.local/straight/repos\"))				\
+		(let ((default-directory \"$(EMACSDIR)/.local/straight/repos\"))				\
 			(normal-top-level-add-subdirs-to-load-path))								\
 		(require 'org)																	\
 		(with-temp-buffer																\
@@ -88,7 +88,7 @@ roam-db-verify: roam-drawer-lint
 	@echo "[$(shell date -Iseconds)] Starting db-verify" | tee -a $(LOGFILE)
 	DISPLAY="" $(EMACS_BATCH) --eval													\
 	"(progn																				\
-		(let ((default-directory \"$(DOOM_DIR)/.local/straight/repos\"))				\
+		(let ((default-directory \"$(EMACSDIR)/.local/straight/repos\"))				\
 			(normal-top-level-add-subdirs-to-load-path))								\
 		(require 'org)																	\
 		(require 'vulpea)																\
