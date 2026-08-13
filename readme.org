@@ -1,7 +1,12 @@
-#+TITLE:  Emacs config of tips and tricks
+#+TITLE: 
 #+STARTUP: inlineimages nofold
 #+OPTIONS: f:t
 
+* I'm no longer using Doom directly
+This repo is strictly for posterity and reference.
+My current Emacs config is at [[https://github.com/agzam/.emacs.d][agzam/.emacs.d]]
+
+* Description
 My Emacs config with custom modules.
 
 /This is a work-in-progress document. The rest of the configuration is in good, usable state./
